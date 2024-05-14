@@ -1,6 +1,6 @@
 import hre from 'hardhat';
 import { loadFixture } from '@nomicfoundation/hardhat-toolbox/network-helpers';
-import { liraDaoTokenFixture } from '@lira-dao/token/fixtures';
+import { liraDaoTokenFixture } from '@lira-dao/ldt/fixtures';
 
 
 export async function baseFaucetFixture() {
