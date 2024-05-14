@@ -3,14 +3,14 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "clean": "rimraf node_modules apps/**/node_modules contracts/**/node_modules packages/**/node_modules",
+    "clean-cache": "rimraf contracts/**/artifacts contracts/**/cache contracts/**/typechain-types"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "prettier": "^3.2.5",
+    "rimraf": "^5.0.7",
     "turbo": "latest"
   },
   "packageManager": "pnpm@8.9.0",
