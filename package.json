@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "build": "turbo build",
+    "compile": "turbo compile",
     "clean": "rimraf node_modules apps/**/node_modules contracts/**/node_modules packages/**/node_modules",
     "clean-cache": "rimraf contracts/**/artifacts contracts/**/cache contracts/**/typechain-types"
   },
