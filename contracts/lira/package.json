@@ -1,5 +1,5 @@
 {
-  "name": "@satoshi-lira/lira",
+  "name": "@lira-dao/satoshi-lira",
   "version": "2.0.0",
   "main": "index.js",
   "license": "MIT",
