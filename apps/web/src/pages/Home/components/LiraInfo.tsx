@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Row } from '@satoshi-lira/ui';
+import { Col, Row } from '@lira-dao/ui';
 import { ColorWrap, Typography } from '../../../components/ui';
 import gradientLiraChain from '../../../img/gradient-lira-chain.svg';
 import gradientLiraDao from '../../../img/gradient-lira-dao.svg';

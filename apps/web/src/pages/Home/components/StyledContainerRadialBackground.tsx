@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Col } from '@satoshi-lira/ui';
+import { Col } from '@lira-dao/ui';
 import { height, HeightProps } from 'styled-system';
 
 

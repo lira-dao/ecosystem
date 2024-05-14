@@ -1,6 +1,6 @@
 import React from 'react';
 import { ThemeProvider } from 'styled-components';
-import { Col, Row } from '@satoshi-lira/ui';
+import { Col, Row } from '@lira-dao/ui';
 import { StyledContainer } from './components/StyledContainer';
 import { StyledText } from './components/StyledText';
 import { ColorWrap, Typography } from '../../components/ui';

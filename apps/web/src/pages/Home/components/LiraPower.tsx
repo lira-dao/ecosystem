@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col } from '@satoshi-lira/ui';
+import { Col } from '@lira-dao/ui';
 import { StyledText } from './StyledText';
 import { ColorWrap, Typography } from '../../../components/ui';
 import liraHands from '../../../img/lira-hands.png';

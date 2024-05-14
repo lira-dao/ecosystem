@@ -3,7 +3,7 @@ import { addLiraDaoToken, addLiraToken } from '../utils/addLiraToken';
 import logoArbitrum from '../img/arbitrum-shield.png';
 import logoMetamask from '../img/metamask-fox.svg';
 import { Typography } from '../components/ui';
-import { Col, Row } from '@satoshi-lira/ui';
+import { Col, Row } from '@lira-dao/ui';
 import theme from '../theme';
 
 const StyledLogo = styled.img`

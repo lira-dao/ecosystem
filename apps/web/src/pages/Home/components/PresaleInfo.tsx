@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Col, Row } from '@satoshi-lira/ui';
+import { Col, Row } from '@lira-dao/ui';
 import { PreSaleInfoCard } from './PreSaleInfoCard';
 import { StyledText } from './StyledText';
 import { StyledContainerRadialBackground } from './StyledContainerRadialBackground';

@@ -1,7 +1,7 @@
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { useAccount, useReadContract, useWriteContract } from 'wagmi';
 import styled, { ThemeProvider } from 'styled-components';
-import { AddToMetamaskButton, Col, Row } from '@satoshi-lira/ui';
+import { AddToMetamaskButton, Col, Row } from '@lira-dao/ui';
 import { Typography } from '../components/ui';
 import theme from '../theme';
 import { SwitchNetworkButton } from '../components/SwitchNetworkButton/SwitchNetworkButton';

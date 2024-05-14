@@ -1,7 +1,7 @@
 import { default as ReactCountdown } from 'react-countdown';
 import { CountdownRenderProps } from 'react-countdown/dist/Countdown';
 import styled from 'styled-components';
-import { Col, Row } from '@satoshi-lira/ui';
+import { Col, Row } from '@lira-dao/ui';
 import { Typography } from '../ui';
 import { Colors } from '../../theme';
 

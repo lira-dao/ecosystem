@@ -1,6 +1,6 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
-import { Row } from '@satoshi-lira/ui';
+import { Row } from '@lira-dao/ui';
 import { ConnectButton } from '../../ConnectButton/ConnectButton';
 import { GlobalStyles, Typography } from '../../ui';
 import logo from '../../../img/logo.svg';

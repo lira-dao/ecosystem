@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
-import { Col, Row } from '@satoshi-lira/ui';
+import { Col, Row } from '@lira-dao/ui';
 import { Typography } from '../../ui';
 import logo from '../../../img/logo.svg';
 import twitter from '../../../img/twitter.svg';

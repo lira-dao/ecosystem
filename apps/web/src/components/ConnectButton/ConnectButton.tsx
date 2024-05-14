@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import metamask from '../../img/metamask-fox.svg';
 import { injected } from 'wagmi/connectors';
-import { Col } from '@satoshi-lira/ui';
+import { Col } from '@lira-dao/ui';
 import { Typography } from '../ui';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 

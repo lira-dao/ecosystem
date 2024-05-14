@@ -1,5 +1,5 @@
 import { useSwitchChain } from 'wagmi';
-import { Col } from '@satoshi-lira/ui';
+import { Col } from '@lira-dao/ui';
 import { Typography } from '../ui';
 import { StyledButton } from '../ui/StyledButton';
 

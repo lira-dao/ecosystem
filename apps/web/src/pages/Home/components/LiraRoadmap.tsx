@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Row } from '@satoshi-lira/ui';
+import { Col, Row } from '@lira-dao/ui';
 import { StyledDivider } from './StyledDivider';
 import { Typography } from '../../../components/ui';
 
