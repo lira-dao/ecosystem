@@ -9,8 +9,7 @@ import { NumericalInput } from '../components/StyledInput';
 import { useFaucets } from '../hooks/faucets';
 import { addLiraDaoToken, addLiraToken, addWethToken } from '../utils';
 import metamaskFox from '../img/metamask-fox.svg';
-import { BaseButton } from '../components/BaseButton';
-import { AddToMetamaskButton } from '@satoshi-lira/ui';
+import { AddToMetamaskButton } from '@lira-dao/ui';
 
 
 const StyledContainer = styled.div`
