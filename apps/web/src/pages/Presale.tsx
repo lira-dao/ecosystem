@@ -12,10 +12,10 @@ import { Countdown } from '../components/Countdown/Countdown';
 import { StyledButton } from '../components/ui/StyledButton';
 
 import ArbitrumSepoliaLiraDaoPresaleContract
-  from '@satoshi-lira/lira-dao-presale/ignition/deployments/chain-421614/deployed_addresses.json';
+  from '@lira-dao/presale/deployments/chain-421614/deployed_addresses.json';
 
 import ArbitrumLiraDaoPresaleContract
-  from '@satoshi-lira/lira-dao-presale/ignition/deployments/chain-42161/deployed_addresses.json';
+  from '@lira-dao/presale/deployments/chain-42161/deployed_addresses.json';
 import { addLiraDaoToken } from '../utils/addLiraToken';
 
 type EthereumAddress = `0x${string}` | undefined

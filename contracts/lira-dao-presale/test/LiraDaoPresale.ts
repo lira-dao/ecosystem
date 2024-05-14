@@ -1,8 +1,8 @@
 import { loadFixture } from '@nomicfoundation/hardhat-toolbox/network-helpers';
 import { expect } from 'chai';
 import hre from 'hardhat';
-import LDTArtifact from '@satoshi-lira/lira-dao-token/artifacts/contracts/LTD.sol/LDT.json';
-import { LDT } from '@satoshi-lira/lira-dao-token/typechain-types';
+import LDTArtifact from '@lira-dao/ldt/artifacts/contracts/LTD.sol/LDT.json';
+import { LDT } from '@lira-dao/ldt/typechain-types';
 import { increaseTo } from '@nomicfoundation/hardhat-network-helpers/dist/src/helpers/time';
 
 
