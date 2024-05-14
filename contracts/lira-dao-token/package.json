@@ -1,5 +1,5 @@
 {
-  "name": "@satoshi-lira/lira-dao-token",
+  "name": "@lira-dao/ldt",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
