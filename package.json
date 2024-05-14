@@ -1,5 +1,5 @@
 {
-  "name": "ecosystem",
+  "name": "@lira-dao/ecosystem",
   "private": true,
   "scripts": {
     "build": "turbo build",
