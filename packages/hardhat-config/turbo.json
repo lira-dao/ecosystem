@@ -1,0 +1,18 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "extends": ["//"],
+  "pipeline": {
+    "build": {
+      "outputs": ["dist/**"],
+      "env": [
+        "DEPLOYER_PRIVATE_KEY",
+        "INFURA_HOLESKY",
+        "INFURA_ARBITRUM_SEPOLIA",
+        "INFURA_POLYGON_AMOY",
+        "ETHERSCAN_ARBITRUM",
+        "ETHERSCAN_MAINNET",
+        "ETHERSCAN_BSC"
+      ]
+    }
+  }
+}
