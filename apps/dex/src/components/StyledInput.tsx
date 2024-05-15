@@ -1,33 +1,38 @@
 import { x } from '@xstyled/styled-components';
+import { ChangeEvent } from 'react';
 
 
 interface NumericalInputProps {
   disabled: boolean;
   value: number | string | undefined;
   readOnly?: boolean;
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void,
+  id: string
 }
 
-export function NumericalInput({ disabled, value, readOnly = false }: NumericalInputProps) {
+export function NumericalInput({ disabled, id, onChange, readOnly = false, value }: NumericalInputProps) {
   return (
     <x.div display="flex" flexGrow={1}>
       <x.input
-        value={value}
-        placeholder={0}
-        flex="1 1 auto"
-        w="0px"
-        position="relative"
-        outline="none"
+        backgroundColor="transparent"
         border="none"
         color={{ _: 'white', placeholder: 'gray94' }}
-        pointerEvents={disabled ? 'none' : 'auto'}
-        backgroundColor="transparent"
+        flex="1 1 auto"
         fontSize={28}
-        textAlign="left"
-        whiteSpace="nowrap"
+        id={id}
+        onChange={onChange}
+        outline="none"
         overflow="hidden"
-        textOverflow="ellipsis"
         padding={0}
+        pattern="^[0-9]*[.,]?[0-9]*$"
+        placeholder={0}
+        pointerEvents={disabled ? 'none' : 'auto'}
+        position="relative"
         readOnly={readOnly}
+        textAlign="left"
+        textOverflow="ellipsis"
+        value={value}
+        whiteSpace="nowrap"
       />
     </x.div>
   );

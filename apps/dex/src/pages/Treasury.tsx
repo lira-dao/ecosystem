@@ -14,26 +14,38 @@ const currencies: Currency[] = [{
   name: 'Treasury Bond Bronze',
   symbol: 'TBb',
   icon: '/img/tb-logo.png',
+  address: '',
+  chainId: 0,
 }, {
   name: 'Treasury Bond Silver',
   symbol: 'TBs',
   icon: '/img/tb-logo.png',
+  address: '',
+  chainId: 0,
 }, {
   name: 'Treasury Bond Gold',
   symbol: 'TBg',
   icon: '/img/tb-logo.png',
+  address: '',
+  chainId: 0,
 }, {
   name: 'LIRA Treasury Bond Bronze',
   symbol: 'LTBb',
   icon: '/img/tb-logo.png',
+  address: '',
+  chainId: 0,
 }, {
   name: 'LIRA Treasury Bond Silver',
   symbol: 'LTBs',
   icon: '/img/tb-logo.png',
+  address: '',
+  chainId: 0,
 }, {
   name: 'LIRA Treasury Bond Gold',
   symbol: 'LTBg',
   icon: '/img/tb-logo.png',
+  address: '',
+  chainId: 0,
 }];
 
 const modalCustomStyles = {
@@ -76,7 +88,7 @@ export function Treasury() {
             <x.div display="flex" alignItems="center" justifyContent="space-between">
               <x.div>
                 <x.p color="gray155" userSelect="none">You Pay</x.p>
-                <NumericalInput disabled={false} value={firstValue} />
+                <NumericalInput id="currencyA" disabled={false} value={firstValue} />
               </x.div>
 
               <CurrencySelector
@@ -95,7 +107,7 @@ export function Treasury() {
             <x.div display="flex" alignItems="center" justifyContent="space-between">
               <x.div>
                 <x.p color="gray155" userSelect="none">You Receive</x.p>
-                <NumericalInput disabled={false} value={firstValue} />
+                <NumericalInput id="currencyB" disabled={false} value={firstValue} />
               </x.div>
 
               <CurrencySelector disabled={false} selected={false} currency={currencies[0]} />

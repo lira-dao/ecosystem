@@ -7,7 +7,7 @@ export function Layout() {
   return (
     <x.div display="flex" flexDirection="column" alignItems="center">
       <Header />
-      <x.div w="fit-content" display="flex" alignItems="center">
+      <x.div w="100%" display="flex" alignItems="center" justifyContent="center">
         <Outlet />
       </x.div>
     </x.div>

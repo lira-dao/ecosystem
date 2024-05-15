@@ -204,6 +204,7 @@ export function Faucets() {
           <StyledInputContainer>
             <h3>Amount</h3>
             <NumericalInput
+              id="amount"
               value={amount}
               disabled
               readOnly

@@ -6,14 +6,7 @@ import { PrimaryButton } from '../components/PrimaryButton';
 import { SwapSection } from '../components/swap/SwapSection';
 import { InputPanel } from '../components/swap/InputPanel';
 import { Container } from '../components/swap/Container';
-import { Currency } from '../types';
-
-
-const currencies: Currency[] = [{
-  name: 'LIRA DAO Token',
-  symbol: 'LDT',
-  icon: '/img/tb-logo.png',
-}]
+import { currencies } from '../utils';
 
 
 export function Swap() {
@@ -27,7 +20,7 @@ export function Swap() {
             <x.div display="flex" alignItems="center" justifyContent="space-between">
               <x.div>
                 <x.p color="gray155" userSelect="none">You Pay</x.p>
-                <NumericalInput disabled={false} value={firstValue} />
+                <NumericalInput id="currencyA" disabled={false} value={firstValue} />
               </x.div>
 
               <CurrencySelector disabled={false} selected={false} currency={currencies[0]} />
@@ -41,7 +34,7 @@ export function Swap() {
             <x.div display="flex" alignItems="center" justifyContent="space-between">
               <x.div>
                 <x.p color="gray155" userSelect="none">You Receive</x.p>
-                <NumericalInput disabled={false} value={firstValue} />
+                <NumericalInput id="currencyB" disabled={false} value={firstValue} />
               </x.div>
 
               <CurrencySelector disabled={false} selected={false} currency={currencies[0]} />

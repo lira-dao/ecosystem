@@ -13,14 +13,11 @@ const StyledMenuItem = styled(NavLink)`
   font-size: ${th.fontSize('xl')};
   font-weight: 500;
 
-
   ::selection {
     color: inherit;
     background: transparent;
     text-shadow: none;
   }
-
-  /* For Mozilla Firefox */
 
   ::-moz-selection {
     color: inherit;
@@ -33,7 +30,11 @@ const StyledMenuItem = styled(NavLink)`
   }
 
   &.active {
-    color: ${th.color('primary')};
+    color: ${th.color('primary')}!important;
+  }
+
+  &:visited {
+    color: ${th.color('white-a80')};
   }
 `;
 
@@ -68,19 +69,19 @@ export function Header() {
         <img src={logo} alt="lira dao logo" />
       </NavLink>
 
-      <x.div ml={{_: 0, lg: 8}} display="flex" flexGrow={1}>
+      <x.div ml={{ _: 0, lg: 8 }} display="flex" flexGrow={1}>
         {/*<MenuItem text="SWAP" to="/" />*/}
         {/*<MenuItem text="TREASURY" to="treasury" />*/}
         {/*<MenuItem text="LIQUIDITY" to="liquidity" />*/}
         {/*<MenuItem text="FARMS" to="farms" />*/}
         {/*<MenuItem text="STACKING" to="stacking" />*/}
         <MenuItem text="FAUCETS" to="faucets" />
+        <MenuItem text="POOL" to="/pool" />
       </x.div>
 
       <x.div display="flex">
         {isConnected ? (
           <>
-            <w3m-network-button />
             <w3m-account-button balance="hide" />
           </>
         ) : (

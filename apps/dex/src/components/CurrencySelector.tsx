@@ -3,6 +3,7 @@ import { CurrencyLogo } from './CurrencyLogo';
 import { BaseButton } from './BaseButton';
 import dropdown from '../img/dropdown.svg';
 import { Currency } from '../types';
+import { ChangeEvent } from 'react';
 
 
 interface CurrencySelectorProps {
@@ -12,7 +13,7 @@ interface CurrencySelectorProps {
   onClick?: () => void;
 }
 
-export function CurrencySelector({ disabled, selected, onClick }: CurrencySelectorProps) {
+export function CurrencySelector({ currency, disabled, selected, onClick }: CurrencySelectorProps) {
   return (
     <x.div display="flex" alignItems="center" justifyContent="space-between">
       <BaseButton
@@ -27,8 +28,8 @@ export function CurrencySelector({ disabled, selected, onClick }: CurrencySelect
         userSelect="none"
         onClick={onClick}
       >
-        <CurrencyLogo size={24} />
-        USD
+        <CurrencyLogo size={24} logo={currency.icon} />
+        {currency.symbol}
         <x.img src={dropdown} margin="0 0.25rem 0 0.35rem" />
       </BaseButton>
     </x.div>
