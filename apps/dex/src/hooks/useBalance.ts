@@ -9,7 +9,7 @@ export function useBalance(address: `0x${string}`, owner?: `0x${string}`) {
     functionName: 'balanceOf',
     args: [owner as `0x${string}`],
     query: {
-      enabled: !!address && !! owner,
+      enabled: !!address && !!owner,
     }
   })
 

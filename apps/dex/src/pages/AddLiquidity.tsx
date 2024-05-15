@@ -12,6 +12,7 @@ import { PrimaryButton } from '../components/PrimaryButton';
 import { currencies } from '../utils';
 import { usePair } from '../hooks/usePair';
 import { useBalance } from '../hooks/useBalance';
+import { useAllowance } from '../hooks/useAllowance';
 
 
 export function AddLiquidity() {
@@ -19,10 +20,20 @@ export function AddLiquidity() {
   const [firstValue, setFirstValue] = useState<number | string>('');
   const [secondValue, setSecondValue] = useState<number | string>('');
 
+  const [isAllowCurrencyADisabled, setIsAllowCurrencyADisabled] = useState<boolean>(true);
+  const [isAllowCurrencyBDisabled, setIsAllowCurrencyBDisabled] = useState<boolean>(true);
+  const [isSupplyDisabled, setIsSupplyDisabled] = useState<boolean>(true);
+
   const pair = usePair(currencies[0], currencies[1]);
 
   const balanceA = useBalance(addresses.arbitrumSepolia.ldt as `0x${string}`, account.address);
   const balanceB = useBalance(addresses.arbitrumSepolia.weth as `0x${string}`, account.address);
+
+  const allowanceA = useAllowance(addresses.arbitrumSepolia.ldt as `0x${string}`, account.address, addresses.arbitrumSepolia.router as `0x${string}`);
+  const allowanceB = useAllowance(addresses.arbitrumSepolia.weth as `0x${string}`, account.address, addresses.arbitrumSepolia.router as `0x${string}`);
+
+  console.log('allowanceA', allowanceA.data);
+  console.log('allowanceB', allowanceB.data);
 
   const onChangeValues = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === '') {
@@ -41,7 +52,7 @@ export function AddLiquidity() {
   };
 
   return (
-    <x.div w="100%" maxWidth="480px">
+    <x.div w="100%" maxWidth="480px" border="1px solid" borderColor="white-a10" borderRadius="16px" padding="16px">
       <x.div display="flex" justifyContent="space-between">
         <x.p>back</x.p>
         <x.p>Add Liquidity</x.p>
@@ -94,7 +105,12 @@ export function AddLiquidity() {
         </x.div>
       </x.div>
 
-      <PrimaryButton>CONNECT WALLET</PrimaryButton>
+      <x.div display="flex" mb={4}>
+        <PrimaryButton disabled={isAllowCurrencyADisabled} mr={4}>Approve {currencies[0].symbol}</PrimaryButton>
+        <PrimaryButton disabled={isAllowCurrencyBDisabled} ml={4}>Approve {currencies[1].symbol}</PrimaryButton>
+      </x.div>
+
+      <PrimaryButton disabled={isSupplyDisabled}>Supply</PrimaryButton>
     </x.div>
   );
 }
