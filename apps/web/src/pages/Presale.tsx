@@ -4,7 +4,6 @@ import styled, { ThemeProvider } from 'styled-components';
 import { AddToMetamaskButton, Col, Row } from '@lira-dao/ui';
 import { Typography } from '../components/ui';
 import theme from '../theme';
-import { SwitchNetworkButton } from '../components/SwitchNetworkButton/SwitchNetworkButton';
 import { LiraDaoPresaleAbi } from '../abi/LiraDaoPresaleAbi';
 import button from '../img/buy-ldt.svg';
 import metamaskFox from '../img/metamask-fox.svg';
@@ -60,12 +59,6 @@ export function Presale() {
     reset: buyReset,
   } = useWriteContract();
 
-  // const { data } = useReadContract({
-  //   abi: LiraDaoPresaleAbi,
-  //   functionName: 'started',
-  //   address: getPresaleContractAddress(),
-  // });
-
   const { data: roundData } = useReadContract({
     abi: LiraDaoPresaleAbi,
     functionName: 'round',
@@ -81,20 +74,6 @@ export function Presale() {
       enabled: !!ethAmount,
     },
   });
-
-  // const { data: txData } = useTransactionConfirmations({
-  //   hash: buyData,
-  //   query: {
-  //     enabled: !!buyData,
-  //   },
-  // });
-
-  // console.log('tx', txData);
-  // console.log('data', data);
-  // console.log('quoteBuyData', quoteBuyData);
-  // console.log('buy', buyData, buyError, buyIsPending);
-  // console.log('round', roundData);
-  // console.log('buy load', { buyIsPending, buyIsIdle, buyIsPaused, buyIsSuccess, buySubmittedAt });
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -162,7 +141,10 @@ export function Presale() {
         {isConnected ? (
           <>
             {chainId !== Number(process.env.REACT_APP_CHAIN_ID) ? (
-              <SwitchNetworkButton />
+              <Col alignItems="center" textAlign="center">
+                <Typography mt={80} mb={80}>Please switch to the <b>Arbitrum One</b> network to participate in the Presale and
+                  access LIRA DAO features.</Typography>
+              </Col>
             ) : buyIsPending ? (
               <Typography mt={80}>Transaction is pending, please confirm on metamask</Typography>
             ) : buyIsSuccess ? (
@@ -186,10 +168,9 @@ export function Presale() {
                   </Row>
 
                   {roundData ? (
-                    <Row width={1 / 3}>
+                    <Row width={[1, 1 / 3]}>
                       <Typography>
-                        Enjoy a {roundData?.bonus.toString()}% bonus on your purchase in the current Presale phase. Grab
-                        your tokens now!
+                        Enjoy your purchase in the current presale phase. Grab your tokens now!
                       </Typography>
                     </Row>
                   ) : null}

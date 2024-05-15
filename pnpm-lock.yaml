@@ -140,6 +140,9 @@ importers:
       '@types/react-dom':
         specifier: ^18.2.22
         version: 18.3.0
+      '@web3modal/wagmi':
+        specifier: ^4.1.11
+        version: 4.2.0(@types/react@18.3.2)(@wagmi/connectors@4.3.9)(@wagmi/core@2.9.7)(react-dom@18.3.1)(react@18.3.1)(viem@2.8.18)
       localforage:
         specifier: ^1.10.0
         version: 1.10.0
@@ -7141,7 +7144,7 @@ packages:
       '@walletconnect/safe-json': 1.0.2
       '@walletconnect/time': 1.0.2
       tslib: 1.14.1
-      uint8arrays: 3.1.0
+      uint8arrays: 3.1.1
     dev: false
 
   /@walletconnect/safe-json@1.0.2:
