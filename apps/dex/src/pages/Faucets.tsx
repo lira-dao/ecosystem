@@ -6,7 +6,7 @@ import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { AddressInput } from '../components/AddressInput';
 import { NumericalInput } from '../components/StyledInput';
-import { useFaucets } from '../hooks/faucets';
+import { useFaucets } from '../hooks/useFaucets';
 import { addLiraDaoToken, addLiraToken, addWethToken } from '../utils';
 import metamaskFox from '../img/metamask-fox.svg';
 import { AddToMetamaskButton } from '@lira-dao/ui';
