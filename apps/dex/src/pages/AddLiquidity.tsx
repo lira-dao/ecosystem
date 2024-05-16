@@ -59,14 +59,12 @@ export function AddLiquidity() {
   };
 
   return (
-    <x.div w="100%" maxWidth="480px" border="1px solid" borderColor="white-a10" borderRadius="16px" padding="16px">
-      <x.div display="flex" justifyContent="space-between">
-        <x.p>back</x.p>
+    <x.div w="100%" maxWidth="480px" border="1px solid" borderColor="white-a10" borderRadius="16px" padding={4}>
+      <x.div display="flex" justifyContent="center" mt={2}>
         <x.p>Add Liquidity</x.p>
-        <x.p>config</x.p>
       </x.div>
 
-      <SwapSection mt={8} mb={4}>
+      <SwapSection mt={6} mb={4}>
         <InputPanel>
           <Container>
             <x.div display="flex" alignItems="center" justifyContent="space-between">
@@ -113,8 +111,16 @@ export function AddLiquidity() {
       </x.div>
 
       <x.div display="flex" mb={4}>
-        <PrimaryButton disabled={isAllowCurrencyADisabled} onClick={() => approveA.write()} mr={4}>Approve {currencies[0].symbol}</PrimaryButton>
-        <PrimaryButton disabled={isAllowCurrencyBDisabled} onClick={() => approveB.write()} ml={4}>Approve {currencies[1].symbol}</PrimaryButton>
+        <PrimaryButton
+          disabled={isAllowCurrencyADisabled}
+          onClick={() => approveA.write()}
+          mr={4}
+        >Approve {currencies[0].symbol}</PrimaryButton>
+        <PrimaryButton
+          disabled={isAllowCurrencyBDisabled}
+          onClick={() => approveB.write()}
+          ml={4}
+        >Approve {currencies[1].symbol}</PrimaryButton>
       </x.div>
 
       <PrimaryButton disabled={isSupplyDisabled} onClick={() => addLiquidity.write()}>Supply</PrimaryButton>

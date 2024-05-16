@@ -24,10 +24,12 @@ export const BaseButton = styled.buttonBox`
     cursor: auto;
     pointer-events: none;
   }
+  
+  &:focus {
+    outline: none;
+  }
 
-  will-change: transform;
-  transition: transform 450ms ease;
-  transform: perspective(1px) translateZ(0);
+  transition: background-color 250ms ease-out;
 
   > * {
     user-select: none;

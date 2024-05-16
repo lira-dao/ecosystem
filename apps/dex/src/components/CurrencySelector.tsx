@@ -3,7 +3,6 @@ import { CurrencyLogo } from './CurrencyLogo';
 import { BaseButton } from './BaseButton';
 import dropdown from '../img/dropdown.svg';
 import { Currency } from '../types';
-import { ChangeEvent } from 'react';
 
 
 interface CurrencySelectorProps {
