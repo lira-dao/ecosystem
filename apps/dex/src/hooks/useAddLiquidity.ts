@@ -1,13 +1,18 @@
-import { useAccount, useWriteContract } from 'wagmi';
+import { useAccount, useBlock, useWriteContract } from 'wagmi';
 import { addresses, dexRouterV2Abi } from '@lira-dao/web3-utils';
 
 
 export function useAddLiquidity(amountA: bigint, amountB: bigint) {
   const account = useAccount();
+  const block = useBlock();
+  const deadline = (block.data?.timestamp ?? 0n) + 600n
+
   const { writeContract, isError, error } = useWriteContract();
 
   console.log('isError', isError);
   console.log('error', error);
+  console.log('block', block.data?.timestamp);
+  console.log('deadline', deadline);
 
   const write = () => writeContract({
     abi: dexRouterV2Abi,
@@ -21,7 +26,7 @@ export function useAddLiquidity(amountA: bigint, amountB: bigint) {
       amountA - ((amountA * 10n) / 100n),
       amountB - ((amountB * 10n) / 100n),
       account.address as `0x${string}`,
-      9999999999999n,
+      deadline,
     ],
   });
 
