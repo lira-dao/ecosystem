@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from 'react';
 import { x } from '@xstyled/styled-components';
 import { addresses } from '@lira-dao/web3-utils';
 import { useAccount } from 'wagmi';
-import { formatUnits } from 'viem';
+import { formatUnits, parseUnits } from 'viem';
 import { InputPanel } from '../components/swap/InputPanel';
 import { Container } from '../components/swap/Container';
 import { NumericalInput } from '../components/StyledInput';
@@ -13,6 +13,8 @@ import { currencies } from '../utils';
 import { usePair } from '../hooks/usePair';
 import { useBalance } from '../hooks/useBalance';
 import { useAllowance } from '../hooks/useAllowance';
+import { useApprove } from '../hooks/useApprove';
+import { useAddLiquidity } from '../hooks/useAddLiquidity';
 
 
 export function AddLiquidity() {
@@ -20,9 +22,9 @@ export function AddLiquidity() {
   const [firstValue, setFirstValue] = useState<number | string>('');
   const [secondValue, setSecondValue] = useState<number | string>('');
 
-  const [isAllowCurrencyADisabled, setIsAllowCurrencyADisabled] = useState<boolean>(true);
-  const [isAllowCurrencyBDisabled, setIsAllowCurrencyBDisabled] = useState<boolean>(true);
-  const [isSupplyDisabled, setIsSupplyDisabled] = useState<boolean>(true);
+  const [isAllowCurrencyADisabled, setIsAllowCurrencyADisabled] = useState<boolean>(false);
+  const [isAllowCurrencyBDisabled, setIsAllowCurrencyBDisabled] = useState<boolean>(false);
+  const [isSupplyDisabled, setIsSupplyDisabled] = useState<boolean>(false);
 
   const pair = usePair(currencies[0], currencies[1]);
 
@@ -31,6 +33,11 @@ export function AddLiquidity() {
 
   const allowanceA = useAllowance(addresses.arbitrumSepolia.ldt as `0x${string}`, account.address, addresses.arbitrumSepolia.router as `0x${string}`);
   const allowanceB = useAllowance(addresses.arbitrumSepolia.weth as `0x${string}`, account.address, addresses.arbitrumSepolia.router as `0x${string}`);
+
+  const approveA = useApprove(addresses.arbitrumSepolia.ldt as `0x${string}`, addresses.arbitrumSepolia.router as `0x${string}`, parseUnits(firstValue.toString(), 18));
+  const approveB = useApprove(addresses.arbitrumSepolia.weth as `0x${string}`, addresses.arbitrumSepolia.router as `0x${string}`, parseUnits(secondValue.toString(), 18));
+
+  const addLiquidity = useAddLiquidity(parseUnits(firstValue.toString(), 18), parseUnits(secondValue.toString(), 18));
 
   console.log('allowanceA', allowanceA.data);
   console.log('allowanceB', allowanceB.data);
@@ -106,11 +113,11 @@ export function AddLiquidity() {
       </x.div>
 
       <x.div display="flex" mb={4}>
-        <PrimaryButton disabled={isAllowCurrencyADisabled} mr={4}>Approve {currencies[0].symbol}</PrimaryButton>
-        <PrimaryButton disabled={isAllowCurrencyBDisabled} ml={4}>Approve {currencies[1].symbol}</PrimaryButton>
+        <PrimaryButton disabled={isAllowCurrencyADisabled} onClick={() => approveA.write()} mr={4}>Approve {currencies[0].symbol}</PrimaryButton>
+        <PrimaryButton disabled={isAllowCurrencyBDisabled} onClick={() => approveB.write()} ml={4}>Approve {currencies[1].symbol}</PrimaryButton>
       </x.div>
 
-      <PrimaryButton disabled={isSupplyDisabled}>Supply</PrimaryButton>
+      <PrimaryButton disabled={isSupplyDisabled} onClick={() => addLiquidity.write()}>Supply</PrimaryButton>
     </x.div>
   );
 }
