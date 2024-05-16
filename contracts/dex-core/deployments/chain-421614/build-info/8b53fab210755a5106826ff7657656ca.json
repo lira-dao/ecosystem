@@ -7019,15 +7019,6 @@
                       {
                         "externalReferences": [
                           {
-                            "pair": {
-                              "declaration": 450,
-                              "isOffset": false,
-                              "isSlot": false,
-                              "src": "1251:4:1",
-                              "valueSize": 1
-                            }
-                          },
-                          {
                             "bytecode": {
                               "declaration": 497,
                               "isOffset": false,
@@ -7042,6 +7033,15 @@
                               "isOffset": false,
                               "isSlot": false,
                               "src": "1274:8:1",
+                              "valueSize": 1
+                            }
+                          },
+                          {
+                            "pair": {
+                              "declaration": 450,
+                              "isOffset": false,
+                              "isSlot": false,
+                              "src": "1251:4:1",
                               "valueSize": 1
                             }
                           },
