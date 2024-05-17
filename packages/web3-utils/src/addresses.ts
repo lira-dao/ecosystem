@@ -12,6 +12,11 @@ export const arbitrumSepolia = {
   router: '0x67aeb185d042b941c1422dd180E460990474858c',
 };
 
+const holesky = {
+  ldt: '0xECB20AE07a7d8d7e87CF5d06B28620A700aB84F0',
+}
+
 export const addresses = {
   arbitrumSepolia,
+  holesky,
 };
