@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { x } from '@xstyled/styled-components';
+import { useTheme, x } from '@xstyled/styled-components';
 import { NumericalInput } from '../components/StyledInput';
 import { CurrencySelector } from '../components/CurrencySelector';
 import { PrimaryButton } from '../components/PrimaryButton';
@@ -15,9 +15,11 @@ import { useSwap } from '../hooks/useSwap';
 import { Currency } from '../types';
 import repeatIcon from '../img/fa-repeat.svg';
 import { BaseButton } from '../components/BaseButton';
+import { PacmanLoader } from 'react-spinners';
 
 
 export function Swap() {
+  const th = useTheme()
   const [currencyA, setCurrencyA] = useState<Currency>(currencies[0]);
   const [currencyB, setCurrencyB] = useState<Currency>(currencies[1]);
 
@@ -119,6 +121,7 @@ export function Swap() {
       </x.div>
 
       <PrimaryButton onClick={() => swap.write()}>Swap</PrimaryButton>
+      <PrimaryButton onClick={() => swap.write()}><PacmanLoader color={th?.colors['aqua-900']} /></PrimaryButton>
     </x.div>
   );
 }

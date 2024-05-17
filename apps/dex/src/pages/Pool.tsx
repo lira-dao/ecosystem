@@ -10,7 +10,7 @@ export function Pool() {
     <x.div display="flex" w="100%" flexDirection="column" maxWidth="480px">
       <x.div display="flex" alignItems="center" justifyContent="space-between">
         <x.h1 fontSize="4xl">Positions</x.h1>
-        <PrimaryButton w="auto" onClick={() => nav('/add-liquidity')}>Add Liquidity</PrimaryButton>
+        <PrimaryButton w="auto" padding="6px 16px" onClick={() => nav('/add-liquidity')}>Add Liquidity</PrimaryButton>
       </x.div>
 
 
