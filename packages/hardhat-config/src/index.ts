@@ -26,6 +26,11 @@ export const networks = {
   polygonAmoy: {
     url: process.env.INFURA_POLYGON_AMOY,
     accounts: [process.env.DEPLOYER_PRIVATE_KEY || ''],
+  },
+
+  arbitrumOne: {
+    url: process.env.INFURA_ARBITRUM,
+    accounts: [process.env.DEPLOYER_PRIVATE_KEY],
   }
 };
 
@@ -75,7 +80,7 @@ export const customChains = [
 export const etherscan = {
   apiKey: {
     arbitrumSepolia: process.env.ETHERSCAN_ARBITRUM || '',
-    arbitrum: process.env.ETHERSCAN_ARBITRUM || '',
+    arbitrumOne: process.env.ETHERSCAN_ARBITRUM || '',
     holesky: process.env.ETHERSCAN_MAINNET || '',
     bscTestnet: process.env.ETHERSCAN_BSC || '',
     bscMainnet: process.env.ETHERSCAN_BSC || '',
