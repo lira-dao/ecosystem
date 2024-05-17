@@ -19,8 +19,6 @@
     "@nomicfoundation/hardhat-verify": "^2.0.0",
     "@nomicfoundation/ignition-core": "^0.15.0",
     "@openzeppelin/contracts": "^5.0.2",
-    "@lira-dao/dex-core": "1.0.0",
-    "@lira-dao/mock-tokens": "workspace:^",
     "@typechain/ethers-v6": "^0.5.0",
     "@typechain/hardhat": "^9.0.0",
     "@types/chai": "^4.2.0",
