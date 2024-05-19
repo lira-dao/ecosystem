@@ -14,37 +14,37 @@ const currencies: Currency[] = [{
   name: 'Treasury Bond Bronze',
   symbol: 'TBb',
   icon: '/img/tb-logo.png',
-  address: '',
+  address: '0x',
   chainId: 0,
 }, {
   name: 'Treasury Bond Silver',
   symbol: 'TBs',
   icon: '/img/tb-logo.png',
-  address: '',
+  address: '0x',
   chainId: 0,
 }, {
   name: 'Treasury Bond Gold',
   symbol: 'TBg',
   icon: '/img/tb-logo.png',
-  address: '',
+  address: '0x',
   chainId: 0,
 }, {
   name: 'LIRA Treasury Bond Bronze',
   symbol: 'LTBb',
   icon: '/img/tb-logo.png',
-  address: '',
+  address: '0x',
   chainId: 0,
 }, {
   name: 'LIRA Treasury Bond Silver',
   symbol: 'LTBs',
   icon: '/img/tb-logo.png',
-  address: '',
+  address: '0x',
   chainId: 0,
 }, {
   name: 'LIRA Treasury Bond Gold',
   symbol: 'LTBg',
   icon: '/img/tb-logo.png',
-  address: '',
+  address: '0x',
   chainId: 0,
 }];
 

@@ -28,14 +28,14 @@ export function AddLiquidity() {
 
   const pair = usePair(currencies[0], currencies[1]);
 
-  const balanceA = useBalance(addresses.arbitrumSepolia.ldt as `0x${string}`, account.address);
-  const balanceB = useBalance(addresses.arbitrumSepolia.weth as `0x${string}`, account.address);
+  const balanceA = useBalance(addresses.arbitrumSepolia.ldt, account.address);
+  const balanceB = useBalance(addresses.arbitrumSepolia.weth, account.address)
 
-  const allowanceA = useAllowance(addresses.arbitrumSepolia.ldt as `0x${string}`, account.address, addresses.arbitrumSepolia.router as `0x${string}`);
-  const allowanceB = useAllowance(addresses.arbitrumSepolia.weth as `0x${string}`, account.address, addresses.arbitrumSepolia.router as `0x${string}`);
+  const allowanceA = useAllowance(addresses.arbitrumSepolia.ldt, addresses.arbitrumSepolia.router);
+  const allowanceB = useAllowance(addresses.arbitrumSepolia.weth, addresses.arbitrumSepolia.router);
 
-  const approveA = useApprove(addresses.arbitrumSepolia.ldt as `0x${string}`, addresses.arbitrumSepolia.router as `0x${string}`, parseUnits(firstValue.toString(), 18));
-  const approveB = useApprove(addresses.arbitrumSepolia.weth as `0x${string}`, addresses.arbitrumSepolia.router as `0x${string}`, parseUnits(secondValue.toString(), 18));
+  const approveA = useApprove(addresses.arbitrumSepolia.ldt, addresses.arbitrumSepolia.router, parseUnits(firstValue.toString(), 18));
+  const approveB = useApprove(addresses.arbitrumSepolia.weth, addresses.arbitrumSepolia.router, parseUnits(secondValue.toString(), 18));
 
   const addLiquidity = useAddLiquidity(parseUnits(firstValue.toString(), 18), parseUnits(secondValue.toString(), 18));
 

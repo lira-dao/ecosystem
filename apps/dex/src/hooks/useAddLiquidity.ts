@@ -14,21 +14,25 @@ export function useAddLiquidity(amountA: bigint, amountB: bigint) {
   console.log('block', block.data?.timestamp);
   console.log('deadline', deadline);
 
-  const write = () => writeContract({
-    abi: dexRouterV2Abi,
-    address: addresses.arbitrumSepolia.router as `0x${string}`,
-    functionName: 'addLiquidity',
-    args: [
-      addresses.arbitrumSepolia.ldt as `0x${string}`,
-      addresses.arbitrumSepolia.weth as `0x${string}`,
-      amountA,
-      amountB,
-      amountA - ((amountA * 10n) / 100n),
-      amountB - ((amountB * 10n) / 100n),
-      account.address as `0x${string}`,
-      deadline,
-    ],
-  });
+  const write = () => {
+    if (account.address) {
+      writeContract({
+        abi: dexRouterV2Abi,
+        address: addresses.arbitrumSepolia.router,
+        functionName: 'addLiquidity',
+        args: [
+          addresses.arbitrumSepolia.ldt,
+          addresses.arbitrumSepolia.weth,
+          amountA,
+          amountB,
+          amountA - ((amountA * 10n) / 100n),
+          amountB - ((amountB * 10n) / 100n),
+          account.address,
+          deadline,
+        ],
+      });
+    }
+  }
 
   return {
     write,

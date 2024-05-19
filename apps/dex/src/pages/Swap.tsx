@@ -28,11 +28,11 @@ export function Swap() {
 
   const [isAllowCurrencyADisabled, setIsAllowCurrencyADisabled] = useState<boolean>(false);
 
-  const amountsOut = useGetAmountsOut([currencyA.address as `0x${string}`, currencyB.address as `0x${string}`], parseUnits(firstValue.toString(), 18));
+  const amountsOut = useGetAmountsOut([currencyA.address, currencyB.address], parseUnits(firstValue.toString(), 18));
 
-  const approve = useApprove(currencyA.address as `0x${string}`, addresses.arbitrumSepolia.router as `0x${string}`, parseUnits(firstValue.toString(), 18));
+  const approve = useApprove(currencyA.address, addresses.arbitrumSepolia.router, parseUnits(firstValue.toString(), 18));
 
-  const swap = useSwap([currencyA.address as `0x${string}`, currencyB.address as `0x${string}`], parseUnits(firstValue.toString(), 18));
+  const swap = useSwap([currencyA.address, currencyB.address], parseUnits(firstValue.toString(), 18));
 
   useEffect(() => {
     if (amountsOut.data) {
@@ -41,7 +41,6 @@ export function Swap() {
   }, [amountsOut.data]);
 
   const switchCurrencies = () => {
-    console.log('switch');
     const newCurrencyA = currencyB;
     const newCurrencyB = currencyA;
 
