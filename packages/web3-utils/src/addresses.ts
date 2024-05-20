@@ -13,6 +13,8 @@ export const arbitrumSepolia: AddressList = {
   weth: '0xdF5c1B370C7aE6C86d98A591C4aBe3453656a4b0',
   factory: '0xF2B4207ea798ad05DaCFa171AC1BCF2917C71D60',
   router: '0x67aeb185d042b941c1422dd180E460990474858c',
+
+  ldt_weth: '0xA9BA460655E7c2e9F23dA63fe1380dfF734F2864',
 };
 
 const holesky: AddressList = {
