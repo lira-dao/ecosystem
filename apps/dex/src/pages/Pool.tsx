@@ -1,10 +1,14 @@
 import { x } from '@xstyled/styled-components';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { useNavigate } from 'react-router-dom';
+import { useGetBalances } from '../hooks/useGetBalances';
 
 
 export function Pool() {
   const nav = useNavigate();
+  const { data } = useGetBalances();
+
+  console.log('balances', data);
 
   return (
     <x.div display="flex" w="100%" flexDirection="column" maxWidth="480px">
@@ -15,7 +19,14 @@ export function Pool() {
 
 
       <x.div mt={6} border="1px solid" borderColor="white-a80" p={6} borderRadius="16px">
-        <x.p textAlign="center">You do not have open positions</x.p>
+        {data.length === 0 ? (
+          <x.p textAlign="center">You do not have open positions</x.p>
+        ) : data.map(d => (
+          <x.div>
+            <x.p>{d.name}</x.p>
+            <x.p>{d.formattedBalance}</x.p>
+          </x.div>
+        ))}
       </x.div>
     </x.div>
   );
