@@ -103,14 +103,14 @@ const experimentalConfig = createConfig({
   connectors,
 });
 
-const config = process.env.REACT_APP_TESTNET === 'true'
+export const wagmiConfig = process.env.REACT_APP_TESTNET === 'true'
   ? testnetConfig
   : process.env.REACT_APP_EXPERIMENTAL === 'true'
     ? experimentalConfig
     : mainnetConfig;
 
 createWeb3Modal({
-  wagmiConfig: config,
+  wagmiConfig,
   projectId,
   enableAnalytics: true,
   enableOnramp: false,
@@ -133,7 +133,7 @@ createWeb3Modal({
 
 export function Web3Provider({ children }: { children: ReactNode }) {
   return (
-    <WagmiProvider config={config}>
+    <WagmiProvider config={wagmiConfig}>
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </WagmiProvider>
   );

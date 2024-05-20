@@ -12,7 +12,7 @@ interface NumericalInputProps {
 
 export function NumericalInput({ disabled, id, onChange, readOnly = false, value }: NumericalInputProps) {
   return (
-    <x.div display="flex" flexGrow={1}>
+    <x.div w="100%" display="flex">
       <x.input
         autoComplete="off"
         autoCorrect="off"

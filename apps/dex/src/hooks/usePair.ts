@@ -21,8 +21,8 @@ export function usePair(currencyA: Currency, currencyB: Currency) {
     }
   })
 
-  console.log('pair.data', pair.data);
-  console.log('reserves', reserves);
+  // console.log('pair.data', pair.data);
+  // console.log('reserves', reserves);
 
   const priceCurrencyA = useMemo(() => {
     if (Array.isArray(reserves.data)) {
@@ -40,8 +40,8 @@ export function usePair(currencyA: Currency, currencyB: Currency) {
     return 0
   }, [reserves])
 
-  console.log('priceCurrencyA', priceCurrencyA);
-  console.log('priceCurrencyB', priceCurrencyB);
+  // console.log('priceCurrencyA', priceCurrencyA);
+  // console.log('priceCurrencyB', priceCurrencyB);
 
   return {
     ...pair,

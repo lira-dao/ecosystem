@@ -267,15 +267,9 @@ importers:
 
   contracts/dex-periphery:
     devDependencies:
-      '@lira-dao/dex-core':
-        specifier: 1.0.0
-        version: link:../dex-core
       '@lira-dao/hardhat-config':
         specifier: workspace:^
         version: link:../../packages/hardhat-config
-      '@lira-dao/mock-tokens':
-        specifier: workspace:^
-        version: link:../mock-tokens
       '@nomicfoundation/hardhat-chai-matchers':
         specifier: ^2.0.0
         version: 2.0.6(@nomicfoundation/hardhat-ethers@3.0.6)(chai@4.4.1)(ethers@6.12.1)(hardhat@2.22.4)

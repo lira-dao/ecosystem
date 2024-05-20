@@ -1,9 +1,10 @@
 import { useWriteContract } from 'wagmi';
 import { erc20Abi, EthereumAddress } from '@lira-dao/web3-utils';
+import { useWatchTransaction } from './useWatchTransaction';
 
 
 export function useApprove(address: EthereumAddress, spender: EthereumAddress, value: bigint) {
-  const { writeContract } = useWriteContract();
+  const { writeContract, ...rest } = useWriteContract();
 
   const write = () => writeContract({
     abi: erc20Abi,
@@ -12,7 +13,13 @@ export function useApprove(address: EthereumAddress, spender: EthereumAddress, v
     args: [spender, value],
   })
 
+  const confirmed = useWatchTransaction(rest.data)
+
+
   return {
-    write
+    ...rest,
+    ...confirmed,
+    write,
+    isLoading: rest.isPending || confirmed.isLoading,
   };
 }
