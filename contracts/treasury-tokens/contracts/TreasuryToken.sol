@@ -27,13 +27,15 @@ contract TreasuryToken is Ownable, ERC20 {
     bool public isMintEnabled = false;
 
     uint256 public mintFee = 10;
+    uint256 public mintFeeDao = 0;
 
     uint256 public burnFee = 10;
 
     uint256 public feeAmount = 0;
+    uint256 public feeAmountDao = 0;
 
     modifier onlyOwnerOrIfEnabled() {
-        require(_msgSender() == owner() || isMintEnabled, 'MINT_DISABLED');
+        require(msg.sender == owner() || isMintEnabled, 'MINT_DISABLED');
         _;
     }
 
@@ -63,23 +65,40 @@ contract TreasuryToken is Ownable, ERC20 {
      * @param amount amount of associated token to lock
      */
     function mint(address to, uint256 amount) public onlyOwnerOrIfEnabled {
-        require(amount >= 10 ** decimals(), 'MINIMUM_MINT_AMOUNT');
+        require(msg.sender == owner() || amount >= 10 ** decimals(), 'MINIMUM_MINT_AMOUNT');
 
         uint256 cost = amount * rate;
-        uint256 fee = (cost / 100) * mintFee;
+        uint256 fee = 0;
 
-        ERC20(token).safeTransferFrom(_msgSender(), address(this), cost + fee);
+        if (msg.sender == owner()) {
+            fee = (cost / 100) * mintFeeDao;
+        } else {
+            fee = (cost / 100) * mintFee;
+        }
 
-        feeAmount = feeAmount + fee;
+        ERC20(token).safeTransferFrom(msg.sender, address(this), cost + fee);
+
+        if (msg.sender == owner()) {
+            feeAmountDao = feeAmountDao + fee;
+        } else {
+            feeAmount = feeAmount + fee;
+        }
 
         _mint(to, amount);
     }
 
     function quoteMint(uint256 amount) public view returns (uint256 total, uint256 cost, uint256 fee) {
-        require(amount >= 10 ** decimals(), 'MINIMUM_MINT_AMOUNT');
+        require(msg.sender == owner() || amount >= 10 ** decimals(), 'MINIMUM_MINT_AMOUNT');
 
         cost = amount * rate;
-        fee = (cost / 100) * mintFee;
+        uint256 fee = 0;
+
+        if (msg.sender == owner()) {
+            fee = (cost / 100) * mintFeeDao;
+        } else {
+            fee = (cost / 100) * mintFee;
+        }
+
         total = cost + fee;
     }
 
@@ -111,9 +130,15 @@ contract TreasuryToken is Ownable, ERC20 {
     }
 
     function setMintFee(uint256 newMintFee) public onlyOwner {
-        require(newMintFee >= 1, 'MINIMUM_MINT_FEE');
+        require(newMintFee >= 1 && newMintFee < 100, 'MINIMUM_MINT_FEE');
 
         mintFee = newMintFee;
+    }
+
+    function setMintDao(uint256 newMintFeeDao) public onlyOwner {
+        require(newMintFeeDao >= 0 && newMintFeeDao < 100, 'MINIMUM_MINT_FEE');
+
+        mintFeeDao = newMintFeeDao;
     }
 
     function setBurnFee(uint256 newBurnFee) public onlyOwner {
