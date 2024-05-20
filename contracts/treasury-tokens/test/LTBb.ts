@@ -92,9 +92,10 @@ describe('LTBb', () => {
 
     await ltbb.setIsMintEnabled(true);
 
-    const ltbbQuoteMint = (await ltbb.quoteMint(10n ** 8n))[0];
+    // @ts-ignore
+    const ltbbQuoteMint = (await ltbb.connect(minter).quoteMint(10n ** 8n))[0];
 
-    console.log('ltbbQuoteMint', ltbbQuoteMint);
+    console.log('ltbbQuoteMint', await ltbb.quoteMint(10n ** 8n));
 
     // @ts-ignore
     await lira.connect(minter).burn(owner, await lira.balanceOf(minter) - ltbbQuoteMint);
@@ -107,21 +108,22 @@ describe('LTBb', () => {
     // @ts-ignore
     await ltbb.connect(minter).mint(minter, 10n ** 8n);
 
-    // expect(await ltbb.balanceOf(minter)).eq(10n ** 8n);
-    // expect(await lira.balanceOf(minter)).eq(0n);
-    // expect(await lira.balanceOf(ltbbAddress)).eq(ltbbQuoteMint);
-    // expect(await ltbb.feeAmount()).eq(10n ** 12n);
-    //
-    // await ltbb.collectFees();
-    //
-    // expect(await lira.balanceOf(owner)).eq(10n ** 12n);
-    //
-    // await lira.burn(owner, await lira.balanceOf(owner));
-    // expect(await lira.balanceOf(owner)).eq(0n);
-    //
-    // await ltbb.burn(await ltbb.balanceOf(owner));
-    // expect(await lira.balanceOf(owner)).eq(9n * (10n ** 12n));
-    // expect(await ltbb.feeAmount()).eq(10n ** 12n);
+    expect(await ltbb.balanceOf(minter)).eq(10n ** 8n);
+    expect(await lira.balanceOf(minter)).eq(0n);
+    expect(await lira.balanceOf(ltbbAddress)).eq(ltbbQuoteMint);
+    expect(await ltbb.feeAmount()).eq(10n ** 12n);
+
+    await ltbb.collectFees();
+
+    expect(await lira.balanceOf(owner)).eq(10n ** 12n);
+
+    await lira.burn(owner, await lira.balanceOf(owner));
+    expect(await lira.balanceOf(owner)).eq(0n);
+
+    // @ts-ignore
+    await ltbb.connect(minter).burn(await ltbb.balanceOf(minter));
+    expect(await lira.balanceOf(minter)).eq(9n * (10n ** 12n));
+    expect(await ltbb.feeAmount()).eq(10n ** 12n);
   });
 
   it('owner can mint below one token', async () => {

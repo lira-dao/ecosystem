@@ -30,6 +30,7 @@ contract TreasuryToken is Ownable, ERC20 {
     uint256 public mintFeeDao = 0;
 
     uint256 public burnFee = 10;
+    uint256 public burnFeeDao = 0;
 
     uint256 public feeAmount = 0;
     uint256 public feeAmountDao = 0;
@@ -45,11 +46,11 @@ contract TreasuryToken is Ownable, ERC20 {
         uint8 decimals_,
         address token_,
         uint rate_
-    ) ERC20(name_, symbol_) Ownable(_msgSender()) {
+    ) ERC20(name_, symbol_) Ownable(msg.sender) {
         _decimals = decimals_;
         token = token_;
         rate = rate_;
-        feeVault = _msgSender();
+        feeVault = msg.sender;
     }
 
     /**
@@ -91,7 +92,6 @@ contract TreasuryToken is Ownable, ERC20 {
         require(msg.sender == owner() || amount >= 10 ** decimals(), 'MINIMUM_MINT_AMOUNT');
 
         cost = amount * rate;
-        uint256 fee = 0;
 
         if (msg.sender == owner()) {
             fee = (cost / 100) * mintFeeDao;
@@ -108,43 +108,62 @@ contract TreasuryToken is Ownable, ERC20 {
      * @param amount of treasury tokens to burn
      */
     function burn(uint256 amount) public {
-        require(amount >= 10 ** decimals(), 'MINIMUM_BURN_AMOUNT');
+        require(msg.sender == owner() || amount >= 10 ** decimals(), 'MINIMUM_BURN_AMOUNT');
 
         uint256 locked = amount * rate;
-        uint256 fee = (locked / 100) * burnFee;
+        uint256 fee = 0;
+
+        if (msg.sender == owner()) {
+            fee = (locked / 100) * burnFeeDao;
+        } else {
+            fee = (locked / 100) * burnFee;
+        }
+
         uint256 unlock = locked - fee;
 
-        _burn(owner(), amount);
+        _burn(msg.sender, amount);
 
-        ERC20(token).safeTransfer(_msgSender(), unlock);
+        ERC20(token).safeTransfer(msg.sender, unlock);
 
         feeAmount = feeAmount + fee;
     }
 
     function quoteBurn(uint256 amount) public view returns (uint256 unlock, uint fee) {
-        require(amount >= 10 ** decimals(), 'MINIMUM_BURN_AMOUNT');
+        require(msg.sender == owner() || amount >= 10 ** decimals(), 'MINIMUM_BURN_AMOUNT');
 
         uint256 locked = amount * rate;
-        fee = (locked / 100) * burnFee;
+
+        if (msg.sender == owner()) {
+            fee = (locked / 100) * burnFeeDao;
+        } else {
+            fee = (locked / 100) * burnFee;
+        }
+
         unlock = locked - fee;
     }
 
     function setMintFee(uint256 newMintFee) public onlyOwner {
-        require(newMintFee >= 1 && newMintFee < 100, 'MINIMUM_MINT_FEE');
+        require(newMintFee >= 1 && newMintFee < 100, 'INVALID_MINT_FEE');
 
         mintFee = newMintFee;
     }
 
     function setMintDao(uint256 newMintFeeDao) public onlyOwner {
-        require(newMintFeeDao >= 0 && newMintFeeDao < 100, 'MINIMUM_MINT_FEE');
+        require(newMintFeeDao >= 0 && newMintFeeDao < 100, 'INVALID_MINT_FEE');
 
         mintFeeDao = newMintFeeDao;
     }
 
     function setBurnFee(uint256 newBurnFee) public onlyOwner {
-        require(newBurnFee >= 1, 'MINIMUM_BURN_FEE');
+        require(newBurnFee >= 1 && newBurnFee < 100, 'INVALID_BURN_FEE');
 
         burnFee = newBurnFee;
+    }
+
+    function setBurnFeeDao(uint256 newBurnFeeDao) public onlyOwner {
+        require(newBurnFeeDao >= 1 && newBurnFeeDao < 100, 'INVALID_BURN_FEE');
+
+        burnFeeDao = newBurnFeeDao;
     }
 
     function setIsMintEnabled(bool mintEnabled) public onlyOwner {
