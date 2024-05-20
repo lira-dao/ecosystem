@@ -8,6 +8,7 @@ export const InputPanel = styled.box<{ hideInput?: boolean }>`
   border-radius: 16px;
   z-index: 1;
   width: 100%;
+  height: 100%;
   transition: height 1s ease;
   will-change: height;
 `;

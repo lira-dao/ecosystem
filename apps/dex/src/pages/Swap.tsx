@@ -7,7 +7,7 @@ import { SwapSection } from '../components/swap/SwapSection';
 import { InputPanel } from '../components/swap/InputPanel';
 import { Container } from '../components/swap/Container';
 import { currencies } from '../utils';
-import { useGetAmountsOut } from '../hooks/useGetAmountsOut';
+import { useGetAmountsIn, useGetAmountsOut } from '../hooks/useGetAmountsOut';
 import { formatUnits, parseUnits } from 'viem';
 import { useApprove } from '../hooks/useApprove';
 import { addresses } from '@lira-dao/web3-utils';
@@ -18,13 +18,47 @@ import { BaseButton } from '../components/BaseButton';
 import { PacmanLoader } from 'react-spinners';
 import { useAllowance } from '../hooks/useAllowance';
 import { useSnackbar } from 'notistack';
+import { useBalance } from '../hooks/useBalance';
+import { useAccount } from 'wagmi';
+import Big from 'big.js';
+
+
+export function useCurrency(c: Currency) {
+  const [isDisabled, setIsDisabled] = useState<boolean>(false);
+  const [inputValue, setInputValue] = useState<string>('');
+  const [value, setValue] = useState<Big.Big>(new Big('0'));
+  const [currency, setCurrency] = useState<Currency>(c);
+
+
+  return {
+    currency,
+    isDisabled,
+    setCurrency,
+    setIsDisabled,
+  };
+}
 
 
 export function Swap() {
   const th = useTheme();
+  const account = useAccount();
   const { enqueueSnackbar } = useSnackbar();
-  const [currencyA, setCurrencyA] = useState<Currency>(currencies[0]);
-  const [currencyB, setCurrencyB] = useState<Currency>(currencies[1]);
+
+  const {
+    currency: currencyA,
+    setCurrency: setCurrencyA,
+    isDisabled: isDisabledA,
+    setIsDisabled: setIsDisabledA,
+  } = useCurrency(currencies[0]);
+  const {
+    currency: currencyB,
+    setCurrency: setCurrencyB,
+    isDisabled: isDisabledB,
+    setIsDisabled: setIsDisabledB,
+  } = useCurrency(currencies[1]);
+  console.log('isDisabledA', isDisabledA);
+  // const [currencyA, setCurrencyA] = useState<Currency>(currencies[0]);
+  // const [currencyB, setCurrencyB] = useState<Currency>(currencies[1]);
 
   const [firstValue, setFirstValue] = useState<number | string>('');
   const [secondValue, setSecondValue] = useState<number | string>('');
@@ -34,7 +68,14 @@ export function Swap() {
   const [isAllowCurrencyADisabled, setIsAllowCurrencyADisabled] = useState<boolean>(false);
   const [isSwapDisabled, setIsSwapDisabled] = useState<boolean>(true);
 
-  const amountsOut = useGetAmountsOut([currencyA.address, currencyB.address], parseUnits(firstValue.toString(), 18));
+  const balanceA = useBalance(addresses.arbitrumSepolia.ldt, account.address);
+  const balanceB = useBalance(addresses.arbitrumSepolia.weth, account.address);
+
+  const [amoutOut, setAmountOut] = useState<bigint>(0n);
+  const [amountIn, setAmountIn] = useState<bigint>(0n);
+
+  const amountsOut = useGetAmountsOut([currencyA.address, currencyB.address], amoutOut);
+  const amountsIn = useGetAmountsIn([currencyA.address, currencyB.address], amountIn);
 
   const approve = useApprove(currencyA.address, addresses.arbitrumSepolia.router, parseUnits(firstValue.toString(), 18));
 
@@ -53,6 +94,12 @@ export function Swap() {
       setSecondValue(formatUnits(amountsOut.data[1], 18));
     }
   }, [amountsOut.data]);
+
+  useEffect(() => {
+    if (amountsIn.data) {
+      setFirstValue(formatUnits(amountsIn.data[0], 18));
+    }
+  }, [amountsIn.data]);
 
   useEffect(() => {
     if (approve.isLoading || allowance1.isLoading) {
@@ -92,9 +139,28 @@ export function Swap() {
     }
   }, [swap.confirmed]);
 
+  const onCurrencyAChange = (value: string) => {
+    setFirstValue(value);
+
+    if (value === '') {
+      setSecondValue('');
+    }
+
+    setAmountOut(parseUnits(value, 18));
+  };
+
+  const onCurrencyBChange = (value: string) => {
+    setSecondValue(value);
+    setFirstValue('');
+    setAmountIn(parseUnits(value, 18));
+  };
+
   const switchCurrencies = () => {
     const newCurrencyA = currencyB;
     const newCurrencyB = currencyA;
+
+    setAmountOut(0n);
+    setAmountIn(0n);
 
     setCurrencyA(newCurrencyA);
     setCurrencyB(newCurrencyB);
@@ -109,10 +175,10 @@ export function Swap() {
         <x.p fontSize="3xl">Swap</x.p>
       </x.div>
 
-      <SwapSection mt={6} mb={4}>
+      <SwapSection h="160px" mt={6} mb={4}>
         <InputPanel>
           <Container>
-            <x.div display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
+            <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
               <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
                 <x.p color="gray155" userSelect="none">You Pay</x.p>
                 <CurrencySelector disabled={false} selected={false} currency={currencyA} />
@@ -120,10 +186,14 @@ export function Swap() {
 
               <NumericalInput
                 id="currencyA"
-                disabled={false}
+                disabled={amountsIn.isLoading}
                 value={firstValue}
-                onChange={(e) => setFirstValue(e.target.value)}
+                onChange={(e) => onCurrencyAChange(e.target.value)}
               />
+
+              <x.div w="100%" display="flex" mt={2} justifyContent="flex-end">
+                <x.p color="gray155">{new Big(formatUnits(balanceA ?? 0n, 18)).toFixed(6)}</x.p>
+              </x.div>
             </x.div>
           </Container>
         </InputPanel>
@@ -144,10 +214,10 @@ export function Swap() {
         </BaseButton>
       </x.div>
 
-      <SwapSection mt={4}>
+      <SwapSection h="160px" mt={4}>
         <InputPanel>
           <Container>
-            <x.div display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
+            <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
               <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
                 <x.p color="gray155" userSelect="none">You Receive</x.p>
                 <CurrencySelector disabled={false} selected={false} currency={currencyB} />
@@ -155,10 +225,14 @@ export function Swap() {
 
               <NumericalInput
                 id="currencyB"
-                disabled={false}
+                disabled={amountsOut.isLoading}
                 value={secondValue}
-                onChange={(e) => setSecondValue(e.target.value)}
+                onChange={(e) => onCurrencyBChange(e.target.value)}
               />
+
+              <x.div w="100%" display="flex" justifyContent="flex-end" mt={2}>
+                <x.p color="gray155">{new Big(formatUnits(balanceB ?? 0n, 18)).toFixed(6)}</x.p>
+              </x.div>
             </x.div>
           </Container>
         </InputPanel>

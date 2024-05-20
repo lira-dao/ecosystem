@@ -16,6 +16,7 @@
     "@types/react-dom": "^18.2.25",
     "@web3modal/wagmi": "^4.1.11",
     "@xstyled/styled-components": "^3.8.0",
+    "big.js": "^6.2.1",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.4",
     "notistack": "^3.0.1",
@@ -55,5 +56,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/big.js": "^6.2.2"
   }
 }

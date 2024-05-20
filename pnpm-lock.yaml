@@ -65,6 +65,9 @@ importers:
       '@xstyled/styled-components':
         specifier: ^3.8.0
         version: 3.8.1(styled-components@6.1.11)
+      big.js:
+        specifier: ^6.2.1
+        version: 6.2.1
       localforage:
         specifier: ^1.10.0
         version: 1.10.0
@@ -110,6 +113,10 @@ importers:
       web-vitals:
         specifier: ^2.1.4
         version: 2.1.4
+    devDependencies:
+      '@types/big.js':
+        specifier: ^6.2.2
+        version: 6.2.2
 
   apps/web:
     dependencies:
@@ -5986,6 +5993,10 @@ packages:
       '@babel/types': 7.24.5
     dev: false
 
+  /@types/big.js@6.2.2:
+    resolution: {integrity: sha512-e2cOW9YlVzFY2iScnGBBkplKsrn2CsObHQ2Hiw4V1sSyiGbgWL8IyqE3zFi1Pt5o1pdAtYkDAIsF3KKUPjdzaA==}
+    dev: true
+
   /@types/bn.js@4.11.6:
     resolution: {integrity: sha512-pqr857jrp2kPuO9uRjZ3PwnJTjoQy+fcdxvBTvHm6dkmEL9q+hDD/2j/0ELOBPtPnS8LjCX0gI9nbl8lVkadpg==}
     dependencies:
@@ -8558,6 +8569,10 @@ packages:
 
   /big.js@5.2.2:
     resolution: {integrity: sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==}
+    dev: false
+
+  /big.js@6.2.1:
+    resolution: {integrity: sha512-bCtHMwL9LeDIozFn+oNhhFoq+yQ3BNdnsLSASUxLciOb1vgvpHsIO1dsENiGMgbb4SkP5TrzWzRiLddn8ahVOQ==}
     dev: false
 
   /bignumber.js@9.1.2:

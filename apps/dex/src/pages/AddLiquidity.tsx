@@ -15,6 +15,7 @@ import { useBalance } from '../hooks/useBalance';
 import { useAllowance } from '../hooks/useAllowance';
 import { useApprove } from '../hooks/useApprove';
 import { useAddLiquidity } from '../hooks/useAddLiquidity';
+import Big from 'big.js';
 
 
 export function AddLiquidity() {
@@ -28,8 +29,8 @@ export function AddLiquidity() {
 
   const pair = usePair(currencies[0], currencies[1]);
 
-  const balanceA = useBalance(addresses.arbitrumSepolia.ldt, account.address);
-  const balanceB = useBalance(addresses.arbitrumSepolia.weth, account.address)
+  const balanceA = useBalance(currencies[0].address, account.address);
+  const balanceB = useBalance(currencies[1].address, account.address);
 
   const allowanceA = useAllowance(addresses.arbitrumSepolia.ldt, addresses.arbitrumSepolia.router);
   const allowanceB = useAllowance(addresses.arbitrumSepolia.weth, addresses.arbitrumSepolia.router);
@@ -50,12 +51,16 @@ export function AddLiquidity() {
     }
 
     if (e.target.id === 'currencyA') {
-      setFirstValue(e.currentTarget.value);
-      setSecondValue((parseFloat(e.target.value) * parseFloat(pair.reserveB.toString())) / parseFloat(pair.reserveA.toString()));
+      updateFirstValue(e.target.value);
     } else if (e.target.id === 'currencyB') {
       setSecondValue(e.currentTarget.value);
       setFirstValue((parseFloat(e.target.value) * parseFloat(pair.reserveA.toString())) / parseFloat(pair.reserveB.toString()));
     }
+  };
+
+  const updateFirstValue = (value: string) => {
+    setFirstValue(value);
+    setSecondValue((parseFloat(value) * parseFloat(pair.reserveB.toString())) / parseFloat(pair.reserveA.toString()));
   };
 
   return (
@@ -67,32 +72,35 @@ export function AddLiquidity() {
       <SwapSection mt={6} mb={4}>
         <InputPanel>
           <Container>
-            <x.div display="flex" alignItems="center" justifyContent="space-between">
-              <x.div>
-                <NumericalInput id="currencyA" disabled={false} value={firstValue} onChange={onChangeValues} />
+            <x.div display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
+              <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
+                <x.p color="gray155" userSelect="none">Deposit</x.p>
+                <CurrencySelector disabled={false} selected={false} currency={currencies[0]} />
               </x.div>
 
-              <CurrencySelector disabled={false} selected={false} currency={currencies[0]} />
-            </x.div>
-            <x.div mt={2} textAlign="right">
-              <x.p>Balance: {formatUnits(balanceA ?? 0n, 18)}</x.p>
+              <NumericalInput id="currencyA" disabled={false} value={firstValue} onChange={onChangeValues} />
+
+              <x.div display="flex" justifyContent="space-between" mt={2}>
+                <x.p color="gray155">{new Big(formatUnits(balanceA ?? 0n, 18)).toFixed(6)}</x.p>
+              </x.div>
             </x.div>
           </Container>
         </InputPanel>
       </SwapSection>
 
-      <SwapSection mt={4} mb={8}>
+      <SwapSection mt={6} mb={4}>
         <InputPanel>
           <Container>
-            <x.div display="flex" alignItems="center" justifyContent="space-between">
-              <x.div>
-                <NumericalInput id="currencyB" disabled={false} value={secondValue} onChange={onChangeValues} />
+            <x.div display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
+              <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
+                <x.p color="gray155" userSelect="none">Deposit</x.p>
+                <CurrencySelector disabled={false} selected={false} currency={currencies[1]} />
               </x.div>
 
-              <CurrencySelector disabled={false} selected={false} currency={currencies[1]} />
+              <NumericalInput id="currencyB" disabled={false} value={secondValue} onChange={onChangeValues} />
             </x.div>
-            <x.div mt={2} textAlign="right">
-              <x.p>Balance: {formatUnits(balanceB ?? 0n, 18)}</x.p>
+            <x.div mt={2}>
+              <x.p color="gray155">{new Big(formatUnits(balanceB ?? 0n, 18)).toFixed(6)}</x.p>
             </x.div>
           </Container>
         </InputPanel>
