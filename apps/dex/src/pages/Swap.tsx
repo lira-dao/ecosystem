@@ -17,10 +17,12 @@ import repeatIcon from '../img/fa-repeat.svg';
 import { BaseButton } from '../components/BaseButton';
 import { PacmanLoader } from 'react-spinners';
 import { useAllowance } from '../hooks/useAllowance';
+import { useSnackbar } from 'notistack';
 
 
 export function Swap() {
   const th = useTheme();
+  const { enqueueSnackbar } = useSnackbar();
   const [currencyA, setCurrencyA] = useState<Currency>(currencies[0]);
   const [currencyB, setCurrencyB] = useState<Currency>(currencies[1]);
 
@@ -39,12 +41,12 @@ export function Swap() {
   const swap = useSwap([currencyA.address, currencyB.address], parseUnits(firstValue.toString(), 18));
 
   const needAllowance = useMemo(() =>
-      BigInt(firstValue) > 0 &&
+      parseUnits(firstValue.toString(), 18) > 0 &&
       allowance1.data !== undefined &&
-      allowance1.data < BigInt(firstValue) * 10n ** 18n,
+      allowance1.data < parseUnits(firstValue.toString(), 18),
     [allowance1, firstValue]);
 
-  // console.log('needAllowance', needAllowance);
+  console.log('isAllowCurrencyADisabled', isAllowCurrencyADisabled);
 
   useEffect(() => {
     if (amountsOut.data) {
@@ -58,7 +60,7 @@ export function Swap() {
     } else {
       setIsAllowCurrencyADisabled(false);
     }
-  }, [approve.isLoading]);
+  }, [approve.isLoading, allowance1.isLoading]);
 
   useEffect(() => {
     if (swap.isLoading) {
@@ -70,13 +72,20 @@ export function Swap() {
 
   useEffect(() => {
     if (approve.confirmed) {
+      enqueueSnackbar('Approve confirmed!', {
+        autoHideDuration: 3000,
+        variant: 'success',
+      });
       allowance1.refetch();
     }
   }, [approve.confirmed]);
 
   useEffect(() => {
     if (swap.confirmed) {
-      console.log('swap reset');
+      enqueueSnackbar('Swap confirmed!', {
+        autoHideDuration: 3000,
+        variant: 'success',
+      });
       swap.reset();
       setFirstValue('');
       setSecondValue('');
@@ -173,12 +182,10 @@ export function Swap() {
           {isSwapDisabled ? (
             <PacmanLoader color={th?.colors.gray155} />
           ) : (
-            <PrimaryButton disabled={!firstValue} onClick={() => swap.write()}>Swap</PrimaryButton>
+            <PrimaryButton disabled={!firstValue && !secondValue} onClick={() => swap.write()}>Swap</PrimaryButton>
           )}
         </x.div>
       )}
-
-      {/*<PrimaryButton onClick={() => swap.write()}><PacmanLoader color={th?.colors['aqua-900']} /></PrimaryButton>*/}
     </x.div>
   );
 }

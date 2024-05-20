@@ -10,6 +10,7 @@ import { ThemeProvider } from 'styled-components';
 import { theme } from './theme/theme';
 import { router } from './router';
 import { Preflight } from '@xstyled/styled-components';
+import { SnackbarProvider } from 'notistack';
 
 
 const root = ReactDOM.createRoot(
@@ -22,7 +23,9 @@ root.render(
     <Preflight />
     <Web3Provider>
       <ThemeProvider theme={theme}>
-        <RouterProvider router={router} />
+        <SnackbarProvider>
+          <RouterProvider router={router} />
+        </SnackbarProvider>
       </ThemeProvider>
     </Web3Provider>
   </React.StrictMode>,
