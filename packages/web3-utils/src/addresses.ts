@@ -1,4 +1,4 @@
-import { AddressList, DexAddresses } from './types';
+import { AddressList, DexAddresses, DexPairs, TokenAddresses } from './types';
 
 
 export const arbitrumOne: AddressList = {
@@ -33,9 +33,38 @@ export const addresses = {
   holesky,
 };
 
+export const tokens: TokenAddresses = {
+  421614: {
+    lira: '0xC4868aA029ADD5705FA203580669d2175889D615',
+    ldt: '0x62F53E68662B013ea03B7BA6803b624632179eD3',
+    weth: '0xdF5c1B370C7aE6C86d98A591C4aBe3453656a4b0',
+  }
+}
+
 export const dexAddress: DexAddresses = {
   421614: {
     factory: '0xF2B4207ea798ad05DaCFa171AC1BCF2917C71D60',
     router: '0x67aeb185d042b941c1422dd180E460990474858c',
   },
 };
+
+export const dexPairs: DexPairs = {
+  421614: {
+    '0xA9BA460655E7c2e9F23dA63fe1380dfF734F2864': {
+      address: '0xA9BA460655E7c2e9F23dA63fe1380dfF734F2864',
+      tokens: [
+        '0x62F53E68662B013ea03B7BA6803b624632179eD3',
+        '0xdF5c1B370C7aE6C86d98A591C4aBe3453656a4b0'
+      ],
+      symbol: 'LDT-WETH'
+    },
+    '0x5Bb070f5aAc461f875992b7e3170eE5cb3281D0D': {
+      address: '0x5Bb070f5aAc461f875992b7e3170eE5cb3281D0D',
+      tokens: [
+        '0x62F53E68662B013ea03B7BA6803b624632179eD3',
+        '0xC4868aA029ADD5705FA203580669d2175889D615'
+      ],
+      symbol: 'LDT-LIRA'
+    }
+  }
+}

@@ -1,18 +1,21 @@
 import { useReadContracts } from 'wagmi';
-import { addresses, dexPairV2Abi } from '@lira-dao/web3-utils';
+import { dexPairV2Abi, EthereumAddress } from '@lira-dao/web3-utils';
+import { useDexPairs } from './useDexPairs';
+
 
 export function useReserves() {
-  const result = useReadContracts({
+  const dexPairs = useDexPairs();
+  const addresses = Object.keys(dexPairs) as EthereumAddress[];
+
+  return useReadContracts({
     contracts: [{
       abi: dexPairV2Abi,
-      address: addresses.arbitrumSepolia.ldt_weth,
+      address: addresses[0],
       functionName: 'getReserves',
     }, {
       abi: dexPairV2Abi,
-      address: addresses.arbitrumSepolia.ldt_lira,
+      address: addresses[1],
       functionName: 'getReserves',
     }]
   });
-
-  return result;
 }

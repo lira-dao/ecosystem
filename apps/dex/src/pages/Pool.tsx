@@ -5,7 +5,8 @@ import { useGetBalances } from '../hooks/useGetBalances';
 import { useReserves } from '../hooks/useReserves';
 import BigNumber from 'bignumber.js';
 import { formatUnits } from 'viem';
-import { getPoolCurrencies } from '../utils';
+import { useDexPairs } from '../hooks/useDexPairs';
+import { getCurrencyByAddress } from '../utils';
 
 
 export function Pool() {
@@ -13,6 +14,7 @@ export function Pool() {
   const navigate = useNavigate();
   const { data } = useGetBalances();
   const reserves = useReserves();
+  const dexPairs = useDexPairs();
 
 
   return (
@@ -44,8 +46,8 @@ export function Pool() {
               </x.div>
 
               <x.div textAlign="right">
-                <x.p fontSize="xl">{new BigNumber(formatUnits(reserves?.data?.[i].result?.[0] ?? 0n, getPoolCurrencies(d.address)[0].decimals)).toFormat(2, 1)} {getPoolCurrencies(d.address)[0].symbol}</x.p>
-                <x.p fontSize="xl">{new BigNumber(formatUnits(reserves?.data?.[i].result?.[1] ?? 0n, getPoolCurrencies(d.address)[1].decimals)).toFormat(2, 1)} {getPoolCurrencies(d.address)[1].symbol}</x.p>
+                <x.p fontSize="xl">{new BigNumber(formatUnits(reserves?.data?.[i].result?.[0] ?? 0n, getCurrencyByAddress(dexPairs[d.address].tokens[0])?.decimals ?? 0)).toFormat(2, 1)} {getCurrencyByAddress(dexPairs[d.address].tokens[0])?.symbol}</x.p>
+                <x.p fontSize="xl">{new BigNumber(formatUnits(reserves?.data?.[i].result?.[1] ?? 0n, getCurrencyByAddress(dexPairs[d.address].tokens[1])?.decimals ?? 0)).toFormat(2, 1)} {getCurrencyByAddress(dexPairs[d.address].tokens[1])?.symbol}</x.p>
               </x.div>
             </x.div>
 

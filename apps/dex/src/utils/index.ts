@@ -1,6 +1,7 @@
 import MetaMaskSDK from '@metamask/sdk';
 import { Currency } from '../types';
 import { addresses, EthereumAddress } from '@lira-dao/web3-utils';
+import { useDexPairs } from '../hooks/useDexPairs';
 
 
 const metamask = new MetaMaskSDK({});
@@ -80,17 +81,6 @@ export const currencies: Currency[] = [{
   icon: 'https://gateway.pinata.cloud/ipfs/QmeDcLiQAZ5VB2s3rzjjMYafU88tVrXLgEsC4Qon7bTaRM',
   decimals: 8,
 }];
-
-export function getPoolCurrencies(address: EthereumAddress) {
-  switch (address) {
-    case addresses.arbitrumSepolia.ldt_weth:
-      return [currencies[0], currencies[1]];
-    case addresses.arbitrumSepolia.ldt_lira:
-      return [currencies[0], currencies[2]];
-    default:
-      return [currencies[0], currencies[1]];
-  }
-}
 
 export function getCurrencyByAddress(address: EthereumAddress) {
   return currencies.find(c => c.address === address);
