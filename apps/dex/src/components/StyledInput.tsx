@@ -11,6 +11,23 @@ interface NumericalInputProps {
 }
 
 export function NumericalInput({ disabled, id, onChange, readOnly = false, value }: NumericalInputProps) {
+
+  const onChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
+    const regex = /^[0-9]*\.?[0-9]*$/;
+
+    if (e.target.value.includes(',')) {
+      e.target.value = e.target.value.replace(',', '.')
+    }
+
+    if (e.target.value === '.') {
+      e.target.value = '0.';
+    }
+
+    if (typeof onChange === 'function' && regex.test(e.target.value)) {
+      onChange(e);
+    }
+  }
+
   return (
     <x.div w="100%" display="flex">
       <x.input
@@ -26,7 +43,7 @@ export function NumericalInput({ disabled, id, onChange, readOnly = false, value
         inputMode="decimal"
         maxLength={79}
         minLength={1}
-        onChange={onChange}
+        onChange={onChangeInput}
         outline="none"
         overflow="hidden"
         padding={0}
