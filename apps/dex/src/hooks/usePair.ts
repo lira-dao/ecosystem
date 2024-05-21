@@ -1,16 +1,19 @@
 import { useReadContract } from 'wagmi';
 import { Currency } from '../types';
-import { addresses, dexFactoryV2Abi, dexPairV2Abi } from '@lira-dao/web3-utils';
+import { dexFactoryV2Abi, dexPairV2Abi } from '@lira-dao/web3-utils';
 import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
+import { useDexAddresses } from './useDexAddresses';
 
 
 export function usePair(currencyA: Currency, currencyB: Currency) {
+  const dexAddresses = useDexAddresses();
+
   const pair = useReadContract({
     abi: dexFactoryV2Abi,
-    address: addresses.arbitrumSepolia.factory as `0x${string}`,
+    address: dexAddresses.factory,
     functionName: 'getPair',
-    args: [currencyA.address as `0x${string}`, currencyB.address as `0x${string}`],
+    args: [currencyA.address, currencyB.address],
   });
 
   const reserves = useReadContract({

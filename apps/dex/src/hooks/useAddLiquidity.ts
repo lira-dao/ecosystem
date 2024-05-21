@@ -1,11 +1,14 @@
 import { useAccount, useBlock, useWriteContract } from 'wagmi';
-import { addresses, dexRouterV2Abi } from '@lira-dao/web3-utils';
+import { dexRouterV2Abi } from '@lira-dao/web3-utils';
+import { useDexAddresses } from './useDexAddresses';
+import { Currency } from '../types';
 
 
-export function useAddLiquidity(amountA: bigint, amountB: bigint) {
+export function useAddLiquidity(currencyA: Currency, amountA: bigint, currencyB: Currency, amountB: bigint) {
   const account = useAccount();
   const block = useBlock();
-  const deadline = (block.data?.timestamp ?? 0n) + 600n
+  const dexAddresses = useDexAddresses();
+  const deadline = (block.data?.timestamp ?? 0n) + 600n;
 
   const { writeContract } = useWriteContract();
 
@@ -13,11 +16,11 @@ export function useAddLiquidity(amountA: bigint, amountB: bigint) {
     if (account.address) {
       writeContract({
         abi: dexRouterV2Abi,
-        address: addresses.arbitrumSepolia.router,
+        address: dexAddresses.router,
         functionName: 'addLiquidity',
         args: [
-          addresses.arbitrumSepolia.ldt,
-          addresses.arbitrumSepolia.weth,
+          currencyA.address,
+          currencyB.address,
           amountA,
           amountB,
           amountA - ((amountA * 10n) / 100n),
@@ -27,7 +30,7 @@ export function useAddLiquidity(amountA: bigint, amountB: bigint) {
         ],
       });
     }
-  }
+  };
 
   return {
     write,

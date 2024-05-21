@@ -1,17 +1,17 @@
-import { useReadContract } from 'wagmi';
-import { erc20Abi } from '@lira-dao/web3-utils';
+import { useAccount, useReadContract } from 'wagmi';
+import { erc20Abi, EthereumAddress } from '@lira-dao/web3-utils';
 
 
-export function useBalance(address: `0x${string}`, owner?: `0x${string}`) {
-  const balance = useReadContract({
+export function useBalance(address: EthereumAddress) {
+  const account = useAccount();
+
+  return useReadContract({
     abi: erc20Abi,
     address,
     functionName: 'balanceOf',
-    args: [owner as `0x${string}`],
+    args: [account.address as EthereumAddress],
     query: {
-      enabled: !!address && !!owner,
+      enabled: !!address && !!account.address,
     },
   });
-
-  return balance;
 }

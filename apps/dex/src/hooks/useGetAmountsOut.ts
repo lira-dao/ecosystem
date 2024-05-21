@@ -1,11 +1,14 @@
 import { useReadContract } from 'wagmi';
-import { addresses, dexRouterV2Abi } from '@lira-dao/web3-utils';
+import { dexRouterV2Abi, EthereumAddress } from '@lira-dao/web3-utils';
+import { useDexAddresses } from './useDexAddresses';
 
 
-export function useGetAmountsOut(pair: [`0x${string}`, `0x${string}`], amount: bigint) {
+export function useGetAmountsOut(pair: [EthereumAddress, EthereumAddress], amount: bigint) {
+  const dexAddresses = useDexAddresses();
+
   const amountsOut = useReadContract({
     abi: dexRouterV2Abi,
-    address: addresses.arbitrumSepolia.router as `0x${string}`,
+    address: dexAddresses.router,
     functionName: 'getAmountsOut',
     args: [
       amount,
@@ -21,10 +24,12 @@ export function useGetAmountsOut(pair: [`0x${string}`, `0x${string}`], amount: b
   };
 }
 
-export function useGetAmountsIn(pair: [`0x${string}`, `0x${string}`], amount: bigint) {
+export function useGetAmountsIn(pair: [EthereumAddress, EthereumAddress], amount: bigint) {
+  const dexAddresses = useDexAddresses();
+
   const amountsOut = useReadContract({
     abi: dexRouterV2Abi,
-    address: addresses.arbitrumSepolia.router as `0x${string}`,
+    address: dexAddresses.router,
     functionName: 'getAmountsIn',
     args: [
       amount,

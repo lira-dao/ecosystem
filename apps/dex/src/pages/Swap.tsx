@@ -21,6 +21,7 @@ import { useSnackbar } from 'notistack';
 import { useBalance } from '../hooks/useBalance';
 import { useAccount } from 'wagmi';
 import Big from 'big.js';
+import { useDexAddresses } from '../hooks/useDexAddresses';
 
 
 export function useCurrency(c: Currency) {
@@ -41,7 +42,7 @@ export function useCurrency(c: Currency) {
 
 export function Swap() {
   const th = useTheme();
-  const account = useAccount();
+  const dexAddresses = useDexAddresses();
   const { enqueueSnackbar } = useSnackbar();
 
   const {
@@ -61,12 +62,12 @@ export function Swap() {
   const [firstValue, setFirstValue] = useState<number | string>('');
   const [secondValue, setSecondValue] = useState<number | string>('');
 
-  const allowance1 = useAllowance(currencyA.address, addresses.arbitrumSepolia.router);
+  const allowance1 = useAllowance(currencyA.address, dexAddresses.router);
 
   const [isSwapDisabled, setIsSwapDisabled] = useState<boolean>(true);
 
-  const balanceA = useBalance(addresses.arbitrumSepolia.ldt, account.address);
-  const balanceB = useBalance(addresses.arbitrumSepolia.weth, account.address);
+  const balanceA = useBalance(currencyA.address);
+  const balanceB = useBalance(currencyB.address);
 
   const [amountOut, setAmountOut] = useState<bigint>(0n);
   const [amountIn, setAmountIn] = useState<bigint>(0n);
@@ -74,7 +75,7 @@ export function Swap() {
   const amountsOut = useGetAmountsOut([currencyA.address, currencyB.address], amountOut);
   const amountsIn = useGetAmountsIn([currencyA.address, currencyB.address], amountIn);
 
-  const approve = useApprove(currencyA.address, addresses.arbitrumSepolia.router, parseUnits(firstValue.toString(), currencyA.decimals));
+  const approve = useApprove(currencyA.address, dexAddresses.router, parseUnits(firstValue.toString(), currencyA.decimals));
 
   const swap = useSwap([currencyA.address, currencyB.address], parseUnits(firstValue.toString(), currencyA.decimals));
 

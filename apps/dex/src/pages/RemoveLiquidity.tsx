@@ -1,6 +1,5 @@
 import { useParams } from 'react-router-dom';
 import { addresses, EthereumAddress } from '@lira-dao/web3-utils';
-import { useAccount } from 'wagmi';
 import Big from 'big.js';
 import { formatUnits, parseUnits } from 'viem';
 import { useTheme, x } from '@xstyled/styled-components';
@@ -17,20 +16,21 @@ import { PrimaryButton } from '../components/PrimaryButton';
 import { useApprove } from '../hooks/useApprove';
 import { useRemoveLiquidity } from '../hooks/useRemoveLiquidity';
 import { useSnackbar } from 'notistack';
+import { useDexAddresses } from '../hooks/useDexAddresses';
 
 
 export function RemoveLiquidity() {
   const th = useTheme();
   const { enqueueSnackbar } = useSnackbar();
   const params = useParams();
-  const account = useAccount();
+  const dexAddresses = useDexAddresses();
 
   const [value, setValue] = useState<number | string>('');
   const [isRemoveDisabled, setIsRemoveDisabled] = useState<boolean>(false);
 
-  const balance = useBalance(params.address as EthereumAddress, account.address);
-  const allowance = useAllowance(params.address as EthereumAddress, addresses.arbitrumSepolia.router);
-  const approve = useApprove(params.address as EthereumAddress, addresses.arbitrumSepolia.router, parseUnits(value.toString(), 18));
+  const balance = useBalance(params.address as EthereumAddress);
+  const allowance = useAllowance(params.address as EthereumAddress, dexAddresses.router);
+  const approve = useApprove(params.address as EthereumAddress, dexAddresses.router, parseUnits(value.toString(), 18));
 
   const remove = useRemoveLiquidity(params.address as EthereumAddress, parseUnits(value.toString(), 18));
 

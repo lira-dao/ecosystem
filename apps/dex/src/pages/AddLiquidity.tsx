@@ -1,7 +1,5 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useMemo, useState } from 'react';
 import { x } from '@xstyled/styled-components';
-import { addresses } from '@lira-dao/web3-utils';
-import { useAccount } from 'wagmi';
 import { formatUnits, parseUnits } from 'viem';
 import { InputPanel } from '../components/swap/InputPanel';
 import { Container } from '../components/swap/Container';
@@ -18,10 +16,11 @@ import { useAddLiquidity } from '../hooks/useAddLiquidity';
 import Big from 'big.js';
 import { Currency } from '../types';
 import BigNumber from 'bignumber.js';
+import { useDexAddresses } from '../hooks/useDexAddresses';
 
 
 export function AddLiquidity() {
-  const account = useAccount();
+  const dexAddresses = useDexAddresses()
 
   const [currencyA, setCurrencyA] = useState<Currency>(currencies[0]);
   const [currencyB, setCurrencyB] = useState<Currency>(currencies[1]);
@@ -29,22 +28,35 @@ export function AddLiquidity() {
   const [firstValue, setFirstValue] = useState<number | string>('');
   const [secondValue, setSecondValue] = useState<number | string>('');
 
-  const [isAllowCurrencyADisabled, setIsAllowCurrencyADisabled] = useState<boolean>(false);
-  const [isAllowCurrencyBDisabled, setIsAllowCurrencyBDisabled] = useState<boolean>(false);
-  const [isSupplyDisabled, setIsSupplyDisabled] = useState<boolean>(false);
-
   const pair = usePair(currencyA, currencyB);
 
-  const balanceA = useBalance(currencyA.address, account.address);
-  const balanceB = useBalance(currencyB.address, account.address);
+  const balanceA = useBalance(currencyA.address);
+  const balanceB = useBalance(currencyB.address);
 
-  const allowanceA = useAllowance(currencyA.address, addresses.arbitrumSepolia.router);
-  const allowanceB = useAllowance(currencyB.address, addresses.arbitrumSepolia.router);
+  const allowanceA = useAllowance(currencyA.address, dexAddresses.router);
+  const allowanceB = useAllowance(currencyB.address, dexAddresses.router);
 
-  const approveA = useApprove(currencyA.address, addresses.arbitrumSepolia.router, parseUnits(firstValue.toString(), currencyA.decimals));
-  const approveB = useApprove(currencyB.address, addresses.arbitrumSepolia.router, parseUnits(secondValue.toString(), currencyB.decimals));
+  const approveA = useApprove(currencyA.address, dexAddresses.router, parseUnits(firstValue.toString(), currencyA.decimals));
+  const approveB = useApprove(currencyB.address, dexAddresses.router, parseUnits(secondValue.toString(), currencyB.decimals));
 
-  const addLiquidity = useAddLiquidity(parseUnits(firstValue.toString(), currencyA.decimals), parseUnits(secondValue.toString(), currencyB.decimals));
+  const addLiquidity = useAddLiquidity(
+    currencyA,
+    parseUnits(firstValue.toString(), currencyA.decimals),
+    currencyB,
+    parseUnits(secondValue.toString(), currencyB.decimals),
+  );
+
+  const needAllowanceA = useMemo(() =>
+      parseUnits(firstValue.toString(), currencyA.decimals) > 0 &&
+      allowanceA.data !== undefined &&
+      allowanceA.data < parseUnits(firstValue.toString(), currencyA.decimals),
+    [allowanceA, firstValue]);
+
+  const needAllowanceB = useMemo(() =>
+      parseUnits(secondValue.toString(), currencyB.decimals) > 0 &&
+      allowanceB.data !== undefined &&
+      allowanceB.data < parseUnits(firstValue.toString(), currencyB.decimals),
+    [allowanceB, secondValue]);
 
   const onChangeValues = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === '') {
@@ -65,7 +77,7 @@ export function AddLiquidity() {
       );
     }
   };
-
+  console.log('new BigNumber(firstValue)', new BigNumber(firstValue).isPositive(), needAllowanceA, allowanceB);
   return (
     <x.div w="100%" maxWidth="480px" padding={4}>
       <x.div display="flex" justifyContent="center" mt={2}>
@@ -124,18 +136,18 @@ export function AddLiquidity() {
 
       <x.div display="flex" mb={4}>
         <PrimaryButton
-          disabled={isAllowCurrencyADisabled}
+          disabled={!new BigNumber(firstValue).isPositive() || !needAllowanceA}
           onClick={() => approveA.write()}
           mr={4}
         >Approve {currencyA.symbol}</PrimaryButton>
         <PrimaryButton
-          disabled={isAllowCurrencyBDisabled}
+          disabled={!new BigNumber(secondValue).isPositive() || !needAllowanceB}
           onClick={() => approveB.write()}
           ml={4}
         >Approve {currencyB.symbol}</PrimaryButton>
       </x.div>
 
-      <PrimaryButton disabled={isSupplyDisabled} onClick={() => addLiquidity.write()}>Supply</PrimaryButton>
+      <PrimaryButton disabled={!firstValue || !secondValue} onClick={() => addLiquidity.write()}>Supply</PrimaryButton>
     </x.div>
   );
 }

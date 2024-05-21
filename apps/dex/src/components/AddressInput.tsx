@@ -1,9 +1,10 @@
 import { x } from '@xstyled/styled-components';
+import { EthereumAddress } from '@lira-dao/web3-utils';
 
 interface AddressInputProps {
   disabled?: boolean;
   readOnly?: boolean;
-  value?: `0x${string}`;
+  value?: EthereumAddress;
 }
 
 export function AddressInput({ disabled, value, readOnly = false }: AddressInputProps) {

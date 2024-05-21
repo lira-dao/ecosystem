@@ -11,10 +11,9 @@ export function useApprove(address: EthereumAddress, spender: EthereumAddress, v
     address,
     functionName: 'approve',
     args: [spender, value],
-  })
+  });
 
-  const confirmed = useWatchTransaction(rest.data)
-
+  const confirmed = useWatchTransaction(rest.data);
 
   return {
     ...rest,

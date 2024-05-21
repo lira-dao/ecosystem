@@ -2,11 +2,13 @@ import { useAccount, useBlock, useReadContracts, useSimulateContract, useWriteCo
 import { addresses, dexPairV2Abi, dexRouterV2Abi, EthereumAddress } from '@lira-dao/web3-utils';
 import { getCurrencyByAddress } from '../utils';
 import { useWatchTransaction } from './useWatchTransaction';
+import { useDexAddresses } from './useDexAddresses';
 
 
 export function useRemoveLiquidity(address: EthereumAddress, amount: bigint) {
   const account = useAccount();
   const block = useBlock();
+  const dexAddresses = useDexAddresses();
   const deadline = (block.data?.timestamp ?? 0n) + 600n;
 
   const info = useReadContracts({
@@ -36,7 +38,7 @@ export function useRemoveLiquidity(address: EthereumAddress, amount: bigint) {
 
   const simulate = useSimulateContract({
     abi: dexRouterV2Abi,
-    address: addresses.arbitrumSepolia.router,
+    address: dexAddresses.router,
     functionName: 'removeLiquidity',
     args: [
       token0 as EthereumAddress,
@@ -59,7 +61,7 @@ export function useRemoveLiquidity(address: EthereumAddress, amount: bigint) {
     if (account.address) {
       writeContract({
         abi: dexRouterV2Abi,
-        address: addresses.arbitrumSepolia.router,
+        address: dexAddresses.router,
         functionName: 'removeLiquidity',
         args: [
           token0 as EthereumAddress,

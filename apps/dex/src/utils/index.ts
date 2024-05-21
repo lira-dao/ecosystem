@@ -6,7 +6,7 @@ import { addresses, EthereumAddress } from '@lira-dao/web3-utils';
 const metamask = new MetaMaskSDK({});
 export const ethereum = metamask.getProvider();
 
-export async function addToken(address: `0x${string}`, symbol: string, decimals: number, image: string) {
+export async function addToken(address: EthereumAddress, symbol: string, decimals: number, image: string) {
   try {
     const wasAdded = await ethereum.request({
       method: 'wallet_watchAsset',
