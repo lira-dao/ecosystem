@@ -56,12 +56,12 @@ export function AddLiquidity() {
     if (e.target.id === 'currencyA') {
       setFirstValue(e.target.value);
       setSecondValue(
-        pair.priceCurrencyB.times(new BigNumber(e.target.value)).toString(),
+        pair.priceCurrencyA.times(new BigNumber(e.target.value)).toString(),
       );
     } else if (e.target.id === 'currencyB') {
       setSecondValue(e.target.value);
       setFirstValue(
-        pair.priceCurrencyA.times(new BigNumber(e.target.value)).toString(),
+        pair.priceCurrencyB.times(new BigNumber(e.target.value)).toString(),
       );
     }
   };
@@ -115,8 +115,8 @@ export function AddLiquidity() {
 
         <x.div>
           <x.div>
-            <x.p>1 {currencyA.symbol} = {pair.priceCurrencyA.toString()} {currencyB.symbol}</x.p>
-            <x.p>1 {currencyB.symbol} = {pair.priceCurrencyB.toString()} {currencyA.symbol}</x.p>
+            <x.p>1 {currencyA.symbol} = {pair.priceCurrencyA.toPrecision(6, 1)} {currencyB.symbol}</x.p>
+            <x.p>1 {currencyB.symbol} = {pair.priceCurrencyB.toPrecision(6, 1)} {currencyA.symbol}</x.p>
           </x.div>
           <x.div></x.div>
         </x.div>
