@@ -55,7 +55,7 @@ export function AddLiquidity() {
   const needAllowanceB = useMemo(() =>
       parseUnits(secondValue.toString(), currencyB.decimals) > 0 &&
       allowanceB.data !== undefined &&
-      allowanceB.data < parseUnits(firstValue.toString(), currencyB.decimals),
+      allowanceB.data < parseUnits(secondValue.toString(), currencyB.decimals),
     [allowanceB, secondValue]);
 
   const onChangeValues = (e: ChangeEvent<HTMLInputElement>) => {
@@ -77,7 +77,7 @@ export function AddLiquidity() {
       );
     }
   };
-  console.log('new BigNumber(firstValue)', new BigNumber(firstValue).isPositive(), needAllowanceA, allowanceB);
+
   return (
     <x.div w="100%" maxWidth="480px" padding={4}>
       <x.div display="flex" justifyContent="center" mt={2}>
