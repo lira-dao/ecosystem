@@ -88,7 +88,7 @@ export function RemoveLiquidity() {
   };
 
   return (
-    <x.div w="100%" maxWidth="480px" border="1px solid" borderColor="white-a10" borderRadius="16px" padding={4}>
+    <x.div w="100%" maxWidth="480px" padding={4}>
       <x.div display="flex" justifyContent="center" mt={2}>
         <x.p fontSize="3xl">Remove Liquidity</x.p>
       </x.div>

@@ -1,9 +1,9 @@
-import 'styled-components'
-import '@xstyled/system'
+import 'styled-components';
+import '@xstyled/system';
 import {
   ITheme,
   DefaultTheme as XStyledDefaultTheme,
-} from '@xstyled/styled-components'
+} from '@xstyled/styled-components';
 
 interface AppTheme extends ITheme, XStyledDefaultTheme {
   colors: {
@@ -14,7 +14,13 @@ interface AppTheme extends ITheme, XStyledDefaultTheme {
     gray155: string,
     'eerie-black': string,
     'aqua-900': string
-  }
+    'green-yellow-300': string,
+    'green-yellow-600': string,
+    'green-yellow-700': string,
+    'green-yellow-800': string,
+    'green-yellow-900': string,
+    'green-yellow-950': string,
+  };
 }
 
 declare module '@xstyled/system' {
@@ -22,5 +28,6 @@ declare module '@xstyled/system' {
   }
 }
 declare module 'styled-components' {
-  export interface DefaultTheme extends AppTheme {}
+  export interface DefaultTheme extends AppTheme {
+  }
 }
