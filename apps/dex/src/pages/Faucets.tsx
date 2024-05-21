@@ -91,7 +91,7 @@ export function Faucets() {
 
   const onButtonClick = () => {
     if (!account.isConnected) {
-      open().then(() => console.log('Web3 modal open!'));
+      open().then(() => {});
     } else if (active === ActiveHeaderItem.LIRA) {
       writeLiraFaucet();
     } else if (active === ActiveHeaderItem.LDT) {

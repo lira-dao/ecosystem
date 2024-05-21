@@ -33,9 +33,7 @@ export function RemoveLiquidity() {
   const approve = useApprove(params.address as EthereumAddress, addresses.arbitrumSepolia.router, parseUnits(value.toString(), 18));
 
   const remove = useRemoveLiquidity(params.address as EthereumAddress, parseUnits(value.toString(), 18));
-  console.log(
-    'r', remove,
-  );
+
   const needAllowance = useMemo(
     () => new BigNumber(value).gt(0) && allowance.data !== undefined &&
       allowance.data < parseUnits(value.toString(), 18),
@@ -62,7 +60,6 @@ export function RemoveLiquidity() {
   }, [remove.isPending]);
 
   useEffect(() => {
-    console.log('conf', remove.confirmed);
     if (remove.confirmed) {
       enqueueSnackbar('Remove liquidity confirmed!', {
         autoHideDuration: 3000,

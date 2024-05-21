@@ -22,9 +22,6 @@ export function usePair(currencyA: Currency, currencyB: Currency) {
     },
   });
 
-  // console.log('pair.data', pair.data);
-  console.log('reserves', reserves);
-
   const priceCurrencyA = useMemo(() => {
     if (Array.isArray(reserves.data)) {
       return new BigNumber(reserves.data[1].toString()).div(reserves.data[0].toString());
@@ -40,9 +37,6 @@ export function usePair(currencyA: Currency, currencyB: Currency) {
 
     return new BigNumber(0);
   }, [reserves]);
-
-  console.log('priceCurrencyA', priceCurrencyA);
-  console.log('priceCurrencyB', priceCurrencyB);
 
   return {
     ...pair,

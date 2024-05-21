@@ -57,9 +57,6 @@ export function Swap() {
     isDisabled: isDisabledB,
     setIsDisabled: setIsDisabledB,
   } = useCurrency(currencies[1]);
-  console.log('isDisabledA', isDisabledA);
-  // const [currencyA, setCurrencyA] = useState<Currency>(currencies[0]);
-  // const [currencyB, setCurrencyB] = useState<Currency>(currencies[1]);
 
   const [firstValue, setFirstValue] = useState<number | string>('');
   const [secondValue, setSecondValue] = useState<number | string>('');

@@ -7,12 +7,7 @@ export function useAddLiquidity(amountA: bigint, amountB: bigint) {
   const block = useBlock();
   const deadline = (block.data?.timestamp ?? 0n) + 600n
 
-  const { writeContract, isError, error } = useWriteContract();
-
-  console.log('isError', isError);
-  console.log('error', error);
-  console.log('block', block.data?.timestamp);
-  console.log('deadline', deadline);
+  const { writeContract } = useWriteContract();
 
   const write = () => {
     if (account.address) {

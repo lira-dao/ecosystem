@@ -18,15 +18,11 @@ export function useWatchTransaction(hash?: EthereumAddress) {
 
   useEffect(() => {
     if (!isLoading && hash && !confirmations.data) {
-      console.log('start watching');
       setIsLoading(true);
     } else if (isLoading && confirmations && confirmations.data && confirmations.data >= 18n) {
-      console.log('stop watching');
       setIsLoading(false);
     }
   }, [isLoading, hash, confirmations]);
-
-  console.log('confirmations', confirmations.data);
 
   return {
     confirmed: confirmations && confirmations.data && confirmations.data >= 18n,

@@ -28,7 +28,7 @@ export function useRemoveLiquidity(address: EthereumAddress, amount: bigint) {
       functionName: 'token1',
     }],
   });
-  console.log('rrrrr', info);
+
   const token0 = info?.data?.[2].result;
   const token1 = info?.data?.[3].result;
 
@@ -54,8 +54,6 @@ export function useRemoveLiquidity(address: EthereumAddress, amount: bigint) {
 
   const amountAMin = amountA * (1000n - 5n) / 1000n;
   const amountBMin = amountB * (1000n - 5n) / 1000n;
-
-  console.log('simulate', simulate);
 
   const write = () => {
     if (account.address) {

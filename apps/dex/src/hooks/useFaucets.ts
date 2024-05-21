@@ -34,8 +34,6 @@ export const useFaucets = () => {
 
   useEffect(() => {
     if (writeError) {
-      console.log('set error!');
-
       // @ts-ignore
       switch (writeError.cause.reason) {
         case 'INSUFFICIENT_FUNDS':
