@@ -2,6 +2,7 @@ import { useReadContract } from 'wagmi';
 import { Currency } from '../types';
 import { addresses, dexFactoryV2Abi, dexPairV2Abi } from '@lira-dao/web3-utils';
 import { useMemo } from 'react';
+import BigNumber from 'bignumber.js';
 
 
 export function usePair(currencyA: Currency, currencyB: Currency) {
@@ -18,36 +19,36 @@ export function usePair(currencyA: Currency, currencyB: Currency) {
     functionName: 'getReserves',
     query: {
       enabled: !!pair.data,
-    }
-  })
+    },
+  });
 
   // console.log('pair.data', pair.data);
-  // console.log('reserves', reserves);
+  console.log('reserves', reserves);
 
   const priceCurrencyA = useMemo(() => {
     if (Array.isArray(reserves.data)) {
-      return parseFloat(reserves.data[1].toString()) / parseFloat(reserves.data[0].toString())
+      return new BigNumber(reserves.data[1].toString()).div(reserves.data[0].toString());
     }
 
-    return 0
-  }, [reserves])
+    return new BigNumber(0);
+  }, [reserves]);
 
   const priceCurrencyB = useMemo(() => {
     if (Array.isArray(reserves.data)) {
-      return parseFloat(reserves.data[0].toString()) / parseFloat(reserves.data[1].toString())
+      return new BigNumber(reserves.data[0].toString()).div(reserves.data[1].toString());
     }
 
-    return 0
-  }, [reserves])
+    return new BigNumber(0);
+  }, [reserves]);
 
-  // console.log('priceCurrencyA', priceCurrencyA);
-  // console.log('priceCurrencyB', priceCurrencyB);
+  console.log('priceCurrencyA', priceCurrencyA);
+  console.log('priceCurrencyB', priceCurrencyB);
 
   return {
     ...pair,
     priceCurrencyA,
     priceCurrencyB,
-    reserveA: reserves.data?.[0] ?? BigInt(0),
-    reserveB: reserves.data?.[1] ?? BigInt(0),
-  }
+    reserveA: reserves.data?.[0] ?? 0n,
+    reserveB: reserves.data?.[1] ?? 0n,
+  };
 }

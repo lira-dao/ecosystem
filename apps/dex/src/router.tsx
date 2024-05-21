@@ -5,6 +5,7 @@ import { Swap } from './pages/Swap';
 import { Faucets } from './pages/Faucets';
 import { Pool } from './pages/Pool';
 import { AddLiquidity } from './pages/AddLiquidity';
+import { RemoveLiquidity } from './pages/RemoveLiquidity';
 
 
 export const router = createBrowserRouter([
@@ -18,6 +19,7 @@ export const router = createBrowserRouter([
       { path: 'swap', element: <Swap /> },
       { path: 'faucets', element: <Faucets /> },
       { path: 'add-liquidity', element: <AddLiquidity /> },
+      { path: '/remove-liquidity/:address', element: <RemoveLiquidity /> },
     ],
   },
 ]);

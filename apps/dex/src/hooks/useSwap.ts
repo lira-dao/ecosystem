@@ -35,6 +35,6 @@ export function useSwap(pair: [`0x${string}`, `0x${string}`], amountIn: bigint) 
     ...rest,
     ...confirmed,
     write,
-    isLoading: rest.isPending || confirmed.isLoading
+    isPending: rest.isPending || confirmed.isLoading
   };
 }

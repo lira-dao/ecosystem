@@ -10,8 +10,8 @@ export function useBalance(address: `0x${string}`, owner?: `0x${string}`) {
     args: [owner as `0x${string}`],
     query: {
       enabled: !!address && !!owner,
-    }
-  })
+    },
+  });
 
-  return balance.data
+  return balance;
 }

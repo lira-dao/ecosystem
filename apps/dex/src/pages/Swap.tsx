@@ -50,6 +50,7 @@ export function Swap() {
     isDisabled: isDisabledA,
     setIsDisabled: setIsDisabledA,
   } = useCurrency(currencies[0]);
+
   const {
     currency: currencyB,
     setCurrency: setCurrencyB,
@@ -65,57 +66,48 @@ export function Swap() {
 
   const allowance1 = useAllowance(currencyA.address, addresses.arbitrumSepolia.router);
 
-  const [isAllowCurrencyADisabled, setIsAllowCurrencyADisabled] = useState<boolean>(false);
   const [isSwapDisabled, setIsSwapDisabled] = useState<boolean>(true);
 
   const balanceA = useBalance(addresses.arbitrumSepolia.ldt, account.address);
   const balanceB = useBalance(addresses.arbitrumSepolia.weth, account.address);
 
-  const [amoutOut, setAmountOut] = useState<bigint>(0n);
+  const [amountOut, setAmountOut] = useState<bigint>(0n);
   const [amountIn, setAmountIn] = useState<bigint>(0n);
 
-  const amountsOut = useGetAmountsOut([currencyA.address, currencyB.address], amoutOut);
+  const amountsOut = useGetAmountsOut([currencyA.address, currencyB.address], amountOut);
   const amountsIn = useGetAmountsIn([currencyA.address, currencyB.address], amountIn);
 
-  const approve = useApprove(currencyA.address, addresses.arbitrumSepolia.router, parseUnits(firstValue.toString(), 18));
+  const approve = useApprove(currencyA.address, addresses.arbitrumSepolia.router, parseUnits(firstValue.toString(), currencyA.decimals));
 
-  const swap = useSwap([currencyA.address, currencyB.address], parseUnits(firstValue.toString(), 18));
+  const swap = useSwap([currencyA.address, currencyB.address], parseUnits(firstValue.toString(), currencyA.decimals));
+
+  const isAllowCurrencyADisabled = useMemo(() => approve.isPending || allowance1.isPending, [approve, allowance1]);
 
   const needAllowance = useMemo(() =>
-      parseUnits(firstValue.toString(), 18) > 0 &&
+      parseUnits(firstValue.toString(), currencyA.decimals) > 0 &&
       allowance1.data !== undefined &&
-      allowance1.data < parseUnits(firstValue.toString(), 18),
+      allowance1.data < parseUnits(firstValue.toString(), currencyA.decimals),
     [allowance1, firstValue]);
-
-  console.log('isAllowCurrencyADisabled', isAllowCurrencyADisabled);
 
   useEffect(() => {
     if (amountsOut.data) {
-      setSecondValue(formatUnits(amountsOut.data[1], 18));
+      setSecondValue(formatUnits(amountsOut.data[1], currencyB.decimals));
     }
   }, [amountsOut.data]);
 
   useEffect(() => {
     if (amountsIn.data) {
-      setFirstValue(formatUnits(amountsIn.data[0], 18));
+      setFirstValue(formatUnits(amountsIn.data[0], currencyA.decimals));
     }
   }, [amountsIn.data]);
 
   useEffect(() => {
-    if (approve.isLoading || allowance1.isLoading) {
-      setIsAllowCurrencyADisabled(true);
-    } else {
-      setIsAllowCurrencyADisabled(false);
-    }
-  }, [approve.isLoading, allowance1.isLoading]);
-
-  useEffect(() => {
-    if (swap.isLoading) {
+    if (swap.isPending) {
       setIsSwapDisabled(true);
     } else {
       setIsSwapDisabled(false);
     }
-  }, [swap.isLoading]);
+  }, [swap.isPending]);
 
   useEffect(() => {
     if (approve.confirmed) {
@@ -134,6 +126,8 @@ export function Swap() {
         variant: 'success',
       });
       swap.reset();
+      balanceA.refetch();
+      balanceB.refetch();
       setFirstValue('');
       setSecondValue('');
     }
@@ -146,13 +140,13 @@ export function Swap() {
       setSecondValue('');
     }
 
-    setAmountOut(parseUnits(value, 18));
+    setAmountOut(parseUnits(value, currencyA.decimals));
   };
 
   const onCurrencyBChange = (value: string) => {
     setSecondValue(value);
     setFirstValue('');
-    setAmountIn(parseUnits(value, 18));
+    setAmountIn(parseUnits(value, currencyB.decimals));
   };
 
   const switchCurrencies = () => {
@@ -175,7 +169,7 @@ export function Swap() {
         <x.p fontSize="3xl">Swap</x.p>
       </x.div>
 
-      <SwapSection h="160px" mt={6} mb={4}>
+      <SwapSection mt={6} mb={4}>
         <InputPanel>
           <Container>
             <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
@@ -192,7 +186,7 @@ export function Swap() {
               />
 
               <x.div w="100%" display="flex" mt={2} justifyContent="flex-end">
-                <x.p color="gray155">{new Big(formatUnits(balanceA ?? 0n, 18)).toFixed(6)}</x.p>
+                <x.p color="gray155">{new Big(formatUnits(balanceA.data ?? 0n, currencyA.decimals)).toFixed(6)}</x.p>
               </x.div>
             </x.div>
           </Container>
@@ -214,7 +208,7 @@ export function Swap() {
         </BaseButton>
       </x.div>
 
-      <SwapSection h="160px" mt={4}>
+      <SwapSection mt={4}>
         <InputPanel>
           <Container>
             <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
@@ -231,7 +225,7 @@ export function Swap() {
               />
 
               <x.div w="100%" display="flex" justifyContent="flex-end" mt={2}>
-                <x.p color="gray155">{new Big(formatUnits(balanceB ?? 0n, 18)).toFixed(6)}</x.p>
+                <x.p color="gray155">{new Big(formatUnits(balanceB.data ?? 0n, currencyB.decimals)).toFixed(6)}</x.p>
               </x.div>
             </x.div>
           </Container>

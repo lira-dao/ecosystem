@@ -16,10 +16,16 @@ import { useAllowance } from '../hooks/useAllowance';
 import { useApprove } from '../hooks/useApprove';
 import { useAddLiquidity } from '../hooks/useAddLiquidity';
 import Big from 'big.js';
+import { Currency } from '../types';
+import BigNumber from 'bignumber.js';
 
 
 export function AddLiquidity() {
   const account = useAccount();
+
+  const [currencyA, setCurrencyA] = useState<Currency>(currencies[0]);
+  const [currencyB, setCurrencyB] = useState<Currency>(currencies[1]);
+
   const [firstValue, setFirstValue] = useState<number | string>('');
   const [secondValue, setSecondValue] = useState<number | string>('');
 
@@ -27,21 +33,18 @@ export function AddLiquidity() {
   const [isAllowCurrencyBDisabled, setIsAllowCurrencyBDisabled] = useState<boolean>(false);
   const [isSupplyDisabled, setIsSupplyDisabled] = useState<boolean>(false);
 
-  const pair = usePair(currencies[0], currencies[1]);
+  const pair = usePair(currencyA, currencyB);
 
-  const balanceA = useBalance(currencies[0].address, account.address);
-  const balanceB = useBalance(currencies[1].address, account.address);
+  const balanceA = useBalance(currencyA.address, account.address);
+  const balanceB = useBalance(currencyB.address, account.address);
 
-  const allowanceA = useAllowance(addresses.arbitrumSepolia.ldt, addresses.arbitrumSepolia.router);
-  const allowanceB = useAllowance(addresses.arbitrumSepolia.weth, addresses.arbitrumSepolia.router);
+  const allowanceA = useAllowance(currencyA.address, addresses.arbitrumSepolia.router);
+  const allowanceB = useAllowance(currencyB.address, addresses.arbitrumSepolia.router);
 
-  const approveA = useApprove(addresses.arbitrumSepolia.ldt, addresses.arbitrumSepolia.router, parseUnits(firstValue.toString(), 18));
-  const approveB = useApprove(addresses.arbitrumSepolia.weth, addresses.arbitrumSepolia.router, parseUnits(secondValue.toString(), 18));
+  const approveA = useApprove(currencyA.address, addresses.arbitrumSepolia.router, parseUnits(firstValue.toString(), currencyA.decimals));
+  const approveB = useApprove(currencyB.address, addresses.arbitrumSepolia.router, parseUnits(secondValue.toString(), currencyB.decimals));
 
-  const addLiquidity = useAddLiquidity(parseUnits(firstValue.toString(), 18), parseUnits(secondValue.toString(), 18));
-
-  console.log('allowanceA', allowanceA.data);
-  console.log('allowanceB', allowanceB.data);
+  const addLiquidity = useAddLiquidity(parseUnits(firstValue.toString(), currencyA.decimals), parseUnits(secondValue.toString(), currencyB.decimals));
 
   const onChangeValues = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === '') {
@@ -51,37 +54,37 @@ export function AddLiquidity() {
     }
 
     if (e.target.id === 'currencyA') {
-      updateFirstValue(e.target.value);
+      setFirstValue(e.target.value);
+      setSecondValue(
+        pair.priceCurrencyB.times(new BigNumber(e.target.value)).toString(),
+      );
     } else if (e.target.id === 'currencyB') {
-      setSecondValue(e.currentTarget.value);
-      setFirstValue((parseFloat(e.target.value) * parseFloat(pair.reserveA.toString())) / parseFloat(pair.reserveB.toString()));
+      setSecondValue(e.target.value);
+      setFirstValue(
+        pair.priceCurrencyA.times(new BigNumber(e.target.value)).toString(),
+      );
     }
-  };
-
-  const updateFirstValue = (value: string) => {
-    setFirstValue(value);
-    setSecondValue((parseFloat(value) * parseFloat(pair.reserveB.toString())) / parseFloat(pair.reserveA.toString()));
   };
 
   return (
     <x.div w="100%" maxWidth="480px" border="1px solid" borderColor="white-a10" borderRadius="16px" padding={4}>
       <x.div display="flex" justifyContent="center" mt={2}>
-        <x.p>Add Liquidity</x.p>
+        <x.p fontSize="3xl">Add Liquidity</x.p>
       </x.div>
 
       <SwapSection mt={6} mb={4}>
         <InputPanel>
           <Container>
-            <x.div display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
+            <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
               <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
                 <x.p color="gray155" userSelect="none">Deposit</x.p>
-                <CurrencySelector disabled={false} selected={false} currency={currencies[0]} />
+                <CurrencySelector disabled={false} selected={false} currency={currencyA} />
               </x.div>
 
               <NumericalInput id="currencyA" disabled={false} value={firstValue} onChange={onChangeValues} />
 
-              <x.div display="flex" justifyContent="space-between" mt={2}>
-                <x.p color="gray155">{new Big(formatUnits(balanceA ?? 0n, 18)).toFixed(6)}</x.p>
+              <x.div w="100%" display="flex" mt={2} justifyContent="flex-end">
+                <x.p color="gray155">{new Big(formatUnits(balanceA.data ?? 0n, currencyA.decimals)).toFixed(6)}</x.p>
               </x.div>
             </x.div>
           </Container>
@@ -91,16 +94,17 @@ export function AddLiquidity() {
       <SwapSection mt={6} mb={4}>
         <InputPanel>
           <Container>
-            <x.div display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
+            <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
               <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
                 <x.p color="gray155" userSelect="none">Deposit</x.p>
-                <CurrencySelector disabled={false} selected={false} currency={currencies[1]} />
+                <CurrencySelector disabled={false} selected={false} currency={currencyB} />
               </x.div>
 
               <NumericalInput id="currencyB" disabled={false} value={secondValue} onChange={onChangeValues} />
-            </x.div>
-            <x.div mt={2}>
-              <x.p color="gray155">{new Big(formatUnits(balanceB ?? 0n, 18)).toFixed(6)}</x.p>
+
+              <x.div w="100%" display="flex" mt={2} justifyContent="flex-end">
+                <x.p color="gray155">{new Big(formatUnits(balanceB.data ?? 0n, currencyB.decimals)).toFixed(6)}</x.p>
+              </x.div>
             </x.div>
           </Container>
         </InputPanel>
@@ -111,8 +115,8 @@ export function AddLiquidity() {
 
         <x.div>
           <x.div>
-            <x.p>1 {currencies[0].symbol} = {pair.priceCurrencyA} {currencies[1].symbol}</x.p>
-            <x.p>1 {currencies[1].symbol} = {pair.priceCurrencyB} {currencies[0].symbol}</x.p>
+            <x.p>1 {currencyA.symbol} = {pair.priceCurrencyA.toString()} {currencyB.symbol}</x.p>
+            <x.p>1 {currencyB.symbol} = {pair.priceCurrencyB.toString()} {currencyA.symbol}</x.p>
           </x.div>
           <x.div></x.div>
         </x.div>
@@ -123,12 +127,12 @@ export function AddLiquidity() {
           disabled={isAllowCurrencyADisabled}
           onClick={() => approveA.write()}
           mr={4}
-        >Approve {currencies[0].symbol}</PrimaryButton>
+        >Approve {currencyA.symbol}</PrimaryButton>
         <PrimaryButton
           disabled={isAllowCurrencyBDisabled}
           onClick={() => approveB.write()}
           ml={4}
-        >Approve {currencies[1].symbol}</PrimaryButton>
+        >Approve {currencyB.symbol}</PrimaryButton>
       </x.div>
 
       <PrimaryButton disabled={isSupplyDisabled} onClick={() => addLiquidity.write()}>Supply</PrimaryButton>

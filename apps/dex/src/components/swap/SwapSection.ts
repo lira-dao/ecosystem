@@ -2,6 +2,7 @@ import styled from '@xstyled/styled-components';
 
 
 export const SwapSection = styled.box`
+  height: 160px;
   display: flex;
   align-items: center;
   background-color: eerie-black;
@@ -9,7 +10,6 @@ export const SwapSection = styled.box`
   color: white;
   font-size: 14px;
   font-weight: 500;
-  height: 120px;
   line-height: 20px;
   padding: 16px;
   position: relative;

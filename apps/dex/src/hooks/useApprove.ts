@@ -20,6 +20,6 @@ export function useApprove(address: EthereumAddress, spender: EthereumAddress, v
     ...rest,
     ...confirmed,
     write,
-    isLoading: rest.isPending || confirmed.isLoading,
+    isPending: rest.isPending || confirmed.isLoading,
   };
 }
