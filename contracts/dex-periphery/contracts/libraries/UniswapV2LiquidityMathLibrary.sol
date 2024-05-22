@@ -1,7 +1,7 @@
 pragma solidity >=0.5.0;
 
-import '@uniswap/v2-core/contracts/interfaces/IUniswapV2Pair.sol';
-import '@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol';
+import '@lira-dao/dex-core/contracts/interfaces/IUniswapV2Pair.sol';
+import '@lira-dao/dex-core/contracts/interfaces/IUniswapV2Factory.sol';
 import '@uniswap/lib/contracts/libraries/Babylonian.sol';
 import '@uniswap/lib/contracts/libraries/FullMath.sol';
 
@@ -45,7 +45,8 @@ library UniswapV2LiquidityMathLibrary {
         address tokenA,
         address tokenB,
         uint256 truePriceTokenA,
-        uint256 truePriceTokenB
+        uint256 truePriceTokenB,
+        uint256 fee
     ) view internal returns (uint256 reserveA, uint256 reserveB) {
         // first get reserves before the swap
         (reserveA, reserveB) = UniswapV2Library.getReserves(factory, tokenA, tokenB);
@@ -61,11 +62,11 @@ library UniswapV2LiquidityMathLibrary {
 
         // now affect the trade to the reserves
         if (aToB) {
-            uint amountOut = UniswapV2Library.getAmountOut(amountIn, reserveA, reserveB);
+            uint amountOut = UniswapV2Library.getAmountOut(amountIn, reserveA, reserveB, fee);
             reserveA += amountIn;
             reserveB -= amountOut;
         } else {
-            uint amountOut = UniswapV2Library.getAmountOut(amountIn, reserveB, reserveA);
+            uint amountOut = UniswapV2Library.getAmountOut(amountIn, reserveB, reserveA, fee);
             reserveB += amountIn;
             reserveA -= amountOut;
         }
@@ -119,7 +120,8 @@ library UniswapV2LiquidityMathLibrary {
         address tokenB,
         uint256 truePriceTokenA,
         uint256 truePriceTokenB,
-        uint256 liquidityAmount
+        uint256 liquidityAmount,
+        uint256 fee
     ) internal view returns (
         uint256 tokenAAmount,
         uint256 tokenBAmount
@@ -132,7 +134,7 @@ library UniswapV2LiquidityMathLibrary {
         // this also checks that totalSupply > 0
         require(totalSupply >= liquidityAmount && liquidityAmount > 0, 'ComputeLiquidityValue: LIQUIDITY_AMOUNT');
 
-        (uint reservesA, uint reservesB) = getReservesAfterArbitrage(factory, tokenA, tokenB, truePriceTokenA, truePriceTokenB);
+        (uint reservesA, uint reservesB) = getReservesAfterArbitrage(factory, tokenA, tokenB, truePriceTokenA, truePriceTokenB, fee);
 
         return computeLiquidityValue(reservesA, reservesB, totalSupply, liquidityAmount, feeOn, kLast);
     }

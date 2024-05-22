@@ -16,7 +16,6 @@ export function Pool() {
   const reserves = useReserves();
   const dexPairs = useDexPairs();
 
-
   return (
     <x.div display="flex" w="100%" flexDirection="column" maxWidth="680px" p={4}>
       <x.div display="flex" alignItems="center" justifyContent="space-between">

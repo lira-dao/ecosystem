@@ -74,6 +74,7 @@ const experimentalConfig = createConfig({
     blast,
 
     // testnets
+    arbitrumSepolia,
     sepolia,
     holesky,
     bscTestnet,
@@ -92,6 +93,7 @@ const experimentalConfig = createConfig({
     [blast.id]: http(),
 
     // testnets
+    [arbitrumSepolia.id]: http(),
     [sepolia.id]: http(),
     [holesky.id]: http(),
     [bscTestnet.id]: http(),

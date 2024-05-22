@@ -9,8 +9,9 @@ export async function mockWbtcFixture() {
 
   const wbtcFactory = new hre.ethers.ContractFactory<[], MockWBTC>(WBTCArtifact.abi, WBTCArtifact.bytecode, owner);
   const wbtc = await wbtcFactory.deploy();
+  const wbtcAddress = await wbtc.getAddress();
 
-  return { wbtc };
+  return { wbtc, wbtcAddress };
 }
 
 export async function mockWethFixture() {
@@ -18,6 +19,7 @@ export async function mockWethFixture() {
 
   const wethFactory = new hre.ethers.ContractFactory<[], MockWETH>(WETHArtifact.abi, WETHArtifact.bytecode, owner);
   const weth = await wethFactory.deploy();
+  const wethAddress = await weth.getAddress();
 
-  return { weth, owner };
+  return { weth, wethAddress, owner };
 }

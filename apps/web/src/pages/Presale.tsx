@@ -134,65 +134,69 @@ export function Presale() {
     <ThemeProvider theme={theme}>
       <Col minHeight="100vh" marginX={40} alignItems="center">
         <Col textAlign="center">
-          {roundData && <Typography as="h3" margin={0} mb={50}>Phase {roundData.number.toString()}</Typography>}
-          {roundData && <Countdown date={new Date(Number(roundData.end) * 1000)} />}
+          <Typography as="h3" margin={0} mb={50}>Presale Is Over!</Typography>
+          <Typography as="h5" margin={0} mb={50}>You can soon swap tokens through the LIRA DEX!</Typography>
         </Col>
+        {/*<Col textAlign="center">*/}
+        {/*  {roundData && <Typography as="h3" margin={0} mb={50}>Phase {roundData.number.toString()}</Typography>}*/}
+        {/*  {roundData && <Countdown date={new Date(Number(roundData.end) * 1000)} />}*/}
+        {/*</Col>*/}
 
-        {isConnected ? (
-          <>
-            {chainId !== Number(process.env.REACT_APP_CHAIN_ID) ? (
-              <Col alignItems="center" textAlign="center">
-                <Typography mt={80} mb={80}>Please switch to the <b>Arbitrum One</b> network to participate in the Presale and
-                  access LIRA DAO features.</Typography>
-              </Col>
-            ) : buyIsPending ? (
-              <Typography mt={80}>Transaction is pending, please confirm on metamask</Typography>
-            ) : buyIsSuccess ? (
-              <>
-                <Typography mt={80} mb={80}>Transaction success!</Typography>
-                <StyledButton onClick={onGoBackClick}>
-                  <Typography color="white" margin={0} flexGrow={1}>Go Back</Typography>
-                </StyledButton>
-              </>
-            ) : (
-              <>
-                <Col width={1} alignItems="center" my={60}>
-                  <Row width={1 / 3} mt={20} mb={10} alignItems="center" justifyContent="center">
-                    <StyledInput id="amount" name="amount" type="number" value={amount} onChange={handleChange} />
-                    <Typography as="h6" color="white" margin={0} marginLeft={12}>ETH</Typography>
-                  </Row>
+        {/*{isConnected ? (*/}
+        {/*  <>*/}
+        {/*    {chainId !== Number(process.env.REACT_APP_CHAIN_ID) ? (*/}
+        {/*      <Col alignItems="center" textAlign="center">*/}
+        {/*        <Typography mt={80} mb={80}>Please switch to the <b>Arbitrum One</b> network to participate in the Presale and*/}
+        {/*          access LIRA DAO features.</Typography>*/}
+        {/*      </Col>*/}
+        {/*    ) : buyIsPending ? (*/}
+        {/*      <Typography mt={80}>Transaction is pending, please confirm on metamask</Typography>*/}
+        {/*    ) : buyIsSuccess ? (*/}
+        {/*      <>*/}
+        {/*        <Typography mt={80} mb={80}>Transaction success!</Typography>*/}
+        {/*        <StyledButton onClick={onGoBackClick}>*/}
+        {/*          <Typography color="white" margin={0} flexGrow={1}>Go Back</Typography>*/}
+        {/*        </StyledButton>*/}
+        {/*      </>*/}
+        {/*    ) : (*/}
+        {/*      <>*/}
+        {/*        <Col width={1} alignItems="center" my={60}>*/}
+        {/*          <Row width={1 / 3} mt={20} mb={10} alignItems="center" justifyContent="center">*/}
+        {/*            <StyledInput id="amount" name="amount" type="number" value={amount} onChange={handleChange} />*/}
+        {/*            <Typography as="h6" color="white" margin={0} marginLeft={12}>ETH</Typography>*/}
+        {/*          </Row>*/}
 
-                  <Row width={1 / 3} mt={20} mb={10} alignItems="center" justifyContent="center">
-                    <StyledInput id="ldt-amount" name="ldt-amount" type="number" value={ldtAmount} disabled />
-                    <Typography as="h6" color="white" margin={0} marginLeft={12}>LDT</Typography>
-                  </Row>
+        {/*          <Row width={1 / 3} mt={20} mb={10} alignItems="center" justifyContent="center">*/}
+        {/*            <StyledInput id="ldt-amount" name="ldt-amount" type="number" value={ldtAmount} disabled />*/}
+        {/*            <Typography as="h6" color="white" margin={0} marginLeft={12}>LDT</Typography>*/}
+        {/*          </Row>*/}
 
-                  {roundData ? (
-                    <Row width={[1, 1 / 3]}>
-                      <Typography>
-                        Enjoy your purchase in the current presale phase. Grab your tokens now!
-                      </Typography>
-                    </Row>
-                  ) : null}
+        {/*          {roundData ? (*/}
+        {/*            <Row width={[1, 1 / 3]}>*/}
+        {/*              <Typography>*/}
+        {/*                Enjoy your purchase in the current presale phase. Grab your tokens now!*/}
+        {/*              </Typography>*/}
+        {/*            </Row>*/}
+        {/*          ) : null}*/}
 
-                  {error ? <Typography color="red">{error}</Typography> : null}
-                </Col>
+        {/*          {error ? <Typography color="red">{error}</Typography> : null}*/}
+        {/*        </Col>*/}
 
-                <Col alignItems="center">
-                  <img onClick={buy} style={{ cursor: 'pointer' }} src={button} width={300} alt="Buy LDT" />
-                  <Col my={20} />
-                  <AddToMetamaskButton onClick={addLiraDaoToken}>
-                    <img src={metamaskFox} alt="metamask icon" width={24} style={{marginRight: 12}} />Add To Metamask
-                  </AddToMetamaskButton>
-                </Col>
-              </>
-            )}
-          </>
-        ) : (
-          <Row mt={80}>
-            <Typography>Connect your wallet to access the LIRA DAO platform and participate in the Presale!</Typography>
-          </Row>
-        )}
+        {/*        <Col alignItems="center">*/}
+        {/*          <img onClick={buy} style={{ cursor: 'pointer' }} src={button} width={300} alt="Buy LDT" />*/}
+        {/*          <Col my={20} />*/}
+        {/*          <AddToMetamaskButton onClick={addLiraDaoToken}>*/}
+        {/*            <img src={metamaskFox} alt="metamask icon" width={24} style={{marginRight: 12}} />Add To Metamask*/}
+        {/*          </AddToMetamaskButton>*/}
+        {/*        </Col>*/}
+        {/*      </>*/}
+        {/*    )}*/}
+        {/*  </>*/}
+        {/*) : (*/}
+        {/*  <Row mt={80}>*/}
+        {/*    <Typography>Connect your wallet to access the LIRA DAO platform and participate in the Presale!</Typography>*/}
+        {/*  </Row>*/}
+        {/*)}*/}
       </Col>
     </ThemeProvider>
   );

@@ -1,5 +1,5 @@
 {
-  "name": "@satoshi-lira/treasury-tokens",
+  "name": "@lira-dao/treasury-tokens",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",

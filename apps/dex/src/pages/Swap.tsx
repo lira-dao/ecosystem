@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import Big from 'big.js';
 import { useTheme, x } from '@xstyled/styled-components';
 import { NumericalInput } from '../components/StyledInput';
 import { CurrencySelector } from '../components/CurrencySelector';
@@ -10,7 +11,6 @@ import { currencies } from '../utils';
 import { useGetAmountsIn, useGetAmountsOut } from '../hooks/useGetAmountsOut';
 import { formatUnits, parseUnits } from 'viem';
 import { useApprove } from '../hooks/useApprove';
-import { addresses } from '@lira-dao/web3-utils';
 import { useSwap } from '../hooks/useSwap';
 import { Currency } from '../types';
 import repeatIcon from '../img/fa-repeat.svg';
@@ -19,15 +19,11 @@ import { PacmanLoader } from 'react-spinners';
 import { useAllowance } from '../hooks/useAllowance';
 import { useSnackbar } from 'notistack';
 import { useBalance } from '../hooks/useBalance';
-import { useAccount } from 'wagmi';
-import Big from 'big.js';
 import { useDexAddresses } from '../hooks/useDexAddresses';
 
 
 export function useCurrency(c: Currency) {
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
-  const [inputValue, setInputValue] = useState<string>('');
-  const [value, setValue] = useState<Big.Big>(new Big('0'));
   const [currency, setCurrency] = useState<Currency>(c);
 
 
@@ -74,6 +70,9 @@ export function Swap() {
 
   const amountsOut = useGetAmountsOut([currencyA.address, currencyB.address], amountOut);
   const amountsIn = useGetAmountsIn([currencyA.address, currencyB.address], amountIn);
+
+  console.log('amountsOut', amountsOut);
+  console.log('amountsIn', amountsIn);
 
   const approve = useApprove(currencyA.address, dexAddresses.router, parseUnits(firstValue.toString(), currencyA.decimals));
 

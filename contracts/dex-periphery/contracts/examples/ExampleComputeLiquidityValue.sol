@@ -16,14 +16,16 @@ contract ExampleComputeLiquidityValue {
         address tokenA,
         address tokenB,
         uint256 truePriceTokenA,
-        uint256 truePriceTokenB
+        uint256 truePriceTokenB,
+        uint256 fee
     ) external view returns (uint256 reserveA, uint256 reserveB) {
         return UniswapV2LiquidityMathLibrary.getReservesAfterArbitrage(
             factory,
             tokenA,
             tokenB,
             truePriceTokenA,
-            truePriceTokenB
+            truePriceTokenB,
+            fee
         );
     }
 
@@ -50,7 +52,8 @@ contract ExampleComputeLiquidityValue {
         address tokenB,
         uint256 truePriceTokenA,
         uint256 truePriceTokenB,
-        uint256 liquidityAmount
+        uint256 liquidityAmount,
+        uint256 fee
     ) external view returns (
         uint256 tokenAAmount,
         uint256 tokenBAmount
@@ -61,7 +64,8 @@ contract ExampleComputeLiquidityValue {
             tokenB,
             truePriceTokenA,
             truePriceTokenB,
-            liquidityAmount
+            liquidityAmount,
+            fee
         );
     }
 
@@ -71,7 +75,8 @@ contract ExampleComputeLiquidityValue {
         address tokenB,
         uint256 truePriceTokenA,
         uint256 truePriceTokenB,
-        uint256 liquidityAmount
+        uint256 liquidityAmount,
+        uint256 fee
     ) external view returns (
         uint256
     ) {
@@ -82,7 +87,8 @@ contract ExampleComputeLiquidityValue {
             tokenB,
             truePriceTokenA,
             truePriceTokenB,
-            liquidityAmount
+            liquidityAmount,
+            fee
         );
         uint gasAfter = gasleft();
         return gasBefore - gasAfter;

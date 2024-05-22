@@ -1,6 +1,6 @@
 pragma solidity =0.6.6;
 
-import '@uniswap/v2-core/contracts/interfaces/IUniswapV2Factory.sol';
+import '@lira-dao/dex-core/contracts/interfaces/IUniswapV2Factory.sol';
 import '@uniswap/lib/contracts/libraries/TransferHelper.sol';
 
 import './libraries/UniswapV2Library.sol';
@@ -262,12 +262,12 @@ contract UniswapV2Router01 is IUniswapV2Router01 {
         return UniswapV2Library.quote(amountA, reserveA, reserveB);
     }
 
-    function getAmountOut(uint amountIn, uint reserveIn, uint reserveOut) public pure override returns (uint amountOut) {
-        return UniswapV2Library.getAmountOut(amountIn, reserveIn, reserveOut);
+    function getAmountOut(uint amountIn, uint reserveIn, uint reserveOut, uint fee) public pure override returns (uint amountOut) {
+        return UniswapV2Library.getAmountOut(amountIn, reserveIn, reserveOut, fee);
     }
 
-    function getAmountIn(uint amountOut, uint reserveIn, uint reserveOut) public pure override returns (uint amountIn) {
-        return UniswapV2Library.getAmountOut(amountOut, reserveIn, reserveOut);
+    function getAmountIn(uint amountOut, uint reserveIn, uint reserveOut, uint fee) public pure override returns (uint amountIn) {
+        return UniswapV2Library.getAmountOut(amountOut, reserveIn, reserveOut, fee);
     }
 
     function getAmountsOut(uint amountIn, address[] memory path) public view override returns (uint[] memory amounts) {

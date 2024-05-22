@@ -208,7 +208,7 @@ contract UniswapV2Pair is IUniswapV2Pair, UniswapV2ERC20 {
 
     // set pair fees
     function setFee(uint _fee) external onlyDao {
-        require(_fee >= 1 && fee <= 10, 'UniswapV2: FEE');
+        require(_fee >= 1 && _fee <= 10, 'UniswapV2: FEE');
         fee = _fee;
     }
 }
