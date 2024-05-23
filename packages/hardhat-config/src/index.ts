@@ -28,7 +28,7 @@ export const networks = {
     accounts: [process.env.DEPLOYER_PRIVATE_KEY || ''],
   },
 
-  arbitrumOne: {
+  arbitrum: {
     url: process.env.INFURA_ARBITRUM,
     accounts: [process.env.DEPLOYER_PRIVATE_KEY],
   }
