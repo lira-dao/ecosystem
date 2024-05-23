@@ -1,19 +1,22 @@
 import { useReadContract } from 'wagmi';
 import { Currency } from '../types';
-import { dexFactoryV2Abi, dexPairV2Abi } from '@lira-dao/web3-utils';
+import { dexFactoryV2Abi, dexPairV2Abi, EthereumAddress } from '@lira-dao/web3-utils';
 import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
 import { useDexAddresses } from './useDexAddresses';
 
 
-export function usePair(currencyA: Currency, currencyB: Currency) {
+export function usePair(currencyA: Currency, currencyB?: Currency) {
   const dexAddresses = useDexAddresses();
 
   const pair = useReadContract({
     abi: dexFactoryV2Abi,
     address: dexAddresses.factory,
     functionName: 'getPair',
-    args: [currencyA.address, currencyB.address],
+    args: [currencyA.address, currencyB?.address as EthereumAddress],
+    query: {
+      enabled: !!currencyA && !! currencyB,
+    }
   });
 
   const reserves = useReadContract({

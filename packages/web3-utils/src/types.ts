@@ -1,5 +1,17 @@
 export type EthereumAddress = `0x${string}`;
 
+
+export interface Currency {
+  address: EthereumAddress;
+  chainId: number;
+  decimals: number;
+  icon: string;
+  isNative: boolean;
+  name: string;
+  paired: string[];
+  symbol: string;
+}
+
 export type AddressList = {
   [id: string]: EthereumAddress,
 }

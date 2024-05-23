@@ -6,15 +6,20 @@ import { useReserves } from '../hooks/useReserves';
 import BigNumber from 'bignumber.js';
 import { formatUnits } from 'viem';
 import { useDexPairs } from '../hooks/useDexPairs';
-import { getCurrencyByAddress } from '../utils';
+import { getCurrencies, getCurrencyByAddress } from '../utils';
+import { useChainId } from 'wagmi';
 
 
 export function Pool() {
   const th = useTheme();
+  const chainId = useChainId();
+  const currencies = getCurrencies(chainId)
   const navigate = useNavigate();
   const { data } = useGetBalances();
   const reserves = useReserves();
   const dexPairs = useDexPairs();
+
+  console.log('dexPairs', dexPairs)
 
   return (
     <x.div display="flex" w="100%" flexDirection="column" maxWidth="680px" p={4}>

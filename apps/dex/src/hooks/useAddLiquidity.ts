@@ -4,7 +4,7 @@ import { useDexAddresses } from './useDexAddresses';
 import { Currency } from '../types';
 
 
-export function useAddLiquidity(currencyA: Currency, amountA: bigint, currencyB: Currency, amountB: bigint) {
+export function useAddLiquidity(currencyA: Currency, amountA: bigint, currencyB?: Currency, amountB?: bigint) {
   const account = useAccount();
   const block = useBlock();
   const dexAddresses = useDexAddresses();
@@ -13,7 +13,7 @@ export function useAddLiquidity(currencyA: Currency, amountA: bigint, currencyB:
   const { writeContract } = useWriteContract();
 
   const write = () => {
-    if (account.address) {
+    if (account.address && currencyB && amountB) {
       writeContract({
         abi: dexRouterV2Abi,
         address: dexAddresses.router,

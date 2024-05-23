@@ -2,7 +2,7 @@ import { useAccount, useReadContract } from 'wagmi';
 import { erc20Abi, EthereumAddress } from '@lira-dao/web3-utils';
 
 
-export function useBalance(address: EthereumAddress) {
+export function useBalance(address?: EthereumAddress) {
   const account = useAccount();
 
   return useReadContract({

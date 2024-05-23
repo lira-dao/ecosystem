@@ -7,7 +7,7 @@ import { PrimaryButton } from '../components/PrimaryButton';
 import { SwapSection } from '../components/swap/SwapSection';
 import { InputPanel } from '../components/swap/InputPanel';
 import { Container } from '../components/swap/Container';
-import { currencies } from '../utils';
+import { getCurrencies } from '../utils';
 import { useGetAmountsIn, useGetAmountsOut } from '../hooks/useGetAmountsOut';
 import { formatUnits, parseUnits } from 'viem';
 import { useApprove } from '../hooks/useApprove';
@@ -20,6 +20,7 @@ import { useAllowance } from '../hooks/useAllowance';
 import { useSnackbar } from 'notistack';
 import { useBalance } from '../hooks/useBalance';
 import { useDexAddresses } from '../hooks/useDexAddresses';
+import { useChainId } from 'wagmi';
 
 
 export function useCurrency(c: Currency) {
@@ -37,6 +38,7 @@ export function useCurrency(c: Currency) {
 
 export function Swap() {
   const th = useTheme();
+  const chainId = useChainId();
   const dexAddresses = useDexAddresses();
   const { enqueueSnackbar } = useSnackbar();
 
@@ -45,14 +47,14 @@ export function Swap() {
     setCurrency: setCurrencyA,
     isDisabled: isDisabledA,
     setIsDisabled: setIsDisabledA,
-  } = useCurrency(currencies[0]);
+  } = useCurrency(getCurrencies(chainId)[0]);
 
   const {
     currency: currencyB,
     setCurrency: setCurrencyB,
     isDisabled: isDisabledB,
     setIsDisabled: setIsDisabledB,
-  } = useCurrency(currencies[1]);
+  } = useCurrency(getCurrencies(chainId)[1]);
 
   const [firstValue, setFirstValue] = useState<number | string>('');
   const [secondValue, setSecondValue] = useState<number | string>('');

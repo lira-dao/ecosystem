@@ -6,12 +6,16 @@ import { useWatchTransaction } from './useWatchTransaction';
 export function useApprove(address: EthereumAddress, spender: EthereumAddress, value: bigint) {
   const { writeContract, ...rest } = useWriteContract();
 
-  const write = () => writeContract({
-    abi: erc20Abi,
-    address,
-    functionName: 'approve',
-    args: [spender, value],
-  });
+  const write = () => {
+    if (address && spender) {
+      writeContract({
+        abi: erc20Abi,
+        address,
+        functionName: 'approve',
+        args: [spender, value],
+      });
+    }
+  };
 
   const confirmed = useWatchTransaction(rest.data);
 

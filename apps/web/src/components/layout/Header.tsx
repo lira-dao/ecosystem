@@ -1,11 +1,10 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 import { Row } from '@lira-dao/ui';
-import { ConnectButton } from '../../ConnectButton/ConnectButton';
-import { GlobalStyles, Typography } from '../../ui';
-import logo from '../../../img/logo.svg';
-import button from '../../../img/buy-ldt.svg';
-import theme from '../../../theme';
+import { GlobalStyles, Typography } from '../ui';
+import logo from '../../img/logo-dao.png';
+import button from '../../img/enter-app.svg';
+import theme from '../../theme';
 import React from 'react';
 
 
@@ -37,16 +36,6 @@ const StyledMenuItem = styled(Typography)`
     color: ${props => props.theme.colors.primary};
   }
 `;
-
-const StyledButton = styled(Row)`
-  padding: 13px 28px;
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 24px;
-  background: ${props => props.theme.colors.horizontalGreenToCyan};
-`;
-
-const isAppRoute = (pathname: string) => ['/presale'].includes(pathname);
 
 
 export function Header() {
@@ -80,20 +69,12 @@ export function Header() {
               TOKENS
             </StyledMenuItem>
           </NavLink>
-
-          {/*<NavLink to="/blockchain-data">*/}
-          {/*  <StyledMenuItem marginLeft={28}>*/}
-          {/*    BLOCKCHAIN DATA*/}
-          {/*  </StyledMenuItem>*/}
-          {/*</NavLink>*/}
         </Row>
 
         <Row width={1 / 3} justifyContent="flex-end" display={['none', 'none', 'none', 'flex']}>
-          {isAppRoute(location.pathname) ? <ConnectButton /> : (
-            <NavLink to="/presale">
-              <img src={button} width={200} alt="Buy LDT" />
-            </NavLink>
-          )}
+          <a href="https://dex.liradao.org" target="_blank" rel="noreferrer">
+            <img src={button} width={200} alt="Buy LDT" />
+          </a>
         </Row>
       </Row>
     </ThemeProvider>

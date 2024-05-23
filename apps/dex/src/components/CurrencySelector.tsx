@@ -8,7 +8,7 @@ import { Currency } from '../types';
 interface CurrencySelectorProps {
   disabled: boolean;
   selected: boolean;
-  currency: Currency;
+  currency?: Currency;
   onClick?: () => void;
 }
 
@@ -27,8 +27,8 @@ export function CurrencySelector({ currency, disabled, selected, onClick }: Curr
         userSelect="none"
         onClick={onClick}
       >
-        <CurrencyLogo size={24} logo={currency.icon} />
-        {currency.symbol}
+        {currency?.icon && <CurrencyLogo size={24} logo={currency.icon} />}
+        {currency ? currency.symbol : 'Select Coin'}
         <x.img src={dropdown} margin="0 0.25rem 0 0.35rem" />
       </BaseButton>
     </x.div>

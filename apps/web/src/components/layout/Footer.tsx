@@ -1,11 +1,11 @@
 import { NavLink } from 'react-router-dom';
 import styled, { ThemeProvider } from 'styled-components';
 import { Col, Row } from '@lira-dao/ui';
-import { Typography } from '../../ui';
-import logo from '../../../img/logo.svg';
-import twitter from '../../../img/twitter.svg';
-import discord from '../../../img/discord.svg';
-import theme from '../../../theme';
+import { Typography } from '../ui';
+import logo from '../../img/logo-dao.png';
+import twitter from '../../img/twitter.svg';
+import discord from '../../img/discord.svg';
+import theme from '../../theme';
 
 
 const StyledFooterTitle = styled(Typography)`

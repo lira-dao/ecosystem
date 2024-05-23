@@ -9,8 +9,7 @@ import { PresaleInfo } from './components/PresaleInfo';
 import { LiraInfo } from './components/LiraInfo';
 import { LiraPower } from './components/LiraPower';
 import { StyledDivider } from './components/StyledDivider';
-import { NavLink } from 'react-router-dom';
-import button from '../../img/buy-ldt.svg';
+import button from '../../img/enter-app.svg';
 
 
 export function Home() {
@@ -34,12 +33,12 @@ export function Home() {
           alignItems="center"
         >
           <StyledText as="h2" fontSize={['32px', '46px', '80px', '80px']} marginBottom={40} textAlign="center">
-            DEX <ColorWrap color="primary">OPEN</ColorWrap>
+            Join the LIRA <ColorWrap color="primary">DEX</ColorWrap>
           </StyledText>
 
-          <NavLink to="/presale">
+          <a href="https://dex.liradao.org" target="_blank" rel="noreferrer">
             <img src={button} width={300} alt="go to lira dex button" />
-          </NavLink>
+          </a>
         </Col>
 
         <Col
@@ -66,7 +65,7 @@ export function Home() {
           </Col>
         </Col>
 
-        <PresaleInfo />
+        {/*<PresaleInfo />*/}
 
         <LiraInfo />
 

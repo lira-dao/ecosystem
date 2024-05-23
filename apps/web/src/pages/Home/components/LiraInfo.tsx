@@ -40,7 +40,7 @@ const contentMarginBottom = [120, 120, 120, 120];
 
 export function LiraInfo() {
   return (
-    <Col maxWidth={maxWidth} margin="0 auto">
+    <Col maxWidth={maxWidth} margin="100px auto 0">
       <Col margin={containerMargin}>
         <Row flexDirection={['column', 'column', 'column', 'row']} marginBottom={contentMarginBottom}>
           <Image img={gradientLiraChain} />

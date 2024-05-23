@@ -9,50 +9,50 @@ import { CurrencySelector } from '../components/CurrencySelector';
 import { PrimaryButton } from '../components/PrimaryButton';
 import Modal from 'react-responsive-modal';
 
-
-const currencies: Currency[] = [{
-  name: 'Treasury Bond Bronze',
-  symbol: 'TBb',
-  icon: '/img/tb-logo.png',
-  address: '0x',
-  chainId: 0,
-  decimals: 18,
-}, {
-  name: 'Treasury Bond Silver',
-  symbol: 'TBs',
-  icon: '/img/tb-logo.png',
-  address: '0x',
-  chainId: 0,
-  decimals: 18,
-}, {
-  name: 'Treasury Bond Gold',
-  symbol: 'TBg',
-  icon: '/img/tb-logo.png',
-  address: '0x',
-  chainId: 0,
-  decimals: 18,
-}, {
-  name: 'LIRA Treasury Bond Bronze',
-  symbol: 'LTBb',
-  icon: '/img/tb-logo.png',
-  address: '0x',
-  chainId: 0,
-  decimals: 8,
-}, {
-  name: 'LIRA Treasury Bond Silver',
-  symbol: 'LTBs',
-  icon: '/img/tb-logo.png',
-  address: '0x',
-  chainId: 0,
-  decimals: 8,
-}, {
-  name: 'LIRA Treasury Bond Gold',
-  symbol: 'LTBg',
-  icon: '/img/tb-logo.png',
-  address: '0x',
-  chainId: 0,
-  decimals: 8,
-}];
+//
+// const currencies: Currency[] = [{
+//   name: 'Treasury Bond Bronze',
+//   symbol: 'TBb',
+//   icon: '/img/tb-logo.png',
+//   address: '0x',
+//   chainId: 0,
+//   decimals: 18,
+// }, {
+//   name: 'Treasury Bond Silver',
+//   symbol: 'TBs',
+//   icon: '/img/tb-logo.png',
+//   address: '0x',
+//   chainId: 0,
+//   decimals: 18,
+// }, {
+//   name: 'Treasury Bond Gold',
+//   symbol: 'TBg',
+//   icon: '/img/tb-logo.png',
+//   address: '0x',
+//   chainId: 0,
+//   decimals: 18,
+// }, {
+//   name: 'LIRA Treasury Bond Bronze',
+//   symbol: 'LTBb',
+//   icon: '/img/tb-logo.png',
+//   address: '0x',
+//   chainId: 0,
+//   decimals: 8,
+// }, {
+//   name: 'LIRA Treasury Bond Silver',
+//   symbol: 'LTBs',
+//   icon: '/img/tb-logo.png',
+//   address: '0x',
+//   chainId: 0,
+//   decimals: 8,
+// }, {
+//   name: 'LIRA Treasury Bond Gold',
+//   symbol: 'LTBg',
+//   icon: '/img/tb-logo.png',
+//   address: '0x',
+//   chainId: 0,
+//   decimals: 8,
+// }];
 
 const modalCustomStyles = {
   modal: {
@@ -76,16 +76,16 @@ export function Treasury() {
       <Modal open={open} onClose={() => setOpen(false)} styles={modalCustomStyles}>
         <x.h1 fontSize="xl">Select Token</x.h1>
         <x.div mt={8}>
-          {currencies.map((c, i) => (
-            <x.div key={i} display="flex" alignItems="center" my={4}>
-              <x.div>
-                <x.img src={c.icon} width={48} height={48} />
-              </x.div>
-              <x.div ml={4}>
-                <x.h1>{c.symbol}</x.h1>
-              </x.div>
-            </x.div>
-          ))}
+          {/*{currencies.map((c, i) => (*/}
+          {/*  <x.div key={i} display="flex" alignItems="center" my={4}>*/}
+          {/*    <x.div>*/}
+          {/*      <x.img src={c.icon} width={48} height={48} />*/}
+          {/*    </x.div>*/}
+          {/*    <x.div ml={4}>*/}
+          {/*      <x.h1>{c.symbol}</x.h1>*/}
+          {/*    </x.div>*/}
+          {/*  </x.div>*/}
+          {/*))}*/}
         </x.div>
       </Modal>
       <SwapSection>
@@ -97,12 +97,12 @@ export function Treasury() {
                 <NumericalInput id="currencyA" disabled={false} value={firstValue} />
               </x.div>
 
-              <CurrencySelector
-                disabled={false}
-                selected={false}
-                currency={currencies[0]}
-                onClick={() => setOpen(true)}
-              />
+              {/*<CurrencySelector*/}
+              {/*  disabled={false}*/}
+              {/*  selected={false}*/}
+              {/*  currency={currencies[0]}*/}
+              {/*  onClick={() => setOpen(true)}*/}
+              {/*/>*/}
             </x.div>
           </Container>
         </InputPanel>
@@ -116,7 +116,7 @@ export function Treasury() {
                 <NumericalInput id="currencyB" disabled={false} value={firstValue} />
               </x.div>
 
-              <CurrencySelector disabled={false} selected={false} currency={currencies[0]} />
+              {/*<CurrencySelector disabled={false} selected={false} currency={currencies[0]} />*/}
             </x.div>
 
           </Container>

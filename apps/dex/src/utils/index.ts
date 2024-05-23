@@ -1,7 +1,5 @@
 import MetaMaskSDK from '@metamask/sdk';
-import { Currency } from '../types';
-import { addresses, EthereumAddress } from '@lira-dao/web3-utils';
-import { useDexPairs } from '../hooks/useDexPairs';
+import { Currency, EthereumAddress, tokens } from '@lira-dao/web3-utils';
 
 
 const metamask = new MetaMaskSDK({});
@@ -59,29 +57,132 @@ export async function addWethToken() {
   );
 }
 
-export const currencies: Currency[] = [{
-  address: '0x2A5E22b32b3E0Daa7a8C199e10Df9D9E1264Fd3f',
+
+export const ethereumArbitrumOne: Currency = {
+  address: tokens[42161].weth,
   chainId: 42161,
-  name: 'LIRA DAO Token',
-  symbol: 'LDT',
-  icon: 'https://gateway.pinata.cloud/ipfs/QmQb1SsLMRdgUA1UPP5ZAn1ZryMifvFrKaUQGY1Mqdb3sy',
   decimals: 18,
-}, {
-  address: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+  icon: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png',
+  isNative: true,
+  name: 'Ether',
+  symbol: 'ETH',
+  paired: [
+    'LDT',
+  ],
+};
+
+export const wethArbitrumSepolia: Currency = {
+  address: tokens[421614].weth,
+  chainId: 421614,
+  name: 'Wrapped Ether',
+  symbol: 'WETH',
+  icon: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png',
+  decimals: 18,
+  isNative: false,
+  paired: [
+    'LDT',
+  ]
+};
+
+export const wethArbitrumOne: Currency = {
+  address: tokens[42161].weth,
   chainId: 42161,
   name: 'Wrapped Ether',
   symbol: 'WETH',
   icon: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png',
   decimals: 18,
-}, {
-  address: '0xA07ac236fEBc390c798504E927DC8D6a4e1FfcA3',
+  isNative: false,
+  paired: [
+    'LDT',
+  ]
+};
+
+export const ldtArbitrumSepolia: Currency = {
+  address: tokens[421614].ldt,
+  chainId: 421614,
+  name: 'LIRA DAO Token',
+  symbol: 'LDT',
+  icon: 'https://gateway.pinata.cloud/ipfs/QmQb1SsLMRdgUA1UPP5ZAn1ZryMifvFrKaUQGY1Mqdb3sy',
+  decimals: 18,
+  isNative: false,
+  paired: [
+    'ETH',
+    'WETH',
+  ]
+};
+
+export const ldtArbitrumOne: Currency = {
+  address: tokens[42161].ldt,
+  chainId: 42161,
+  name: 'LIRA DAO Token',
+  symbol: 'LDT',
+  icon: 'https://gateway.pinata.cloud/ipfs/QmQb1SsLMRdgUA1UPP5ZAn1ZryMifvFrKaUQGY1Mqdb3sy',
+  decimals: 18,
+  isNative: false,
+  paired: [
+    'ETH',
+    'WETH',
+  ],
+};
+
+export const liraArbitrumSepolia: Currency = {
+  address: tokens[42161].lira,
   chainId: 42161,
   name: 'Satoshi LIRA',
   symbol: 'LIRA',
   icon: 'https://gateway.pinata.cloud/ipfs/QmeDcLiQAZ5VB2s3rzjjMYafU88tVrXLgEsC4Qon7bTaRM',
   decimals: 8,
-}];
+  isNative: false,
+  paired: [
+    'LDT'
+  ]
+};
+
+export const liraArbitrumOne: Currency = {
+  address: tokens[421614].lira,
+  chainId: 421614,
+  name: 'Satoshi LIRA',
+  symbol: 'LIRA',
+  icon: 'https://gateway.pinata.cloud/ipfs/QmeDcLiQAZ5VB2s3rzjjMYafU88tVrXLgEsC4Qon7bTaRM',
+  decimals: 8,
+  isNative: false,
+  paired: [
+    'LDT',
+  ]
+};
+
+export const currenciesArbitrumSepolia: Currency[] = [
+  ldtArbitrumSepolia,
+  wethArbitrumSepolia,
+  // {
+  //   ...liraArbitrumSepolia,
+  //   paired: [
+  //     ldtArbitrumSepolia,
+  //   ],
+  // },
+];
+
+export const currenciesArbitrumOne: Currency[] = [
+  ldtArbitrumOne,
+  wethArbitrumOne,
+  // {
+  //   ...liraArbitrumOne,
+  //   paired: [
+  //     ldtArbitrumOne,
+  //   ],
+  // },
+];
+
+export function getCurrencies(chainId: number) {
+  switch (chainId) {
+    case 421614:
+      return currenciesArbitrumSepolia;
+    case 42161:
+    default:
+      return currenciesArbitrumOne;
+  }
+}
 
 export function getCurrencyByAddress(address: EthereumAddress) {
-  return currencies.find(c => c.address === address);
+  return [...currenciesArbitrumSepolia, ...currenciesArbitrumOne].find(c => c.address === address);
 }

@@ -156,9 +156,6 @@ importers:
       '@types/react-dom':
         specifier: ^18.2.22
         version: 18.3.0
-      '@web3modal/wagmi':
-        specifier: ^4.1.11
-        version: 4.2.0(@types/react@18.3.2)(@wagmi/connectors@4.3.9)(@wagmi/core@2.9.7)(react-dom@18.3.1)(react@18.3.1)(viem@2.8.18)
       localforage:
         specifier: ^1.10.0
         version: 1.10.0
@@ -198,12 +195,6 @@ importers:
       typescript:
         specifier: ^5.2.2
         version: 5.4.5
-      viem:
-        specifier: ^2.8.4
-        version: 2.8.18(typescript@5.4.5)
-      wagmi:
-        specifier: ^2.5.7
-        version: 2.8.7(@tanstack/react-query@5.36.0)(@types/react@18.3.2)(react-dom@18.3.1)(react-i18next@13.5.0)(react-native@0.71.19)(react@18.3.1)(rollup@2.79.1)(typescript@5.4.5)(viem@2.8.18)
       web-vitals:
         specifier: ^2.1.4
         version: 2.1.4
