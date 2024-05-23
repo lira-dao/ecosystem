@@ -13,11 +13,11 @@ export const router = createBrowserRouter([
     path: '/',
     element: <Layout />,
     children: [
-      { index: true, element: <Faucets /> },
+      { index: true, element: <Swap /> },
       { path: 'treasury', element: <Treasury /> },
       { path: 'pool', element: <Pool /> },
       { path: 'swap', element: <Swap /> },
-      { path: 'faucets', element: <Faucets /> },
+      // { path: 'faucets', element: <Faucets /> },
       { path: 'add-liquidity', element: <AddLiquidity /> },
       { path: '/remove-liquidity/:address', element: <RemoveLiquidity /> },
     ],

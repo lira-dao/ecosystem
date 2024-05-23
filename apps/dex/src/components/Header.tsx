@@ -70,13 +70,13 @@ export function Header() {
       </NavLink>
 
       <x.div ml={{ _: 0, lg: 8 }} display="flex" flexGrow={1}>
+        <MenuItem text="SWAP" to="swap" />
+        <MenuItem text="POOL" to="pool" />
         {/*<MenuItem text="TREASURY" to="treasury" />*/}
         {/*<MenuItem text="LIQUIDITY" to="liquidity" />*/}
         {/*<MenuItem text="FARMS" to="farms" />*/}
         {/*<MenuItem text="STACKING" to="stacking" />*/}
-        <MenuItem text="SWAP" to="swap" />
-        <MenuItem text="POOL" to="pool" />
-        <MenuItem text="FAUCETS" to="faucets" />
+        {/*<MenuItem text="FAUCETS" to="faucets" />*/}
       </x.div>
 
       <x.div display="flex">
