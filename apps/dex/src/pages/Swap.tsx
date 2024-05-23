@@ -26,7 +26,6 @@ export function useCurrency(c: Currency) {
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const [currency, setCurrency] = useState<Currency>(c);
 
-
   return {
     currency,
     isDisabled,
@@ -70,9 +69,6 @@ export function Swap() {
 
   const amountsOut = useGetAmountsOut([currencyA.address, currencyB.address], amountOut);
   const amountsIn = useGetAmountsIn([currencyA.address, currencyB.address], amountIn);
-
-  console.log('amountsOut', amountsOut);
-  console.log('amountsIn', amountsIn);
 
   const approve = useApprove(currencyA.address, dexAddresses.router, parseUnits(firstValue.toString(), currencyA.decimals));
 

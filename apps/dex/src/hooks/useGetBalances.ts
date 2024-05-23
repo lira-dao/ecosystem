@@ -26,10 +26,6 @@ export function useGetBalances() {
       ...pool,
       address: addresses[0],
       args: [account.address as EthereumAddress],
-    }, {
-      ...pool,
-      address: addresses[1],
-      args: [account.address as EthereumAddress],
     }],
     query: {
       enabled: !!account.address,

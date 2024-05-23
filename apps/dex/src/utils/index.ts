@@ -60,22 +60,22 @@ export async function addWethToken() {
 }
 
 export const currencies: Currency[] = [{
-  address: '0x62F53E68662B013ea03B7BA6803b624632179eD3',
-  chainId: 421614,
+  address: '0x2A5E22b32b3E0Daa7a8C199e10Df9D9E1264Fd3f',
+  chainId: 42161,
   name: 'LIRA DAO Token',
   symbol: 'LDT',
   icon: 'https://gateway.pinata.cloud/ipfs/QmQb1SsLMRdgUA1UPP5ZAn1ZryMifvFrKaUQGY1Mqdb3sy',
   decimals: 18,
 }, {
-  address: '0xdF5c1B370C7aE6C86d98A591C4aBe3453656a4b0',
-  chainId: 421614,
+  address: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+  chainId: 42161,
   name: 'Wrapped Ether',
   symbol: 'WETH',
   icon: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png',
   decimals: 18,
 }, {
-  address: '0xC4868aA029ADD5705FA203580669d2175889D615',
-  chainId: 421614,
+  address: '0xA07ac236fEBc390c798504E927DC8D6a4e1FfcA3',
+  chainId: 42161,
   name: 'Satoshi LIRA',
   symbol: 'LIRA',
   icon: 'https://gateway.pinata.cloud/ipfs/QmeDcLiQAZ5VB2s3rzjjMYafU88tVrXLgEsC4Qon7bTaRM',

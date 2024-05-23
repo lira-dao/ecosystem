@@ -12,10 +12,6 @@ export function useReserves() {
       abi: dexPairV2Abi,
       address: addresses[0],
       functionName: 'getReserves',
-    }, {
-      abi: dexPairV2Abi,
-      address: addresses[1],
-      functionName: 'getReserves',
     }]
   });
 }
