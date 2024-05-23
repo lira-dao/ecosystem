@@ -69,12 +69,6 @@ export function Header() {
         </Row>
 
         <Row justifyContent="center">
-          <NavLink to="/presale">
-            <StyledMenuItem marginX={28}>
-              PRESALE
-            </StyledMenuItem>
-          </NavLink>
-
           <a href="https://whitepaper.liradao.org" target="_blank" rel="noreferrer">
             <StyledMenuItem marginX={28}>
               WHITEPAPER

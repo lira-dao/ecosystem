@@ -5,7 +5,6 @@ import { StyledContainer } from './components/StyledContainer';
 import { StyledText } from './components/StyledText';
 import { ColorWrap, Typography } from '../../components/ui';
 import theme from '../../theme';
-import { Countdown } from '../../components/Countdown/Countdown';
 import { PresaleInfo } from './components/PresaleInfo';
 import { LiraInfo } from './components/LiraInfo';
 import { LiraPower } from './components/LiraPower';
@@ -35,11 +34,11 @@ export function Home() {
           alignItems="center"
         >
           <StyledText as="h2" fontSize={['32px', '46px', '80px', '80px']} marginBottom={40} textAlign="center">
-            Presale <ColorWrap color="primary">STARTED</ColorWrap>
+            DEX <ColorWrap color="primary">OPEN</ColorWrap>
           </StyledText>
 
           <NavLink to="/presale">
-            <img src={button} width={300} alt="Buy LDT" />
+            <img src={button} width={300} alt="go to lira dex button" />
           </NavLink>
         </Col>
 
