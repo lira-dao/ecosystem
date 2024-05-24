@@ -24,19 +24,6 @@ import { Currency } from '@lira-dao/web3-utils';
 import { SelectCurrencyModal } from '../components/modal/SelectCurrencyModal';
 
 
-export function useCurrency(c: Currency) {
-  const [isDisabled, setIsDisabled] = useState<boolean>(false);
-  const [currency, setCurrency] = useState<Currency>(c);
-
-  return {
-    currency,
-    isDisabled,
-    setCurrency,
-    setIsDisabled,
-  };
-}
-
-
 export function Swap() {
   const th = useTheme();
   const chainId = useChainId();
