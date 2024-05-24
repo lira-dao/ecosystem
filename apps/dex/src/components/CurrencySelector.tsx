@@ -28,7 +28,9 @@ export function CurrencySelector({ currency, disabled, selected, onClick }: Curr
         onClick={onClick}
       >
         {currency?.icon && <CurrencyLogo size={24} logo={currency.icon} />}
-        {currency ? currency.symbol : 'Select Coin'}
+        <x.p ml={currency ? 0 : 1} fontSize="xl">
+          {currency ? currency.symbol : 'Select Coin'}
+        </x.p>
         <x.img src={dropdown} margin="0 0.25rem 0 0.35rem" />
       </BaseButton>
     </x.div>
