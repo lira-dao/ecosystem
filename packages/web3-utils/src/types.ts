@@ -32,7 +32,7 @@ export type DexAddresses = {
   }
 }
 
-interface Pair {
+export interface Pair {
   address: EthereumAddress,
   tokens: [EthereumAddress, EthereumAddress],
   symbol: string

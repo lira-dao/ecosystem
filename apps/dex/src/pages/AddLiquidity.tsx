@@ -16,39 +16,32 @@ import { useAddLiquidity } from '../hooks/useAddLiquidity';
 import Big from 'big.js';
 import BigNumber from 'bignumber.js';
 import { useDexAddresses } from '../hooks/useDexAddresses';
-import Modal from 'react-responsive-modal';
 import { useBalance as useBalanceWagmi, useChainId } from 'wagmi';
 import { Currency, EthereumAddress } from '@lira-dao/web3-utils';
+import { SelectCurrencyModal } from '../components/modal/SelectCurrencyModal';
+import { useSnackbar } from 'notistack';
+import { useDebounce } from 'use-debounce';
 
-
-const modalCustomStyles = {
-  modal: {
-    top: '20%',
-    backgroundColor: '#1B1B1B',
-    borderRadius: 16,
-    maxWidth: 420,
-    minWidth: 420,
-  },
-  closeIcon: {
-    fill: 'white',
-  },
-};
 
 export function AddLiquidity() {
+  const { enqueueSnackbar } = useSnackbar();
   const chainId = useChainId();
   const dexAddresses = useDexAddresses();
   const [open, setOpen] = useState(false);
   const [selecting, setSelecting] = useState<number | null>(null);
-  const [selectingCurrencies, setSelectingCurrencies] = useState<Currency[]>();
+  const [selectingCurrencies, setSelectingCurrencies] = useState<Currency[]>([]);
+  const [isDisabledAllowanceA, setIsDisabledAllowanceA] = useDebounce<boolean>(false, 500, { leading: true });
+  const [isDisabledAllowanceB, setIsDisabledAllowanceB] = useDebounce<boolean>(false, 500, { leading: true });
+  const [isDisabledSupply, setIsDisabledSupply] = useDebounce<boolean>(false, 500, { leading: true });
 
   const [currencyA, setCurrencyA] = useState<Currency>(getCurrencies(chainId)[0]);
-  const [currencyB, setCurrencyB] = useState<Currency | undefined>(getCurrencies(chainId)[1]);
+  const [currencyB, setCurrencyB] = useState<Currency | undefined>(undefined);
 
-  const [firstValue, setFirstValue] = useState<number | string>('');
-  const [secondValue, setSecondValue] = useState<number | string>('');
+  const [firstValue, setFirstValue] = useState<string>('');
+  const [secondValue, setSecondValue] = useState<string>('');
 
   const pair = usePair(currencyA, currencyB);
-
+  console.log('pair', pair);
   const balanceA = useBalance(currencyA.address);
   const balanceB = useBalance(currencyB?.address);
 
@@ -56,7 +49,7 @@ export function AddLiquidity() {
 
   const allowanceA = useAllowance(currencyA.address, dexAddresses.router);
   const allowanceB = useAllowance(currencyB?.address as EthereumAddress, dexAddresses.router);
-
+  console.log('secondValue', secondValue);
   const approveA = useApprove(currencyA.address, dexAddresses.router, parseUnits(firstValue.toString(), currencyA.decimals));
   const approveB = useApprove(currencyB?.address as EthereumAddress, dexAddresses.router, parseUnits(secondValue.toString(), currencyB?.decimals || 0));
 
@@ -89,16 +82,82 @@ export function AddLiquidity() {
 
     if (e.target.id === 'currencyA') {
       setFirstValue(e.target.value);
-      setSecondValue(
-        pair.priceCurrencyA.times(new BigNumber(e.target.value)).toString(),
-      );
+
+      if (pair.priceCurrencyB.gt(0)) {
+        setSecondValue(
+          pair.priceCurrencyA.times(new BigNumber(e.target.value)).toString(),
+        );
+      }
+
     } else if (e.target.id === 'currencyB') {
       setSecondValue(e.target.value);
-      setFirstValue(
-        pair.priceCurrencyB.times(new BigNumber(e.target.value)).toString(),
-      );
+      if (pair.priceCurrencyB.gt(0)) {
+        setFirstValue(
+          pair.priceCurrencyB.times(new BigNumber(e.target.value)).toString(),
+        );
+      }
     }
   };
+
+  // disabled
+  useEffect(() => {
+    if (!new BigNumber(firstValue).isPositive() || !needAllowanceA || approveA.isPending || allowanceA.isPending) {
+      setIsDisabledAllowanceA(true);
+    } else {
+      setIsDisabledAllowanceA(false);
+    }
+  }, [allowanceA.isPending, approveA.isPending, firstValue, needAllowanceA]);
+
+  useEffect(() => {
+    if (!new BigNumber(secondValue).isPositive() || !needAllowanceB || approveB.isPending || allowanceB.isPending) {
+      setIsDisabledAllowanceB(true);
+    } else {
+      setIsDisabledAllowanceB(false);
+    }
+  }, [allowanceB.isPending, approveB.isPending, secondValue, needAllowanceB]);
+
+  useEffect(() => {
+    if (!firstValue || !secondValue || needAllowanceA || needAllowanceB || addLiquidity.isPending) {
+      setIsDisabledSupply(true);
+    } else {
+      setIsDisabledSupply(false);
+    }
+  }, [addLiquidity.isPending, firstValue, needAllowanceA, needAllowanceB, secondValue]);
+
+  // confirmations
+  useEffect(() => {
+    if (approveA.confirmed) {
+      enqueueSnackbar('Approve confirmed!', {
+        autoHideDuration: 3000,
+        variant: 'success',
+      });
+
+      allowanceA.refetch();
+    }
+  }, [approveA.confirmed]);
+
+  useEffect(() => {
+    if (approveB.confirmed) {
+      enqueueSnackbar('Approve confirmed!', {
+        autoHideDuration: 3000,
+        variant: 'success',
+      });
+
+      allowanceB.refetch();
+    }
+  }, [approveB.confirmed]);
+
+  useEffect(() => {
+    if (addLiquidity.confirmed) {
+      enqueueSnackbar('Add Liquidity confirmed!', {
+        autoHideDuration: 3000,
+        variant: 'success',
+      });
+
+      setFirstValue('');
+      setSecondValue('');
+    }
+  }, [addLiquidity.confirmed]);
 
   const onCurrencySelectAClick = () => {
     setSelecting(0);
@@ -116,8 +175,11 @@ export function AddLiquidity() {
     if (selecting === 0) {
       setCurrencyA(c);
       setCurrencyB(undefined);
+      setFirstValue('')
+      setSecondValue('');
     } else {
       setCurrencyB(c);
+      setSecondValue('');
     }
 
     setOpen(false);
@@ -143,7 +205,7 @@ export function AddLiquidity() {
                 />
               </x.div>
 
-              <NumericalInput id="currencyA" disabled={false} value={firstValue} onChange={onChangeValues} />
+              <NumericalInput id="currencyA" disabled={!currencyB} value={firstValue} onChange={onChangeValues} />
 
               <x.div w="100%" display="flex" mt={2} justifyContent="flex-end">
                 <x.p color="gray155">{new Big(formatUnits(balanceA.data ?? 0n, currencyA.decimals)).toFixed(6)}</x.p>
@@ -167,7 +229,7 @@ export function AddLiquidity() {
                 />
               </x.div>
 
-              <NumericalInput id="currencyB" disabled={false} value={secondValue} onChange={onChangeValues} />
+              <NumericalInput id="currencyB" disabled={!currencyB} value={secondValue} onChange={onChangeValues} />
 
               <x.div w="100%" display="flex" mt={2} justifyContent="flex-end">
                 <x.p color="gray155">{new Big(formatUnits(balanceB.data ?? 0n, currencyB?.decimals || 0)).toFixed(6)}</x.p>
@@ -194,12 +256,12 @@ export function AddLiquidity() {
       {currencyB && (
         <x.div display="flex" mb={4}>
           <PrimaryButton
-            disabled={!new BigNumber(firstValue).isPositive() || !needAllowanceA}
+            disabled={isDisabledAllowanceA}
             onClick={() => approveA.write()}
             mr={4}
           >Approve {currencyA.symbol}</PrimaryButton>
           <PrimaryButton
-            disabled={!new BigNumber(secondValue).isPositive() || !needAllowanceB}
+            disabled={isDisabledAllowanceB}
             onClick={() => approveB.write()}
             ml={4}
           >Approve {currencyB.symbol}</PrimaryButton>
@@ -207,32 +269,16 @@ export function AddLiquidity() {
       )}
 
       <PrimaryButton
-        disabled={!firstValue || !secondValue || needAllowanceA || needAllowanceB}
+        disabled={isDisabledSupply}
         onClick={() => addLiquidity.write()}
       >Supply</PrimaryButton>
 
-      <Modal open={open} onClose={() => setOpen(false)} styles={modalCustomStyles}>
-        <x.h1 fontSize="xl">Select Token</x.h1>
-        <x.div mt={8}>
-          {selectingCurrencies && selectingCurrencies.map((c, i) => (
-            <x.div
-              key={i}
-              display="flex"
-              alignItems="center"
-              my={4}
-              cursor="pointer"
-              onClick={() => onSelectCurrency(c)}
-            >
-              <x.div>
-                <x.img src={c.icon} width={48} height={48} />
-              </x.div>
-              <x.div ml={4}>
-                <x.h1>{c.symbol}</x.h1>
-              </x.div>
-            </x.div>
-          ))}
-        </x.div>
-      </Modal>
+      <SelectCurrencyModal
+        open={open}
+        onClose={() => setOpen(false)}
+        currencies={selectingCurrencies}
+        onSelect={onSelectCurrency}
+      />
     </x.div>
   );
 }

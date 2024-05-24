@@ -14,8 +14,8 @@ export function usePair(currencyA: Currency, currencyB?: Currency) {
     functionName: 'getPair',
     args: [currencyA.address, currencyB?.address as EthereumAddress],
     query: {
-      enabled: !!currencyA && !! currencyB,
-    }
+      enabled: !!currencyA && !!currencyB,
+    },
   });
 
   const reserves = useReadContract({
@@ -27,17 +27,19 @@ export function usePair(currencyA: Currency, currencyB?: Currency) {
     },
   });
 
+  console.log('reserves', reserves);
+
   const priceCurrencyA = useMemo(() => {
-    if (Array.isArray(reserves.data)) {
-      return new BigNumber(reserves.data[1].toString()).div(reserves.data[0].toString());
+    if (Array.isArray(reserves.data) && reserves.data[1] > 0n) {
+      return new BigNumber(reserves.data[1].toString()).times(new BigNumber(10).pow(18 - (currencyB?.decimals || 10))).div(reserves.data[0].toString());
     }
 
     return new BigNumber(0);
   }, [reserves]);
 
   const priceCurrencyB = useMemo(() => {
-    if (Array.isArray(reserves.data)) {
-      return new BigNumber(reserves.data[0].toString()).div(reserves.data[1].toString());
+    if (Array.isArray(reserves.data) && reserves.data[0] > 0n) {
+      return new BigNumber(reserves.data[0].toString()).div(BigNumber(reserves.data[1].toString()).times(new BigNumber(10).pow(18 - (currencyB?.decimals || 18))));
     }
 
     return new BigNumber(0);

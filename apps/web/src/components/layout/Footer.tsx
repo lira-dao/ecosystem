@@ -152,6 +152,9 @@ export function Footer() {
                     LIRA DAO
                   </StyledFooterItem>
                 </NavLink>
+                <StyledFooterItem>
+                  social@liradao.org
+                </StyledFooterItem>
                 {/*<NavLink to="/blockchain-data">
                 <StyledFooterItem>
                   Blockchain Data

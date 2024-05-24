@@ -1,5 +1,5 @@
 import MetaMaskSDK from '@metamask/sdk';
-import { Currency, EthereumAddress, tokens } from '@lira-dao/web3-utils';
+import { Currency, EthereumAddress, pinata, tokens } from '@lira-dao/web3-utils';
 
 
 const metamask = new MetaMaskSDK({});
@@ -57,9 +57,9 @@ export async function addWethToken() {
   );
 }
 
-export async function addLdtWeth() {
+export async function addPoolToMetamask(poolAddress: EthereumAddress) {
   return addToken(
-    '0xC828F6c8bBF9A90DB6Db9839696ffbF6e06532f9',
+    poolAddress,
     'LD-V2',
     18,
     '',
@@ -124,12 +124,13 @@ export const ldtArbitrumSepolia: Currency = {
   chainId: 421614,
   name: 'LIRA DAO Token',
   symbol: 'LDT',
-  icon: 'https://gateway.pinata.cloud/ipfs/QmQb1SsLMRdgUA1UPP5ZAn1ZryMifvFrKaUQGY1Mqdb3sy',
+  icon: `https://gateway.pinata.cloud/ipfs/${pinata.logoLdt}`,
   decimals: 18,
   isNative: false,
   paired: [
-    'ETH',
+    // 'ETH',
     'WETH',
+    'LIRA',
   ]
 };
 
@@ -138,21 +139,21 @@ export const ldtArbitrumOne: Currency = {
   chainId: 42161,
   name: 'LIRA DAO Token',
   symbol: 'LDT',
-  icon: 'https://gateway.pinata.cloud/ipfs/QmQb1SsLMRdgUA1UPP5ZAn1ZryMifvFrKaUQGY1Mqdb3sy',
+  icon: `https://gateway.pinata.cloud/ipfs/${pinata.logoLdt}`,
   decimals: 18,
   isNative: false,
   paired: [
-    'ETH',
     'WETH',
+    'LIRA',
   ],
 };
 
 export const liraArbitrumSepolia: Currency = {
-  address: tokens[42161].lira,
-  chainId: 42161,
+  address: tokens[421614].lira,
+  chainId: 421614,
   name: 'Satoshi LIRA',
   symbol: 'LIRA',
-  icon: 'https://gateway.pinata.cloud/ipfs/QmeDcLiQAZ5VB2s3rzjjMYafU88tVrXLgEsC4Qon7bTaRM',
+  icon: `https://gateway.pinata.cloud/ipfs/${pinata.logoLira}`,
   decimals: 8,
   isNative: false,
   paired: [
@@ -161,11 +162,11 @@ export const liraArbitrumSepolia: Currency = {
 };
 
 export const liraArbitrumOne: Currency = {
-  address: tokens[421614].lira,
-  chainId: 421614,
+  address: tokens[42161].lira,
+  chainId: 42161,
   name: 'Satoshi LIRA',
   symbol: 'LIRA',
-  icon: 'https://gateway.pinata.cloud/ipfs/QmeDcLiQAZ5VB2s3rzjjMYafU88tVrXLgEsC4Qon7bTaRM',
+  icon: `https://gateway.pinata.cloud/ipfs/${pinata.logoLira}`,
   decimals: 8,
   isNative: false,
   paired: [
@@ -174,15 +175,10 @@ export const liraArbitrumOne: Currency = {
 };
 
 export const currenciesArbitrumSepolia: Currency[] = [
-  ethereumArbitrumSepolia,
   ldtArbitrumSepolia,
+  liraArbitrumSepolia,
   wethArbitrumSepolia,
-  // {
-  //   ...liraArbitrumSepolia,
-  //   paired: [
-  //     ldtArbitrumSepolia,
-  //   ],
-  // },
+  // ethereumArbitrumSepolia,
 ];
 
 export const currenciesArbitrumOne: Currency[] = [

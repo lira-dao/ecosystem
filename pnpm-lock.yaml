@@ -107,6 +107,9 @@ importers:
       typescript:
         specifier: ^5.0.4
         version: 5.4.5
+      use-debounce:
+        specifier: ^10.0.0
+        version: 10.0.0(react@18.3.1)
       viem:
         specifier: ~2.8.18
         version: 2.8.18(typescript@5.4.5)
@@ -19935,6 +19938,15 @@ packages:
     dependencies:
       querystringify: 2.2.0
       requires-port: 1.0.0
+    dev: false
+
+  /use-debounce@10.0.0(react@18.3.1):
+    resolution: {integrity: sha512-XRjvlvCB46bah9IBXVnq/ACP2lxqXyZj0D9hj4K5OzNroMDpTEBg8Anuh1/UfRTRs7pLhQ+RiNxxwZu9+MVl1A==}
+    engines: {node: '>= 16.0.0'}
+    peerDependencies:
+      react: '>=16.8.0'
+    dependencies:
+      react: 18.3.1
     dev: false
 
   /use-sync-external-store@1.2.0(react@18.3.1):

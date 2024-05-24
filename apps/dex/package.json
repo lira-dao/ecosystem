@@ -30,6 +30,7 @@
     "sort-by": "^1.2.0",
     "styled-components": "^6.1.8",
     "typescript": "^5.0.4",
+    "use-debounce": "^10.0.0",
     "viem": "~2.8.18",
     "wagmi": "^2.5.12",
     "web-vitals": "^2.1.4"

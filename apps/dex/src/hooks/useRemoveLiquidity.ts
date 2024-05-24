@@ -1,5 +1,5 @@
 import { useAccount, useBlock, useReadContracts, useSimulateContract, useWriteContract } from 'wagmi';
-import { addresses, dexPairV2Abi, dexRouterV2Abi, EthereumAddress } from '@lira-dao/web3-utils';
+import { dexPairV2Abi, dexRouterV2Abi, EthereumAddress } from '@lira-dao/web3-utils';
 import { getCurrencyByAddress } from '../utils';
 import { useWatchTransaction } from './useWatchTransaction';
 import { useDexAddresses } from './useDexAddresses';

@@ -6,6 +6,8 @@ import logo from '../../img/logo-dao.png';
 import button from '../../img/enter-app.svg';
 import theme from '../../theme';
 import React from 'react';
+import twitter from '../../img/twitter.svg';
+import discord from '../../img/discord.svg';
 
 
 const StyledMenuItem = styled(Typography)`
@@ -52,9 +54,19 @@ export function Header() {
         alignItems="center"
       >
         <Row width={[1, 1 / 3]} justifyContent={['center', 'flex-start']}>
-          <NavLink to="/">
-            <img src={logo} alt="lira dao logo" />
-          </NavLink>
+          <Row mr={4}>
+            <NavLink to="/">
+              <img src={logo} height={66} alt="lira dao logo" />
+            </NavLink>
+          </Row>
+          <Row>
+            <a href="https://twitter.com/LIRA_DAO" target="_blank" rel="noreferrer" style={{ margin: '16px' }}>
+              <img src={twitter} height={28} alt="lira dao twitter" />
+            </a>
+            <a href="https://discord.gg/fDRBajCB9V" target="_blank" rel="noreferrer" style={{ margin: '16px' }}>
+              <img src={discord} height={28} alt="lira dao discord" />
+            </a>
+          </Row>
         </Row>
 
         <Row justifyContent="center">

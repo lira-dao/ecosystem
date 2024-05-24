@@ -35,8 +35,8 @@ export function useAddLiquidity(currencyA: Currency, amountA: bigint, currencyB?
   const confirmed = useWatchTransaction(data)
 
   return {
+    ...confirmed,
     write,
-    confirmed,
     reset,
     isPending: isPending || confirmed.isLoading
   };
