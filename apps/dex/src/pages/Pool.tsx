@@ -8,6 +8,8 @@ import { formatUnits } from 'viem';
 import { useDexPairs } from '../hooks/useDexPairs';
 import { addLdtWeth, getCurrencies, getCurrencyByAddress } from '../utils';
 import { useChainId } from 'wagmi';
+import metamaskFox from '../img/metamask-fox.svg';
+import dexToolsLogo from '../img/dex-tools-logo.png';
 
 
 export function Pool() {
@@ -45,15 +47,24 @@ export function Pool() {
           >
             <x.div display="flex" flexGrow={1} justifyContent="space-between" mr={4}>
               <x.div>
-                <x.div display="flex">
+                <x.div display="flex" alignItems="center">
                   <x.p fontSize="2xl" mr={2}>{d.name}</x.p>
-                  <img
+                  <x.img
                     src={metamaskFox}
                     alt="metamask icon"
-                    width={24}
-                    style={{ cursor: 'pointer' }}
+                    width={30}
+                    cursor="pointer"
+                    mr={2}
                     onClick={() => addLdtWeth()}
                   />
+                  <a href="https://www.dextools.io/app/en/arbitrum/pair-explorer/0xc828f6c8bbf9a90db6db9839696ffbf6e06532f9?t=1716541699451" target="_blank" rel="noopener noreferrer">
+                    <img
+                      src={dexToolsLogo}
+                      alt="metamask icon"
+                      width={24}
+                      style={{ cursor: 'pointer' }}
+                    />
+                  </a>
                 </x.div>
                 <x.p fontSize="xl">LP: {d.formattedBalance}</x.p>
               </x.div>

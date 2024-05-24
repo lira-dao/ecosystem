@@ -57,6 +57,15 @@ export async function addWethToken() {
   );
 }
 
+export async function addLdtWeth() {
+  return addToken(
+    '0xC828F6c8bBF9A90DB6Db9839696ffbF6e06532f9',
+    'LD-V2',
+    18,
+    '',
+  );
+}
+
 
 export const ethereumArbitrumOne: Currency = {
   address: tokens[42161].weth,
