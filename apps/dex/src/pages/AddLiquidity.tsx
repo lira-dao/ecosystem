@@ -41,7 +41,7 @@ export function AddLiquidity() {
   const [secondValue, setSecondValue] = useState<string>('');
 
   const pair = usePair(currencyA, currencyB);
-  console.log('pair', pair);
+
   const balanceA = useBalance(currencyA.address);
   const balanceB = useBalance(currencyB?.address);
 
@@ -49,7 +49,7 @@ export function AddLiquidity() {
 
   const allowanceA = useAllowance(currencyA.address, dexAddresses.router);
   const allowanceB = useAllowance(currencyB?.address as EthereumAddress, dexAddresses.router);
-  console.log('secondValue', secondValue);
+
   const approveA = useApprove(currencyA.address, dexAddresses.router, parseUnits(firstValue.toString(), currencyA.decimals));
   const approveB = useApprove(currencyB?.address as EthereumAddress, dexAddresses.router, parseUnits(secondValue.toString(), currencyB?.decimals || 0));
 

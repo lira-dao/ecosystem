@@ -16,9 +16,6 @@ export function Pool() {
   const { data, reserves } = useGetBalances();
   const dexPairs = useDexPairs();
 
-  console.log('reserves', reserves);
-  console.log('balances', data);
-
   return (
     <x.div display="flex" w="100%" flexDirection="column" maxWidth="680px" p={4}>
       <x.div display="flex" alignItems="center" justifyContent="space-between">

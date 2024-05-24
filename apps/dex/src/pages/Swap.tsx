@@ -51,7 +51,7 @@ export function Swap() {
 
   const amountsOut = useGetAmountsOut([currencyA.address, currencyB?.address || '0x0'], amountOut);
   const amountsIn = useGetAmountsIn([currencyA.address, currencyB?.address || '0x0'], amountIn);
-  console.log('amountsOut 2', amountsOut);
+
   const approve = useApprove(currencyA.address, dexAddresses.router, parseUnits(firstValue.toString(), currencyA.decimals));
 
   const swap = useSwap([currencyA.address, currencyB?.address || '0x0'], parseUnits(firstValue.toString(), currencyA.decimals));
@@ -95,7 +95,6 @@ export function Swap() {
   }, [approve.confirmed]);
 
   useEffect(() => {
-    console.log('swap confirm', swap.confirmed);
     if (swap.confirmed) {
       enqueueSnackbar('Swap confirmed!', {
         autoHideDuration: 3000,

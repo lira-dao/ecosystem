@@ -27,8 +27,6 @@ export function usePair(currencyA: Currency, currencyB?: Currency) {
     },
   });
 
-  console.log('reserves', reserves);
-
   const priceCurrencyA = useMemo(() => {
     if (Array.isArray(reserves.data) && reserves.data[1] > 0n) {
       return new BigNumber(reserves.data[1].toString()).times(new BigNumber(10).pow(18 - (currencyB?.decimals || 10))).div(reserves.data[0].toString());
