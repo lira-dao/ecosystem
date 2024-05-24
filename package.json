@@ -8,6 +8,7 @@
     "clean-cache": "rimraf contracts/**/artifacts contracts/**/cache contracts/**/typechain-types"
   },
   "devDependencies": {
+    "@changesets/cli": "^2.27.3",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "prettier": "^3.2.5",
