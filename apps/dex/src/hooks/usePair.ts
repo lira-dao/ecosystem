@@ -1,4 +1,4 @@
-import { useReadContract } from 'wagmi';
+import { useContractReads, useReadContract } from 'wagmi';
 import { Currency, dexFactoryV2Abi, dexPairV2Abi, EthereumAddress } from '@lira-dao/web3-utils';
 import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
@@ -27,9 +27,25 @@ export function usePair(currencyA: Currency, currencyB?: Currency) {
     },
   });
 
+  const tokens = useContractReads({
+    contracts: [{
+      abi: dexPairV2Abi,
+      address: pair.data,
+      functionName: 'token0',
+    }, {
+      abi: dexPairV2Abi,
+      address: pair.data,
+      functionName: 'token1',
+    }],
+  }).data?.map(d => d.result);
+
+
+  const reserveA = reserves?.data?.[tokens?.indexOf(currencyA.address) || 0];
+  const reserveB = reserves?.data?.[tokens?.indexOf(currencyB?.address) || 0];
+
   const priceCurrencyA = useMemo(() => {
     if (Array.isArray(reserves.data) && reserves.data[1] > 0n) {
-      return new BigNumber(reserves.data[1].toString()).times(new BigNumber(10).pow(18 - (currencyB?.decimals || 10))).div(reserves.data[0].toString());
+      return new BigNumber(reserveB?.toString() || 0).times(new BigNumber(10).pow(18 - (currencyB?.decimals || 10))).div(reserveA?.toString() || 0);
     }
 
     return new BigNumber(0);
@@ -37,7 +53,7 @@ export function usePair(currencyA: Currency, currencyB?: Currency) {
 
   const priceCurrencyB = useMemo(() => {
     if (Array.isArray(reserves.data) && reserves.data[0] > 0n) {
-      return new BigNumber(reserves.data[0].toString()).div(BigNumber(reserves.data[1].toString()).times(new BigNumber(10).pow(18 - (currencyB?.decimals || 18))));
+      return new BigNumber(reserveA?.toString() || 0).div(BigNumber(reserveB?.toString() || 0).times(new BigNumber(10).pow(18 - (currencyB?.decimals || 18))));
     }
 
     return new BigNumber(0);

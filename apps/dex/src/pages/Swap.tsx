@@ -22,6 +22,7 @@ import { useDexAddresses } from '../hooks/useDexAddresses';
 import { useChainId } from 'wagmi';
 import { Currency } from '@lira-dao/web3-utils';
 import { SelectCurrencyModal } from '../components/modal/SelectCurrencyModal';
+import { usePair } from '../hooks/usePair';
 
 
 export function Swap() {
@@ -54,6 +55,7 @@ export function Swap() {
 
   const approve = useApprove(currencyA.address, dexAddresses.router, parseUnits(firstValue.toString(), currencyA.decimals));
 
+  const pair = usePair(currencyA, currencyB);
   const swap = useSwap([currencyA.address, currencyB?.address || '0x0'], parseUnits(firstValue.toString(), currencyA.decimals));
 
   const isAllowCurrencyADisabled = useMemo(() => approve.isPending || allowance1.isPending, [approve, allowance1]);
@@ -261,6 +263,20 @@ export function Swap() {
         </InputPanel>
       </SwapSection>
 
+      {(currencyA && currencyB) && (
+        <x.div mt={4}>
+          <x.p>Prices</x.p>
+
+          <x.div>
+            <x.div>
+              <x.p>1 {currencyA.symbol} = {pair.priceCurrencyA.toPrecision(6, 1)} {currencyB.symbol}</x.p>
+              <x.p>1 {currencyB.symbol} = {pair.priceCurrencyB.toPrecision(6, 1)} {currencyA.symbol}</x.p>
+            </x.div>
+            <x.div></x.div>
+          </x.div>
+        </x.div>
+      )}
+
       {needAllowance && (
         <x.div display="flex" mt={4} mb={2} h="80px" alignItems="center" justifyContent="center">
           {isAllowCurrencyADisabled ? (
@@ -275,7 +291,7 @@ export function Swap() {
       )}
 
       {!needAllowance && (
-        <x.div display="flex" mt={needAllowance ? 2 : 4} h="80px" alignItems="center" justifyContent="center">
+        <x.div display="flex" mt={4} h="80px" alignItems="center" justifyContent="center">
           {isSwapDisabled ? (
             <PacmanLoader color={th?.colors.gray155} />
           ) : (
