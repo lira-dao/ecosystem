@@ -9,8 +9,8 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.3",
-    "@repo/eslint-config": "workspace:*",
-    "@repo/typescript-config": "workspace:*",
+    "@lira-dao/eslint-config": "workspace:*",
+    "@lira-dao/typescript-config": "workspace:*",
     "prettier": "^3.2.5",
     "rimraf": "^5.0.7",
     "turbo": "latest"
