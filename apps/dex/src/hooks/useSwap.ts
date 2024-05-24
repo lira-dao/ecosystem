@@ -15,7 +15,7 @@ export function useSwap(pair: [EthereumAddress, EthereumAddress], amountIn: bigi
   const amountsOut = useGetAmountsOut(pair, amountIn);
 
   const write = () => {
-    if (amountsOut.data) {
+    if (amountsOut.data && pair[1] !== '0x0') {
       writeContract({
         abi: dexRouterV2Abi,
         address: dexAddresses.router,

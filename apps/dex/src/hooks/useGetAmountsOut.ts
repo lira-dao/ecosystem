@@ -4,6 +4,7 @@ import { useDexAddresses } from './useDexAddresses';
 
 
 export function useGetAmountsOut(pair: [EthereumAddress, EthereumAddress], amount: bigint) {
+  console.log('out', pair, amount);
   const dexAddresses = useDexAddresses();
 
   const amountsOut = useReadContract({
@@ -18,6 +19,8 @@ export function useGetAmountsOut(pair: [EthereumAddress, EthereumAddress], amoun
       enabled: !!pair && !!amount,
     }
   });
+
+  console.log('amountsOut', amountsOut);
 
   return {
     ...amountsOut,

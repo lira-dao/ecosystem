@@ -7,7 +7,7 @@ import { PrimaryButton } from '../components/PrimaryButton';
 import { SwapSection } from '../components/swap/SwapSection';
 import { InputPanel } from '../components/swap/InputPanel';
 import { Container } from '../components/swap/Container';
-import { getCurrencies } from '../utils';
+import { getCurrencies, getPairedCurrencies } from '../utils';
 import { useGetAmountsIn, useGetAmountsOut } from '../hooks/useGetAmountsOut';
 import { formatUnits, parseUnits } from 'viem';
 import { useApprove } from '../hooks/useApprove';
@@ -21,6 +21,7 @@ import { useBalance } from '../hooks/useBalance';
 import { useDexAddresses } from '../hooks/useDexAddresses';
 import { useChainId } from 'wagmi';
 import { Currency } from '@lira-dao/web3-utils';
+import { SelectCurrencyModal } from '../components/modal/SelectCurrencyModal';
 
 
 export function useCurrency(c: Currency) {
@@ -41,20 +42,12 @@ export function Swap() {
   const chainId = useChainId();
   const dexAddresses = useDexAddresses();
   const { enqueueSnackbar } = useSnackbar();
+  const [open, setOpen] = useState(false);
+  const [selecting, setSelecting] = useState<number | null>(null);
+  const [selectingCurrencies, setSelectingCurrencies] = useState<Currency[]>([]);
 
-  const {
-    currency: currencyA,
-    setCurrency: setCurrencyA,
-    isDisabled: isDisabledA,
-    setIsDisabled: setIsDisabledA,
-  } = useCurrency(getCurrencies(chainId)[0]);
-
-  const {
-    currency: currencyB,
-    setCurrency: setCurrencyB,
-    isDisabled: isDisabledB,
-    setIsDisabled: setIsDisabledB,
-  } = useCurrency(getCurrencies(chainId)[1]);
+  const [currencyA, setCurrencyA] = useState<Currency>(getCurrencies(chainId)[0]);
+  const [currencyB, setCurrencyB] = useState<Currency | undefined>(undefined);
 
   const [firstValue, setFirstValue] = useState<number | string>('');
   const [secondValue, setSecondValue] = useState<number | string>('');
@@ -64,17 +57,17 @@ export function Swap() {
   const [isSwapDisabled, setIsSwapDisabled] = useState<boolean>(true);
 
   const balanceA = useBalance(currencyA.address);
-  const balanceB = useBalance(currencyB.address);
+  const balanceB = useBalance(currencyB?.address);
 
   const [amountOut, setAmountOut] = useState<bigint>(0n);
   const [amountIn, setAmountIn] = useState<bigint>(0n);
 
-  const amountsOut = useGetAmountsOut([currencyA.address, currencyB.address], amountOut);
-  const amountsIn = useGetAmountsIn([currencyA.address, currencyB.address], amountIn);
-
+  const amountsOut = useGetAmountsOut([currencyA.address, currencyB?.address || '0x0'], amountOut);
+  const amountsIn = useGetAmountsIn([currencyA.address, currencyB?.address || '0x0'], amountIn);
+  console.log('amountsOut 2', amountsOut);
   const approve = useApprove(currencyA.address, dexAddresses.router, parseUnits(firstValue.toString(), currencyA.decimals));
 
-  const swap = useSwap([currencyA.address, currencyB.address], parseUnits(firstValue.toString(), currencyA.decimals));
+  const swap = useSwap([currencyA.address, currencyB?.address || '0x0'], parseUnits(firstValue.toString(), currencyA.decimals));
 
   const isAllowCurrencyADisabled = useMemo(() => approve.isPending || allowance1.isPending, [approve, allowance1]);
 
@@ -86,15 +79,15 @@ export function Swap() {
 
   useEffect(() => {
     if (amountsOut.data) {
-      setSecondValue(formatUnits(amountsOut.data[1], currencyB.decimals));
+      setSecondValue(formatUnits(amountsOut.data[1], currencyB?.decimals || 18));
     }
-  }, [amountsOut.data]);
+  }, [amountsOut]);
 
   useEffect(() => {
-    if (amountsIn.data) {
+    if (amountsIn?.data?.[0]) {
       setFirstValue(formatUnits(amountsIn.data[0], currencyA.decimals));
     }
-  }, [amountsIn.data]);
+  }, [amountsIn]);
 
   useEffect(() => {
     if (swap.isPending) {
@@ -115,6 +108,7 @@ export function Swap() {
   }, [approve.confirmed]);
 
   useEffect(() => {
+    console.log('swap confirm', swap.confirmed);
     if (swap.confirmed) {
       enqueueSnackbar('Swap confirmed!', {
         autoHideDuration: 3000,
@@ -133,29 +127,71 @@ export function Swap() {
 
     if (value === '') {
       setSecondValue('');
+      setAmountIn(0n);
+      setAmountOut(0n);
+    } else {
+      setAmountIn(0n);
+      setAmountOut(parseUnits(value, currencyA.decimals));
     }
-
-    setAmountOut(parseUnits(value, currencyA.decimals));
   };
 
   const onCurrencyBChange = (value: string) => {
     setSecondValue(value);
-    setFirstValue('');
-    setAmountIn(parseUnits(value, currencyB.decimals));
+    setAmountOut(0n);
+
+    if (value === '') {
+      setFirstValue('');
+      setAmountOut(0n);
+      setAmountIn(0n);
+    } else {
+      setAmountIn(parseUnits(value, currencyB?.decimals || 18));
+      setAmountOut(0n);
+    }
   };
 
   const switchCurrencies = () => {
-    const newCurrencyA = currencyB;
-    const newCurrencyB = currencyA;
+    if (currencyA && currencyB) {
+      const newCurrencyA = currencyB;
+      const newCurrencyB = currencyA;
 
-    setAmountOut(0n);
-    setAmountIn(0n);
+      setAmountOut(0n);
+      setAmountIn(0n);
 
-    setCurrencyA(newCurrencyA);
-    setCurrencyB(newCurrencyB);
+      setCurrencyA(newCurrencyA);
+      setCurrencyB(newCurrencyB);
 
-    setFirstValue('');
-    setSecondValue('');
+      setFirstValue('');
+      setSecondValue('');
+    }
+  };
+
+  const onCurrencySelectAClick = () => {
+    setSelecting(0);
+    setSelectingCurrencies(getCurrencies(chainId));
+    setOpen(true);
+  };
+
+  const onCurrencySelectBClick = () => {
+    setSelecting(1);
+    setSelectingCurrencies(getPairedCurrencies(chainId, currencyA.paired));
+    setOpen(true);
+  };
+
+  const onSelectCurrency = (c: any) => {
+    if (selecting === 0) {
+      setCurrencyA(c);
+      setCurrencyB(undefined);
+      setFirstValue('');
+      setSecondValue('');
+      setAmountOut(0n);
+      setAmountIn(0n);
+    } else {
+      setCurrencyB(c);
+      setSecondValue('');
+      setAmountIn(0n);
+    }
+
+    setOpen(false);
   };
 
   return (
@@ -170,12 +206,17 @@ export function Swap() {
             <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
               <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
                 <x.p color="gray155" userSelect="none">You Pay</x.p>
-                <CurrencySelector disabled={false} selected={false} currency={currencyA} />
+                <CurrencySelector
+                  disabled={false}
+                  selected={false}
+                  currency={currencyA}
+                  onClick={onCurrencySelectAClick}
+                />
               </x.div>
 
               <NumericalInput
                 id="currencyA"
-                disabled={amountsIn.isLoading}
+                disabled={amountsIn.isLoading || !currencyB}
                 value={firstValue}
                 onChange={(e) => onCurrencyAChange(e.target.value)}
               />
@@ -209,18 +250,23 @@ export function Swap() {
             <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
               <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
                 <x.p color="gray155" userSelect="none">You Receive</x.p>
-                <CurrencySelector disabled={false} selected={false} currency={currencyB} />
+                <CurrencySelector
+                  disabled={false}
+                  selected={false}
+                  currency={currencyB}
+                  onClick={onCurrencySelectBClick}
+                />
               </x.div>
 
               <NumericalInput
                 id="currencyB"
-                disabled={amountsOut.isLoading}
+                disabled={amountsOut.isLoading || !currencyB}
                 value={secondValue}
                 onChange={(e) => onCurrencyBChange(e.target.value)}
               />
 
               <x.div w="100%" display="flex" justifyContent="flex-end" mt={2}>
-                <x.p color="gray155">{new Big(formatUnits(balanceB.data ?? 0n, currencyB.decimals)).toFixed(6)}</x.p>
+                <x.p color="gray155">{new Big(formatUnits(balanceB.data ?? 0n, currencyB?.decimals || 18)).toFixed(6)}</x.p>
               </x.div>
             </x.div>
           </Container>
@@ -249,6 +295,13 @@ export function Swap() {
           )}
         </x.div>
       )}
+
+      <SelectCurrencyModal
+        open={open}
+        onClose={() => setOpen(false)}
+        currencies={selectingCurrencies}
+        onSelect={onSelectCurrency}
+      />
     </x.div>
   );
 }
