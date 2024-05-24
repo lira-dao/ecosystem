@@ -175,7 +175,7 @@ export function AddLiquidity() {
     if (selecting === 0) {
       setCurrencyA(c);
       setCurrencyB(undefined);
-      setFirstValue('')
+      setFirstValue('');
       setSecondValue('');
     } else {
       setCurrencyB(c);

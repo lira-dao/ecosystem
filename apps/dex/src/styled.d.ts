@@ -1,9 +1,6 @@
 import 'styled-components';
 import '@xstyled/system';
-import {
-  ITheme,
-  DefaultTheme as XStyledDefaultTheme,
-} from '@xstyled/styled-components';
+import { DefaultTheme as XStyledDefaultTheme, ITheme } from '@xstyled/styled-components';
 
 interface AppTheme extends ITheme, XStyledDefaultTheme {
   colors: {

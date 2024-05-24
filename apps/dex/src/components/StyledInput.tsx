@@ -16,7 +16,7 @@ export function NumericalInput({ disabled, id, onChange, readOnly = false, value
     const regex = /^[0-9]*\.?[0-9]*$/;
 
     if (e.target.value.includes(',')) {
-      e.target.value = e.target.value.replace(',', '.')
+      e.target.value = e.target.value.replace(',', '.');
     }
 
     if (e.target.value === '.') {
@@ -26,7 +26,7 @@ export function NumericalInput({ disabled, id, onChange, readOnly = false, value
     if (typeof onChange === 'function' && regex.test(e.target.value)) {
       onChange(e);
     }
-  }
+  };
 
   return (
     <x.div w="100%" display="flex">

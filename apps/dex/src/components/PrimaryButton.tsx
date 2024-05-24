@@ -56,4 +56,4 @@ export const PrimaryButton = styled.buttonBox`
   > a {
     text-decoration: none;
   }
-`
+`;

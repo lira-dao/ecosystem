@@ -1,4 +1,4 @@
-import { x, th } from '@xstyled/styled-components';
+import { th, x } from '@xstyled/styled-components';
 import { NavLink, To } from 'react-router-dom';
 import logo from '../img/logo-dex.png';
 import styled from 'styled-components';

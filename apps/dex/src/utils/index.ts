@@ -103,7 +103,7 @@ export const wethArbitrumSepolia: Currency = {
   isNative: false,
   paired: [
     'LDT',
-  ]
+  ],
 };
 
 export const wethArbitrumOne: Currency = {
@@ -116,7 +116,7 @@ export const wethArbitrumOne: Currency = {
   isNative: false,
   paired: [
     'LDT',
-  ]
+  ],
 };
 
 export const ldtArbitrumSepolia: Currency = {
@@ -131,7 +131,7 @@ export const ldtArbitrumSepolia: Currency = {
     // 'ETH',
     'WETH',
     'LIRA',
-  ]
+  ],
 };
 
 export const ldtArbitrumOne: Currency = {
@@ -157,8 +157,8 @@ export const liraArbitrumSepolia: Currency = {
   decimals: 8,
   isNative: false,
   paired: [
-    'LDT'
-  ]
+    'LDT',
+  ],
 };
 
 export const liraArbitrumOne: Currency = {
@@ -171,7 +171,7 @@ export const liraArbitrumOne: Currency = {
   isNative: false,
   paired: [
     'LDT',
-  ]
+  ],
 };
 
 export const currenciesArbitrumSepolia: Currency[] = [

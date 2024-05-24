@@ -1,6 +1,4 @@
-import {
-  defaultTheme,
-} from '@xstyled/styled-components'
+import { defaultTheme } from '@xstyled/styled-components';
 
 
 export const theme = {
@@ -42,5 +40,5 @@ export const theme = {
     'aqua-800': '#006e71',
     'aqua-900': '#045b5d',
     'aqua-950': '#00373a',
-  }
-}
+  },
+};

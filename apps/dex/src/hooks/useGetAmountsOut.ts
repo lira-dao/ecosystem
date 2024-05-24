@@ -16,7 +16,7 @@ export function useGetAmountsOut(pair: [EthereumAddress, EthereumAddress], amoun
     ],
     query: {
       enabled: !!pair && !!amount,
-    }
+    },
   });
 
   return {
@@ -37,7 +37,7 @@ export function useGetAmountsIn(pair: [EthereumAddress, EthereumAddress], amount
     ],
     query: {
       enabled: !!pair && !!amount,
-    }
+    },
   });
 
   return {

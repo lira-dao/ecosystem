@@ -29,14 +29,14 @@ export function useSwap(pair: [EthereumAddress, EthereumAddress], amountIn: bigi
         ],
       });
     }
-  }
+  };
 
-  const confirmed = useWatchTransaction(rest.data)
+  const confirmed = useWatchTransaction(rest.data);
 
   return {
     ...rest,
     ...confirmed,
     write,
-    isPending: rest.isPending || confirmed.isLoading
+    isPending: rest.isPending || confirmed.isLoading,
   };
 }

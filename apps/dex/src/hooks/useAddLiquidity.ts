@@ -32,12 +32,12 @@ export function useAddLiquidity(currencyA: Currency, amountA: bigint, currencyB?
     }
   };
 
-  const confirmed = useWatchTransaction(data)
+  const confirmed = useWatchTransaction(data);
 
   return {
     ...confirmed,
     write,
     reset,
-    isPending: isPending || confirmed.isLoading
+    isPending: isPending || confirmed.isLoading,
   };
 }

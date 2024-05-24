@@ -1,6 +1,6 @@
 import { createWeb3Modal } from '@web3modal/wagmi/react';
 
-import { http, createConfig, WagmiProvider } from 'wagmi';
+import { createConfig, http, WagmiProvider } from 'wagmi';
 import {
   arbitrum,
   arbitrumSepolia,
@@ -18,7 +18,7 @@ import {
   polygonAmoy,
   sepolia,
 } from 'wagmi/chains';
-import { walletConnect, injected, coinbaseWallet } from 'wagmi/connectors';
+import { coinbaseWallet, injected, walletConnect } from 'wagmi/connectors';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactNode } from 'react';
@@ -129,8 +129,9 @@ createWeb3Modal({
     '971e689d0a5be527bac79629b4ee9b925e82208e5168b733496a09c0faed0709',
     '8a0ee50d1f22f6651afcae7eb4253e52a3310b90af5daef78a8c4929a9bb99d4',
     '163d2cf19babf05eb8962e9748f9ebe613ed52ebf9c8107c9a0f104bfcf161b3',
-    'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa'
-  ]
+    'fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa',
+    '8821748c25de9dbc4f72a691b25a6ddad9d7df12fa23333fd9c8b5fdc14cc819',
+  ],
 
   // tokens: {
   //   42161: {

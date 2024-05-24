@@ -76,7 +76,7 @@ export function useRemoveLiquidity(address: EthereumAddress, amount: bigint) {
     }
   };
 
-  const confirmed = useWatchTransaction(rest.data)
+  const confirmed = useWatchTransaction(rest.data);
 
   return {
     ...rest,

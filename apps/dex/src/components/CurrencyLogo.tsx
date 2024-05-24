@@ -6,7 +6,7 @@ interface CurrencyLogoProps {
   size: number;
 }
 
-export function CurrencyLogo({size, logo}: CurrencyLogoProps ) {
+export function CurrencyLogo({ size, logo }: CurrencyLogoProps) {
   return (
     <x.div display="flex">
       <x.img w={`${size}px`} h={`${size}px`} borderRadius="50%" src={logo ? logo : blankToken} />

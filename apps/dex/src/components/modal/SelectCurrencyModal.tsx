@@ -32,7 +32,13 @@ const modalCustomStyles = {
   },
 };
 
-export function SelectCurrencyModal({ open, onClose, styles = modalCustomStyles, currencies, onSelect }: SelectCurrencyModalProps) {
+export function SelectCurrencyModal({
+  open,
+  onClose,
+  styles = modalCustomStyles,
+  currencies,
+  onSelect,
+}: SelectCurrencyModalProps) {
   return (
     <Modal open={open} onClose={onClose} styles={styles}>
       <x.h1 fontSize="xl">Select Token</x.h1>
