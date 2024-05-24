@@ -103,6 +103,8 @@ export function Swap() {
       swap.reset();
       balanceA.refetch();
       balanceB.refetch();
+      setAmountOut(0n);
+      setAmountIn(0n)
       setFirstValue('');
       setSecondValue('');
     }
