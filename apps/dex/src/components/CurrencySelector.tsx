@@ -2,7 +2,7 @@ import { x } from '@xstyled/styled-components';
 import { CurrencyLogo } from './CurrencyLogo';
 import { BaseButton } from './BaseButton';
 import dropdown from '../img/dropdown.svg';
-import { Currency } from '../types';
+import { Currency } from '@lira-dao/web3-utils';
 
 
 interface CurrencySelectorProps {

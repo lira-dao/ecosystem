@@ -1,7 +1,7 @@
 import { useAccount, useBlock, useWriteContract } from 'wagmi';
-import { dexRouterV2Abi } from '@lira-dao/web3-utils';
+import { Currency, dexRouterV2Abi } from '@lira-dao/web3-utils';
 import { useDexAddresses } from './useDexAddresses';
-import { Currency } from '../types';
+import { useWatchTransaction } from './useWatchTransaction';
 
 
 export function useAddLiquidity(currencyA: Currency, amountA: bigint, currencyB?: Currency, amountB?: bigint) {
@@ -10,7 +10,7 @@ export function useAddLiquidity(currencyA: Currency, amountA: bigint, currencyB?
   const dexAddresses = useDexAddresses();
   const deadline = (block.data?.timestamp ?? 0n) + 600n;
 
-  const { writeContract } = useWriteContract();
+  const { writeContract, data, isPending, reset } = useWriteContract();
 
   const write = () => {
     if (account.address && currencyB && amountB) {
@@ -32,7 +32,12 @@ export function useAddLiquidity(currencyA: Currency, amountA: bigint, currencyB?
     }
   };
 
+  const confirmed = useWatchTransaction(data)
+
   return {
     write,
+    confirmed,
+    reset,
+    isPending: isPending || confirmed.isLoading
   };
 }

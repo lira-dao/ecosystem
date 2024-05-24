@@ -6,7 +6,7 @@ import { useReserves } from '../hooks/useReserves';
 import BigNumber from 'bignumber.js';
 import { formatUnits } from 'viem';
 import { useDexPairs } from '../hooks/useDexPairs';
-import { getCurrencies, getCurrencyByAddress } from '../utils';
+import { addLdtWeth, getCurrencies, getCurrencyByAddress } from '../utils';
 import { useChainId } from 'wagmi';
 
 
@@ -45,7 +45,16 @@ export function Pool() {
           >
             <x.div display="flex" flexGrow={1} justifyContent="space-between" mr={4}>
               <x.div>
-                <x.p fontSize="2xl">{d.name}</x.p>
+                <x.div display="flex">
+                  <x.p fontSize="2xl" mr={2}>{d.name}</x.p>
+                  <img
+                    src={metamaskFox}
+                    alt="metamask icon"
+                    width={24}
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => addLdtWeth()}
+                  />
+                </x.div>
                 <x.p fontSize="xl">LP: {d.formattedBalance}</x.p>
               </x.div>
 

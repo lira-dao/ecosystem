@@ -1,11 +1,9 @@
 import { x } from '@xstyled/styled-components';
-import { Currency } from '../types';
 import { useState } from 'react';
 import { SwapSection } from '../components/swap/SwapSection';
 import { InputPanel } from '../components/swap/InputPanel';
 import { Container } from '../components/swap/Container';
 import { NumericalInput } from '../components/StyledInput';
-import { CurrencySelector } from '../components/CurrencySelector';
 import { PrimaryButton } from '../components/PrimaryButton';
 import Modal from 'react-responsive-modal';
 

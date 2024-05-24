@@ -71,6 +71,19 @@ export const ethereumArbitrumOne: Currency = {
   ],
 };
 
+export const ethereumArbitrumSepolia: Currency = {
+  address: tokens[42161].weth,
+  chainId: 42161,
+  decimals: 18,
+  icon: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png',
+  isNative: true,
+  name: 'Ether',
+  symbol: 'ETH',
+  paired: [
+    'LDT',
+  ],
+};
+
 export const wethArbitrumSepolia: Currency = {
   address: tokens[421614].weth,
   chainId: 421614,
@@ -152,6 +165,7 @@ export const liraArbitrumOne: Currency = {
 };
 
 export const currenciesArbitrumSepolia: Currency[] = [
+  ethereumArbitrumSepolia,
   ldtArbitrumSepolia,
   wethArbitrumSepolia,
   // {
@@ -185,4 +199,8 @@ export function getCurrencies(chainId: number) {
 
 export function getCurrencyByAddress(address: EthereumAddress) {
   return [...currenciesArbitrumSepolia, ...currenciesArbitrumOne].find(c => c.address === address);
+}
+
+export function getPairedCurrencies(chainId: number, currencies: string[]) {
+  return getCurrencies(chainId).filter(c => currencies.includes(c.symbol));
 }

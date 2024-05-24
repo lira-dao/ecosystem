@@ -12,7 +12,6 @@ import { useGetAmountsIn, useGetAmountsOut } from '../hooks/useGetAmountsOut';
 import { formatUnits, parseUnits } from 'viem';
 import { useApprove } from '../hooks/useApprove';
 import { useSwap } from '../hooks/useSwap';
-import { Currency } from '../types';
 import repeatIcon from '../img/fa-repeat.svg';
 import { BaseButton } from '../components/BaseButton';
 import { PacmanLoader } from 'react-spinners';
@@ -21,6 +20,7 @@ import { useSnackbar } from 'notistack';
 import { useBalance } from '../hooks/useBalance';
 import { useDexAddresses } from '../hooks/useDexAddresses';
 import { useChainId } from 'wagmi';
+import { Currency } from '@lira-dao/web3-utils';
 
 
 export function useCurrency(c: Currency) {

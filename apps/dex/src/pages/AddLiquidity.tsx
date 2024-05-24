@@ -1,4 +1,4 @@
-import { ChangeEvent, useMemo, useState } from 'react';
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { x } from '@xstyled/styled-components';
 import { formatUnits, parseUnits } from 'viem';
 import { InputPanel } from '../components/swap/InputPanel';
@@ -7,19 +7,18 @@ import { NumericalInput } from '../components/StyledInput';
 import { CurrencySelector } from '../components/CurrencySelector';
 import { SwapSection } from '../components/swap/SwapSection';
 import { PrimaryButton } from '../components/PrimaryButton';
-import { getCurrencies } from '../utils';
+import { getCurrencies, getPairedCurrencies } from '../utils';
 import { usePair } from '../hooks/usePair';
 import { useBalance } from '../hooks/useBalance';
 import { useAllowance } from '../hooks/useAllowance';
 import { useApprove } from '../hooks/useApprove';
 import { useAddLiquidity } from '../hooks/useAddLiquidity';
 import Big from 'big.js';
-import { Currency, NativeCurrency, Token } from '../types';
 import BigNumber from 'bignumber.js';
 import { useDexAddresses } from '../hooks/useDexAddresses';
 import Modal from 'react-responsive-modal';
 import { useBalance as useBalanceWagmi, useChainId } from 'wagmi';
-import { EthereumAddress } from '@lira-dao/web3-utils';
+import { Currency, EthereumAddress } from '@lira-dao/web3-utils';
 
 
 const modalCustomStyles = {
@@ -40,7 +39,7 @@ export function AddLiquidity() {
   const dexAddresses = useDexAddresses();
   const [open, setOpen] = useState(false);
   const [selecting, setSelecting] = useState<number | null>(null);
-  const [selectingCurrencies, setSelectingCurrencies] = useState<(Currency | Token | NativeCurrency)[]>();
+  const [selectingCurrencies, setSelectingCurrencies] = useState<Currency[]>();
 
   const [currencyA, setCurrencyA] = useState<Currency>(getCurrencies(chainId)[0]);
   const [currencyB, setCurrencyB] = useState<Currency | undefined>(getCurrencies(chainId)[1]);
@@ -109,29 +108,15 @@ export function AddLiquidity() {
 
   const onCurrencySelectBClick = () => {
     setSelecting(1);
-    setSelectingCurrencies(currencyA.paired);
+    setSelectingCurrencies(getPairedCurrencies(chainId, currencyA.paired));
     setOpen(true);
   };
 
   const onSelectCurrency = (c: any) => {
     if (selecting === 0) {
-      if (c.isNative) {
-        const weth = getCurrencies(chainId).find(c => c.symbol === 'WETH')
-        if (weth) {
-          setCurrencyA(weth);
-        }
-      }
-
       setCurrencyA(c);
       setCurrencyB(undefined);
     } else {
-      if (c.isNative) {
-        const weth = getCurrencies(chainId).find(c => c.symbol === 'WETH')
-        if (weth) {
-          setCurrencyB(weth);
-        }
-      }
-
       setCurrencyB(c);
     }
 

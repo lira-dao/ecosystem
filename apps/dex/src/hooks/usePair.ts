@@ -1,6 +1,5 @@
 import { useReadContract } from 'wagmi';
-import { Currency } from '../types';
-import { dexFactoryV2Abi, dexPairV2Abi, EthereumAddress } from '@lira-dao/web3-utils';
+import { Currency, dexFactoryV2Abi, dexPairV2Abi, EthereumAddress } from '@lira-dao/web3-utils';
 import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
 import { useDexAddresses } from './useDexAddresses';
