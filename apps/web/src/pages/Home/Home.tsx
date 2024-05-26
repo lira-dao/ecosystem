@@ -5,17 +5,16 @@ import { StyledContainer } from './components/StyledContainer';
 import { StyledText } from './components/StyledText';
 import { ColorWrap, Typography } from '../../components/ui';
 import theme from '../../theme';
-import { PresaleInfo } from './components/PresaleInfo';
 import { LiraInfo } from './components/LiraInfo';
 import { LiraPower } from './components/LiraPower';
 import { StyledDivider } from './components/StyledDivider';
-import button from '../../img/enter-app.svg';
+import button from '../../img/enter-app-3.png';
 
 
 export function Home() {
   return (
     <ThemeProvider theme={theme}>
-      <StyledContainer backgroundPosition={['40% -250px', '40% -250px', '30% -250px', 'right -250px']}>
+      <StyledContainer backgroundPosition={['50% -250px', '40% -250px', '30% -250px', 'right -250px']}>
         <Col maxWidth={2048} margin={['0 80px']} alignItems={['center', 'center', 'center', 'flex-start']}>
           <StyledText
             as="h2"

@@ -3,7 +3,7 @@ import styled, { ThemeProvider } from 'styled-components';
 import { Row } from '@lira-dao/ui';
 import { GlobalStyles, Typography } from '../ui';
 import logo from '../../img/logo-dao.png';
-import button from '../../img/enter-app.svg';
+import button from '../../img/enter-app-3.png';
 import theme from '../../theme';
 import React from 'react';
 import twitter from '../../img/twitter.svg';
