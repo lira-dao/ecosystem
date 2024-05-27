@@ -148,7 +148,7 @@ contract TreasuryToken is Ownable, ERC20 {
         mintFee = newMintFee;
     }
 
-    function setMintDao(uint256 newMintFeeDao) public onlyOwner {
+    function setMintFeeDao(uint256 newMintFeeDao) public onlyOwner {
         require(newMintFeeDao >= 0 && newMintFeeDao < 100, 'INVALID_MINT_FEE');
 
         mintFeeDao = newMintFeeDao;
