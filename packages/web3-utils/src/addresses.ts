@@ -73,47 +73,47 @@ export const dexPairs: DexPairs = {
   42161: {
     '0xC828F6c8bBF9A90DB6Db9839696ffbF6e06532f9': {
       address: '0xC828F6c8bBF9A90DB6Db9839696ffbF6e06532f9',
+      symbol: 'LDT-WETH',
       tokens: [
         '0x2A5E22b32b3E0Daa7a8C199e10Df9D9E1264Fd3f',
         '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
       ],
-      symbol: 'LDT-WETH',
     },
   },
   421614: {
     '0x8063F3D1C79Cf03f404CA043E3faB3318a5B3648': {
       address: '0x8063F3D1C79Cf03f404CA043E3faB3318a5B3648',
+      symbol: 'LDT-WETH',
       tokens: [
         '0x62F53E68662B013ea03B7BA6803b624632179eD3',
         '0xdF5c1B370C7aE6C86d98A591C4aBe3453656a4b0',
       ],
-      symbol: 'LDT-WETH',
     },
-    // '0xE015747B86f8Cbc1E2e289E9EA154a38C1d017C7': {
-    //   address: '0xE015747B86f8Cbc1E2e289E9EA154a38C1d017C7',
-    //   tokens: [
-    //     '0xC4868aA029ADD5705FA203580669d2175889D615',
-    //     '0xdF5c1B370C7aE6C86d98A591C4aBe3453656a4b0',
-    //   ],
-    //   symbol: 'LIRA-WETH',
-    // },
     '0x382D8e8d06efF471A4Ba3C18b22E2f28482f8d66': {
       address: '0x382D8e8d06efF471A4Ba3C18b22E2f28482f8d66',
+      symbol: 'LDT-LIRA',
       tokens: [
         '0x62F53E68662B013ea03B7BA6803b624632179eD3',
         '0xC4868aA029ADD5705FA203580669d2175889D615',
       ],
-      symbol: 'LDT-LIRA',
+    },
+    '0xe8495FCaB5bd0f4bb5338A03d62B61031A5499dA': {
+      address: '0xe8495FCaB5bd0f4bb5338A03d62B61031A5499dA',
+      symbol: 'LIRA-WBTC',
+      tokens: [
+        '0xC4868aA029ADD5705FA203580669d2175889D615',
+        '0xeD26d7763314A722A6A243057Bc76EF67C869D84',
+      ],
     }
   },
   17000: {
     '0xc306A71E151Bb11c1cF5c97dCCA5991c05864797': {
       address: '0xc306A71E151Bb11c1cF5c97dCCA5991c05864797',
+      symbol: 'LDT-WETH',
       tokens: [
         '0xECB20AE07a7d8d7e87CF5d06B28620A700aB84F0',
         '0x335149F2fBe655E6D4243E0e2C19565F10B8b026',
       ],
-      symbol: 'LDT-WETH',
     },
   },
 };
