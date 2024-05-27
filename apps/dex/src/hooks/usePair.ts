@@ -44,8 +44,8 @@ export function usePair(currencyA: Currency, currencyB?: Currency) {
   const reserveB = reserves?.data?.[tokens?.indexOf(currencyB?.address) || 0];
 
   const priceCurrencyA = useMemo(() => {
-    if (Array.isArray(reserves.data) && reserves.data[1] > 0n) {
-      return new BigNumber(reserveB?.toString() || 0).times(new BigNumber(10).pow(18 - (currencyB?.decimals || 10))).div(reserveA?.toString() || 0);
+    if (Array.isArray(reserves.data) && reserves.data[1] > 0n && currencyB) {
+      return new BigNumber(reserveB?.toString() || 0).times(new BigNumber(10).pow(currencyA.decimals - (currencyB?.decimals || 10))).div(reserveA?.toString() || 0);
     }
 
     return new BigNumber(0);
@@ -53,7 +53,7 @@ export function usePair(currencyA: Currency, currencyB?: Currency) {
 
   const priceCurrencyB = useMemo(() => {
     if (Array.isArray(reserves.data) && reserves.data[0] > 0n) {
-      return new BigNumber(reserveA?.toString() || 0).div(BigNumber(reserveB?.toString() || 0).times(new BigNumber(10).pow(18 - (currencyB?.decimals || 18))));
+      return new BigNumber(reserveA?.toString() || 0).div(BigNumber(reserveB?.toString() || 0).times(new BigNumber(10).pow(currencyA.decimals - (currencyB?.decimals || 18))));
     }
 
     return new BigNumber(0);
@@ -61,6 +61,7 @@ export function usePair(currencyA: Currency, currencyB?: Currency) {
 
   return {
     ...pair,
+    refetchReserves: () => reserves.refetch(),
     priceCurrencyA,
     priceCurrencyB,
     reserveA: reserves.data?.[0] ?? 0n,

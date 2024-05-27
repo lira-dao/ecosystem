@@ -129,8 +129,9 @@ export const ldtArbitrumSepolia: Currency = {
   isNative: false,
   paired: [
     // 'ETH',
-    'WETH',
     'LIRA',
+    'WETH',
+    'WBTC',
   ],
 };
 
@@ -143,8 +144,9 @@ export const ldtArbitrumOne: Currency = {
   decimals: 18,
   isNative: false,
   paired: [
-    'WETH',
     'LIRA',
+    'WETH',
+    'WBTC',
   ],
 };
 
@@ -174,10 +176,37 @@ export const liraArbitrumOne: Currency = {
   ],
 };
 
+export const wbtcArbitrumSepolia: Currency = {
+  address: tokens[421614].wbtc,
+  chainId: 421614,
+  name: 'Wrapped Bitcoin',
+  symbol: 'WBTC',
+  icon: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/arbitrum/assets/0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f/logo.png',
+  decimals: 8,
+  isNative: false,
+  paired: [
+    'LDT',
+  ],
+};
+
+export const wbtcArbitrumOne: Currency = {
+  address: tokens[42161].wbtc,
+  chainId: 42161,
+  name: 'Wrapped Bitcoin',
+  symbol: 'WBTC',
+  icon: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/arbitrum/assets/0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f/logo.png',
+  decimals: 8,
+  isNative: false,
+  paired: [
+    'LDT',
+  ],
+};
+
 export const currenciesArbitrumSepolia: Currency[] = [
   ldtArbitrumSepolia,
   liraArbitrumSepolia,
   wethArbitrumSepolia,
+  wbtcArbitrumSepolia,
   // ethereumArbitrumSepolia,
 ];
 
