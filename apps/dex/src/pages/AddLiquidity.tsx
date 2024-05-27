@@ -245,8 +245,8 @@ export function AddLiquidity() {
 
           <x.div>
             <x.div>
-              <x.p>1 {currencyA.symbol} = {pair.priceCurrencyA.toPrecision(6, 1)} {currencyB.symbol}</x.p>
-              <x.p>1 {currencyB.symbol} = {pair.priceCurrencyB.toPrecision(6, 1)} {currencyA.symbol}</x.p>
+              <x.p>1 {currencyA.symbol} = {pair.priceCurrencyA.toFixed(pair.priceCurrencyA.lt(0.001) ? currencyB.decimals : 2, 1)} {currencyB.symbol}</x.p>
+              <x.p>1 {currencyB.symbol} = {pair.priceCurrencyB.toFixed(pair.priceCurrencyB.lt(0.001) ? currencyA.decimals : 2, 1)} {currencyA.symbol}</x.p>
             </x.div>
             <x.div></x.div>
           </x.div>

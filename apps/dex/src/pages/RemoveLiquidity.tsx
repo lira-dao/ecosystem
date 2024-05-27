@@ -137,7 +137,7 @@ export function RemoveLiquidity() {
                   </x.p>
                 </x.div>
                 <x.div>
-                  <x.p color="gray155">{new Big(formatUnits(balance.data ?? 0n, 18)).toFixed(6)}</x.p>
+                  <x.p color="gray155">{new BigNumber(formatUnits(balance.data ?? 0n, 18)).toFixed(6, 1)}</x.p>
                 </x.div>
               </x.div>
             </x.div>
