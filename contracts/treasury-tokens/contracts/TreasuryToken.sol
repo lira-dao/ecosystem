@@ -138,25 +138,25 @@ contract TreasuryToken is Ownable, ERC20 {
     }
 
     function setMintFee(uint256 newMintFee) public onlyOwner {
-        require(newMintFee >= 1 && newMintFee < 100, 'INVALID_MINT_FEE');
+        require(newMintFee >= 1 && newMintFee <= 30, 'INVALID_MINT_FEE');
 
         mintFee = newMintFee;
     }
 
     function setMintFeeDao(uint256 newMintFeeDao) public onlyOwner {
-        require(newMintFeeDao >= 0 && newMintFeeDao < 100, 'INVALID_MINT_FEE');
+        require(newMintFeeDao >= 0 && newMintFeeDao <= 30, 'INVALID_MINT_FEE');
 
         mintFeeDao = newMintFeeDao;
     }
 
     function setBurnFee(uint256 newBurnFee) public onlyOwner {
-        require(newBurnFee >= 1 && newBurnFee < 100, 'INVALID_BURN_FEE');
+        require(newBurnFee >= 1 && newBurnFee <= 30, 'INVALID_BURN_FEE');
 
         burnFee = newBurnFee;
     }
 
     function setBurnFeeDao(uint256 newBurnFeeDao) public onlyOwner {
-        require(newBurnFeeDao >= 1 && newBurnFeeDao < 100, 'INVALID_BURN_FEE');
+        require(newBurnFeeDao >= 1 && newBurnFeeDao <= 30, 'INVALID_BURN_FEE');
 
         burnFeeDao = newBurnFeeDao;
     }
