@@ -21,4 +21,6 @@ describe('LTBs', () => {
 
     expect(await ltbs.symbol()).eq('LTBs');
   });
+
+  it('must have 1M as ratio');
 });

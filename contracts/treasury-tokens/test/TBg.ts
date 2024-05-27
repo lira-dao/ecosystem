@@ -1,26 +1,25 @@
-import { expect } from 'chai';
 import { loadFixture } from '@nomicfoundation/hardhat-network-helpers';
 import { liraTreasuryBondBronzeFixture } from '../fixtures';
+import { expect } from 'chai';
 
-
-describe('LTBb', () => {
+describe('TBg', () => {
   describe('ERC20', () => {
-    it('must have 8 decimals', async () => {
+    it('must have 18 decimals', async () => {
       const { ltbb } = await loadFixture(liraTreasuryBondBronzeFixture);
 
-      expect(await ltbb.decimals()).eq(8n);
+      expect(await ltbb.decimals()).eq(18n);
     });
 
-    it('must have "LIRA Treasury Token Bronze" as name', async () => {
+    it('must have "Treasury Token Gold" as name', async () => {
       const { ltbb } = await loadFixture(liraTreasuryBondBronzeFixture);
 
-      expect(await ltbb.name()).eq('LIRA Treasury Bond Bronze');
+      expect(await ltbb.name()).eq('Treasury Bond Gold');
     });
 
-    it('must have "LTBb" as symbol', async () => {
+    it('must have "TBg" as symbol', async () => {
       const { ltbb } = await loadFixture(liraTreasuryBondBronzeFixture);
 
-      expect(await ltbb.symbol()).eq('LTBb');
+      expect(await ltbb.symbol()).eq('TBg');
     });
   });
 
