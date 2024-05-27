@@ -3,14 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import 'react-responsive-modal/styles.css';
 import reportWebVitals from './reportWebVitals';
-import { RouterProvider } from 'react-router-dom';
-import { Web3Provider } from './components/Web3Provider';
-import { GlobalStyles } from './theme/GlobalStyles';
-import { ThemeProvider } from 'styled-components';
-import { theme } from './theme/theme';
-import { router } from './router';
-import { Preflight } from '@xstyled/styled-components';
-import { SnackbarProvider } from 'notistack';
+import { App } from './App';
 
 
 const root = ReactDOM.createRoot(
@@ -19,15 +12,7 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <GlobalStyles />
-    <Preflight />
-    <Web3Provider>
-      <ThemeProvider theme={theme}>
-        <SnackbarProvider>
-          <RouterProvider router={router} />
-        </SnackbarProvider>
-      </ThemeProvider>
-    </Web3Provider>
+    <App />
   </React.StrictMode>,
 );
 

@@ -86,6 +86,9 @@ importers:
       react:
         specifier: ^18.2.0
         version: 18.3.1
+      react-cache-buster:
+        specifier: ^0.1.8
+        version: 0.1.8(prop-types@15.8.1)(react@18.3.1)
       react-dom:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
@@ -171,6 +174,9 @@ importers:
       react:
         specifier: ^18.2.0
         version: 18.3.1
+      react-cache-buster:
+        specifier: ^0.1.8
+        version: 0.1.8(prop-types@15.8.1)(react@18.3.1)
       react-countdown:
         specifier: ^2.3.5
         version: 2.3.5(react-dom@18.3.1)(react@18.3.1)
@@ -9504,6 +9510,10 @@ packages:
     resolution: {integrity: sha512-W9pAhw0ja1Edb5GVdIF1mjZw/ASI0AlShXM83UUGe2DVr5TdAPEA1OA8m/g8zWp9x6On7gqufY+FatDbC3MDQg==}
     dev: false
 
+  /compare-versions@4.1.4:
+    resolution: {integrity: sha512-FemMreK9xNyL8gQevsdRMrvO4lFCkQP7qbuktn1q8ndcNk1+0mz7lgE7b/sNvbhVgY4w6tMN1FDp6aADjqw2rw==}
+    dev: false
+
   /compressible@2.0.18:
     resolution: {integrity: sha512-AF3r7P5dWxL8MxyITRMlORQNaOA2IkAFaTr4k7BUumjPtRpGDTZpl0Pb1XCO6JeDCBdp126Cgs9sMxqSjgYyRg==}
     engines: {node: '>= 0.6'}
@@ -17489,6 +17499,18 @@ packages:
       whatwg-fetch: 3.6.20
     dev: false
 
+  /react-cache-buster@0.1.8(prop-types@15.8.1)(react@18.3.1):
+    resolution: {integrity: sha512-N7BMnz2MUC++oXUzcYXsGn0WsIBDe5rRyT8W6O7L32CjcbgnuxhxNjc9T+Y56zdlSdY5nde3PTmZSktFv3V9IQ==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      prop-types: '>=15.7.2'
+      react: '>=17.0.2'
+    dependencies:
+      compare-versions: 4.1.4
+      prop-types: 15.8.1
+      react: 18.3.1
+    dev: false
+
   /react-countdown@2.3.5(react-dom@18.3.1)(react@18.3.1):
     resolution: {integrity: sha512-K26ENYEesMfPxhRRtm1r+Pf70SErrvW3g4CArLi/x6MPFjgfDFYePT4UghEj8p2nI0cqVV7/JjDgjyr//U60Og==}
     peerDependencies:
@@ -18237,11 +18259,13 @@ packages:
 
   /rimraf@2.2.8:
     resolution: {integrity: sha512-R5KMKHnPAQaZMqLOsyuyUmcIjSeDm+73eoqQpaXA7AZ22BL+6C+1mcUscgOsNd8WVlJuvlgAPsegcx7pjlV0Dg==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
     dev: false
 
   /rimraf@2.6.3:
     resolution: {integrity: sha512-mwqeW5XsA2qAejG46gYdENaxXjx9onRNCfn7L0duuP4hCuTIi/QO7PDK07KJfp1d+izWPrzEJDcSqBa0OZQriA==}
+    deprecated: Rimraf versions prior to v4 are no longer supported
     hasBin: true
     dependencies:
       glob: 7.2.3

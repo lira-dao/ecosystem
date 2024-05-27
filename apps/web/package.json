@@ -17,6 +17,7 @@
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.4",
     "react": "^18.2.0",
+    "react-cache-buster": "^0.1.8",
     "react-countdown": "^2.3.5",
     "react-dom": "^18.2.0",
     "react-ga4": "^2.1.0",
@@ -31,7 +32,8 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "npm run generate-meta-tag && react-scripts build",
+    "generate-meta-tag": "node ./node_modules/react-cache-buster/dist/generate-meta-tag.js",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
