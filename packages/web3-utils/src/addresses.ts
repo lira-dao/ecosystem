@@ -1,4 +1,4 @@
-import { AddressList, DexAddresses, DexPairs, EthereumAddress, Pair, TokenAddresses } from './types';
+import { DexAddresses, DexPairs, TokenAddresses } from './types';
 
 
 // export const arbitrumOne: AddressList = {
@@ -79,6 +79,22 @@ export const dexPairs: DexPairs = {
         '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
       ],
     },
+    '0x9F0818aF51fd217A88ccfEf21669979B2570091A': {
+      address: '0x9F0818aF51fd217A88ccfEf21669979B2570091A',
+      symbol: 'LDT-LIRA',
+      tokens: [
+        '0x2A5E22b32b3E0Daa7a8C199e10Df9D9E1264Fd3f',
+        '0xA07ac236fEBc390c798504E927DC8D6a4e1FfcA3',
+      ],
+    },
+    '0x546375EaC8202cB47264519ace589Ca1e9Ef47e9': {
+      address: '0x546375EaC8202cB47264519ace589Ca1e9Ef47e9',
+      symbol: 'LDT-WBTC',
+      tokens: [
+        '0x2A5E22b32b3E0Daa7a8C199e10Df9D9E1264Fd3f',
+        '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f',
+      ],
+    },
   },
   421614: {
     '0x8063F3D1C79Cf03f404CA043E3faB3318a5B3648': {
@@ -104,7 +120,7 @@ export const dexPairs: DexPairs = {
         '0x62F53E68662B013ea03B7BA6803b624632179eD3',
         '0xeD26d7763314A722A6A243057Bc76EF67C869D84',
       ],
-    }
+    },
   },
   17000: {
     '0xc306A71E151Bb11c1cF5c97dCCA5991c05864797': {

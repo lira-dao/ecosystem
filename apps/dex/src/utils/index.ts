@@ -160,7 +160,6 @@ export const liraArbitrumSepolia: Currency = {
   isNative: false,
   paired: [
     'LDT',
-    'WBTC',
   ],
 };
 
@@ -174,7 +173,6 @@ export const liraArbitrumOne: Currency = {
   isNative: false,
   paired: [
     'LDT',
-    'WBTC',
   ],
 };
 
@@ -214,7 +212,9 @@ export const currenciesArbitrumSepolia: Currency[] = [
 
 export const currenciesArbitrumOne: Currency[] = [
   ldtArbitrumOne,
+  liraArbitrumOne,
   wethArbitrumOne,
+  wbtcArbitrumOne,
   // {
   //   ...liraArbitrumOne,
   //   paired: [

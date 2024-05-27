@@ -3,6 +3,7 @@ import { dexPairV2Abi, erc20Abi, EthereumAddress } from '@lira-dao/web3-utils';
 import { formatUnits } from 'viem';
 import BigNumber from 'bignumber.js';
 import { useDexPairs } from './useDexPairs';
+import { getCurrencyByAddress } from '../utils';
 
 
 const pool = {
@@ -15,9 +16,11 @@ const dexPair = {
   abi: dexPairV2Abi,
 } as const;
 
-export function useGetBalances() {
+export function usePools() {
   const account = useAccount();
   const dexPairs = useDexPairs();
+
+  console.log('dexPairs', dexPairs);
 
   const contracts = Object.entries(dexPairs).map(pair => ({
     ...pool,
@@ -41,16 +44,22 @@ export function useGetBalances() {
     contracts: reservesContracts,
   });
 
-  return {
-    data: balances.data?.map((balance, i) => ({
+  return balances.data?.map((balance, i) => {
+    const token0 = getCurrencyByAddress(dexPairs[Object.entries(dexPairs)[i][1].address].tokens[0]);
+    const token1 = getCurrencyByAddress(dexPairs[Object.entries(dexPairs)[i][1].address].tokens[1]);
+
+    const balance0 = reserves?.data?.[i]?.result?.[0] || 0;
+    const balance1 = reserves?.data?.[i]?.result?.[1] || 0;
+
+    return {
       balance,
       name: Object.entries(dexPairs)[i][1].symbol,
       address: Object.entries(dexPairs)[i][1].address,
-      formattedBalance: new BigNumber(formatUnits(balance.result || 0n, 18)).decimalPlaces(2, 1).toString(),
-    })) ?? [],
-    reserves: reserves?.data?.map((reserve) => ({
-      token0: reserve.result?.[0] || 0n,
-      token1: reserve.result?.[1] ?? 0n,
-    })),
-  };
+      formattedBalance: new BigNumber(formatUnits(balance.result || 0n, 18)).decimalPlaces(6, 1).toString(),
+      token0,
+      token1,
+      reserve0: new BigNumber(balance0?.toString() || '0').div(new BigNumber(10).pow(token0?.decimals ?? 18)).toFormat(balance0 < 0.1 ? 6 : 2, 1),
+      reserve1: new BigNumber(balance1?.toString() || '0').div(new BigNumber(10).pow(token1?.decimals ?? 18)).toFormat(balance1 < 0.1 ? 6 : 2, 1),
+    };
+  }) ?? [];
 }

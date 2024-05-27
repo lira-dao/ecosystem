@@ -1,11 +1,9 @@
 import { useTheme, x } from '@xstyled/styled-components';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { useNavigate } from 'react-router-dom';
-import { useGetBalances } from '../hooks/useGetBalances';
-import BigNumber from 'bignumber.js';
-import { formatUnits } from 'viem';
+import { usePools } from '../hooks/usePools';
 import { useDexPairs } from '../hooks/useDexPairs';
-import { addPoolToMetamask, getCurrencyByAddress } from '../utils';
+import { addPoolToMetamask } from '../utils';
 import metamaskFox from '../img/metamask-fox.svg';
 import dexScreenerLogo from '../img/dex-screener.svg';
 
@@ -13,8 +11,7 @@ import dexScreenerLogo from '../img/dex-screener.svg';
 export function Pool() {
   const th = useTheme();
   const navigate = useNavigate();
-  const { data, reserves } = useGetBalances();
-  const dexPairs = useDexPairs();
+  const pools = usePools();
 
   return (
     <x.div display="flex" w="100%" flexDirection="column" maxWidth="680px" p={4}>
@@ -25,15 +22,15 @@ export function Pool() {
       </x.div>
 
       <x.div mt={6} p={6} borderRadius="16px">
-        {data.length === 0 ? (
+        {pools.length === 0 ? (
           <x.p textAlign="center">You do not have open positions</x.p>
-        ) : data.map((pool, i) => (
+        ) : pools.map((pool, i) => (
           <x.div
             key={i}
             display="flex"
             alignItems="center"
             justifyContent="space-between"
-            mb={i < data.length - 1 ? 4 : 0}
+            mb={i < pools.length - 1 ? 4 : 0}
             pb={4}
             borderBottom="1px solid"
             borderColor={th?.colors.gray155}
@@ -67,8 +64,8 @@ export function Pool() {
               </x.div>
 
               <x.div textAlign="right">
-                <x.p fontSize="xl">{new BigNumber(formatUnits(reserves?.[i].token0 || 0n, getCurrencyByAddress(dexPairs[pool.address].tokens[0])?.decimals ?? 0)).toFormat(2, 1)} {getCurrencyByAddress(dexPairs[pool.address].tokens[0])?.symbol}</x.p>
-                <x.p fontSize="xl">{new BigNumber(formatUnits(reserves?.[i].token1 || 0n, getCurrencyByAddress(dexPairs[pool.address].tokens[1])?.decimals ?? 0)).toFormat(2, 1)} {getCurrencyByAddress(dexPairs[pool.address].tokens[1])?.symbol}</x.p>
+                <x.p fontSize="xl">{pool.reserve0} {pool.token0?.symbol}</x.p>
+                <x.p fontSize="xl">{pool.reserve1} {pool.token1?.symbol}</x.p>
               </x.div>
             </x.div>
 
