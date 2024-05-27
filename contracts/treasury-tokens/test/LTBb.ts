@@ -54,7 +54,7 @@ describe('LTBb', () => {
     expect(await ltbb.mintFee()).eq(20n);
   });
 
-  it('must revert with "" if isMingEnable is false', async () => {
+  it('must revert with "MINT_DISABLED" if isMingEnable is false', async () => {
     const {
       ltbb,
       ltbbAddress,
