@@ -19,7 +19,7 @@ import { useAllowance } from '../hooks/useAllowance';
 import { useSnackbar } from 'notistack';
 import { useBalance } from '../hooks/useBalance';
 import { useDexAddresses } from '../hooks/useDexAddresses';
-import { useChainId } from 'wagmi';
+import { useAccount, useBalance as useBalanceWagmi, useChainId } from 'wagmi';
 import { Currency } from '@lira-dao/web3-utils';
 import { SelectCurrencyModal } from '../components/modal/SelectCurrencyModal';
 import { usePair } from '../hooks/usePair';
@@ -56,15 +56,19 @@ export function Swap() {
   const approve = useApprove(currencyA.address, dexAddresses.router, parseUnits(firstValue.toString(), currencyA.decimals));
 
   const pair = usePair(currencyA, currencyB);
-  const swap = useSwap([currencyA.address, currencyB?.address || '0x0'], parseUnits(firstValue.toString(), currencyA.decimals));
+  const swap = useSwap([currencyA.address, currencyB?.address || '0x0'], parseUnits(firstValue.toString(), currencyA.decimals), currencyA.isNative, currencyB?.isNative);
 
   const isAllowCurrencyADisabled = useMemo(() => approve.isPending || allowance1.isPending, [approve, allowance1]);
 
+  const account = useAccount();
+  const accountBalance = useBalanceWagmi({ address: account.address });
+
   const needAllowance = useMemo(() =>
       parseUnits(firstValue.toString(), currencyA.decimals) > 0 &&
+      !currencyA.isNative &&
       allowance1.data !== undefined &&
       allowance1.data < parseUnits(firstValue.toString(), currencyA.decimals),
-    [allowance1, firstValue]);
+    [allowance1.data, currencyA.decimals, currencyA.isNative, firstValue]);
 
   useEffect(() => {
     if (amountsOut.data) {
@@ -213,7 +217,7 @@ export function Swap() {
               />
 
               <x.div w="100%" display="flex" mt={2} justifyContent="flex-end">
-                <x.p color="gray155">{new Big(formatUnits(balanceA.data ?? 0n, currencyA.decimals)).toFixed(6)}</x.p>
+                <x.p color="gray155">{new Big(formatUnits(currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n, currencyA.decimals)).toFixed(6)}</x.p>
               </x.div>
             </x.div>
           </Container>
@@ -257,7 +261,7 @@ export function Swap() {
               />
 
               <x.div w="100%" display="flex" justifyContent="flex-end" mt={2}>
-                <x.p color="gray155">{new Big(formatUnits(balanceB.data ?? 0n, currencyB?.decimals || 18)).toFixed(6)}</x.p>
+                <x.p color="gray155">{new Big(formatUnits(currencyB?.isNative ? accountBalance.data?.value || 0n : balanceB.data ?? 0n, currencyA.decimals)).toFixed(6)}</x.p>
               </x.div>
             </x.div>
           </Container>
@@ -266,7 +270,7 @@ export function Swap() {
 
       {(currencyA && currencyB) && (
         <x.div mt={4}>
-          <x.p>Prices</x.p>
+        <x.p>Prices</x.p>
 
           <x.div>
             <x.div>

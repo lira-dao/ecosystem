@@ -81,7 +81,7 @@ export const ethereumArbitrumOne: Currency = {
 };
 
 export const ethereumArbitrumSepolia: Currency = {
-  address: tokens[42161].weth,
+  address: tokens[421614].weth,
   chainId: 42161,
   decimals: 18,
   icon: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png',
@@ -98,7 +98,7 @@ export const wethArbitrumSepolia: Currency = {
   chainId: 421614,
   name: 'Wrapped Ether',
   symbol: 'WETH',
-  icon: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png',
+  icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png',
   decimals: 18,
   isNative: false,
   paired: [
@@ -111,7 +111,7 @@ export const wethArbitrumOne: Currency = {
   chainId: 42161,
   name: 'Wrapped Ether',
   symbol: 'WETH',
-  icon: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png',
+  icon: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png',
   decimals: 18,
   isNative: false,
   paired: [
