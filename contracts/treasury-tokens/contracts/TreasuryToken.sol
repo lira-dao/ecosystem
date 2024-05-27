@@ -33,7 +33,6 @@ contract TreasuryToken is Ownable, ERC20 {
     uint256 public burnFeeDao = 0;
 
     uint256 public feeAmount = 0;
-    uint256 public feeAmountDao = 0;
 
     modifier onlyOwnerOrIfEnabled() {
         require(msg.sender == owner() || isMintEnabled, 'MINT_DISABLED');
@@ -79,11 +78,7 @@ contract TreasuryToken is Ownable, ERC20 {
 
         ERC20(token).safeTransferFrom(msg.sender, address(this), cost + fee);
 
-        if (msg.sender == owner()) {
-            feeAmountDao = feeAmountDao + fee;
-        } else {
-            feeAmount = feeAmount + fee;
-        }
+        feeAmount = feeAmount + fee;
 
         _mint(to, amount);
     }
