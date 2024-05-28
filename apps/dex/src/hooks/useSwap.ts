@@ -24,9 +24,7 @@ export function useSwap(pair: [EthereumAddress, EthereumAddress], amountIn: bigi
     return 'swapExactTokensForTokens';
   };
 
-  console.log('rest', getFunctionName(), rest);
   const write = () => {
-    console.log('write swap');
     if (amountsOut.data && pair[1] !== '0x0') {
       if (getFunctionName() === 'swapExactETHForTokens') {
         writeContract({
