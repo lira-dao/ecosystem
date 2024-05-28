@@ -16,7 +16,7 @@ import { useAddLiquidity } from '../hooks/useAddLiquidity';
 import Big from 'big.js';
 import BigNumber from 'bignumber.js';
 import { useDexAddresses } from '../hooks/useDexAddresses';
-import { useBalance as useBalanceWagmi, useChainId } from 'wagmi';
+import { useAccount, useBalance as useBalanceWagmi, useChainId } from 'wagmi';
 import { Currency, EthereumAddress } from '@lira-dao/web3-utils';
 import { SelectCurrencyModal } from '../components/modal/SelectCurrencyModal';
 import { useSnackbar } from 'notistack';
@@ -51,6 +51,9 @@ export function AddLiquidity() {
   const approveA = useApprove(currencyA.address, dexAddresses.router, parseUnits(firstValue.toString(), currencyA.decimals));
   const approveB = useApprove(currencyB?.address as EthereumAddress, dexAddresses.router, parseUnits(secondValue.toString(), currencyB?.decimals || 0));
 
+  const account = useAccount();
+  const accountBalance = useBalanceWagmi({ address: account.address });
+
   const addLiquidity = useAddLiquidity(
     currencyA,
     parseUnits(firstValue.toString(), currencyA.decimals),
@@ -60,6 +63,7 @@ export function AddLiquidity() {
 
   const needAllowanceA = useMemo(() =>
       parseUnits(firstValue.toString(), currencyA.decimals) > 0 &&
+      !currencyA.isNative &&
       allowanceA.data !== undefined &&
       allowanceA.data < parseUnits(firstValue.toString(), currencyA.decimals),
     [allowanceA, firstValue]);
@@ -67,6 +71,7 @@ export function AddLiquidity() {
   const needAllowanceB = useMemo(() =>
       currencyB?.decimals &&
       parseUnits(secondValue.toString(), currencyB.decimals) > 0 &&
+      !currencyB.isNative &&
       allowanceB.data !== undefined &&
       allowanceB.data < parseUnits(secondValue.toString(), currencyB.decimals),
     [allowanceB, secondValue]);
@@ -206,7 +211,7 @@ export function AddLiquidity() {
               <NumericalInput id="currencyA" disabled={!currencyB} value={firstValue} onChange={onChangeValues} />
 
               <x.div w="100%" display="flex" mt={2} justifyContent="flex-end">
-                <x.p color="gray155">{new Big(formatUnits(balanceA.data ?? 0n, currencyA.decimals)).toFixed(6)}</x.p>
+                <x.p color="gray155">{new Big(formatUnits(currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n, currencyA.decimals)).toFixed(6)}</x.p>
               </x.div>
             </x.div>
           </Container>
@@ -230,7 +235,7 @@ export function AddLiquidity() {
               <NumericalInput id="currencyB" disabled={!currencyB} value={secondValue} onChange={onChangeValues} />
 
               <x.div w="100%" display="flex" mt={2} justifyContent="flex-end">
-                <x.p color="gray155">{new Big(formatUnits(balanceB.data ?? 0n, currencyB?.decimals || 0)).toFixed(6)}</x.p>
+                <x.p color="gray155">{new Big(formatUnits(currencyB?.isNative ? accountBalance.data?.value || 0n : balanceB.data ?? 0n, currencyB?.decimals ?? 18)).toFixed(6)}</x.p>
               </x.div>
             </x.div>
           </Container>
@@ -253,16 +258,20 @@ export function AddLiquidity() {
 
       {currencyB && (
         <x.div display="flex" mb={4}>
-          <PrimaryButton
-            disabled={isDisabledAllowanceA}
-            onClick={() => approveA.write()}
-            mr={4}
-          >Approve {currencyA.symbol}</PrimaryButton>
-          <PrimaryButton
-            disabled={isDisabledAllowanceB}
-            onClick={() => approveB.write()}
-            ml={4}
-          >Approve {currencyB.symbol}</PrimaryButton>
+          {!currencyA.isNative && (
+            <PrimaryButton
+              disabled={isDisabledAllowanceA}
+              onClick={() => approveA.write()}
+              mr={currencyB.isNative ? 0 : 4}
+            >Approve {currencyA.symbol}</PrimaryButton>
+          )}
+          {!currencyB.isNative && (
+            <PrimaryButton
+              disabled={isDisabledAllowanceB}
+              onClick={() => approveB.write()}
+              ml={currencyA.isNative ? 0 : 4}
+            >Approve {currencyB.symbol}</PrimaryButton>
+          )}
         </x.div>
       )}
 

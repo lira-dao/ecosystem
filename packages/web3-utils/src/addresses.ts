@@ -152,8 +152,8 @@ export const dexPairs: DexPairs = {
       address: '0x08fF368019Fa4Ed537621732Cc74e3f772B8C199',
       symbol: 'WBTC-WETH',
       tokens: [
+        '0xdF5c1B370C7aE6C86d98A591C4aBe3453656a4b0',
         '0xeD26d7763314A722A6A243057Bc76EF67C869D84',
-        '0x335149F2fBe655E6D4243E0e2C19565F10B8b026',
       ]
     }
   },

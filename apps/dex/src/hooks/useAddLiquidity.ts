@@ -14,21 +14,55 @@ export function useAddLiquidity(currencyA: Currency, amountA: bigint, currencyB?
 
   const write = () => {
     if (account.address && currencyB && amountB) {
-      writeContract({
-        abi: dexRouterV2Abi,
-        address: dexAddresses.router,
-        functionName: 'addLiquidity',
-        args: [
-          currencyA.address,
-          currencyB.address,
-          amountA,
-          amountB,
-          amountA - ((amountA * 10n) / 100n),
-          amountB - ((amountB * 10n) / 100n),
-          account.address,
-          deadline,
-        ],
-      });
+      if (currencyA.isNative) {
+        writeContract({
+          abi: dexRouterV2Abi,
+          address: dexAddresses.router,
+          functionName: 'addLiquidityETH',
+          args: [
+            currencyB.address,
+            amountB,
+            amountB - ((amountB * 10n) / 100n),
+            amountA - ((amountA * 10n) / 100n),
+            account.address,
+            deadline,
+          ],
+          value: amountA,
+        });
+      } else if (currencyB.isNative) {
+        writeContract({
+          abi: dexRouterV2Abi,
+          address: dexAddresses.router,
+          functionName: 'addLiquidityETH',
+          args: [
+            currencyA.address,
+            amountA,
+            amountA - ((amountA * 10n) / 100n),
+            amountB - ((amountB * 10n) / 100n),
+            account.address,
+            deadline,
+          ],
+          value: amountB,
+        });
+      } else {
+        writeContract({
+          abi: dexRouterV2Abi,
+          address: dexAddresses.router,
+          functionName: 'addLiquidity',
+          args: [
+            currencyA.address,
+            currencyB.address,
+            amountA,
+            amountB,
+            amountA - ((amountA * 10n) / 100n),
+            amountB - ((amountB * 10n) / 100n),
+            account.address,
+            deadline,
+          ],
+        });
+      }
+
+
     }
   };
 
