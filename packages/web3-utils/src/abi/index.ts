@@ -5,3 +5,4 @@ export * from './dex-factory';
 export * from './dex-pair';
 export * from './erc20';
 export * from './dex-router';
+export * from './treasury-token';

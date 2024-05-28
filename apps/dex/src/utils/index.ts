@@ -57,6 +57,15 @@ export async function addWethToken() {
   );
 }
 
+export async function addTreasuryToken(token: Currency) {
+  return addToken(
+    token.address,
+    token.symbol,
+    token.decimals,
+    `https://gateway.pinata.cloud/ipfs/${pinata.logoTb}`
+  )
+}
+
 export async function addPoolToMetamask(poolAddress: EthereumAddress) {
   return addToken(
     poolAddress,
@@ -379,9 +388,9 @@ export const treasuryCurrenciesArbitrumSepolia: Currency[] = [
   tbbArbitrumSepolia,
   tbsArbitrumSepolia,
   tbgArbitrumSepolia,
-  ltbbArbitrumSepolia,
-  ltbsArbitrumSepolia,
-  ltbgArbitrumSepolia,
+  // ltbbArbitrumSepolia,
+  // ltbsArbitrumSepolia,
+  // ltbgArbitrumSepolia,
 ]
 
 export const treasuryCurrenciesArbitrumOne: Currency[] = [

@@ -2,7 +2,6 @@ import { useTheme, x } from '@xstyled/styled-components';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { useNavigate } from 'react-router-dom';
 import { usePools } from '../hooks/usePools';
-import { useDexPairs } from '../hooks/useDexPairs';
 import { addPoolToMetamask } from '../utils';
 import metamaskFox from '../img/metamask-fox.svg';
 import dexScreenerLogo from '../img/dex-screener.svg';

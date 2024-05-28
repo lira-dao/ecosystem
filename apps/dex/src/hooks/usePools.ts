@@ -20,8 +20,6 @@ export function usePools() {
   const account = useAccount();
   const dexPairs = useDexPairs();
 
-  console.log('dexPairs', dexPairs);
-
   const contracts = Object.entries(dexPairs).map(pair => ({
     ...pool,
     args: [account.address as EthereumAddress],
