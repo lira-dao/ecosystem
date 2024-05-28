@@ -99,6 +99,7 @@ export const ethereumArbitrumSepolia: Currency = {
   symbol: 'ETH',
   paired: [
     'LDT',
+    'WBTC'
   ],
 };
 
@@ -112,6 +113,7 @@ export const wethArbitrumSepolia: Currency = {
   isNative: false,
   paired: [
     'LDT',
+    'WBTC',
   ],
 };
 
@@ -196,6 +198,7 @@ export const wbtcArbitrumSepolia: Currency = {
   isNative: false,
   paired: [
     'LDT',
+    'WETH',
   ],
 };
 
