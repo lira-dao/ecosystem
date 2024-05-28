@@ -19,7 +19,7 @@ export function Treasury() {
         <x.h1 fontSize="4xl">Treasury Tokens</x.h1>
       </x.div>
 
-      <x.div mt={6} p={6} borderRadius="16px">
+      <x.div mt={6} borderRadius="16px">
         {treasuries.map((treasury, i) => (
           <x.div
             key={i}
