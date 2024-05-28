@@ -45,8 +45,6 @@ export function AddLiquidity() {
   const balanceA = useBalance(currencyA.address);
   const balanceB = useBalance(currencyB?.address);
 
-  const accountBalance = useBalanceWagmi();
-
   const allowanceA = useAllowance(currencyA.address, dexAddresses.router);
   const allowanceB = useAllowance(currencyB?.address as EthereumAddress, dexAddresses.router);
 
