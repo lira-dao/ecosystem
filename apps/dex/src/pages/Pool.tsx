@@ -72,7 +72,7 @@ export function Pool() {
               <PrimaryButton
                 w="fit-content"
                 h="fit-content"
-                backgroundColor={th?.colors['green-yellow-700']}
+                backgroundColor={{_: th?.colors['red-700'], hover: th?.colors['red-600']}}
                 onClick={() => navigate(`/remove-liquidity/${pool.address}`)}
               >Remove</PrimaryButton>
             </x.div>

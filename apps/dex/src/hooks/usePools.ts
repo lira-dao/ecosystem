@@ -56,8 +56,8 @@ export function usePools() {
       formattedBalance: new BigNumber(formatUnits(balance.result || 0n, 18)).decimalPlaces(6, 1).toString(),
       token0,
       token1,
-      reserve0: new BigNumber(balance0?.toString() || '0').div(new BigNumber(10).pow(token0?.decimals ?? 18)).toFormat(balance0 < 0.1 ? 6 : 2, 1),
-      reserve1: new BigNumber(balance1?.toString() || '0').div(new BigNumber(10).pow(token1?.decimals ?? 18)).toFormat(balance1 < 0.1 ? 6 : 2, 1),
+      reserve0: new BigNumber(balance0?.toString() || '0').div(new BigNumber(10).pow(token0?.decimals ?? 18)).toFormat(new BigNumber(balance0.toString()).div(new BigNumber(10).pow(token0?.decimals || 18)).lt(1) ? 6 : 2, 1),
+      reserve1: new BigNumber(balance1?.toString() || '0').div(new BigNumber(10).pow(token1?.decimals ?? 18)).toFormat(new BigNumber(balance1.toString()).div(new BigNumber(10).pow(token1?.decimals || 18)).lt(1) ? 6 : 2, 1),
     };
   }) ?? [];
 }
