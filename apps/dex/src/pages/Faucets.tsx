@@ -10,6 +10,8 @@ import { useFaucets } from '../hooks/useFaucets';
 import { addLiraDaoToken, addLiraToken, addWethToken } from '../utils';
 import metamaskFox from '../img/metamask-fox.svg';
 import { AddToMetamaskButton } from '@lira-dao/ui';
+import { StyledTabItem } from '../components/StyledTabItem';
+import { useNavigate } from 'react-router-dom';
 
 
 const StyledContainer = styled.div`
@@ -19,20 +21,6 @@ const StyledContainer = styled.div`
 
 const StyledHeaderContainer = styled.div`
   display: flex;
-`;
-
-interface HeaderItemProps {
-  $active: boolean;
-}
-
-const StyledHeaderItem = styled.h3<HeaderItemProps>`
-  padding: 8px 16px;
-  color: ${props => props.$active ? th.color('primary') : 'white'};
-  font-size: ${th.fontSize('l')};
-  cursor: pointer;
-
-  background: ${props => props.$active ? th.color('gray34') : 'transparent'};
-  border-radius: ${props => props.$active ? '20px' : '0'};
 `;
 
 const StyledTitle = styled.h4`
@@ -63,6 +51,7 @@ enum ActiveHeaderItem {
 }
 
 export function Faucets() {
+  const navigate = useNavigate();
   const account = useAccount();
   const { open } = useWeb3Modal();
   const {
@@ -91,7 +80,8 @@ export function Faucets() {
 
   const onButtonClick = () => {
     if (!account.isConnected) {
-      open().then(() => {});
+      open().then(() => {
+      });
     } else if (active === ActiveHeaderItem.LIRA) {
       writeLiraFaucet();
     } else if (active === ActiveHeaderItem.LDT) {
@@ -136,21 +126,25 @@ export function Faucets() {
     reset();
   };
 
+  if (!process.env.REACT_APP_TESTNET) {
+    navigate('/', { replace: true });
+  }
+
   return (
     <StyledContainer>
       <StyledHeaderContainer>
-        <StyledHeaderItem
+        <StyledTabItem
           $active={active === ActiveHeaderItem.LDT}
           onClick={() => changeTab(ActiveHeaderItem.LDT)}
-        >LDT</StyledHeaderItem>
-        <StyledHeaderItem
+        >LDT</StyledTabItem>
+        <StyledTabItem
           $active={active === ActiveHeaderItem.LIRA}
           onClick={() => changeTab(ActiveHeaderItem.LIRA)}
-        >LIRA</StyledHeaderItem>
-        <StyledHeaderItem
+        >LIRA</StyledTabItem>
+        <StyledTabItem
           $active={active === ActiveHeaderItem.WETH}
           onClick={() => changeTab(ActiveHeaderItem.WETH)}
-        >WETH</StyledHeaderItem>
+        >WETH</StyledTabItem>
       </StyledHeaderContainer>
 
       {!writeIsPending && !writeIsSuccess && <StyledTitle>Claim your testnet tokens every 24h</StyledTitle>}

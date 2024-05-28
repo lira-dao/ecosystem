@@ -270,7 +270,7 @@ export function Swap() {
 
       {(currencyA && currencyB) && (
         <x.div mt={4}>
-        <x.p>Prices</x.p>
+          <x.p>Prices</x.p>
 
           <x.div>
             <x.div>

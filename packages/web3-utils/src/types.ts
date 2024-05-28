@@ -22,6 +22,12 @@ export type TokenAddresses = {
     lira: EthereumAddress,
     weth: EthereumAddress,
     wbtc: EthereumAddress,
+    tbb: EthereumAddress,
+    tbs: EthereumAddress,
+    tbg: EthereumAddress,
+    ltbb: EthereumAddress,
+    ltbs: EthereumAddress,
+    ltbg: EthereumAddress,
   }
 }
 

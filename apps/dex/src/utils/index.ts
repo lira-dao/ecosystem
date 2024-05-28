@@ -203,13 +203,168 @@ export const wbtcArbitrumOne: Currency = {
   ],
 };
 
+export const tbbArbitrumSepolia: Currency = {
+  address: tokens[421614].tbb,
+  chainId: 421614,
+  name: 'Treasury Bond Bronze',
+  symbol: 'TBb',
+  icon: `https://gateway.pinata.cloud/ipfs/${pinata.logoTb}`,
+  decimals: 18,
+  isNative: false,
+  paired: [
+    'LDT'
+  ],
+};
+
+export const tbbArbitrumOne: Currency = {
+  address: tokens[42161].tbb,
+  chainId: 42161,
+  name: 'Treasury Bond Bronze',
+  symbol: 'TBb',
+  icon: `https://gateway.pinata.cloud/ipfs/${pinata.logoTb}`,
+  decimals: 18,
+  isNative: false,
+  paired: [
+    'LDT'
+  ],
+};
+
+export const tbsArbitrumSepolia: Currency = {
+  address: tokens[421614].tbs,
+  chainId: 421614,
+  name: 'Treasury Bond Silver',
+  symbol: 'TBs',
+  icon: `https://gateway.pinata.cloud/ipfs/${pinata.logoTb}`,
+  decimals: 18,
+  isNative: false,
+  paired: [
+    'LDT'
+  ],
+};
+
+export const tbsArbitrumOne: Currency = {
+  address: tokens[42161].tbs,
+  chainId: 42161,
+  name: 'Treasury Bond Silver',
+  symbol: 'TBs',
+  icon: `https://gateway.pinata.cloud/ipfs/${pinata.logoTb}`,
+  decimals: 18,
+  isNative: false,
+  paired: [
+    'LDT'
+  ],
+};
+
+export const tbgArbitrumSepolia: Currency = {
+  address: tokens[421614].tbg,
+  chainId: 421614,
+  name: 'Treasury Bond Gold',
+  symbol: 'TBg',
+  icon: `https://gateway.pinata.cloud/ipfs/${pinata.logoTb}`,
+  decimals: 18,
+  isNative: false,
+  paired: [
+    'LDT'
+  ],
+};
+
+export const tbgArbitrumOne: Currency = {
+  address: tokens[42161].tbg,
+  chainId: 42161,
+  name: 'Treasury Bond Gold',
+  symbol: 'TBg',
+  icon: `https://gateway.pinata.cloud/ipfs/${pinata.logoTb}`,
+  decimals: 18,
+  isNative: false,
+  paired: [
+    'LDT'
+  ],
+};
+
+export const ltbbArbitrumSepolia: Currency = {
+  address: tokens[421614].ltbb,
+  chainId: 421614,
+  name: 'LIRA Treasury Bond Bronze',
+  symbol: 'LTBb',
+  icon: `https://gateway.pinata.cloud/ipfs/${pinata.logoTb}`,
+  decimals: 8,
+  isNative: false,
+  paired: [
+    'LIRA'
+  ],
+};
+
+export const ltbbArbitrumOne: Currency = {
+  address: tokens[42161].ltbb,
+  chainId: 42161,
+  name: 'LIRA Treasury Bond Bronze',
+  symbol: 'LTBb',
+  icon: `https://gateway.pinata.cloud/ipfs/${pinata.logoTb}`,
+  decimals: 8,
+  isNative: false,
+  paired: [
+    'LIRA'
+  ],
+};
+
+export const ltbsArbitrumSepolia: Currency = {
+  address: tokens[421614].ltbs,
+  chainId: 421614,
+  name: 'LIRA Treasury Bond Silver',
+  symbol: 'LTBs',
+  icon: `https://gateway.pinata.cloud/ipfs/${pinata.logoTb}`,
+  decimals: 8,
+  isNative: false,
+  paired: [
+    'LIRA'
+  ],
+};
+
+export const ltbsArbitrumOne: Currency = {
+  address: tokens[42161].ltbs,
+  chainId: 42161,
+  name: 'LIRA Treasury Bond Silver',
+  symbol: 'LTBs',
+  icon: `https://gateway.pinata.cloud/ipfs/${pinata.logoTb}`,
+  decimals: 8,
+  isNative: false,
+  paired: [
+    'LIRA'
+  ],
+};
+
+export const ltbgArbitrumSepolia: Currency = {
+  address: tokens[421614].ltbg,
+  chainId: 421614,
+  name: 'LIRA Treasury Bond Gold',
+  symbol: 'LTBg',
+  icon: `https://gateway.pinata.cloud/ipfs/${pinata.logoTb}`,
+  decimals: 8,
+  isNative: false,
+  paired: [
+    'LIRA'
+  ],
+};
+
+export const ltbgArbitrumOne: Currency = {
+  address: tokens[42161].ltbg,
+  chainId: 42161,
+  name: 'LIRA Treasury Bond Gold',
+  symbol: 'LTBg',
+  icon: `https://gateway.pinata.cloud/ipfs/${pinata.logoTb}`,
+  decimals: 8,
+  isNative: false,
+  paired: [
+    'LIRA'
+  ],
+};
+
 export const currenciesArbitrumSepolia: Currency[] = [
   ldtArbitrumSepolia,
   liraArbitrumSepolia,
   ethereumArbitrumSepolia,
   wethArbitrumSepolia,
   wbtcArbitrumSepolia,
-  // ethereumArbitrumSepolia,
 ];
 
 export const currenciesArbitrumOne: Currency[] = [
@@ -218,13 +373,25 @@ export const currenciesArbitrumOne: Currency[] = [
   ethereumArbitrumOne,
   wethArbitrumOne,
   wbtcArbitrumOne,
-  // {
-  //   ...liraArbitrumOne,
-  //   paired: [
-  //     ldtArbitrumOne,
-  //   ],
-  // },
 ];
+
+export const treasuryCurrenciesArbitrumSepolia: Currency[] = [
+  tbbArbitrumSepolia,
+  tbsArbitrumSepolia,
+  tbgArbitrumSepolia,
+  ltbbArbitrumSepolia,
+  ltbsArbitrumSepolia,
+  ltbgArbitrumSepolia,
+]
+
+export const treasuryCurrenciesArbitrumOne: Currency[] = [
+  tbbArbitrumOne,
+  tbsArbitrumOne,
+  tbgArbitrumOne,
+  // ltbbArbitrumOne,
+  // ltbsArbitrumOne,
+  // ltbgArbitrumOne,
+]
 
 export function getCurrencies(chainId: number) {
   switch (chainId) {
@@ -233,6 +400,16 @@ export function getCurrencies(chainId: number) {
     case 42161:
     default:
       return currenciesArbitrumOne;
+  }
+}
+
+export function getTreasuryCurrencies(chainId: number) {
+  switch (chainId) {
+    case 421614:
+      return treasuryCurrenciesArbitrumSepolia;
+    case 42161:
+    default:
+      return treasuryCurrenciesArbitrumOne;
   }
 }
 

@@ -1,126 +1,153 @@
 import { x } from '@xstyled/styled-components';
 import { useState } from 'react';
-import { SwapSection } from '../components/swap/SwapSection';
+import { StyledTabItem } from '../components/StyledTabItem';
 import { InputPanel } from '../components/swap/InputPanel';
 import { Container } from '../components/swap/Container';
+import { CurrencySelector } from '../components/CurrencySelector';
 import { NumericalInput } from '../components/StyledInput';
-import { PrimaryButton } from '../components/PrimaryButton';
-import Modal from 'react-responsive-modal';
+import Big from 'big.js';
+import { formatUnits, parseUnits } from 'viem';
+import { SwapSection } from '../components/swap/SwapSection';
+import { Currency } from '@lira-dao/web3-utils';
+import { getCurrencies, getTreasuryCurrencies } from '../utils';
+import { useChainId } from 'wagmi';
+import { SelectCurrencyModal } from '../components/modal/SelectCurrencyModal';
+import { useBalance } from '../hooks/useBalance';
 
-//
-// const currencies: Currency[] = [{
-//   name: 'Treasury Bond Bronze',
-//   symbol: 'TBb',
-//   icon: '/img/tb-logo.png',
-//   address: '0x',
-//   chainId: 0,
-//   decimals: 18,
-// }, {
-//   name: 'Treasury Bond Silver',
-//   symbol: 'TBs',
-//   icon: '/img/tb-logo.png',
-//   address: '0x',
-//   chainId: 0,
-//   decimals: 18,
-// }, {
-//   name: 'Treasury Bond Gold',
-//   symbol: 'TBg',
-//   icon: '/img/tb-logo.png',
-//   address: '0x',
-//   chainId: 0,
-//   decimals: 18,
-// }, {
-//   name: 'LIRA Treasury Bond Bronze',
-//   symbol: 'LTBb',
-//   icon: '/img/tb-logo.png',
-//   address: '0x',
-//   chainId: 0,
-//   decimals: 8,
-// }, {
-//   name: 'LIRA Treasury Bond Silver',
-//   symbol: 'LTBs',
-//   icon: '/img/tb-logo.png',
-//   address: '0x',
-//   chainId: 0,
-//   decimals: 8,
-// }, {
-//   name: 'LIRA Treasury Bond Gold',
-//   symbol: 'LTBg',
-//   icon: '/img/tb-logo.png',
-//   address: '0x',
-//   chainId: 0,
-//   decimals: 8,
-// }];
 
-const modalCustomStyles = {
-  modal: {
-    top: '20%',
-    backgroundColor: '#1B1B1B',
-    borderRadius: 16,
-    maxWidth: 420,
-    minWidth: 420,
-  },
-  closeIcon: {
-    fill: 'white',
-  },
-};
+enum TreasuryHeaderTab {
+  Mint,
+  Burn
+}
 
 export function Treasury() {
+  const [active, setActive] = useState<TreasuryHeaderTab>(TreasuryHeaderTab.Mint);
   const [open, setOpen] = useState(false);
-  const [firstValue, setFirstValue] = useState<number | undefined>(undefined);
+
+  const chainId = useChainId();
+
+  const [firstValue, setFirstValue] = useState<number | string>('');
+  const [secondValue, setSecondValue] = useState<number | string>('');
+
+  const [currencyA, setCurrencyA] = useState<Currency>(getTreasuryCurrencies(chainId)[0]);
+  const [currencyB, setCurrencyB] = useState<Currency>(getCurrencies(chainId)[0]);
+
+  const balanceA = useBalance(currencyA.address);
+  const balanceB = useBalance(currencyB?.address);
+
+  console.log('balanceA', balanceA);
+
+  const [selectingCurrencies, setSelectingCurrencies] = useState<Currency[]>([]);
+
+  const onCurrencyChange = (value: string) => {
+    setFirstValue(value);
+
+    if (value === '') {
+      setSecondValue('');
+    }
+  };
+
+  const onCurrencySelectClick = () => {
+    setSelectingCurrencies(getTreasuryCurrencies(chainId));
+    setOpen(true);
+  };
+
+  const onSelectCurrency = (c: Currency) => {
+    setCurrencyA(c);
+
+    if (c.paired.includes('LDT')) {
+      setCurrencyB(getCurrencies(chainId)[0])
+    } else if (c.paired.includes('LIRA')) {
+      setCurrencyB(getCurrencies(chainId)[1])
+    }
+
+    setFirstValue('');
+    setOpen(false);
+  };
 
   return (
-    <x.div w="100%" padding="68px 8px 0px" maxWidth={480} minWidth={480} paddingTop={{ sm: '24px', md: '48px' }}>
-      <Modal open={open} onClose={() => setOpen(false)} styles={modalCustomStyles}>
-        <x.h1 fontSize="xl">Select Token</x.h1>
-        <x.div mt={8}>
-          {/*{currencies.map((c, i) => (*/}
-          {/*  <x.div key={i} display="flex" alignItems="center" my={4}>*/}
-          {/*    <x.div>*/}
-          {/*      <x.img src={c.icon} width={48} height={48} />*/}
-          {/*    </x.div>*/}
-          {/*    <x.div ml={4}>*/}
-          {/*      <x.h1>{c.symbol}</x.h1>*/}
-          {/*    </x.div>*/}
-          {/*  </x.div>*/}
-          {/*))}*/}
-        </x.div>
-      </Modal>
-      <SwapSection>
+    <x.div w="100%" maxWidth="480px" borderRadius="16px" padding={4}>
+      <x.div display="flex" justifyContent="center" mt={2}>
+        <x.p fontSize="3xl">Treasury</x.p>
+      </x.div>
+
+      <x.div display="flex" pt={8}>
+        <StyledTabItem
+          $active={active === TreasuryHeaderTab.Mint}
+          onClick={() => setActive(TreasuryHeaderTab.Mint)}
+        >MINT</StyledTabItem>
+        <StyledTabItem
+          $active={active === TreasuryHeaderTab.Burn}
+          onClick={() => setActive(TreasuryHeaderTab.Burn)}
+        >BURN</StyledTabItem>
+      </x.div>
+
+
+
+      <SwapSection mt={6} mb={4}>
         <InputPanel>
           <Container>
-            <x.div display="flex" alignItems="center" justifyContent="space-between">
-              <x.div>
+            <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
+              <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
                 <x.p color="gray155" userSelect="none">You Pay</x.p>
-                <NumericalInput id="currencyA" disabled={false} value={firstValue} />
+                <CurrencySelector
+                  disabled={false}
+                  selected={false}
+                  currency={currencyA}
+                  onClick={onCurrencySelectClick}
+                />
               </x.div>
 
-              {/*<CurrencySelector*/}
-              {/*  disabled={false}*/}
-              {/*  selected={false}*/}
-              {/*  currency={currencies[0]}*/}
-              {/*  onClick={() => setOpen(true)}*/}
-              {/*/>*/}
+              <NumericalInput
+                id="currencyA"
+                disabled={false}
+                value={firstValue}
+                onChange={(e) => onCurrencyChange(e.target.value)}
+              />
+
+              <x.div w="100%" display="flex" mt={2} justifyContent="flex-end">
+                <x.p color="gray155">{new Big(formatUnits(balanceA.data ?? 0n, currencyA.decimals)).toFixed(6)}</x.p>
+              </x.div>
             </x.div>
           </Container>
         </InputPanel>
       </SwapSection>
-      <SwapSection>
+
+      <SwapSection mt={4}>
         <InputPanel>
           <Container>
-            <x.div display="flex" alignItems="center" justifyContent="space-between">
-              <x.div>
+            <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
+              <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
                 <x.p color="gray155" userSelect="none">You Receive</x.p>
-                <NumericalInput id="currencyB" disabled={false} value={firstValue} />
+                <CurrencySelector
+                  disabled={true}
+                  selected={false}
+                  currency={currencyB}
+                  onClick={() => {}}
+                />
               </x.div>
 
-              {/*<CurrencySelector disabled={false} selected={false} currency={currencies[0]} />*/}
-            </x.div>
+              <NumericalInput
+                id="currencyB"
+                disabled={true}
+                value={secondValue}
+                onChange={() => {}}
+              />
 
+              <x.div w="100%" display="flex" justifyContent="flex-end" mt={2}>
+                <x.p color="gray155">{new Big(formatUnits(balanceB.data ?? 0n, currencyB.decimals)).toFixed(6)}</x.p>
+              </x.div>
+            </x.div>
           </Container>
         </InputPanel>
       </SwapSection>
-      <PrimaryButton>CONNECT WALLET</PrimaryButton>
+
+      <SelectCurrencyModal
+        open={open}
+        onClose={() => setOpen(false)}
+        currencies={selectingCurrencies}
+        onSelect={onSelectCurrency}
+      />
     </x.div>
   );
 }

@@ -37,18 +37,45 @@ export const tokens: TokenAddresses = {
   42161: {
     ldt: '0x2A5E22b32b3E0Daa7a8C199e10Df9D9E1264Fd3f',
     lira: '0xA07ac236fEBc390c798504E927DC8D6a4e1FfcA3',
+
+    tbb: '0x0',
+    tbs: '0x0',
+    tbg: '0x0',
+
+    ltbb: '0x0',
+    ltbs: '0x0',
+    ltbg: '0x0',
+
     wbtc: '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f',
     weth: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
   },
   421614: {
     ldt: '0x62F53E68662B013ea03B7BA6803b624632179eD3',
     lira: '0xC4868aA029ADD5705FA203580669d2175889D615',
+
+    tbb: '0xB80C1fA67A59DC863A02cC410196E0DFBD139c73',
+    tbs: '0x09F9Ad9B11FFda7470DA7E48A575e172Dda0A759',
+    tbg: '0x178a15e434A56d78526FCF4a6748a0482bf043Bb',
+
+    ltbb: '0x3a6B379003ae2edfbe3CF8cdAABf307A747CFA2b',
+    ltbs: '0x243C177F2D033336106Bd10181c066bD026A3115',
+    ltbg: '0x5932c5A564b8dc8C410A24E02758A2a711f64CE7',
+
     wbtc: '0xeD26d7763314A722A6A243057Bc76EF67C869D84',
     weth: '0xdF5c1B370C7aE6C86d98A591C4aBe3453656a4b0',
   },
   17000: {
     ldt: '0xECB20AE07a7d8d7e87CF5d06B28620A700aB84F0',
     lira: '0xa3E2dfD82A866537436160EE738335a0EBD00c90',
+
+    tbb: '0x0',
+    tbs: '0x0',
+    tbg: '0x0',
+
+    ltbb: '0x0',
+    ltbs: '0x0',
+    ltbg: '0x0',
+
     wbtc: '0xA07ac236fEBc390c798504E927DC8D6a4e1FfcA3',
     weth: '0x335149F2fBe655E6D4243E0e2C19565F10B8b026',
   },
