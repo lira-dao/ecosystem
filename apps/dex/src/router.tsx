@@ -9,19 +9,24 @@ import { Treasury } from './pages/Treasury';
 import { TreasuryMint } from './pages/TreasuryMint';
 
 
+const routes = [
+  { index: true, element: <Swap /> },
+  { path: 'pool', element: <Pool /> },
+  { path: 'swap', element: <Swap /> },
+  { path: 'add-liquidity', element: <AddLiquidity /> },
+  { path: 'treasury', element: <Treasury /> },
+  { path: 'treasury/:address/:action', element: <TreasuryMint /> },
+  { path: '/remove-liquidity/:address', element: <RemoveLiquidity /> },
+];
+
+if (process.env.REACT_APP_TESTNET === 'true') {
+  routes.push({ path: 'faucets', element: <Faucets /> });
+}
+
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <Layout />,
-    children: [
-      { index: true, element: <Swap /> },
-      { path: 'pool', element: <Pool /> },
-      { path: 'swap', element: <Swap /> },
-      { path: 'add-liquidity', element: <AddLiquidity /> },
-      { path: 'treasury', element: <Treasury /> },
-      { path: 'treasury/:address/:action', element: <TreasuryMint /> },
-      { path: '/remove-liquidity/:address', element: <RemoveLiquidity /> },
-      { path: 'faucets', element: <Faucets /> },
-    ],
+    children: routes,
   },
 ]);

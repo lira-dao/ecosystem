@@ -75,7 +75,7 @@ export function Header() {
         <MenuItem text="TREASURY" to="treasury" />
         {/*<MenuItem text="FARMS" to="farms" />*/}
         {/*<MenuItem text="STACKING" to="stacking" />*/}
-        {process.env.REACT_APP_TESTNET && <MenuItem text="FAUCETS" to="faucets" />}
+        {process.env.REACT_APP_TESTNET === 'true' && <MenuItem text="FAUCETS" to="faucets" />}
       </x.div>
 
       <x.div display="flex">
