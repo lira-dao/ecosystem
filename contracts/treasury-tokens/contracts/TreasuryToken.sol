@@ -52,9 +52,7 @@ contract TreasuryToken is Ownable, ERC20 {
         feeVault = msg.sender;
     }
 
-    /**
-     * Override ERC20 decimals
-     */
+    // Override ERC20 decimals
     function decimals() public view override returns (uint8) {
         return _decimals;
     }
@@ -99,7 +97,6 @@ contract TreasuryToken is Ownable, ERC20 {
 
     /**
      * Burn the treasury token and return back locked token
-     *
      * @param amount of treasury tokens to burn
      */
     function burn(uint256 amount) public {
