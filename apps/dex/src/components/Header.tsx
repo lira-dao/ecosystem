@@ -71,7 +71,7 @@ export function Header() {
 
       <x.div ml={{ _: 0, lg: 8 }} display="flex" flexGrow={1}>
         <MenuItem text="SWAP" to="swap" />
-        <MenuItem text="POOL" to="pool" />
+        <MenuItem text="POOLS" to="pools" />
         <MenuItem text="TREASURY" to="treasury" />
         {/*<MenuItem text="FARMS" to="farms" />*/}
         {/*<MenuItem text="STACKING" to="stacking" />*/}

@@ -1,5 +1,27 @@
 import { defaultTheme } from '@xstyled/styled-components';
+import { createTheme } from '@mui/material';
 
+
+export const muiDarkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+  typography: {
+    fontFamily: [
+      'Apercu Mono Pro',
+      '-apple-system',
+      'BlinkMacSystemFont',
+      '"Segoe UI"',
+      'Roboto',
+      '"Helvetica Neue"',
+      'Arial',
+      'sans-serif',
+      '"Apple Color Emoji"',
+      '"Segoe UI Emoji"',
+      '"Segoe UI Symbol"',
+    ].join(','),
+  }
+});
 
 export const theme = {
   ...defaultTheme,

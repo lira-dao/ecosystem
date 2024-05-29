@@ -7,7 +7,7 @@ import { PrimaryButton } from '../components/PrimaryButton';
 import { SwapSection } from '../components/swap/SwapSection';
 import { InputPanel } from '../components/swap/InputPanel';
 import { Container } from '../components/swap/Container';
-import { getCurrencies, getPairedCurrencies } from '../utils';
+import { getCurrencies, getCurrencyByAddress, getPairedCurrencies } from '../utils';
 import { useGetAmountsIn, useGetAmountsOut } from '../hooks/useGetAmountsOut';
 import { formatUnits, parseUnits } from 'viem';
 import { useApprove } from '../hooks/useApprove';
@@ -20,13 +20,21 @@ import { useSnackbar } from 'notistack';
 import { useBalance } from '../hooks/useBalance';
 import { useDexAddresses } from '../hooks/useDexAddresses';
 import { useAccount, useBalance as useBalanceWagmi, useChainId } from 'wagmi';
-import { Currency } from '@lira-dao/web3-utils';
+import { Currency, EthereumAddress } from '@lira-dao/web3-utils';
 import { SelectCurrencyModal } from '../components/modal/SelectCurrencyModal';
 import { usePair } from '../hooks/usePair';
 import BigNumber from 'bignumber.js';
+import { useParams } from 'react-router-dom';
+import { useDexPairs } from '../hooks/useDexPairs';
 
 
 export function Swap() {
+  const params = useParams<{ pool: EthereumAddress }>();
+  const pairs = useDexPairs();
+  const pool = params.pool ? pairs[params.pool] : undefined;
+  const currency0 = pool ? getCurrencyByAddress(pool.tokens[0]) : undefined;
+  const currency1 = pool ? getCurrencyByAddress(pool.tokens[1]) : undefined;
+
   const th = useTheme();
   const chainId = useChainId();
   const dexAddresses = useDexAddresses();
@@ -35,8 +43,8 @@ export function Swap() {
   const [selecting, setSelecting] = useState<number | null>(null);
   const [selectingCurrencies, setSelectingCurrencies] = useState<Currency[]>([]);
 
-  const [currencyA, setCurrencyA] = useState<Currency>(getCurrencies(chainId)[0]);
-  const [currencyB, setCurrencyB] = useState<Currency | undefined>(undefined);
+  const [currencyA, setCurrencyA] = useState<Currency>(currency0 ? currency0 : getCurrencies(chainId)[0]);
+  const [currencyB, setCurrencyB] = useState<Currency | undefined>(currency1);
 
   const [firstValue, setFirstValue] = useState<string>('');
   const [secondValue, setSecondValue] = useState<string>('');
@@ -71,14 +79,6 @@ export function Swap() {
       return new BigNumber(parseUnits(firstValue, currencyA.decimals).toString()).gt(new BigNumber(balanceA.data?.toString() || '0'));
     }
   }, [accountBalance.data?.value, balanceA.data, currencyA.decimals, currencyA.isNative, firstValue]);
-
-  const insufficientBalanceB = useMemo(() => {
-    if (currencyB?.isNative) {
-      return new BigNumber(parseUnits(secondValue, currencyB?.decimals || 18).toString()).gt(new BigNumber(accountBalance.data?.value.toString() || '0'));
-    } else {
-      return new BigNumber(parseUnits(secondValue, currencyB?.decimals || 18).toString()).gt(new BigNumber(balanceB.data?.toString() || '0'));
-    }
-  }, [accountBalance.data?.value, balanceB.data, currencyB?.decimals, currencyB?.isNative, secondValue]);
 
   const needAllowance = useMemo(() =>
       parseUnits(firstValue.toString(), currencyA.decimals) > 0 &&
@@ -278,8 +278,7 @@ export function Swap() {
                 onChange={(e) => onCurrencyBChange(e.target.value)}
               />
 
-              <x.div w="100%" display="flex" justifyContent="space-between" mt={2}>
-                <x.p color="red-400">{insufficientBalanceB ? 'Insufficient Balance' : ''}</x.p>
+              <x.div w="100%" display="flex" justifyContent="flex-end" mt={2}>
                 <x.p color="gray155">{new Big(formatUnits(currencyB?.isNative ? accountBalance.data?.value || 0n : balanceB.data ?? 0n, currencyB?.decimals || 18)).toFixed(6)}</x.p>
               </x.div>
             </x.div>
@@ -301,7 +300,7 @@ export function Swap() {
         </x.div>
       )}
 
-      {(needAllowance && !insufficientBalanceA && !insufficientBalanceB) && (
+      {(needAllowance && !insufficientBalanceA) && (
         <x.div display="flex" mt={4} mb={2} h="80px" alignItems="center" justifyContent="center">
           {isAllowCurrencyADisabled ? (
             <PacmanLoader color={th?.colors.gray155} />
@@ -314,7 +313,7 @@ export function Swap() {
         </x.div>
       )}
 
-      {(!needAllowance && !insufficientBalanceA && !insufficientBalanceB) && (
+      {(!needAllowance && !insufficientBalanceA) && (
         <x.div display="flex" mt={4} h="80px" alignItems="center" justifyContent="center">
           {isSwapDisabled ? (
             <PacmanLoader color={th?.colors.gray155} />

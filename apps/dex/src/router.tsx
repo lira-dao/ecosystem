@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { Swap } from './pages/Swap';
-import { Pool } from './pages/Pool';
+import { Pools } from './pages/Pools';
 import { AddLiquidity } from './pages/AddLiquidity';
 import { RemoveLiquidity } from './pages/RemoveLiquidity';
 import { Faucets } from './pages/Faucets';
@@ -11,9 +11,11 @@ import { TreasuryMint } from './pages/TreasuryMint';
 
 const routes = [
   { index: true, element: <Swap /> },
-  { path: 'pool', element: <Pool /> },
+  { path: 'pools', element: <Pools /> },
   { path: 'swap', element: <Swap /> },
+  { path: 'swap/:pool', element: <Swap /> },
   { path: 'add-liquidity', element: <AddLiquidity /> },
+  { path: 'add-liquidity/:pool', element: <AddLiquidity /> },
   { path: 'treasury', element: <Treasury /> },
   { path: 'treasury/:address/:action', element: <TreasuryMint /> },
   { path: '/remove-liquidity/:address', element: <RemoveLiquidity /> },

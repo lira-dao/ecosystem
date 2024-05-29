@@ -21,15 +21,17 @@ export function App() {
       isVerboseMode={false}
       loadingComponent={null}
     >
-      <GlobalStyles />
-      <Preflight />
-      <Web3Provider>
-        <ThemeProvider theme={theme}>
-          <SnackbarProvider>
-            <RouterProvider router={router} />
-          </SnackbarProvider>
-        </ThemeProvider>
-      </Web3Provider>
+      <>
+        <GlobalStyles />
+        <Preflight />
+        <Web3Provider>
+          <ThemeProvider theme={theme}>
+            <SnackbarProvider>
+              <RouterProvider router={router} />
+            </SnackbarProvider>
+          </ThemeProvider>
+        </Web3Provider>
+      </>
     </CacheBuster>
   );
 }

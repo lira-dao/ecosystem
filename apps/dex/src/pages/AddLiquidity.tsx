@@ -7,7 +7,7 @@ import { NumericalInput } from '../components/StyledInput';
 import { CurrencySelector } from '../components/CurrencySelector';
 import { SwapSection } from '../components/swap/SwapSection';
 import { PrimaryButton } from '../components/PrimaryButton';
-import { getCurrencies, getPairedCurrencies } from '../utils';
+import { getCurrencies, getCurrencyByAddress, getPairedCurrencies } from '../utils';
 import { usePair } from '../hooks/usePair';
 import { useBalance } from '../hooks/useBalance';
 import { useAllowance } from '../hooks/useAllowance';
@@ -21,21 +21,29 @@ import { Currency, EthereumAddress } from '@lira-dao/web3-utils';
 import { SelectCurrencyModal } from '../components/modal/SelectCurrencyModal';
 import { useSnackbar } from 'notistack';
 import { useDebounce } from 'use-debounce';
+import { useParams } from 'react-router-dom';
+import { useDexPairs } from '../hooks/useDexPairs';
 
 
 export function AddLiquidity() {
+  const params = useParams<{ pool: EthereumAddress }>();
+  const pairs = useDexPairs();
+  const pool = params.pool ? pairs[params.pool] : undefined;
+  const currency0 = pool ? getCurrencyByAddress(pool.tokens[0]) : undefined;
+  const currency1 = pool ? getCurrencyByAddress(pool.tokens[1]) : undefined;
+
   const { enqueueSnackbar } = useSnackbar();
   const chainId = useChainId();
   const dexAddresses = useDexAddresses();
   const [open, setOpen] = useState(false);
   const [selecting, setSelecting] = useState<number | null>(null);
   const [selectingCurrencies, setSelectingCurrencies] = useState<Currency[]>([]);
-  const [isDisabledAllowanceA, setIsDisabledAllowanceA] = useDebounce<boolean>(false, 500, { leading: true });
-  const [isDisabledAllowanceB, setIsDisabledAllowanceB] = useDebounce<boolean>(false, 500, { leading: true });
+  const [isDisabledAllowanceA, setIsDisabledAllowanceA] = useDebounce<boolean>(false, 500);
+  const [isDisabledAllowanceB, setIsDisabledAllowanceB] = useDebounce<boolean>(false, 500);
   const [isDisabledSupply, setIsDisabledSupply] = useDebounce<boolean>(false, 500, { leading: true });
 
-  const [currencyA, setCurrencyA] = useState<Currency>(getCurrencies(chainId)[0]);
-  const [currencyB, setCurrencyB] = useState<Currency | undefined>(undefined);
+  const [currencyA, setCurrencyA] = useState<Currency>(currency0 ? currency0 : getCurrencies(chainId)[0]);
+  const [currencyB, setCurrencyB] = useState<Currency | undefined>(currency1);
 
   const [firstValue, setFirstValue] = useState<string>('');
   const [secondValue, setSecondValue] = useState<string>('');
