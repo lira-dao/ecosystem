@@ -162,23 +162,49 @@ describe('TreasuryToken', () => {
   });
 
   describe('Mint Fee DAO', () => {
-    it('must have 0 mint fee dao');
+    it('must have 0 mint fee dao', async () => {
+      const { ltbb } = await loadFixture(liraTreasuryBondBronzeFixture);
 
-    it('owner can set mint fee dao to a value between 1 and 30');
+      expect(await ltbb.mintFeeDao()).eq(0n);
+    });
 
-    it('setMintFeeDao must revert for mint fee < 1');
+    it('owner can set mint fee dao to a value between 0 and 30', async () => {
+      const { ltbb } = await loadFixture(liraTreasuryBondBronzeFixture);
 
-    it('setMintFeeDao must revert for mint fee > 30');
+      for (let i = 0n; i <= 30n; i++) {
+        await ltbb.setMintFeeDao(i);
+        expect(await ltbb.mintFeeDao()).eq(i);
+      }
+    });
+
+    it('setMintFeeDao must revert for mint fee > 30', async () => {
+      const { ltbb } = await loadFixture(liraTreasuryBondBronzeFixture);
+
+      await expect(ltbb.setMintFeeDao(31n)).revertedWith('INVALID_MINT_FEE');
+    });
   });
 
   describe('Burn Fee DAO', () => {
-    it('must have 0 burn fee dao');
+    it('must have 0 burn fee dao', async () => {
+      const { ltbb } = await loadFixture(liraTreasuryBondBronzeFixture);
 
-    it('owner can set burn fee dao to a value between 1 and 30');
+      expect(await ltbb.burnFeeDao()).eq(0n);
+    });
 
-    it('setMintFeeDao must revert for burn fee < 1');
+    it('owner can set burn fee dao to a value between 0 and 30', async () => {
+      const { ltbb } = await loadFixture(liraTreasuryBondBronzeFixture);
 
-    it('setMintFeeDao must revert for burn fee > 30');
+      for (let i = 0n; i <= 30n; i++) {
+        await ltbb.setBurnFeeDao(i);
+        expect(await ltbb.burnFeeDao()).eq(i);
+      }
+    });
+
+    it('setMintFeeDao must revert for burn fee > 30', async () => {
+      const { ltbb } = await loadFixture(liraTreasuryBondBronzeFixture);
+
+      await expect(ltbb.setBurnFeeDao(31n)).revertedWith('INVALID_BURN_FEE');
+    });
   });
 
   describe('Mint And Burn', () => {
