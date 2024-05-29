@@ -78,7 +78,7 @@ export function usePools(): Pool[] {
       ...pair[1],
       token0,
       token1,
-      fee: new BigNumber(fee.data?.[i].result?.toString() || '0').decimalPlaces(1, 1).toString(),
+      fee: new BigNumber(fee.data?.[i].result?.toString() || '0').div(10).decimalPlaces(1, 1).toString(),
       formattedBalance: new BigNumber(formatUnits(balances.data?.[i].result || 0n, 18)).decimalPlaces(6, 1).toString(),
       reserve0: new BigNumber(balance0?.toString() || '0').div(new BigNumber(10).pow(token0?.decimals ?? 18)).toFormat(new BigNumber(balance0.toString()).div(new BigNumber(10).pow(token0?.decimals || 18)).lt(1) ? 6 : 2, 1),
       reserve1: new BigNumber(balance1?.toString() || '0').div(new BigNumber(10).pow(token1?.decimals ?? 18)).toFormat(new BigNumber(balance1.toString()).div(new BigNumber(10).pow(token1?.decimals || 18)).lt(1) ? 6 : 2, 1),
