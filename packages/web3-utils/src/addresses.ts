@@ -6,9 +6,9 @@ export const tokens: TokenAddresses = {
     ldt: '0x2A5E22b32b3E0Daa7a8C199e10Df9D9E1264Fd3f',
     lira: '0xA07ac236fEBc390c798504E927DC8D6a4e1FfcA3',
 
-    tbb: '0x0',
-    tbs: '0x0',
-    tbg: '0x0',
+    tbb: '0x9C0385b4F1f3B277ab352B817fC56763081a503c',
+    tbs: '0x4bB0Eb07a8ECDcF5f434095Aa34Cc3f69292bcA1',
+    tbg: '0xDB0aEb568EfE3598e9A58407c8b52BcFaC2c11e5',
 
     ltbb: '0x0',
     ltbs: '0x0',
@@ -88,6 +88,30 @@ export const dexPairs: DexPairs = {
       tokens: [
         '0x2A5E22b32b3E0Daa7a8C199e10Df9D9E1264Fd3f',
         '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f',
+      ],
+    },
+    '0xAfb2aaA7b90905f32fDb3E61010F0dc2705827ca': {
+      address: '0xAfb2aaA7b90905f32fDb3E61010F0dc2705827ca',
+      symbol: 'LDT-TBb',
+      tokens: [
+        '0x2A5E22b32b3E0Daa7a8C199e10Df9D9E1264Fd3f',
+        '0x9C0385b4F1f3B277ab352B817fC56763081a503c',
+      ],
+    },
+    '0xaFFEBBcbd0DD5AEDeCCdAB84b4103828780fD972': {
+      address: '0xaFFEBBcbd0DD5AEDeCCdAB84b4103828780fD972',
+      symbol: 'LDT-TBs',
+      tokens: [
+        '0x2A5E22b32b3E0Daa7a8C199e10Df9D9E1264Fd3f',
+        '0x4bB0Eb07a8ECDcF5f434095Aa34Cc3f69292bcA1',
+      ],
+    },
+    '0xe24dB13D645218672D4D5Fc15f572328b32946A4': {
+      address: '0xe24dB13D645218672D4D5Fc15f572328b32946A4',
+      symbol: 'LDT-TBg',
+      tokens: [
+        '0x2A5E22b32b3E0Daa7a8C199e10Df9D9E1264Fd3f',
+        '0xDB0aEb568EfE3598e9A58407c8b52BcFaC2c11e5',
       ],
     },
   },

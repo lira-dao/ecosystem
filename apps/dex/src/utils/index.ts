@@ -391,6 +391,9 @@ export const currenciesArbitrumSepolia: Currency[] = [
 export const currenciesArbitrumOne: Currency[] = [
   ldtArbitrumOne,
   liraArbitrumOne,
+  tbbArbitrumOne,
+  tbsArbitrumOne,
+  tbgArbitrumOne,
   ethereumArbitrumOne,
   wethArbitrumOne,
   wbtcArbitrumOne,
