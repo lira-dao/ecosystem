@@ -22,5 +22,9 @@ describe('LTBs', () => {
     expect(await ltbs.symbol()).eq('LTBs');
   });
 
-  it('must have 1M as ratio');
+  it('must have 1M as ratio', async () => {
+    const { ltbs } = await loadFixture(liraTreasuryBondSilverFixture);
+
+    expect(await ltbs.rate()).eq(1_000_000);
+  });
 });

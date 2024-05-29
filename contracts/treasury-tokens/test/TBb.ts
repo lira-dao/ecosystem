@@ -23,5 +23,9 @@ describe('TBb', () => {
     });
   });
 
-  it('must have 1k as ratio');
+  it('must have 1k as ratio', async () => {
+    const { tbb } = await loadFixture(treasuryBondBronzeFixture);
+
+    expect(await tbb.rate()).eq(1000n);
+  });
 });

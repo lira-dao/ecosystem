@@ -24,5 +24,9 @@ describe('LTBb', () => {
     });
   });
 
-  it('must have 100k as ratio');
+  it('must have 100k as rate', async () => {
+    const { ltbb } = await loadFixture(liraTreasuryBondBronzeFixture);
+
+    expect(await ltbb.rate()).eq(100_000n);
+  });
 });

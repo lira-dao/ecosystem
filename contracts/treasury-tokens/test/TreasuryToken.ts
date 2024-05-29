@@ -19,7 +19,37 @@ describe('TreasuryToken', () => {
       expect(await ltbb.isMintEnabled()).eq(true);
     });
 
-    it('owner can mint when mint is disabled');
+    it('owner can mint when mint is disabled', async () => {
+      const {
+        ltbb,
+        ltbbAddress,
+        lira,
+        liraAddress,
+        wbtc,
+        owner,
+      } = await loadFixture(liraTreasuryBondBronzeFixture);
+
+      expect(await ltbb.isMintEnabled()).eq(false);
+
+      await wbtc.mint(liraAddress, 10n ** 10n);
+
+      await lira.mint(owner, 10n ** 16n, 10n ** 10n);
+
+      const ltbbQuoteMint = (await ltbb.quoteMint(10n ** 8n))[0];
+
+      // @ts-ignore
+      await lira.burn(owner, await lira.balanceOf(owner) - ltbbQuoteMint);
+
+      // @ts-ignore
+      await lira.approve(ltbbAddress, ltbbQuoteMint);
+
+      // @ts-ignore
+      await ltbb.mint(owner, 10n ** 8n);
+
+      expect(await lira.balanceOf(owner)).eq(0n);
+      expect(await ltbb.balanceOf(owner)).eq(10n ** 8n);
+      expect(await ltbb.feeAmount()).eq(0);
+    });
 
     it('must revert with "MINT_DISABLED" if isMingEnable is false', async () => {
       const {
@@ -52,9 +82,19 @@ describe('TreasuryToken', () => {
   });
 
   describe('Fee Vault', () => {
-    it('must have owner as fee vault');
+    it('must have owner as fee vault', async () => {
+      const { ltbb, owner } = await loadFixture(liraTreasuryBondBronzeFixture);
 
-    it('must set a new fee vault address');
+      expect(await ltbb.feeVault()).eq(owner);
+    });
+
+    it('must set a new fee vault address', async () => {
+      const { ltbb, minter } = await loadFixture(liraTreasuryBondBronzeFixture);
+
+      await ltbb.setFeeVault(minter);
+
+      expect(await ltbb.feeVault()).eq(minter);
+    });
 
     it('owner can withdraw fees to his address with collectFees');
 
@@ -73,19 +113,72 @@ describe('TreasuryToken', () => {
     it('owner can set mint fee to a value between 1 and 30', async () => {
       const { ltbb } = await loadFixture(liraTreasuryBondBronzeFixture);
 
-      await ltbb.setMintFee(30n);
-
-      expect(await ltbb.mintFee()).eq(30n);
+      for (let i = 1n; i <= 30n; i++) {
+        await ltbb.setMintFee(i);
+        expect(await ltbb.mintFee()).eq(i);
+      }
     });
 
     it('setMintFee must revert for mint fee < 1', async () => {
+      const { ltbb } = await loadFixture(liraTreasuryBondBronzeFixture);
+
+      await expect(ltbb.setMintFee(0n)).revertedWith('INVALID_MINT_FEE');
     });
 
     it('setMintFee must revert for mint fee > 30', async () => {
+      const { ltbb } = await loadFixture(liraTreasuryBondBronzeFixture);
+
+      await expect(ltbb.setMintFee(31n)).revertedWith('INVALID_MINT_FEE');
     });
   });
 
   describe('Burn Fee', () => {
+    it('must have 10 burn fee', async () => {
+      const { ltbb } = await loadFixture(liraTreasuryBondBronzeFixture);
+
+      expect(await ltbb.burnFee()).eq(10n);
+    });
+
+    it('owner can set burn fee to a value between 1 and 30', async () => {
+      const { ltbb } = await loadFixture(liraTreasuryBondBronzeFixture);
+
+      for (let i = 1n; i <= 30n; i++) {
+        await ltbb.setBurnFee(i);
+        expect(await ltbb.burnFee()).eq(i);
+      }
+    });
+
+    it('setMintFee must revert for burn fee < 1', async () => {
+      const { ltbb } = await loadFixture(liraTreasuryBondBronzeFixture);
+
+      await expect(ltbb.setBurnFee(0n)).revertedWith('INVALID_BURN_FEE');
+    });
+
+    it('setMintFee must revert for burn fee > 30', async () => {
+      const { ltbb } = await loadFixture(liraTreasuryBondBronzeFixture);
+
+      await expect(ltbb.setBurnFee(31n)).revertedWith('INVALID_BURN_FEE');
+    });
+  });
+
+  describe('Mint Fee DAO', () => {
+    it('must have 0 mint fee dao');
+
+    it('owner can set mint fee dao to a value between 1 and 30');
+
+    it('setMintFeeDao must revert for mint fee < 1');
+
+    it('setMintFeeDao must revert for mint fee > 30');
+  });
+
+  describe('Burn Fee DAO', () => {
+    it('must have 0 burn fee dao');
+
+    it('owner can set burn fee dao to a value between 1 and 30');
+
+    it('setMintFeeDao must revert for burn fee < 1');
+
+    it('setMintFeeDao must revert for burn fee > 30');
   });
 
   describe('Mint And Burn', () => {
@@ -109,15 +202,11 @@ describe('TreasuryToken', () => {
       // @ts-ignore
       const ltbbQuoteMint = (await ltbb.connect(minter).quoteMint(10n ** 8n))[0];
 
-      console.log('ltbbQuoteMint', await ltbb.quoteMint(10n ** 8n));
-
       // @ts-ignore
       await lira.connect(minter).burn(owner, await lira.balanceOf(minter) - ltbbQuoteMint);
 
       // @ts-ignore
       await lira.connect(minter).approve(ltbbAddress, ltbbQuoteMint);
-
-      console.log('aaa', await lira.allowance(minter, ltbbAddress) === ltbbQuoteMint);
 
       // @ts-ignore
       await ltbb.connect(minter).mint(minter, 10n ** 8n);

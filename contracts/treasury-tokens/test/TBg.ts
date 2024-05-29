@@ -23,5 +23,9 @@ describe('TBg', () => {
     });
   });
 
-  it('must have 100k as ratio');
+  it('must have 100k as ratio', async () => {
+    const { tbg } = await loadFixture(treasuryBondGoldFixture);
+
+    expect(await tbg.rate()).eq(100_000n);
+  });
 });

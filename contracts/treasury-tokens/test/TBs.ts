@@ -23,5 +23,9 @@ describe('TBs', () => {
     });
   });
 
-  it('must have 10k as ratio');
+  it('must have 10k as ratio', async () => {
+    const { tbs } = await loadFixture(treasuryBondSilverFixture);
+
+    expect(await tbs.rate()).eq(10_000n);
+  });
 });
