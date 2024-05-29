@@ -374,6 +374,9 @@ export const ltbgArbitrumOne: Currency = {
 export const currenciesArbitrumSepolia: Currency[] = [
   ldtArbitrumSepolia,
   liraArbitrumSepolia,
+  tbbArbitrumSepolia,
+  tbsArbitrumSepolia,
+  tbgArbitrumSepolia,
   ethereumArbitrumSepolia,
   wethArbitrumSepolia,
   wbtcArbitrumSepolia,

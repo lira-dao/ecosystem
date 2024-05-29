@@ -122,8 +122,32 @@ export const dexPairs: DexPairs = {
       tokens: [
         '0xdF5c1B370C7aE6C86d98A591C4aBe3453656a4b0',
         '0xeD26d7763314A722A6A243057Bc76EF67C869D84',
-      ]
-    }
+      ],
+    },
+    '0x1B0073f9224842c65556785F2cd965A98368c73e': {
+      address: '0x1B0073f9224842c65556785F2cd965A98368c73e',
+      symbol: 'LDT-TBb',
+      tokens: [
+        '0x62F53E68662B013ea03B7BA6803b624632179eD3',
+        '0xB80C1fA67A59DC863A02cC410196E0DFBD139c73',
+      ],
+    },
+    '0x227ac448644879B8383FceE2D56154a813A826Cf': {
+      address: '0x227ac448644879B8383FceE2D56154a813A826Cf',
+      symbol: 'LDT-TBs',
+      tokens: [
+        '0x09F9Ad9B11FFda7470DA7E48A575e172Dda0A759',
+        '0x62F53E68662B013ea03B7BA6803b624632179eD3',
+      ],
+    },
+    '0xF47a2f40Bdef63553026eC01AB80E85E236b395C': {
+      address: '0xF47a2f40Bdef63553026eC01AB80E85E236b395C',
+      symbol: 'LDT-TBg',
+      tokens: [
+        '0x62F53E68662B013ea03B7BA6803b624632179eD3',
+        '0x178a15e434A56d78526FCF4a6748a0482bf043Bb',
+      ],
+    },
   },
   17000: {
     '0xc306A71E151Bb11c1cF5c97dCCA5991c05864797': {
