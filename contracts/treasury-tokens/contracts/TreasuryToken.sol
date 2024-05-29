@@ -156,7 +156,7 @@ contract TreasuryToken is Ownable, ERC20 {
     }
 
     function setBurnFeeDao(uint256 newBurnFeeDao) public onlyOwner {
-        require(newBurnFeeDao >= 1 && newBurnFeeDao <= 30, 'INVALID_BURN_FEE');
+        require(newBurnFeeDao >= 0 && newBurnFeeDao <= 30, 'INVALID_BURN_FEE');
 
         burnFeeDao = newBurnFeeDao;
     }
