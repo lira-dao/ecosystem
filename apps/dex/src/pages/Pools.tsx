@@ -16,7 +16,7 @@ export function Pools() {
       </x.div>
 
       <Box mt={8}>
-        <PoolsTable pools={pools} connected={isConnected} />
+        <PoolsTable pools={pools} isConnected={isConnected} />
       </Box>
     </x.div>
   );

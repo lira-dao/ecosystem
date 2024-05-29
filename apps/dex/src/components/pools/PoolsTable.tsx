@@ -10,10 +10,10 @@ import { useNavigate } from 'react-router-dom';
 
 interface Props {
   pools: Pool[];
-  connected: boolean;
+  isConnected: boolean;
 }
 
-export function PoolsTable({ pools, connected }: Props) {
+export function PoolsTable({ pools, isConnected }: Props) {
   const navigate = useNavigate();
 
   return (
@@ -23,7 +23,7 @@ export function PoolsTable({ pools, connected }: Props) {
           <TableHead>
             <TableRow>
               <TableCell>Pool</TableCell>
-              {connected && <TableCell align="right">LP Balance</TableCell>}
+              {isConnected && <TableCell align="right">LP Balance</TableCell>}
               <TableCell align="right">Fees</TableCell>
               <TableCell align="right">Reserves</TableCell>
               <TableCell align="right">Actions</TableCell>
@@ -44,7 +44,7 @@ export function PoolsTable({ pools, connected }: Props) {
                     {pool.symbol}
                   </Box>
                 </TableCell>
-                {connected && <TableCell align="right">{pool.formattedBalance}</TableCell>}
+                {isConnected && <TableCell align="right">{pool.formattedBalance}</TableCell>}
                 <TableCell align="right">{pool.fee}%</TableCell>
                 <TableCell align="right">
                   {pool.reserve0} {pool.token0?.symbol}<br />{pool.reserve1} {pool.token1?.symbol}

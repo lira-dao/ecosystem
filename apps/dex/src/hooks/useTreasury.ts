@@ -1,5 +1,5 @@
 import { useAccount, useChainId, useReadContracts } from 'wagmi';
-import { treasuryTokenAbi } from '@lira-dao/web3-utils';
+import { Currency, treasuryTokenAbi } from '@lira-dao/web3-utils';
 import { getTreasuryCurrencies } from '../utils';
 import { formatUnits } from 'viem';
 import BigNumber from 'bignumber.js';
@@ -25,7 +25,15 @@ const rateConfig = {
   abi: treasuryTokenAbi,
 } as const;
 
-export function useTreasury() {
+export interface Treasury extends Currency {
+  balance: bigint;
+  formattedBalance: string;
+  mintFee: string;
+  burnFee: string;
+  rate: string;
+}
+
+export function useTreasury(): Treasury[] {
   const chainId = useChainId();
   const account = useAccount();
   const tokens = getTreasuryCurrencies(chainId);
@@ -51,9 +59,9 @@ export function useTreasury() {
       ...token,
       balance: balances.data?.[i].result || 0n,
       formattedBalance: new BigNumber(formatUnits(balances.data?.[i].result || 0n, token.decimals)).decimalPlaces(6, 1).toString(),
-      mintFee: mintFee.data?.[i].result,
-      burnFee: burnFee.data?.[i].result,
-      rate: rate.data?.[i].result,
+      mintFee: mintFee.data?.[i].result?.toString() || '0',
+      burnFee: burnFee.data?.[i].result?.toString() || '0',
+      rate: new BigNumber(rate.data?.[i].result?.toString() || '0').toFormat(0),
     };
   });
 }
