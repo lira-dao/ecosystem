@@ -68,7 +68,7 @@ export const dexPairs: DexPairs = {
   42161: {
     '0xC828F6c8bBF9A90DB6Db9839696ffbF6e06532f9': {
       address: '0xC828F6c8bBF9A90DB6Db9839696ffbF6e06532f9',
-      symbol: 'LDT-WETH',
+      symbol: 'LDT-ETH',
       tokens: [
         '0x2A5E22b32b3E0Daa7a8C199e10Df9D9E1264Fd3f',
         '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
@@ -94,7 +94,7 @@ export const dexPairs: DexPairs = {
   421614: {
     '0x8063F3D1C79Cf03f404CA043E3faB3318a5B3648': {
       address: '0x8063F3D1C79Cf03f404CA043E3faB3318a5B3648',
-      symbol: 'LDT-WETH',
+      symbol: 'LDT-ETH',
       tokens: [
         '0x62F53E68662B013ea03B7BA6803b624632179eD3',
         '0xdF5c1B370C7aE6C86d98A591C4aBe3453656a4b0',
@@ -118,10 +118,10 @@ export const dexPairs: DexPairs = {
     },
     '0x08fF368019Fa4Ed537621732Cc74e3f772B8C199': {
       address: '0x08fF368019Fa4Ed537621732Cc74e3f772B8C199',
-      symbol: 'WBTC-WETH',
+      symbol: 'ETH-WBTC',
       tokens: [
-        '0xdF5c1B370C7aE6C86d98A591C4aBe3453656a4b0',
         '0xeD26d7763314A722A6A243057Bc76EF67C869D84',
+        '0xdF5c1B370C7aE6C86d98A591C4aBe3453656a4b0',
       ],
     },
     '0x1B0073f9224842c65556785F2cd965A98368c73e': {
@@ -136,8 +136,8 @@ export const dexPairs: DexPairs = {
       address: '0x227ac448644879B8383FceE2D56154a813A826Cf',
       symbol: 'LDT-TBs',
       tokens: [
-        '0x09F9Ad9B11FFda7470DA7E48A575e172Dda0A759',
         '0x62F53E68662B013ea03B7BA6803b624632179eD3',
+        '0x09F9Ad9B11FFda7470DA7E48A575e172Dda0A759',
       ],
     },
     '0xF47a2f40Bdef63553026eC01AB80E85E236b395C': {
@@ -152,7 +152,7 @@ export const dexPairs: DexPairs = {
   17000: {
     '0xc306A71E151Bb11c1cF5c97dCCA5991c05864797': {
       address: '0xc306A71E151Bb11c1cF5c97dCCA5991c05864797',
-      symbol: 'LDT-WETH',
+      symbol: 'LDT-ETH',
       tokens: [
         '0xECB20AE07a7d8d7e87CF5d06B28620A700aB84F0',
         '0x335149F2fBe655E6D4243E0e2C19565F10B8b026',

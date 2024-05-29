@@ -91,7 +91,7 @@ export const ethereumArbitrumOne: Currency = {
 
 export const ethereumArbitrumSepolia: Currency = {
   address: tokens[421614].weth,
-  chainId: 42161,
+  chainId: 421614,
   decimals: 18,
   icon: 'https://raw.githubusercontent.com/Uniswap/assets/master/blockchains/arbitrum/assets/0x82aF49447D8a07e3bd95BD0d56f35241523fBab1/logo.png',
   isNative: true,
