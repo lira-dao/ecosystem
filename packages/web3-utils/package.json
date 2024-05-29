@@ -1,13 +1,13 @@
 {
   "name": "@lira-dao/web3-utils",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
     "dist/**"
   ],
   "scripts": {
-		"build": "tsup",
+    "build": "tsup",
     "watch": "tsup --watch",
     "lint": "eslint . --max-warnings 0",
     "generate:component": "turbo gen react-component"
