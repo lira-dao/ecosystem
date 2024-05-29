@@ -134,38 +134,45 @@ contract TreasuryToken is Ownable, ERC20 {
         unlock = locked - fee;
     }
 
+    // set new mint fee between 1 and 30
     function setMintFee(uint256 newMintFee) public onlyOwner {
         require(newMintFee >= 1 && newMintFee <= 30, 'INVALID_MINT_FEE');
 
         mintFee = newMintFee;
     }
 
+    // set new mint fee for dao between 0 and 30
     function setMintFeeDao(uint256 newMintFeeDao) public onlyOwner {
         require(newMintFeeDao >= 0 && newMintFeeDao <= 30, 'INVALID_MINT_FEE');
 
         mintFeeDao = newMintFeeDao;
     }
 
+    // set new burn fee between 1 and 30
     function setBurnFee(uint256 newBurnFee) public onlyOwner {
         require(newBurnFee >= 1 && newBurnFee <= 30, 'INVALID_BURN_FEE');
 
         burnFee = newBurnFee;
     }
 
+    // set new burn fee for dao between 0 and 30
     function setBurnFeeDao(uint256 newBurnFeeDao) public onlyOwner {
         require(newBurnFeeDao >= 0 && newBurnFeeDao <= 30, 'INVALID_BURN_FEE');
 
         burnFeeDao = newBurnFeeDao;
     }
 
+    // enable or disable mint
     function setIsMintEnabled(bool mintEnabled) public onlyOwner {
         isMintEnabled = mintEnabled;
     }
 
+    // set new fee vault address
     function setFeeVault(address newFeeVault) public onlyOwner {
         feeVault = newFeeVault;
     }
 
+    // collect fee to vault address
     function collectFees() public onlyOwner {
         ERC20(token).safeTransfer(feeVault, feeAmount);
         feeAmount = 0;
