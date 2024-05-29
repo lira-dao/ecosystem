@@ -55,9 +55,6 @@ export function TreasuryMint() {
     treasuryToken.quoteMint.data?.[0] || 0n,
   );
 
-  console.log('treasuryToken', treasuryToken);
-  console.log('balanceA', balanceA);
-
   const [selectingCurrencies, setSelectingCurrencies] = useState<Currency[]>([]);
 
   const isAllowCurrencyDisabled = useMemo(() => approve.isPending || allowance.isPending, [approve, allowance]);
@@ -73,7 +70,7 @@ export function TreasuryMint() {
       setSecondValue(formatUnits(active === TreasuryHeaderTab.Mint ? treasuryToken.quoteMint.data?.[0] || 0n : treasuryToken.quoteBurn.data?.[0] || 0n, currencyB.decimals));
     }
   }, [treasuryToken.quoteMint]);
-  console.log(treasuryToken.mint.isPending, treasuryToken.burn.isPending);
+
   useEffect(() => {
     if (treasuryToken.mint.isPending || treasuryToken.burn.isPending) {
       setIsActionDisabled(true);

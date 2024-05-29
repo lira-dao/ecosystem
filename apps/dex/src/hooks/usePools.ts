@@ -65,8 +65,6 @@ export function usePools(): Pool[] {
     contracts: reservesContracts,
   });
 
-  console.log('fee', fee);
-
   return Object.entries(dexPairs).map((pair, i) => {
     const token0 = getCurrencyByAddress(pair[1].tokens[0]);
     const token1 = getCurrencyByAddress(pair[1].tokens[1]);
