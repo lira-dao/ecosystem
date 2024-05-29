@@ -235,7 +235,7 @@ export function AddLiquidity() {
               <NumericalInput id="currencyA" disabled={!currencyB} value={firstValue} onChange={onChangeValues} />
 
               <x.div w="100%" display="flex" mt={2} justifyContent="space-between">
-                <x.p color="red-400" s>{insufficientBalanceA ? 'Insufficient Balance' : ''}</x.p>
+                <x.p color="red-400">{insufficientBalanceA ? 'Insufficient Balance' : ''}</x.p>
                 <x.p color="gray155">{new Big(formatUnits(currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n, currencyA.decimals)).toFixed(6)}</x.p>
               </x.div>
             </x.div>
