@@ -1,5 +1,11 @@
 # @lira-dao/dex
 
+## 1.5.1
+
+### Patch Changes
+
+- fix: prices decimals
+
 ## 1.5.0
 
 ### Minor Changes
