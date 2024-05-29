@@ -23,6 +23,7 @@ import { useAccount, useBalance as useBalanceWagmi, useChainId } from 'wagmi';
 import { Currency } from '@lira-dao/web3-utils';
 import { SelectCurrencyModal } from '../components/modal/SelectCurrencyModal';
 import { usePair } from '../hooks/usePair';
+import BigNumber from 'bignumber.js';
 
 
 export function Swap() {
@@ -37,8 +38,8 @@ export function Swap() {
   const [currencyA, setCurrencyA] = useState<Currency>(getCurrencies(chainId)[0]);
   const [currencyB, setCurrencyB] = useState<Currency | undefined>(undefined);
 
-  const [firstValue, setFirstValue] = useState<number | string>('');
-  const [secondValue, setSecondValue] = useState<number | string>('');
+  const [firstValue, setFirstValue] = useState<string>('');
+  const [secondValue, setSecondValue] = useState<string>('');
 
   const allowance1 = useAllowance(currencyA.address, dexAddresses.router);
 
@@ -62,6 +63,22 @@ export function Swap() {
 
   const account = useAccount();
   const accountBalance = useBalanceWagmi({ address: account.address });
+
+  const insufficientBalanceA = useMemo(() => {
+    if (currencyA.isNative) {
+      return new BigNumber(parseUnits(firstValue, currencyA.decimals).toString()).gt(new BigNumber(accountBalance.data?.value.toString() || '0'));
+    } else {
+      return new BigNumber(parseUnits(firstValue, currencyA.decimals).toString()).gt(new BigNumber(balanceA.data?.toString() || '0'));
+    }
+  }, [accountBalance.data?.value, balanceA.data, currencyA.decimals, currencyA.isNative, firstValue]);
+
+  const insufficientBalanceB = useMemo(() => {
+    if (currencyB?.isNative) {
+      return new BigNumber(parseUnits(secondValue, currencyB?.decimals || 18).toString()).gt(new BigNumber(accountBalance.data?.value.toString() || '0'));
+    } else {
+      return new BigNumber(parseUnits(secondValue, currencyB?.decimals || 18).toString()).gt(new BigNumber(balanceB.data?.toString() || '0'));
+    }
+  }, [accountBalance.data?.value, balanceB.data, currencyB?.decimals, currencyB?.isNative, secondValue]);
 
   const needAllowance = useMemo(() =>
       parseUnits(firstValue.toString(), currencyA.decimals) > 0 &&
@@ -216,7 +233,8 @@ export function Swap() {
                 onChange={(e) => onCurrencyAChange(e.target.value)}
               />
 
-              <x.div w="100%" display="flex" mt={2} justifyContent="flex-end">
+              <x.div w="100%" display="flex" mt={2} justifyContent="space-between">
+                <x.p color="red-400" s>{insufficientBalanceA ? 'Insufficient Balance' : ''}</x.p>
                 <x.p color="gray155">{new Big(formatUnits(currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n, currencyA.decimals)).toFixed(6)}</x.p>
               </x.div>
             </x.div>
@@ -260,7 +278,8 @@ export function Swap() {
                 onChange={(e) => onCurrencyBChange(e.target.value)}
               />
 
-              <x.div w="100%" display="flex" justifyContent="flex-end" mt={2}>
+              <x.div w="100%" display="flex" justifyContent="space-between" mt={2}>
+                <x.p color="red-400">{insufficientBalanceB ? 'Insufficient Balance' : ''}</x.p>
                 <x.p color="gray155">{new Big(formatUnits(currencyB?.isNative ? accountBalance.data?.value || 0n : balanceB.data ?? 0n, currencyB?.decimals || 18)).toFixed(6)}</x.p>
               </x.div>
             </x.div>
@@ -282,7 +301,7 @@ export function Swap() {
         </x.div>
       )}
 
-      {needAllowance && (
+      {(needAllowance && !insufficientBalanceA && !insufficientBalanceB) && (
         <x.div display="flex" mt={4} mb={2} h="80px" alignItems="center" justifyContent="center">
           {isAllowCurrencyADisabled ? (
             <PacmanLoader color={th?.colors.gray155} />
@@ -295,7 +314,7 @@ export function Swap() {
         </x.div>
       )}
 
-      {!needAllowance && (
+      {(!needAllowance && !insufficientBalanceA && !insufficientBalanceB) && (
         <x.div display="flex" mt={4} h="80px" alignItems="center" justifyContent="center">
           {isSwapDisabled ? (
             <PacmanLoader color={th?.colors.gray155} />

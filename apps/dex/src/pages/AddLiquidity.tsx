@@ -54,6 +54,22 @@ export function AddLiquidity() {
   const account = useAccount();
   const accountBalance = useBalanceWagmi({ address: account.address });
 
+  const insufficientBalanceA = useMemo(() => {
+    if (currencyA.isNative) {
+      return new BigNumber(parseUnits(firstValue, currencyA.decimals).toString()).gt(new BigNumber(accountBalance.data?.value.toString() || '0'));
+    } else {
+      return new BigNumber(parseUnits(firstValue, currencyA.decimals).toString()).gt(new BigNumber(balanceA.data?.toString() || '0'));
+    }
+  }, [accountBalance.data?.value, balanceA.data, currencyA.decimals, currencyA.isNative, firstValue]);
+
+  const insufficientBalanceB = useMemo(() => {
+    if (currencyB?.isNative) {
+      return new BigNumber(parseUnits(secondValue, currencyB?.decimals || 18).toString()).gt(new BigNumber(accountBalance.data?.value.toString() || '0'));
+    } else {
+      return new BigNumber(parseUnits(secondValue, currencyB?.decimals || 18).toString()).gt(new BigNumber(balanceB.data?.toString() || '0'));
+    }
+  }, [accountBalance.data?.value, balanceB.data, currencyB?.decimals, currencyB?.isNative, secondValue]);
+
   const addLiquidity = useAddLiquidity(
     currencyA,
     parseUnits(firstValue.toString(), currencyA.decimals),
@@ -210,7 +226,8 @@ export function AddLiquidity() {
 
               <NumericalInput id="currencyA" disabled={!currencyB} value={firstValue} onChange={onChangeValues} />
 
-              <x.div w="100%" display="flex" mt={2} justifyContent="flex-end">
+              <x.div w="100%" display="flex" mt={2} justifyContent="space-between">
+                <x.p color="red-400" s>{insufficientBalanceA ? 'Insufficient Balance' : ''}</x.p>
                 <x.p color="gray155">{new Big(formatUnits(currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n, currencyA.decimals)).toFixed(6)}</x.p>
               </x.div>
             </x.div>
@@ -234,8 +251,9 @@ export function AddLiquidity() {
 
               <NumericalInput id="currencyB" disabled={!currencyB} value={secondValue} onChange={onChangeValues} />
 
-              <x.div w="100%" display="flex" mt={2} justifyContent="flex-end">
-                <x.p color="gray155">{new Big(formatUnits(currencyB?.isNative ? accountBalance.data?.value || 0n : balanceB.data ?? 0n, currencyB?.decimals ?? 18)).toFixed(6)}</x.p>
+              <x.div w="100%" display="flex" justifyContent="space-between" mt={2}>
+                <x.p color="red-400">{insufficientBalanceB ? 'Insufficient Balance' : ''}</x.p>
+                <x.p color="gray155">{new Big(formatUnits(currencyB?.isNative ? accountBalance.data?.value || 0n : balanceB.data ?? 0n, currencyB?.decimals || 18)).toFixed(6)}</x.p>
               </x.div>
             </x.div>
           </Container>
