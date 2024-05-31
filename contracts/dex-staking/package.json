@@ -1,0 +1,8 @@
+{
+  "name": "@lira-dao/dex-staking",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ignition": "^0.15.3",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.22.4"
+  }
+}

@@ -84,6 +84,7 @@ export const etherscan = {
     holesky: process.env.ETHERSCAN_MAINNET || '',
     bscTestnet: process.env.ETHERSCAN_BSC || '',
     bscMainnet: process.env.ETHERSCAN_BSC || '',
+    polygonAmoy: process.env.ETHERSCAN_POLYGON || '',
   },
   customChains,
 }

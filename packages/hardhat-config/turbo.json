@@ -11,7 +11,8 @@
         "INFURA_POLYGON_AMOY",
         "ETHERSCAN_ARBITRUM",
         "ETHERSCAN_MAINNET",
-        "ETHERSCAN_BSC"
+        "ETHERSCAN_BSC",
+        "ETHERSCAN_POLYGON"
       ]
     }
   }

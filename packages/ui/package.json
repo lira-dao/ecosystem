@@ -13,8 +13,8 @@
     "generate:component": "turbo gen react-component"
   },
   "devDependencies": {
-    "@lira-dao/eslint-config": "*",
-    "@lira-dao/typescript-config": "*",
+    "@lira-dao/eslint-config": "workspace:*",
+    "@lira-dao/typescript-config": "workspace:*",
     "@turbo/gen": "^1.12.4",
     "@types/eslint": "^8.56.5",
     "@types/node": "^20.11.24",
