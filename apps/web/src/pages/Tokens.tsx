@@ -2,7 +2,8 @@ import styled, { ThemeProvider } from 'styled-components';
 import {
   addLiraDaoToken,
   addLiraToken,
-  addTreasuryBondBronzeToken, addTreasuryBondGoldToken,
+  addTreasuryBondBronzeToken,
+  addTreasuryBondGoldToken,
   addTreasuryBondSilverToken,
 } from '../utils/addLiraToken';
 import logoArbitrum from '../img/arbitrum-shield.png';

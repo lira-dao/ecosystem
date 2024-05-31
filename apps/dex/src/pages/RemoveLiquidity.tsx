@@ -1,6 +1,5 @@
 import { useParams } from 'react-router-dom';
 import { EthereumAddress } from '@lira-dao/web3-utils';
-import Big from 'big.js';
 import { formatUnits, parseUnits } from 'viem';
 import { useTheme, x } from '@xstyled/styled-components';
 import { InputPanel } from '../components/swap/InputPanel';

@@ -62,8 +62,8 @@ export async function addTreasuryToken(token: Currency) {
     token.address,
     token.symbol,
     token.decimals,
-    `https://gateway.pinata.cloud/ipfs/${pinata.logoTb}`
-  )
+    `https://gateway.pinata.cloud/ipfs/${pinata.logoTb}`,
+  );
 }
 
 export async function addPoolToMetamask(poolAddress: EthereumAddress) {
@@ -99,7 +99,7 @@ export const ethereumArbitrumSepolia: Currency = {
   symbol: 'ETH',
   paired: [
     'LDT',
-    'WBTC'
+    'WBTC',
   ],
 };
 
@@ -230,7 +230,7 @@ export const tbbArbitrumSepolia: Currency = {
   decimals: 18,
   isNative: false,
   paired: [
-    'LDT'
+    'LDT',
   ],
 };
 
@@ -243,7 +243,7 @@ export const tbbArbitrumOne: Currency = {
   decimals: 18,
   isNative: false,
   paired: [
-    'LDT'
+    'LDT',
   ],
 };
 
@@ -256,7 +256,7 @@ export const tbsArbitrumSepolia: Currency = {
   decimals: 18,
   isNative: false,
   paired: [
-    'LDT'
+    'LDT',
   ],
 };
 
@@ -269,7 +269,7 @@ export const tbsArbitrumOne: Currency = {
   decimals: 18,
   isNative: false,
   paired: [
-    'LDT'
+    'LDT',
   ],
 };
 
@@ -282,7 +282,7 @@ export const tbgArbitrumSepolia: Currency = {
   decimals: 18,
   isNative: false,
   paired: [
-    'LDT'
+    'LDT',
   ],
 };
 
@@ -295,7 +295,7 @@ export const tbgArbitrumOne: Currency = {
   decimals: 18,
   isNative: false,
   paired: [
-    'LDT'
+    'LDT',
   ],
 };
 
@@ -308,7 +308,7 @@ export const ltbbArbitrumSepolia: Currency = {
   decimals: 8,
   isNative: false,
   paired: [
-    'LIRA'
+    'LIRA',
   ],
 };
 
@@ -321,7 +321,7 @@ export const ltbbArbitrumOne: Currency = {
   decimals: 8,
   isNative: false,
   paired: [
-    'LIRA'
+    'LIRA',
   ],
 };
 
@@ -334,7 +334,7 @@ export const ltbsArbitrumSepolia: Currency = {
   decimals: 8,
   isNative: false,
   paired: [
-    'LIRA'
+    'LIRA',
   ],
 };
 
@@ -347,7 +347,7 @@ export const ltbsArbitrumOne: Currency = {
   decimals: 8,
   isNative: false,
   paired: [
-    'LIRA'
+    'LIRA',
   ],
 };
 
@@ -360,7 +360,7 @@ export const ltbgArbitrumSepolia: Currency = {
   decimals: 8,
   isNative: false,
   paired: [
-    'LIRA'
+    'LIRA',
   ],
 };
 
@@ -373,7 +373,7 @@ export const ltbgArbitrumOne: Currency = {
   decimals: 8,
   isNative: false,
   paired: [
-    'LIRA'
+    'LIRA',
   ],
 };
 
@@ -406,7 +406,7 @@ export const treasuryCurrenciesArbitrumSepolia: Currency[] = [
   // ltbbArbitrumSepolia,
   // ltbsArbitrumSepolia,
   // ltbgArbitrumSepolia,
-]
+];
 
 export const treasuryCurrenciesArbitrumOne: Currency[] = [
   tbbArbitrumOne,
@@ -415,7 +415,7 @@ export const treasuryCurrenciesArbitrumOne: Currency[] = [
   // ltbbArbitrumOne,
   // ltbsArbitrumOne,
   // ltbgArbitrumOne,
-]
+];
 
 export function getCurrencies(chainId: number) {
   switch (chainId) {

@@ -1,10 +1,8 @@
 import { ThemeProvider } from '@mui/material/styles';
 import { Box, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { muiDarkTheme } from '../../theme/theme';
-import { Pool } from '../../hooks/usePools';
-import { addPoolToMetamask, addTreasuryToken } from '../../utils';
+import { addTreasuryToken } from '../../utils';
 import metamaskFox from '../../img/metamask-fox.svg';
-import dexScreenerLogo from '../../img/dex-screener.svg';
 import { useNavigate } from 'react-router-dom';
 import { Treasury } from '../../hooks/useTreasury';
 

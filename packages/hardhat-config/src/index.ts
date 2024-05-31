@@ -31,7 +31,7 @@ export const networks = {
   arbitrum: {
     url: process.env.INFURA_ARBITRUM,
     accounts: [process.env.DEPLOYER_PRIVATE_KEY || ''],
-  }
+  },
 };
 
 export const arbitrumSepolia = {
@@ -68,7 +68,7 @@ export const polygonAmoy = {
     apiURL: 'https://api.arbiscan.io/api',
     browserURL: 'https://arbiscan.io',
   },
-}
+};
 
 export const customChains = [
   arbitrumSepolia,
@@ -87,4 +87,4 @@ export const etherscan = {
     polygonAmoy: process.env.ETHERSCAN_POLYGON || '',
   },
   customChains,
-}
+};

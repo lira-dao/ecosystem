@@ -1,7 +1,6 @@
 import { mockWethFixture } from '../fixtures';
 import { expect } from 'chai';
 import { loadFixture } from '@nomicfoundation/hardhat-network-helpers';
-import hre from 'hardhat';
 
 describe('MockWETH', () => {
   it('must have "Wrapped Ether" as name', async () => {

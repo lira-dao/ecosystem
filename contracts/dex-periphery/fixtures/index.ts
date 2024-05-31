@@ -1,5 +1,5 @@
 import hre from 'hardhat';
-import { loadFixture, mine } from '@nomicfoundation/hardhat-network-helpers';
+import { loadFixture } from '@nomicfoundation/hardhat-network-helpers';
 import { dexFactoryFixture } from '@lira-dao/dex-core/fixtures';
 import { mockWethFixture } from '@lira-dao/mock-tokens/fixtures';
 import { liraDaoTokenFixture } from '@lira-dao/ldt/fixtures';

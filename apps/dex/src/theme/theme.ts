@@ -20,7 +20,7 @@ export const muiDarkTheme = createTheme({
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
     ].join(','),
-  }
+  },
 });
 
 export const theme = {
