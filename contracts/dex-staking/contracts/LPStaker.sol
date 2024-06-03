@@ -33,6 +33,9 @@ contract LPStaker is Ownable2Step {
 
     uint256 public lastRewardBlock;
 
+    uint256 public previousReward1;
+    uint256 public previousReward2;
+
     event Stake(address indexed user, uint256 amount);
     event Unstake(address indexed user, uint256 amount);
     event Harvest(address indexed user, uint256 reward1, uint256 reward2);
@@ -54,12 +57,19 @@ contract LPStaker is Ownable2Step {
             return;
         }
 
-        uint256 reward1 = rewardToken1.balanceOf(address(this));
-        uint256 reward2 = rewardToken2.balanceOf(address(this));
+        uint256 reward1 = rewardToken1.balanceOf(address(this)) - previousReward1;
+        uint256 reward2 = rewardToken2.balanceOf(address(this)) - previousReward2;
 
-        accRewardPerShare1 += (reward1 * 1e12) / totalStaked;
-        accRewardPerShare2 += (reward2 * 1e12) / totalStaked;
+        if (reward1 > 0) {
+            accRewardPerShare1 += (reward1 * 1e12) / totalStaked;
+        }
 
+        if (reward2 > 0) {
+            accRewardPerShare2 += (reward2 * 1e12) / totalStaked;
+        }
+
+        previousReward1 = rewardToken1.balanceOf(address(this));
+        previousReward2 = rewardToken2.balanceOf(address(this));
         lastRewardBlock = block.number;
     }
 
@@ -69,11 +79,16 @@ contract LPStaker is Ownable2Step {
         uint256 tempAccRewardPerShare2 = accRewardPerShare2;
 
         if (block.number > lastRewardBlock && totalStaked != 0) {
-            uint256 reward1 = rewardToken1.balanceOf(address(this));
-            uint256 reward2 = rewardToken2.balanceOf(address(this));
+            uint256 reward1 = rewardToken1.balanceOf(address(this)) - previousReward1;
+            uint256 reward2 = rewardToken2.balanceOf(address(this)) - previousReward2;
 
-            tempAccRewardPerShare1 += (reward1 * 1e12) / totalStaked;
-            tempAccRewardPerShare2 += (reward2 * 1e12) / totalStaked;
+            if (reward1 > 0) {
+                tempAccRewardPerShare1 += (reward1 * 1e12) / totalStaked;
+            }
+
+            if (reward2 > 0) {
+                tempAccRewardPerShare2 += (reward2 * 1e12) / totalStaked;
+            }
         }
 
         pendingReward1 = (staker.amount * tempAccRewardPerShare1) / 1e12 - staker.rewardDebt1;
