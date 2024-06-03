@@ -13,7 +13,7 @@ interface IUniswapV2Pair {
     function balanceOf(address owner) external view returns (uint);
 }
 
-contract LPStaker is Ownable {
+contract LPStaker is Ownable2Step {
     using SafeERC20 for IERC20;
 
     IUniswapV2Pair public lpToken;
