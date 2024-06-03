@@ -37,7 +37,7 @@ contract LPStaker is Ownable {
     event Unstake(address indexed user, uint256 amount);
     event Harvest(address indexed user, uint256 reward1, uint256 reward2);
 
-    constructor(IUniswapV2Pair _lpToken, IERC20 _rewardToken1, IERC20 _rewardToken2) {
+    constructor(IUniswapV2Pair _lpToken, IERC20 _rewardToken1, IERC20 _rewardToken2) Ownable(msg.sender) {
         lpToken = _lpToken;
         rewardToken1 = _rewardToken1;
         rewardToken2 = _rewardToken2;
@@ -54,8 +54,8 @@ contract LPStaker is Ownable {
             return;
         }
 
-        uint256 reward1 = rewardToken1.balanceOf(address(this)) - totalStaked;
-        uint256 reward2 = rewardToken2.balanceOf(address(this)) - totalStaked;
+        uint256 reward1 = rewardToken1.balanceOf(address(this));
+        uint256 reward2 = rewardToken2.balanceOf(address(this));
 
         accRewardPerShare1 += (reward1 * 1e12) / totalStaked;
         accRewardPerShare2 += (reward2 * 1e12) / totalStaked;
