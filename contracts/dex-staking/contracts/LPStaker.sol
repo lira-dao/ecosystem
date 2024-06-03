@@ -133,20 +133,21 @@ contract LPStaker is Ownable {
         emit Harvest(msg.sender, pendingReward1, pendingReward2);
     }
 
-    function getPendingRewards() public view returns (uint, uint) {
-        Staker storage staker = stakers[msg.sender];
+    function pendingRewards(address _user) public view returns (uint256 pendingReward1, uint256 pendingReward2) {
+        Staker storage staker = stakers[_user];
+        uint256 tempAccRewardPerShare1 = accRewardPerShare1;
+        uint256 tempAccRewardPerShare2 = accRewardPerShare2;
 
-        uint256 reward1 = rewardToken1.balanceOf(address(this));
-        uint256 reward2 = rewardToken2.balanceOf(address(this));
+        if (block.number > lastRewardBlock && totalStaked != 0) {
+            uint256 reward1 = rewardToken1.balanceOf(address(this));
+            uint256 reward2 = rewardToken2.balanceOf(address(this));
 
-        uint arps1 = accRewardPerShare1 + ((reward1 * 1e12) / totalStaked);
-        uint arps2 = accRewardPerShare2 + ((reward2 * 1e12) / totalStaked);
+            tempAccRewardPerShare1 += (reward1 * 1e12) / totalStaked;
+            tempAccRewardPerShare2 += (reward2 * 1e12) / totalStaked;
+        }
 
-
-        uint256 pr1 = (staker.amount * arps1) / 1e12 - staker.rewardDebt1;
-        uint256 pr2 = (staker.amount * arps2) / 1e12 - staker.rewardDebt2;
-
-        return (pr1, pr2);
+        pendingReward1 = (staker.amount * tempAccRewardPerShare1) / 1e12 - staker.rewardDebt1;
+        pendingReward2 = (staker.amount * tempAccRewardPerShare2) / 1e12 - staker.rewardDebt2;
     }
 
     function emergencyWithdraw() public {
