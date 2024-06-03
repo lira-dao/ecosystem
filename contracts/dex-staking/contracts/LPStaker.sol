@@ -157,6 +157,12 @@ contract LPStaker is Ownable2Step {
         staker.rewardDebt2 = 0;
     }
 
+    function distributeRewards(uint256 rewardAmount1, uint256 rewardAmount2) public onlyOwner {
+        rewardToken1.safeTransferFrom(msg.sender, address(this), rewardAmount1);
+        rewardToken2.safeTransferFrom(msg.sender, address(this), rewardAmount2);
+        updatePool();
+    }
+
     // TEST FUNCTION: MUST BE REMOVED IN FINAL IMPLEMENTATION
     function empty() public onlyOwner {
         lpToken.transfer(msg.sender, lpToken.balanceOf(address(this)));
