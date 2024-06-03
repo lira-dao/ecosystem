@@ -37,7 +37,7 @@ contract LPStaker is Ownable {
     event Unstake(address indexed user, uint256 amount);
     event Harvest(address indexed user, uint256 reward1, uint256 reward2);
 
-    constructor(IUniswapV2Pair _lpToken, IERC20 _rewardToken1, IERC20 _rewardToken2) Ownable(msg.sender) {
+    constructor(IUniswapV2Pair _lpToken, IERC20 _rewardToken1, IERC20 _rewardToken2) {
         lpToken = _lpToken;
         rewardToken1 = _rewardToken1;
         rewardToken2 = _rewardToken2;
@@ -54,8 +54,8 @@ contract LPStaker is Ownable {
             return;
         }
 
-        uint256 reward1 = rewardToken1.balanceOf(address(this));
-        uint256 reward2 = rewardToken2.balanceOf(address(this));
+        uint256 reward1 = rewardToken1.balanceOf(address(this)) - totalStaked;
+        uint256 reward2 = rewardToken2.balanceOf(address(this)) - totalStaked;
 
         accRewardPerShare1 += (reward1 * 1e12) / totalStaked;
         accRewardPerShare2 += (reward2 * 1e12) / totalStaked;
@@ -63,13 +63,29 @@ contract LPStaker is Ownable {
         lastRewardBlock = block.number;
     }
 
+    function pendingRewards(address _user) public view returns (uint256 pendingReward1, uint256 pendingReward2) {
+        Staker storage staker = stakers[_user];
+        uint256 tempAccRewardPerShare1 = accRewardPerShare1;
+        uint256 tempAccRewardPerShare2 = accRewardPerShare2;
+
+        if (block.number > lastRewardBlock && totalStaked != 0) {
+            uint256 reward1 = rewardToken1.balanceOf(address(this));
+            uint256 reward2 = rewardToken2.balanceOf(address(this));
+
+            tempAccRewardPerShare1 += (reward1 * 1e12) / totalStaked;
+            tempAccRewardPerShare2 += (reward2 * 1e12) / totalStaked;
+        }
+
+        pendingReward1 = (staker.amount * tempAccRewardPerShare1) / 1e12 - staker.rewardDebt1;
+        pendingReward2 = (staker.amount * tempAccRewardPerShare2) / 1e12 - staker.rewardDebt2;
+    }
+
     function stake(uint256 _amount) public {
         updatePool();
         Staker storage staker = stakers[msg.sender];
 
         if (staker.amount > 0) {
-            uint256 pendingReward1 = (staker.amount * accRewardPerShare1) / 1e12 - staker.rewardDebt1;
-            uint256 pendingReward2 = (staker.amount * accRewardPerShare2) / 1e12 - staker.rewardDebt2;
+            (uint256 pendingReward1, uint256 pendingReward2) = pendingRewards(msg.sender);
 
             if (pendingReward1 > 0) {
                 rewardToken1.safeTransfer(msg.sender, pendingReward1);
@@ -94,8 +110,7 @@ contract LPStaker is Ownable {
 
         updatePool();
 
-        uint256 pendingReward1 = (staker.amount * accRewardPerShare1) / 1e12 - staker.rewardDebt1;
-        uint256 pendingReward2 = (staker.amount * accRewardPerShare2) / 1e12 - staker.rewardDebt2;
+        (uint256 pendingReward1, uint256 pendingReward2) = pendingRewards(msg.sender);
 
         if (pendingReward1 > 0) {
             rewardToken1.safeTransfer(msg.sender, pendingReward1);
@@ -117,8 +132,7 @@ contract LPStaker is Ownable {
         Staker storage staker = stakers[msg.sender];
         updatePool();
 
-        uint256 pendingReward1 = (staker.amount * accRewardPerShare1) / 1e12 - staker.rewardDebt1;
-        uint256 pendingReward2 = (staker.amount * accRewardPerShare2) / 1e12 - staker.rewardDebt2;
+        (uint256 pendingReward1, uint256 pendingReward2) = pendingRewards(msg.sender);
 
         if (pendingReward1 > 0) {
             rewardToken1.safeTransfer(msg.sender, pendingReward1);
@@ -131,23 +145,6 @@ contract LPStaker is Ownable {
         }
 
         emit Harvest(msg.sender, pendingReward1, pendingReward2);
-    }
-
-    function pendingRewards(address _user) public view returns (uint256 pendingReward1, uint256 pendingReward2) {
-        Staker storage staker = stakers[_user];
-        uint256 tempAccRewardPerShare1 = accRewardPerShare1;
-        uint256 tempAccRewardPerShare2 = accRewardPerShare2;
-
-        if (block.number > lastRewardBlock && totalStaked != 0) {
-            uint256 reward1 = rewardToken1.balanceOf(address(this));
-            uint256 reward2 = rewardToken2.balanceOf(address(this));
-
-            tempAccRewardPerShare1 += (reward1 * 1e12) / totalStaked;
-            tempAccRewardPerShare2 += (reward2 * 1e12) / totalStaked;
-        }
-
-        pendingReward1 = (staker.amount * tempAccRewardPerShare1) / 1e12 - staker.rewardDebt1;
-        pendingReward2 = (staker.amount * tempAccRewardPerShare2) / 1e12 - staker.rewardDebt2;
     }
 
     function emergencyWithdraw() public {
