@@ -55,6 +55,18 @@ export function Tokens() {
               height={50}
             />
           </a>
+          <a
+            href="https://dexscreener.com/arbitrum/0x9F0818aF51fd217A88ccfEf21669979B2570091A"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <StyledLogo
+              src={dexScreener}
+              alt="link to ldt weth pair on dextools"
+              width={50}
+              height={50}
+            />
+          </a>
           <StyledLogo
             src={logoMetamask}
             alt="add to metamask"
