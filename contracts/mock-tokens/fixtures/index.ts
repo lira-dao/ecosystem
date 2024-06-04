@@ -1,7 +1,8 @@
 import hre from 'hardhat';
-import { MockWBTC, MockWETH } from '../typechain-types';
+import { MockToken, MockWBTC, MockWETH } from '../typechain-types';
 import WBTCArtifact from '../artifacts/contracts/MockWBTC.sol/MockWBTC.json';
 import WETHArtifact from '../artifacts/contracts/MockWETH.sol/MockWETH.json';
+import MockTokenArtifact from '../artifacts/contracts/MockToken.sol/MockToken.json';
 
 
 export async function mockWbtcFixture() {
@@ -22,4 +23,14 @@ export async function mockWethFixture() {
   const wethAddress = await weth.getAddress();
 
   return { weth, wethAddress, owner };
+}
+
+export async function mockTokenFixture(name: string, symbol: string) {
+  const [owner] = await hre.ethers.getSigners();
+
+  const tokenFactory = new hre.ethers.ContractFactory<[string, string], MockToken>(MockTokenArtifact.abi, MockTokenArtifact.bytecode, owner);
+  const token = await tokenFactory.deploy(name, symbol);
+  const tokenAddress = await token.getAddress();
+
+  return { token, tokenAddress, owner };
 }
