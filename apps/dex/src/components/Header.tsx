@@ -71,9 +71,9 @@ export function Header() {
 
       <x.div ml={{ _: 0, lg: 8 }} display="flex" flexGrow={1}>
         <MenuItem text="SWAP" to="swap" />
-        <MenuItem text="POOLS" to="pools" />
         <MenuItem text="TREASURY" to="treasury" />
-        {/*<MenuItem text="FARMS" to="farms" />*/}
+        <MenuItem text="POOLS" to="pools" />
+        <MenuItem text="FARMING" to="farming" />
         {/*<MenuItem text="STACKING" to="stacking" />*/}
         {process.env.REACT_APP_TESTNET === 'true' && <MenuItem text="FAUCETS" to="faucets" />}
       </x.div>

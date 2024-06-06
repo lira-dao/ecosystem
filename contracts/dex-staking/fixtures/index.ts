@@ -1,6 +1,5 @@
 import { mockTokenFixture } from '@lira-dao/mock-tokens/fixtures';
 import hre from 'hardhat';
-import { bigint } from 'hardhat/internal/core/params/argumentTypes';
 
 
 export async function lpStakerFixture() {
@@ -10,7 +9,7 @@ export async function lpStakerFixture() {
   const { token: token1, tokenAddress: token1Address } = await mockTokenFixture('Token1', 'T1');
   const { token: token2, tokenAddress: token2Address } = await mockTokenFixture('Token2', 'T2');
 
-  const baseFaucetContract = await hre.ethers.getContractFactory('LPStaker');
+  const baseFaucetContract = await hre.ethers.getContractFactory('LPStakerV3');
   const staker = await baseFaucetContract.deploy(lpAddress, token1Address, token2Address);
   const stakerAddress = await staker.getAddress();
 

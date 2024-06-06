@@ -1,4 +1,4 @@
-import { DexAddresses, DexPairs, TokenAddresses } from './types';
+import { DexAddresses, DexPairs, FarmingStaker, TokenAddresses } from './types';
 
 
 export const tokens: TokenAddresses = {
@@ -184,3 +184,12 @@ export const dexPairs: DexPairs = {
     },
   },
 };
+
+export const farmingStakers: FarmingStaker[] = [{
+  address: '0x6949E9778d4454F6EaB558b9fA6E337F13aA1D5f',
+  pool: '0x1B0073f9224842c65556785F2cd965A98368c73e',
+  tokens: [
+    '0x62F53E68662B013ea03B7BA6803b624632179eD3',
+    '0xB80C1fA67A59DC863A02cC410196E0DFBD139c73',
+  ],
+}];
