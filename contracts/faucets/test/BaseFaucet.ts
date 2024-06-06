@@ -43,6 +43,7 @@ describe('BaseFaucet', function () {
     // @ts-ignore
     await baseFaucet.connect(user).withdraw();
 
+    // @ts-ignore
     await expect(baseFaucet.connect(user).withdraw()).revertedWith('NOT_ALLOWED');
 
     await increase(86400); // 1 day
@@ -83,6 +84,7 @@ describe('BaseFaucet', function () {
     expect(await ldt.balanceOf(baseFaucetAddress)).eq(10n ** 18n);
     expect(await ldt.balanceOf(owner)).eq(0);
 
+    // @ts-ignore
     await expect(baseFaucet.connect(user).empty()).revertedWithCustomError(baseFaucet, 'OwnableUnauthorizedAccount');
 
     await baseFaucet.empty();

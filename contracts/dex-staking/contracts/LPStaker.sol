@@ -24,10 +24,14 @@ contract LPStaker is Ownable2Step {
         uint256 amount;
         uint256 rewardDebt1;
         uint256 rewardDebt2;
+        uint256 pendingReward1;
+        uint256 pendingReward2;
     }
 
     mapping(address => Staker) public stakers;
+    address[] public stakerAddresses;
     uint256 public totalStaked;
+
     uint256 public accRewardPerShare1;
     uint256 public accRewardPerShare2;
 
@@ -62,8 +66,8 @@ contract LPStaker is Ownable2Step {
         uint256 currentReward1 = rewardToken1.balanceOf(address(this));
         uint256 currentReward2 = rewardToken2.balanceOf(address(this));
 
-        uint256 reward1 = currentReward1 - previousReward1;
-        uint256 reward2 = currentReward2 - previousReward2;
+        uint256 reward1 = currentReward1 >= previousReward1 ? currentReward1 - previousReward1 : 0;
+        uint256 reward2 = currentReward2 >= previousReward2 ? currentReward2 - previousReward2 : 0;
 
         if (reward1 > 0) {
             accRewardPerShare1 += (reward1 * 1e12) / totalStaked;
@@ -71,6 +75,25 @@ contract LPStaker is Ownable2Step {
 
         if (reward2 > 0) {
             accRewardPerShare2 += (reward2 * 1e12) / totalStaked;
+        }
+
+        // Accumulate rewards for all stakers
+        for (uint256 i = 0; i < stakerAddresses.length; i++) {
+            address stakerAddress = stakerAddresses[i];
+            Staker storage staker = stakers[stakerAddress];
+
+            uint256 pendingReward1 = (staker.amount * accRewardPerShare1) / 1e12 - staker.rewardDebt1;
+            uint256 pendingReward2 = (staker.amount * accRewardPerShare2) / 1e12 - staker.rewardDebt2;
+
+            if (pendingReward1 > 0) {
+                staker.pendingReward1 += pendingReward1;
+            }
+            if (pendingReward2 > 0) {
+                staker.pendingReward2 += pendingReward2;
+            }
+
+            staker.rewardDebt1 = (staker.amount * accRewardPerShare1) / 1e12;
+            staker.rewardDebt2 = (staker.amount * accRewardPerShare2) / 1e12;
         }
 
         previousReward1 = currentReward1;
@@ -84,8 +107,8 @@ contract LPStaker is Ownable2Step {
         uint256 tempAccRewardPerShare2 = accRewardPerShare2;
 
         if (block.number > lastRewardBlock && totalStaked != 0) {
-            uint256 reward1 = rewardToken1.balanceOf(address(this)) - previousReward1;
-            uint256 reward2 = rewardToken2.balanceOf(address(this)) - previousReward2;
+            uint256 reward1 = rewardToken1.balanceOf(address(this)) >= previousReward1 ? rewardToken1.balanceOf(address(this)) - previousReward1 : 0;
+            uint256 reward2 = rewardToken2.balanceOf(address(this)) >= previousReward2 ? rewardToken2.balanceOf(address(this)) - previousReward2 : 0;
 
             if (reward1 > 0) {
                 tempAccRewardPerShare1 += (reward1 * 1e12) / totalStaked;
@@ -96,22 +119,26 @@ contract LPStaker is Ownable2Step {
             }
         }
 
-        pendingReward1 = (staker.amount * tempAccRewardPerShare1) / 1e12 - staker.rewardDebt1;
-        pendingReward2 = (staker.amount * tempAccRewardPerShare2) / 1e12 - staker.rewardDebt2;
+        pendingReward1 = (staker.amount * tempAccRewardPerShare1) / 1e12 - staker.rewardDebt1 + staker.pendingReward1;
+        pendingReward2 = (staker.amount * tempAccRewardPerShare2) / 1e12 - staker.rewardDebt2 + staker.pendingReward2;
     }
 
     function stake(uint256 _amount) public {
         updatePool();
         Staker storage staker = stakers[msg.sender];
 
+        if (staker.amount == 0) {
+            stakerAddresses.push(msg.sender);
+        }
+
         if (staker.amount > 0) {
             (uint256 pendingReward1, uint256 pendingReward2) = pendingRewards(msg.sender);
 
             if (pendingReward1 > 0) {
-                rewardToken1.safeTransfer(msg.sender, pendingReward1);
+                staker.pendingReward1 = pendingReward1;
             }
             if (pendingReward2 > 0) {
-                rewardToken2.safeTransfer(msg.sender, pendingReward2);
+                staker.pendingReward2 = pendingReward2;
             }
         }
 
@@ -133,10 +160,10 @@ contract LPStaker is Ownable2Step {
         (uint256 pendingReward1, uint256 pendingReward2) = pendingRewards(msg.sender);
 
         if (pendingReward1 > 0) {
-            rewardToken1.safeTransfer(msg.sender, pendingReward1);
+            staker.pendingReward1 = pendingReward1;
         }
         if (pendingReward2 > 0) {
-            rewardToken2.safeTransfer(msg.sender, pendingReward2);
+            staker.pendingReward2 = pendingReward2;
         }
 
         staker.amount -= _amount;
@@ -156,10 +183,12 @@ contract LPStaker is Ownable2Step {
 
         if (pendingReward1 > 0) {
             rewardToken1.safeTransfer(msg.sender, pendingReward1);
+            staker.pendingReward1 = 0;
         }
 
         if (pendingReward2 > 0) {
             rewardToken2.safeTransfer(msg.sender, pendingReward2);
+            staker.pendingReward2 = 0;
         }
 
         staker.rewardDebt1 = (staker.amount * accRewardPerShare1) / 1e12;
@@ -176,9 +205,30 @@ contract LPStaker is Ownable2Step {
         staker.amount = 0;
         staker.rewardDebt1 = 0;
         staker.rewardDebt2 = 0;
+        staker.pendingReward1 = 0;
+        staker.pendingReward2 = 0;
     }
 
     function distributeRewards(uint256 rewardAmount1, uint256 rewardAmount2) public onlyOwner {
+
+        for (uint256 i = 0; i < stakerAddresses.length; i++) {
+            address stakerAddress = stakerAddresses[i];
+            Staker storage staker = stakers[stakerAddress];
+
+            uint256 pendingReward1 = (staker.amount * rewardAmount1) / 1e12 - staker.rewardDebt1;
+            uint256 pendingReward2 = (staker.amount * rewardAmount2) / 1e12 - staker.rewardDebt2;
+
+            if (pendingReward1 > 0) {
+                staker.pendingReward1 += pendingReward1;
+            }
+            if (pendingReward2 > 0) {
+                staker.pendingReward2 += pendingReward2;
+            }
+
+            staker.rewardDebt1 = (staker.amount * accRewardPerShare1) / 1e12;
+            staker.rewardDebt2 = (staker.amount * accRewardPerShare2) / 1e12;
+        }
+
         rewardToken1.safeTransferFrom(msg.sender, address(this), rewardAmount1);
         rewardToken2.safeTransferFrom(msg.sender, address(this), rewardAmount2);
         updatePool();
@@ -191,3 +241,36 @@ contract LPStaker is Ownable2Step {
         rewardToken2.transfer(msg.sender, rewardToken2.balanceOf(address(this)));
     }
 }
+
+/*contract LPStakerV2 is Ownable2Step {
+    IUniswapV2Pair public lpToken;
+    IERC20 public rewardToken1;
+    IERC20 public rewardToken2;
+
+    struct Staker {
+        uint256 amount;
+        uint256 pendingReward1;
+        uint256 pendingReward2;
+    }
+
+    mapping(address => Staker) public stakers;
+    address[] public stakerAddresses;
+    uint256 public totalStaked;
+
+    constructor(IUniswapV2Pair _lpToken, IERC20 _rewardToken1, IERC20 _rewardToken2) Ownable(msg.sender) {
+        lpToken = _lpToken;
+        rewardToken1 = _rewardToken1;
+        rewardToken2 = _rewardToken2;
+    }
+
+    function stake(uint256 _amount) public {
+        Staker storage staker = stakers[msg.sender];
+
+        if (!stakerAddresses[msg.sender] == address(0)) {
+            stakerAddresses.push(msg.sender);
+        }
+
+        //lpToken.transferFrom(msg.sender, address(this), _amount);
+        //staker.amount += _amount;
+    }
+}*/
