@@ -32,7 +32,7 @@ const StyledCopyButton = styled(Typography)`
   }
 `;
 
-export function Tokens() {
+export function Contracts() {
   const copyLira = () => navigator.clipboard.writeText('0xA07ac236fEBc390c798504E927DC8D6a4e1FfcA3');
   const copyLdt = () => navigator.clipboard.writeText('0x2A5E22b32b3E0Daa7a8C199e10Df9D9E1264Fd3f');
   const copyTbb = () => navigator.clipboard.writeText('0x9C0385b4F1f3B277ab352B817fC56763081a503c');
