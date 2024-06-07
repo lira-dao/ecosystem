@@ -3,7 +3,6 @@ pragma solidity ^0.8.24;
 
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/access/Ownable2Step.sol';
-import 'hardhat/console.sol';
 
 /**
  * @title Token Distributor
@@ -39,7 +38,8 @@ contract TokenDistributor is Ownable2Step {
     // current distribution
     uint public currentDistribution = 0;
 
-    uint public lastDistributed = 0;
+    // next distribution timestamp
+    uint public nextDistribution = 0;
 
     constructor(address _token) Ownable(msg.sender) {
         token = IERC20(_token);
@@ -55,20 +55,13 @@ contract TokenDistributor is Ownable2Step {
             distributions.push(_distributions[i]);
         }
 
-        // console.log('supply', supply);
-        // console.log('balance', token.balanceOf(msg.sender));
-
         token.transferFrom(msg.sender, address(this), supply);
 
-        lastDistributed = block.timestamp;
+        nextDistribution = block.timestamp;
     }
 
-//    function currentDistribution() public pure returns (Distribution memory) {
-//        return distributions[currentDistribution];
-//    }
-
     function distribute(address _to) public onlyOwner {
-        require(block.timestamp > lastDistributed + distributions[currentDistribution].cadence, 'CADENCE');
+        require(block.timestamp > nextDistribution, 'CADENCE');
 
         uint tokenBalance = token.balanceOf(address(this));
 
@@ -98,7 +91,7 @@ contract TokenDistributor is Ownable2Step {
         lastBalance = token.balanceOf(address(this));
 
         // update last distributed
-        lastDistributed = lastDistributed + distributions[currentDistribution].cadence;
+        nextDistribution += distributions[currentDistribution].cadence;
 
         if (distributions[currentDistribution].emitted > distributions[currentDistribution].amount) {
             currentDistribution = currentDistribution + 1;
