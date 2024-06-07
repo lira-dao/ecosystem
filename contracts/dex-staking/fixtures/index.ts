@@ -3,7 +3,7 @@ import hre from 'hardhat';
 
 
 export async function lpStakerFixture() {
-  const [owner, user1, user2] = await hre.ethers.getSigners();
+  const [owner, user1, user2, user3] = await hre.ethers.getSigners();
 
   const { token: lp, tokenAddress: lpAddress } = await mockTokenFixture('LP', 'LP');
   const { token: token1, tokenAddress: token1Address } = await mockTokenFixture('Token1', 'T1');
@@ -14,5 +14,18 @@ export async function lpStakerFixture() {
   const stakerAddress = await staker.getAddress();
 
 
-  return { staker, stakerAddress, lp, lpAddress, token1, token1Address, token2, token2Address, owner, user1, user2 };
+  return {
+    staker,
+    stakerAddress,
+    lp,
+    lpAddress,
+    token1,
+    token1Address,
+    token2,
+    token2Address,
+    owner,
+    user1,
+    user2,
+    user3,
+  };
 }

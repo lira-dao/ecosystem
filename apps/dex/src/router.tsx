@@ -10,6 +10,7 @@ import { TreasuryMint } from './pages/TreasuryMint';
 import { Farming } from './pages/Farming';
 import { Stake } from './pages/Stake';
 import { Harvest } from './pages/Harvest';
+import { Unstake } from './pages/Unstake';
 
 
 const routes = [
@@ -28,6 +29,7 @@ const routes = [
   // farming
   { path: 'farming', element: <Farming /> },
   { path: 'farming/:farm/stake', element: <Stake /> },
+  { path: 'farming/:farm/unstake', element: <Unstake /> },
   { path: 'farming/:farm/harvest', element: <Harvest /> },
 
   // treasury

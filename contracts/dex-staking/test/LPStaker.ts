@@ -5,7 +5,7 @@ const fs = require('fs');
 
 describe('LPStaker', () => {
   it('Should deploy mock tokens', async () => {
-    const { staker, stakerAddress, lp, token1, token2, owner, user1, user2 } = await lpStakerFixture();
+    const { staker, stakerAddress, lp, token1, token2, owner, user1, user2, user3 } = await lpStakerFixture();
 
     expect(await lp.name()).to.equal('LP');
     expect(await lp.symbol()).to.equal('LP');
@@ -16,37 +16,51 @@ describe('LPStaker', () => {
     expect(await token2.name()).to.equal('Token2');
     expect(await token2.symbol()).to.equal('T2');
 
-    await lp.mint(user1, 10n ** 20n);
-    await lp.mint(user2, 10n ** 20n);
+    await lp.mint(user1, 10n ** 50n);
+    await lp.mint(user2, 10n ** 50n);
+    await lp.mint(user3, 10n ** 50n);
 
     // @ts-ignore
-    await lp.connect(user1).approve(stakerAddress, 10n ** 20n);
+    await lp.connect(user1).approve(stakerAddress, 10n ** 50n);
     // @ts-ignore
-    await lp.connect(user2).approve(stakerAddress, 10n ** 20n);
+    await lp.connect(user2).approve(stakerAddress, 10n ** 50n);
+    // @ts-ignore
+    await lp.connect(user3).approve(stakerAddress, 10n ** 50n);
 
-    await token1.mint(owner, 10n ** 20n);
-    await token2.mint(owner, 10n ** 20n);
+    await token1.mint(owner, 10n ** 50n);
+    await token2.mint(owner, 10n ** 50n);
 
-    await token1.approve(stakerAddress, 10n ** 20n);
-    await token2.approve(stakerAddress, 10n ** 20n);
+    await token1.approve(stakerAddress, 10n ** 50n);
+    await token2.approve(stakerAddress, 10n ** 50n);
 
-    await staker.connect(user1).stake(10n ** 18n);
+    await staker.connect(user1).stake(10n ** 25n);
+    await staker.connect(user2).stake(10n ** 25n);
+    await staker.connect(user3).stake(10n ** 25n);
 
-    console.log('staker1', await staker.stakers(user1));
-
-    // console.log('distribute rewards', 10n ** 18n, 10n ** 18n);
     await staker.distributeRewards(10n ** 18n, 10n ** 18n);
 
     await staker.connect(user1).harvest();
-    await staker.connect(user1).unstake(10n ** 18n);
+    await staker.connect(user2).harvest();
+    await staker.connect(user3).harvest();
 
-    await staker.connect(user2).stake(10n ** 18n);
+    console.log('balance1', await token1.balanceOf(stakerAddress));
+    console.log('balance2', await token2.balanceOf(stakerAddress));
 
-    await staker.distributeRewards(10n ** 18n, 10n ** 18n);
-    await staker.distributeRewards(10n ** 18n, 10n ** 18n);
-    await staker.distributeRewards(10n ** 18n, 10n ** 18n);
+    // console.log('staker1', await staker.stakers(user1));
+    //
+    // // console.log('distribute rewards', 10n ** 18n, 10n ** 18n);
+    // await staker.distributeRewards(10n ** 18n, 10n ** 18n);
+    //
+    // await staker.connect(user1).harvest();
+    // await staker.connect(user1).unstake(10n ** 18n);
+    //
+    // await staker.connect(user2).stake(10n ** 18n);
+    //
+    // await staker.distributeRewards(10n ** 18n, 10n ** 18n);
+    // await staker.distributeRewards(10n ** 18n, 10n ** 18n);
+    // await staker.distributeRewards(10n ** 18n, 10n ** 18n);
 
-    console.log('pending', await staker.connect(user2).pendingRewards());
+    // console.log('pending', await staker.pendingRewards(user2));
 
     // console.log('pending rewards user1', await staker.stakers(user1));
 
@@ -74,10 +88,8 @@ describe('LPStaker', () => {
     //   await staker.distributeRewards(10n ** 10n, 10n ** 10n);
     // }
     //
-    const tx1 = await staker.connect(user1).harvest();
-    const receipt1 = await tx1.wait();
-    const gasCostForTxn1 = receipt1?.gasUsed || 0n * (receipt1?.gasPrice || 0n);
-    console.log('gasCostForTxn1', { gasUsed: receipt1?.gasUsed, gasPrice: receipt1?.gasPrice, gasCostForTxn1 });
+    // await staker.connect(user1).harvest();
+
     //
     // const tx2 = await staker.connect(user2).harvest();
     // const receipt2 = await tx2.wait();

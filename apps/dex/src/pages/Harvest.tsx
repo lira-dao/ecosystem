@@ -34,7 +34,7 @@ export function Harvest() {
     <ThemeProvider theme={muiDarkTheme}>
       <Box width="100%" maxWidth="480px" padding={4}>
         <Box display="flex" justifyContent="center" mt={2}>
-          <Typography variant="h4">Harwest</Typography>
+          <Typography variant="h4">Harvest</Typography>
         </Box>
 
         <Box display="flex" justifyContent="center" mt={4}>
@@ -65,7 +65,7 @@ export function Harvest() {
             <PrimaryButton
               disabled={!havePendingRewards}
               onClick={() => write()}
-            >Harwest</PrimaryButton>
+            >Harvest</PrimaryButton>
           )}
         </x.div>
       </Box>

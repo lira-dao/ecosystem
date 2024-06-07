@@ -1,5 +1,5 @@
-import { useAccount, useReadContract, useWriteContract } from 'wagmi';
-import { EthereumAddress, lpStakerAbi } from '@lira-dao/web3-utils';
+import { useAccount, useReadContract, useReadContracts, useWriteContract } from 'wagmi';
+import { EthereumAddress, farmingStakers, lpStakerAbi } from '@lira-dao/web3-utils';
 import { useBalance } from './useBalance';
 import { useAllowance } from './useAllowance';
 import { useApprove } from './useApprove';
@@ -11,14 +11,20 @@ import { useWatchTransaction } from './useWatchTransaction';
 
 export function useFarmingStaker(address: EthereumAddress, action: 'stake' | 'unstake' | 'harvest', amount?: string) {
   const account = useAccount();
+  const { writeContract, isPending, failureReason, data, reset, ...rest } = useWriteContract();
+
+  const stakedAmount = useReadContract({
+    abi: lpStakerAbi,
+    address: address,
+    functionName: 'stakers',
+    args: [account.address as EthereumAddress],
+  });
 
   const lpAddress = useReadContract({
     abi: lpStakerAbi,
     address,
     functionName: 'lpToken',
   });
-
-  const { writeContract, isPending, failureReason, data, reset, ...rest } = useWriteContract();
 
   const write = () => writeContract({
     abi: lpStakerAbi,
@@ -53,7 +59,7 @@ export function useFarmingStaker(address: EthereumAddress, action: 'stake' | 'un
   const approve = useApprove(lpAddress.data as EthereumAddress, address, parseUnits(amount || '0', 18));
 
   const confirmed = useWatchTransaction(data);
-
+  console.log('stakedAmount', stakedAmount);
   return {
     balance,
     allowance,
@@ -62,6 +68,8 @@ export function useFarmingStaker(address: EthereumAddress, action: 'stake' | 'un
     reset,
     confirmed: confirmed.confirmed,
     isPending: isPending || confirmed.isLoading,
+
+    stakedAmount,
 
     tokens: [
       getCurrencyByAddress(rewardToken1.data || '0x0'),
