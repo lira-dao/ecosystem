@@ -1,10 +1,31 @@
 import { lpStakerFixture } from '../fixtures';
 import { expect } from 'chai';
 
-const fs = require('fs');
 
 describe('LPStaker', () => {
-  it('Should deploy mock tokens', async () => {
+  it('must have an lp token address');
+
+  it('must have a reward token addresses');
+
+  it('starker must return staker data');
+
+  it('must a have a total staked amount');
+
+  it('must add a new round when rewards are distributed');
+
+  it('user can stake lp token');
+
+  it('user can unskate lp token');
+
+  it('must distribute rewards');
+
+  it('user can harwest rewards');
+
+  it('must revert if user tries to increase stake with pending rewards');
+
+  it('must revert if user tries to decrease stake with pending rewards');
+
+  it('must distribute staking rewards', async () => {
     const { staker, stakerAddress, lp, token1, token2, owner, user1, user2, user3 } = await lpStakerFixture();
 
     expect(await lp.name()).to.equal('LP');

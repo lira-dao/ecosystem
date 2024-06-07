@@ -1,17 +1,11 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.24;
 
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 import '@openzeppelin/contracts/access/Ownable2Step.sol';
+import './interfaces/IUniswapV2Pair.sol';
 
-interface IUniswapV2Pair {
-    function transferFrom(address from, address to, uint value) external returns (bool);
-
-    function transfer(address to, uint value) external returns (bool);
-
-    function balanceOf(address owner) external view returns (uint);
-}
 
 contract LPStakerV3 is Ownable2Step {
     using SafeERC20 for IERC20;

@@ -1,5 +1,6 @@
-import { mockTokenFixture } from '@lira-dao/mock-tokens/fixtures';
 import hre from 'hardhat';
+import { mockTokenFixture } from '@lira-dao/mock-tokens/fixtures';
+import { liraDaoTokenFixture } from '@lira-dao/ldt/fixtures';
 
 
 export async function lpStakerFixture() {
@@ -28,4 +29,16 @@ export async function lpStakerFixture() {
     user2,
     user3,
   };
+}
+
+export async function rewardSplitterFixture() {
+  const [owner] = await hre.ethers.getSigners();
+
+  const { ldtAddress } = await liraDaoTokenFixture();
+
+  const rewardSplitterFactory = await hre.ethers.getContractFactory('RewardSplitter');
+  const rewardSplitter = await rewardSplitterFactory.deploy(ldtAddress);
+  const rewardSplitterAddress = await rewardSplitter.getAddress();
+
+  return { rewardSplitter, rewardSplitterAddress, ldtAddress, owner };
 }
