@@ -21,6 +21,7 @@ export function FarmingTable({ farms, isConnected }: Props) {
             <TableRow>
               <TableCell>Farm</TableCell>
               {isConnected && <TableCell align="right">Total Staked</TableCell>}
+              {isConnected && <TableCell align="right">LP Balance</TableCell>}
               {isConnected && <TableCell align="right">My Deposit</TableCell>}
               {isConnected && <TableCell align="right">Rewards</TableCell>}
               <TableCell align="right">Actions</TableCell>
@@ -33,7 +34,7 @@ export function FarmingTable({ farms, isConnected }: Props) {
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  <Box display="flex" alignItems="center">
+                  <Box display="flex" alignItems="center" sx={{textWrap: 'nowrap'}}>
                     <Box display="flex" mr={1}>
                       <img src={farm.tokens[0]?.icon} width={30} alt={`${farm.tokens[0]?.name} logo`} />
                       <img src={farm.tokens[1]?.icon} width={30} alt={`${farm.tokens[1]?.name} logo`} />
@@ -41,10 +42,11 @@ export function FarmingTable({ farms, isConnected }: Props) {
                     {farm.pair.symbol}
                   </Box>
                 </TableCell>
-                <TableCell align="right">{farm.totalStaked} LP</TableCell>
-                {isConnected && <TableCell align="right">{farm.amount} LP</TableCell>}
+                <TableCell align="right" sx={{textWrap: 'nowrap'}}>{farm.totalStaked} LP</TableCell>
+                {isConnected && <TableCell align="right" sx={{textWrap: 'nowrap'}}>{farm.balance} LP</TableCell>}
+                {isConnected && <TableCell align="right" sx={{textWrap: 'nowrap'}}>{farm.amount} LP</TableCell>}
                 {isConnected && (
-                  <TableCell align="right">
+                  <TableCell align="right" sx={{textWrap: 'nowrap'}}>
                     {farm.rewards[0]} {farm.tokens[0]?.symbol}<br />{farm.rewards[1]} {farm.tokens[1]?.symbol}
                   </TableCell>
                 )}
@@ -53,7 +55,7 @@ export function FarmingTable({ farms, isConnected }: Props) {
                     <Button
                       color="success"
                       variant="outlined"
-                      onClick={() => navigate(`/farming/${farm.address}`)}
+                      onClick={() => navigate(`/farming/${farm.address}/harvest`)}
                       sx={{ marginRight: '10px' }}
                     >Harvest</Button>
                     <Button

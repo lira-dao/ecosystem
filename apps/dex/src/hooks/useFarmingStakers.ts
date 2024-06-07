@@ -1,4 +1,4 @@
-import { Currency, EthereumAddress, farmingStakers, lpStakerAbi, Pair } from '@lira-dao/web3-utils';
+import { Currency, erc20Abi, EthereumAddress, farmingStakers, lpStakerAbi, Pair } from '@lira-dao/web3-utils';
 import { useDexPairs } from './useDexPairs';
 import { useAccount, useReadContracts } from 'wagmi';
 import { getCurrencyByAddress } from '../utils';
@@ -8,6 +8,7 @@ import BigNumber from 'bignumber.js';
 export interface Farm {
   address: EthereumAddress;
   amount: string;
+  balance: string;
   pair: Pair
   tokens: (Currency | undefined)[],
   rewards: [string, string],
@@ -46,12 +47,25 @@ export function useFarmingStakers(): Farm[] {
     contracts: rewardsContracts,
   });
 
+  const balanceContracts = farmingStakers.map(fs => ({
+    abi: erc20Abi,
+    address: fs.pool,
+    functionName: 'balanceOf',
+    args: [account.address],
+  }));
+
+  const balances = useReadContracts({
+    contracts: balanceContracts,
+  });
+  console.log('balances', balances);
+
   return farmingStakers.map((staker, i) => {
     return {
       address: staker.address,
       pair: dexPairs[staker.pool],
       // @ts-ignore
       amount: new BigNumber(amounts.data?.[i].result?.[0].toString()).div(new BigNumber(10).pow(18)).toFormat(6) || '',
+      balance: new BigNumber(balances.data?.[i].result?.toString() || '0').div(new BigNumber(10).pow(18)).toFormat(6) || '',
       tokens: [
         getCurrencyByAddress(staker.tokens[0]),
         getCurrencyByAddress(staker.tokens[1]),
