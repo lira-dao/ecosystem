@@ -10,7 +10,7 @@ export function Farming() {
 
 
   return (
-    <x.div display="flex" w="100%" flexDirection="column" maxWidth="1024px" p={4}>
+    <x.div display="flex" w="100%" flexDirection="column" maxWidth="1200px" p={4}>
       <x.div display="flex" alignItems="center" justifyContent="space-between">
         <x.h1 fontSize="4xl">Farming</x.h1>
       </x.div>

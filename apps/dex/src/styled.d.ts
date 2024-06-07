@@ -38,3 +38,17 @@ declare module 'styled-components' {
   export interface DefaultTheme extends AppTheme {
   }
 }
+
+declare module '@mui/material/styles' {
+  interface Theme {
+    colors: {
+      gray155: string;
+    };
+  }
+  // allow configuration using `createTheme`
+  interface ThemeOptions {
+    colors?: {
+      gray155?: string;
+    };
+  }
+}

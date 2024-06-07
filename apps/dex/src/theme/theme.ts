@@ -6,6 +6,9 @@ export const muiDarkTheme = createTheme({
   palette: {
     mode: 'dark',
   },
+  colors: {
+    gray155: '#9B9B9B',
+  },
   typography: {
     fontFamily: [
       'Apercu Mono Pro',
