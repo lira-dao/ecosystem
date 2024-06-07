@@ -57,7 +57,6 @@ export function useFarmingStakers(): Farm[] {
   const balances = useReadContracts({
     contracts: balanceContracts,
   });
-  console.log('balances', balances);
 
   return farmingStakers.map((staker, i) => {
     return {

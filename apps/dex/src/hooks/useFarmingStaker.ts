@@ -1,5 +1,5 @@
-import { useAccount, useReadContract, useReadContracts, useWriteContract } from 'wagmi';
-import { EthereumAddress, farmingStakers, lpStakerAbi } from '@lira-dao/web3-utils';
+import { useAccount, useReadContract, useWriteContract } from 'wagmi';
+import { EthereumAddress, lpStakerAbi } from '@lira-dao/web3-utils';
 import { useBalance } from './useBalance';
 import { useAllowance } from './useAllowance';
 import { useApprove } from './useApprove';
@@ -11,7 +11,7 @@ import { useWatchTransaction } from './useWatchTransaction';
 
 export function useFarmingStaker(address: EthereumAddress, action: 'stake' | 'unstake' | 'harvest', amount?: string) {
   const account = useAccount();
-  const { writeContract, isPending, failureReason, data, reset, ...rest } = useWriteContract();
+  const { writeContract, isPending, failureReason, data, reset, error, isError } = useWriteContract();
 
   const stakedAmount = useReadContract({
     abi: lpStakerAbi,
@@ -59,7 +59,7 @@ export function useFarmingStaker(address: EthereumAddress, action: 'stake' | 'un
   const approve = useApprove(lpAddress.data as EthereumAddress, address, parseUnits(amount || '0', 18));
 
   const confirmed = useWatchTransaction(data);
-  console.log('stakedAmount', stakedAmount);
+
   return {
     balance,
     allowance,
@@ -80,7 +80,9 @@ export function useFarmingStaker(address: EthereumAddress, action: 'stake' | 'un
     stakeError: failureReason?.cause?.reason,
 
     havePendingRewards: (pendingRewards.data?.reduce((prev, curr) => prev + curr, 0n) || 0n) > 0n,
-    pendingRewardsAmounts: pendingRewards.data?.map(pr => new BigNumber(pr.toString()).div(new BigNumber(10).pow(18)).toFormat(6) || '') || [],
+    pendingRewardsAmounts: pendingRewards.data?.map(pr => new BigNumber(pr.toString()).div(new BigNumber(10).pow(18)).toFormat(18) || '') || [],
     pendingRewards,
+    error,
+    isError,
   };
 }

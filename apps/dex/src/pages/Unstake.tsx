@@ -30,8 +30,6 @@ export function Unstake() {
     stakedAmount,
   } = useFarmingStaker(params.farm as EthereumAddress, 'unstake', value);
 
-  console.log('stakedAmount', stakedAmount);
-
   const isRemoveDisabled = useMemo(() => isPending, [isPending]);
 
   const insufficientBalance = useMemo(() => new BigNumber(parseUnits(value, 18).toString()).gt(new BigNumber(stakedAmount.data?.[0].toString() || '0')), [stakedAmount, value]);

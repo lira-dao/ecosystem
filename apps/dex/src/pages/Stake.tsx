@@ -29,6 +29,8 @@ export function Stake() {
     confirmed,
     isPending,
     stakeError,
+    isError,
+    error,
   } = useFarmingStaker(params.farm as EthereumAddress, 'stake', value);
 
   const isAllowDisabled = useMemo(() => approve.isPending || allowance.isPending, [approve, allowance]);
@@ -61,6 +63,16 @@ export function Stake() {
       setValue('');
     }
   }, [confirmed]);
+
+  useEffect(() => {
+    if (isError) {
+      // @ts-ignore
+      enqueueSnackbar(error?.shortMessage || 'Network error!', {
+        autoHideDuration: 3000,
+        variant: 'error',
+      });
+    }
+  }, [isError]);
 
   const onSetPercentage = (percentage: bigint) => {
     switch (percentage) {

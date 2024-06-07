@@ -17,8 +17,6 @@ export function Harvest() {
 
   const { pendingRewards, tokens, write, isPending, havePendingRewards, confirmed, reset, pendingRewardsAmounts } = useFarmingStaker(params.farm as EthereumAddress, 'harvest');
 
-  console.log('pendingRewards', pendingRewards, havePendingRewards);
-
   useEffect(() => {
     if (confirmed) {
       enqueueSnackbar('Harvest confirmed!', {
