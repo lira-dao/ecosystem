@@ -29,6 +29,8 @@ contract TokenDistributor is Ownable2Step {
     // token to distribute
     IERC20 public token;
 
+    address public distributor;
+
     // distribution list
     Distribution[] public distributions;
 
@@ -40,6 +42,11 @@ contract TokenDistributor is Ownable2Step {
 
     // next distribution timestamp
     uint public nextDistribution = 0;
+
+    modifier onlyDistributor() {
+        msg.sender == distributor;
+        _;
+    }
 
     constructor(address _token) Ownable(msg.sender) {
         token = IERC20(_token);
@@ -60,7 +67,7 @@ contract TokenDistributor is Ownable2Step {
         nextDistribution = block.timestamp;
     }
 
-    function distribute(address _to) public onlyOwner {
+    function distribute() public onlyDistributor {
         require(block.timestamp > nextDistribution, 'CADENCE');
 
         uint tokenBalance = token.balanceOf(address(this));
@@ -82,7 +89,7 @@ contract TokenDistributor is Ownable2Step {
 
         require(distributionAmount > 0, 'DISTRIBUTED');
 
-        token.transfer(_to, distributionAmount);
+        token.transfer(distributor, distributionAmount);
 
         // update emitted amount
         distributions[currentDistribution].emitted = distributions[currentDistribution].emitted + distributionAmount;
@@ -96,5 +103,9 @@ contract TokenDistributor is Ownable2Step {
         if (distributions[currentDistribution].emitted > distributions[currentDistribution].amount) {
             currentDistribution = currentDistribution + 1;
         }
+    }
+
+    function setDistributor(address _distributor) public onlyOwner {
+        distributor = _distributor;
     }
 }
