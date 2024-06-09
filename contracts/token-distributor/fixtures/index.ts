@@ -15,5 +15,5 @@ export async function tokenDistributorFixture() {
   const tokenDistributor = await tokenDistributorFactory.deploy(ldtAddress);
   const tokenDistributorAddress = await tokenDistributor.getAddress();
 
-  return { tokenDistributor, tokenDistributorAddress, ldt, owner };
+  return { tokenDistributor, tokenDistributorAddress, tokenDistributorFactory, ldt, owner };
 }

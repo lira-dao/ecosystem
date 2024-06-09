@@ -1,9 +1,12 @@
 {
   "name": "@lira-dao/dex-staking",
+  "version": "1.0.0",
   "devDependencies": {
+    "@lira-dao/dex-periphery": "workspace:*",
     "@lira-dao/hardhat-config": "workspace:*",
     "@lira-dao/ldt": "workspace:*",
     "@lira-dao/mock-tokens": "workspace:*",
+    "@lira-dao/token-distributor": "workspace:*",
     "@lira-dao/treasury-tokens": "workspace:*",
     "@lira-dao/web3-utils": "workspace:*",
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
@@ -29,6 +32,6 @@
   },
   "scripts": {
     "compile": "hardhat compile --show-stack-traces",
-    "test": "npx hardhat test"
+    "test": "npx hardhat test --show-stack-traces"
   }
 }

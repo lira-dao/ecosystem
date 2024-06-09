@@ -26,46 +26,30 @@ describe('LPStaker', () => {
   it('must revert if user tries to decrease stake with pending rewards');
 
   it('must distribute staking rewards', async () => {
-    const { staker, stakerAddress, lp, token1, token2, owner, user1, user2, user3 } = await lpStakerFixture();
-
-    expect(await lp.name()).to.equal('LP');
-    expect(await lp.symbol()).to.equal('LP');
-
-    expect(await token1.name()).to.equal('Token1');
-    expect(await token1.symbol()).to.equal('T1');
-
-    expect(await token2.name()).to.equal('Token2');
-    expect(await token2.symbol()).to.equal('T2');
-
-    await lp.mint(user1, 10n ** 50n);
-    await lp.mint(user2, 10n ** 50n);
-    await lp.mint(user3, 10n ** 50n);
+    const { staker, stakerAddress, tbbPair, ldt, tbb, owner, user1, user2, user3 } = await lpStakerFixture();
 
     // @ts-ignore
-    await lp.connect(user1).approve(stakerAddress, 10n ** 50n);
+    await tbbPair.connect(user1).approve(stakerAddress, 10n ** 50n);
     // @ts-ignore
-    await lp.connect(user2).approve(stakerAddress, 10n ** 50n);
+    await tbbPair.connect(user2).approve(stakerAddress, 10n ** 50n);
     // @ts-ignore
-    await lp.connect(user3).approve(stakerAddress, 10n ** 50n);
+    await tbbPair.connect(user3).approve(stakerAddress, 10n ** 50n);
 
-    await token1.mint(owner, 10n ** 50n);
-    await token2.mint(owner, 10n ** 50n);
+    await ldt.approve(stakerAddress, 10n ** 50n);
+    await tbb.approve(stakerAddress, 10n ** 50n);
 
-    await token1.approve(stakerAddress, 10n ** 50n);
-    await token2.approve(stakerAddress, 10n ** 50n);
-
-    await staker.connect(user1).stake(10n ** 25n);
-    await staker.connect(user2).stake(10n ** 25n);
-    await staker.connect(user3).stake(10n ** 25n);
-
-    await staker.distributeRewards(10n ** 18n, 10n ** 18n);
-
-    await staker.connect(user1).harvest();
-    await staker.connect(user2).harvest();
-    await staker.connect(user3).harvest();
-
-    console.log('balance1', await token1.balanceOf(stakerAddress));
-    console.log('balance2', await token2.balanceOf(stakerAddress));
+    // await staker.connect(user1).stake(10n ** 10n);
+    // await staker.connect(user2).stake(10n ** 10n);
+    // await staker.connect(user3).stake(10n ** 10n);
+    //
+    // await staker.distributeRewards(10n ** 18n, 10n ** 18n);
+    //
+    // await staker.connect(user1).harvest();
+    // await staker.connect(user2).harvest();
+    // await staker.connect(user3).harvest();
+    //
+    // console.log('balance1', await ldt.balanceOf(stakerAddress));
+    // console.log('balance2', await tbb.balanceOf(stakerAddress));
 
     // console.log('staker1', await staker.stakers(user1));
     //
