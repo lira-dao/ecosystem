@@ -10,6 +10,14 @@ import LTBGArtifact from '../artifacts/contracts/LTBg.sol/LTBg.json';
 import TBGArtifact from '../artifacts/contracts/TBg.sol/TBg.json';
 
 
+export const treasuryBondBronzeFactory = new hre.ethers.ContractFactory<[string, bigint], TBb>(TBBArtifact.abi, TBBArtifact.bytecode);
+export const treasuryBondSilverFactory = new hre.ethers.ContractFactory<[string, bigint], TBs>(TBSArtifact.abi, TBSArtifact.bytecode);
+export const treasuryBondGoldFactory = new hre.ethers.ContractFactory<[string, bigint], TBg>(TBGArtifact.abi, TBGArtifact.bytecode);
+
+export const treasuryBondBronzeRate = 10n ** 3n;
+export const treasuryBondSilverRate = 10n ** 4n;
+export const treasuryBondGoldRate = 10n ** 5n;
+
 export async function liraTreasuryBondBronzeFixture() {
   const { lira, liraAddress, wbtc } = await liraFixture();
 
@@ -27,8 +35,7 @@ export async function treasuryBondBronzeFixture() {
 
   const [owner, minter] = await hre.ethers.getSigners();
 
-  const tbbFactory = new hre.ethers.ContractFactory<[string, bigint], TBb>(TBBArtifact.abi, TBBArtifact.bytecode, owner);
-  const tbb = await tbbFactory.deploy(ldtAddress, 10n ** 3n);
+  const tbb = await treasuryBondBronzeFactory.connect(owner).deploy(ldtAddress, treasuryBondBronzeRate);
   const tbbAddress = await tbb.getAddress();
 
   return { tbb, tbbAddress, ldt, ldtAddress, owner, minter, vault, liquidity };
@@ -51,8 +58,7 @@ export async function treasuryBondSilverFixture() {
 
   const [owner, minter] = await hre.ethers.getSigners();
 
-  const tbsFactory = new hre.ethers.ContractFactory<[string, bigint], TBs>(TBSArtifact.abi, TBSArtifact.bytecode, owner);
-  const tbs = await tbsFactory.deploy(ldtAddress, 10n ** 4n);
+  const tbs = await treasuryBondSilverFactory.connect(owner).deploy(ldtAddress, treasuryBondSilverRate);
   const tbsAddress = await tbs.getAddress();
 
   return { tbs, tbsAddress, ldt, ldtAddress, owner, minter };
@@ -75,8 +81,7 @@ export async function treasuryBondGoldFixture() {
 
   const [owner, minter] = await hre.ethers.getSigners();
 
-  const tbgFactory = new hre.ethers.ContractFactory<[string, bigint], TBg>(TBGArtifact.abi, TBGArtifact.bytecode, owner);
-  const tbg = await tbgFactory.deploy(ldtAddress, 10n ** 5n);
+  const tbg = await treasuryBondGoldFactory.connect(owner).deploy(ldtAddress, treasuryBondGoldRate);
   const tbgAddress = await tbg.getAddress();
 
   return { tbg, tbgAddress, ldt, ldtAddress, owner, minter };
