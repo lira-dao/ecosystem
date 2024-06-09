@@ -1,30 +1,25 @@
 import hre from 'hardhat';
-import { mockTokenFixture } from '@lira-dao/mock-tokens/fixtures';
-import { liraDaoTokenFixture } from '@lira-dao/ldt/fixtures';
+import { dexRouterFixture } from '@lira-dao/dex-periphery/fixtures';
+import { tokenDistributorFixture } from '@lira-dao/token-distributor/fixtures';
 
 
 export async function lpStakerFixture() {
   const [owner, user1, user2, user3] = await hre.ethers.getSigners();
 
-  const { token: lp, tokenAddress: lpAddress } = await mockTokenFixture('LP', 'LP');
-  const { token: token1, tokenAddress: token1Address } = await mockTokenFixture('Token1', 'T1');
-  const { token: token2, tokenAddress: token2Address } = await mockTokenFixture('Token2', 'T2');
+  const { tbbPairAddress, ldtAddress, tbbAddress, ...router } = await dexRouterFixture();
 
   const baseFaucetContract = await hre.ethers.getContractFactory('LPStakerV3');
-  const staker = await baseFaucetContract.deploy(lpAddress, token1Address, token2Address);
+  const staker = await baseFaucetContract.deploy(tbbPairAddress, ldtAddress, tbbAddress);
   const stakerAddress = await staker.getAddress();
 
-
   return {
+    ...router,
+    ldtAddress,
+    owner,
     staker,
     stakerAddress,
-    lp,
-    lpAddress,
-    token1,
-    token1Address,
-    token2,
-    token2Address,
-    owner,
+    tbbAddress,
+    tbbPairAddress,
     user1,
     user2,
     user3,
@@ -32,13 +27,16 @@ export async function lpStakerFixture() {
 }
 
 export async function rewardSplitterFixture() {
-  const [owner] = await hre.ethers.getSigners();
+  const { tbbPairAddress, ldtAddress, ...lpStaker } = await lpStakerFixture();
 
-  const { ldtAddress } = await liraDaoTokenFixture();
+  const { tokenDistributorFactory } = await tokenDistributorFixture();
+
+  const tokenDistributor = await tokenDistributorFactory.deploy(ldtAddress);
+  const tokenDistributorAddress = await tokenDistributor.getAddress();
 
   const rewardSplitterFactory = await hre.ethers.getContractFactory('RewardSplitter');
-  const rewardSplitter = await rewardSplitterFactory.deploy(ldtAddress);
+  const rewardSplitter = await rewardSplitterFactory.deploy(ldtAddress, tokenDistributorAddress);
   const rewardSplitterAddress = await rewardSplitter.getAddress();
 
-  return { rewardSplitter, rewardSplitterAddress, ldtAddress, owner };
+  return { ...lpStaker, rewardSplitter, rewardSplitterAddress, ldtAddress, tbbPairAddress };
 }

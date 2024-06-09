@@ -7,5 +7,5 @@ import './IUniswapV2Pair.sol';
 interface ILPStaker {
     function totalStaked() external view returns (uint256);
 
-    function lpToken() external view returns (IUniswapV2Pair);
+    function lpToken() external view returns (address);
 }

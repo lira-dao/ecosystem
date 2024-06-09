@@ -23,7 +23,7 @@ export async function liraTreasuryBondBronzeFixture() {
 }
 
 export async function treasuryBondBronzeFixture() {
-  const { ldt, ldtAddress } = await liraDaoTokenFixture();
+  const { ldt, ldtAddress, vault, liquidity } = await liraDaoTokenFixture();
 
   const [owner, minter] = await hre.ethers.getSigners();
 
@@ -31,7 +31,7 @@ export async function treasuryBondBronzeFixture() {
   const tbb = await tbbFactory.deploy(ldtAddress, 10n ** 3n);
   const tbbAddress = await tbb.getAddress();
 
-  return { tbb, tbbAddress, ldt, ldtAddress, owner, minter };
+  return { tbb, tbbAddress, ldt, ldtAddress, owner, minter, vault, liquidity };
 }
 
 export async function liraTreasuryBondSilverFixture() {

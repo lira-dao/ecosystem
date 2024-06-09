@@ -1,7 +1,8 @@
 import hre from 'hardhat';
-import { UniswapV2Factory } from '../typechain-types';
+import { UniswapV2Factory, UniswapV2Pair } from '../typechain-types';
 
 import UniswapV2FactoryArtifact from '../artifacts/contracts/UniswapV2Factory.sol/UniswapV2Factory.json';
+import UniswapV2PairArtifact from '../artifacts/contracts/UniswapV2Pair.sol/UniswapV2Pair.json';
 
 
 export async function dexFactoryFixture() {
@@ -11,6 +12,9 @@ export async function dexFactoryFixture() {
   const dexFactory = await dexFactoryContract.deploy();
   const dexFactoryAddress = await dexFactory.getAddress();
 
+  const dexPairFactory = new hre.ethers.ContractFactory<[], UniswapV2Pair>(UniswapV2PairArtifact.abi, UniswapV2PairArtifact.bytecode, deployer);
 
-  return { dexFactory, dexFactoryAddress, deployer, dao, user };
+  // console.log('pairCodeHash', await dexFactory.pairCodeHash());
+
+  return { dexFactory, dexFactoryAddress, deployer, dao, user, dexPairFactory };
 }

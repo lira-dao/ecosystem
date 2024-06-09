@@ -1,5 +1,6 @@
 {
   "name": "@lira-dao/token-distributor",
+  "version": "1.0.0",
   "devDependencies": {
     "@lira-dao/hardhat-config": "workspace:^",
     "@lira-dao/ldt": "workspace:^",
