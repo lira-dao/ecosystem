@@ -33,8 +33,7 @@ contract RewardSplitter is Ownable2Step {
         address t1 = IUniswapV2Pair(lpToken).token1();
 
         (address token0, address token1) = t0 == rewardToken ? (t0, t1) : (t1, t0);
-
-        // total : 100 = staked : x
+        require(token0 == rewardToken, 'INVALID_REWARD_TOKEN');
 
         uint balance0 = IERC20(token0).balanceOf(lpToken);
         uint balance1 = IERC20(token1).balanceOf(lpToken);
@@ -45,7 +44,8 @@ contract RewardSplitter is Ownable2Step {
         uint amount0 = (totalStaked * balance0) / lpTotalSupply;
         uint amount1 = (totalStaked * balance1) / lpTotalSupply;
 
-        return (amount0, amount1);
+        console.log('amounts', amount0, amount1);
+        return ((amount0 * 10) / 1000, (amount1 * 10) / 1000);
     }
 
     function addFarm(address _farm) public onlyOwner {
