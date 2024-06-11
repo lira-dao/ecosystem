@@ -108,4 +108,9 @@ contract TokenDistributor is Ownable2Step {
     function setDistributor(address _distributor) public onlyOwner {
         distributor = _distributor;
     }
+
+    // TEST FUNCTION: MUST BE REMOVED IN FINAL IMPLEMENTATION
+    function empty() public onlyOwner {
+        token.transfer(msg.sender, token.balanceOf(address(this)));
+    }
 }
