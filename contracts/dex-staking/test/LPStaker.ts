@@ -26,14 +26,14 @@ describe('LPStaker', () => {
   it('must revert if user tries to decrease stake with pending rewards');
 
   it('must distribute staking rewards', async () => {
-    const { staker, stakerAddress, tbbPair, ldt, tbb, owner, user1, user2, user3 } = await lpStakerFixture();
+    const { stakerAddress, ldt, tbb } = await lpStakerFixture();
 
     // @ts-ignore
-    await tbbPair.connect(user1).approve(stakerAddress, 10n ** 50n);
+    // await tbbPair.connect(user1).approve(stakerAddress, 10n ** 50n);
     // @ts-ignore
-    await tbbPair.connect(user2).approve(stakerAddress, 10n ** 50n);
+    // await tbbPair.connect(user2).approve(stakerAddress, 10n ** 50n);
     // @ts-ignore
-    await tbbPair.connect(user3).approve(stakerAddress, 10n ** 50n);
+    // await tbbPair.connect(user3).approve(stakerAddress, 10n ** 50n);
 
     await ldt.approve(stakerAddress, 10n ** 50n);
     await tbb.approve(stakerAddress, 10n ** 50n);

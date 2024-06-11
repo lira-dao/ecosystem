@@ -26,6 +26,7 @@ describe('UniswapV2Factory', () => {
   it('revert if user try to change dao', async () => {
     const { dexFactory, user } = await loadFixture(dexFactoryFixture);
 
+    // @ts-ignore
     await expect(dexFactory.connect(user).setDao(user)).revertedWith('LIRA_DEX_ONLY_DAO');
   });
 
@@ -48,6 +49,7 @@ describe('UniswapV2Factory', () => {
 
     expect(await dexFactory.onlyDaoCanOpen()).eq(true);
 
+    // @ts-ignore
     await expect(dexFactory.connect(user).createPair(token0, token1)).revertedWith('LIRA_DEX_ONLY_DAO');
   });
 
@@ -60,6 +62,7 @@ describe('UniswapV2Factory', () => {
 
     expect(await dexFactory.onlyDaoCanOpen()).eq(false);
 
+    // @ts-ignore
     await dexFactory.connect(user).createPair(token0, token1);
 
     const pair = await dexFactory.allPairs(0);
