@@ -76,9 +76,9 @@ export function Header() {
             </StyledMenuItem>
           </a>
 
-          <NavLink to="/tokens">
+          <NavLink to="/contracts">
             <StyledMenuItem marginX={28}>
-              TOKENS
+              CONTRACTS
             </StyledMenuItem>
           </NavLink>
         </Row>

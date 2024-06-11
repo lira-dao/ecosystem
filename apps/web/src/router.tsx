@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate, redirect } from 'react-router-dom';
 import { MainLayout } from './components/layout/MainLayout';
 import { Home } from './pages/Home';
-import { Tokens } from './pages/Tokens';
+import { Contracts } from './pages/Contracts';
 
 
 function Presale() {
@@ -14,7 +14,7 @@ export const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { index: true, element: <Home /> },
-      { path: 'tokens', element: <Tokens /> },
+      { path: 'contracts', element: <Contracts /> },
       { path: 'presale', element: <Presale />}
     ],
   },
