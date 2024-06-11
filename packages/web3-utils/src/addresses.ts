@@ -55,8 +55,8 @@ export const dexAddress: DexAddresses = {
     router: '0x155c88569d76e3648734Ca10b354948AAf8b888F',
   },
   421614: {
-    factory: '0xbf26637Cea66313aC4E847aB1A332b0295C966E9',
-    router: '0x3988dAE4726588b9Af8F341FECD14bb2d953f900',
+    factory: '0x3e6F923C47b647a730cDCD8F5B094fA931f9D57d',
+    router: '0x155c88569d76e3648734Ca10b354948AAf8b888F',
   },
   17000: {
     factory: '0x7aD0E6943265f3A9194BdB38Aed6DC943D16c726',
@@ -116,8 +116,8 @@ export const dexPairs: DexPairs = {
     },
   },
   421614: {
-    '0x8063F3D1C79Cf03f404CA043E3faB3318a5B3648': {
-      address: '0x8063F3D1C79Cf03f404CA043E3faB3318a5B3648',
+    '0xB198D2c850735738c8D8db541292dA6E0Bd290D9': {
+      address: '0xB198D2c850735738c8D8db541292dA6E0Bd290D9',
       symbol: 'LDT-ETH',
       tokens: [
         '0x62F53E68662B013ea03B7BA6803b624632179eD3',
