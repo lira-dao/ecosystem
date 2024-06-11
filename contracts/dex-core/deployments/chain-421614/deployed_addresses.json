@@ -1,3 +1,4 @@
 {
-  "UniswapV2Factory#UniswapV2Factory": "0x3e6F923C47b647a730cDCD8F5B094fA931f9D57d"
+  "UniswapV2Factory#UniswapV2Factory": "0x3e6F923C47b647a730cDCD8F5B094fA931f9D57d",
+  "LdtWethPair#UniswapV2Pair": "0xB198D2c850735738c8D8db541292dA6E0Bd290D9"
 }

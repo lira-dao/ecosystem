@@ -9,6 +9,7 @@ export const networks = {
   },
   arbitrumSepolia: {
     url: process.env.INFURA_ARBITRUM_SEPOLIA || '',
+    chainId: 421614,
     accounts: [process.env.DEPLOYER_PRIVATE_KEY || ''],
   },
   bscTestnet: {
