@@ -25,10 +25,10 @@ describe('TokenDistributor', () => {
     await ldt.approve(tokenDistributorAddress, 4_500_000_000n);
 
     const deposit = await tokenDistributor.deposit([
-      { amount: 2_025_000_000n, emitted: 0n, rate: 5_547_945n, cadence: 86400n },
-      { amount: 1_125_000_000n, emitted: 0n, rate: 3_082_191n, cadence: 86400n },
-      { amount: 675_000_000n, emitted: 0n, rate: 1_849_315n, cadence: 86400n },
-      { amount: 675_000_000n, emitted: 0n, rate: 924_657n, cadence: 86400n },
+      { amount: 2_025_000_000n * (10n ** 18n), emitted: 0n, rate: 5_547_945n * (10n ** 18n), cadence: 86400n },
+      { amount: 1_125_000_000n * (10n ** 18n), emitted: 0n, rate: 3_082_191n * (10n ** 18n), cadence: 86400n },
+      { amount: 675_000_000n * (10n ** 18n), emitted: 0n, rate: 1_849_315n * (10n ** 18n), cadence: 86400n },
+      { amount: 675_000_000n * (10n ** 18n), emitted: 0n, rate: 924_657n * (10n ** 18n), cadence: 86400n },
     ]);
 
     let block = await deposit.getBlock();
@@ -37,7 +37,7 @@ describe('TokenDistributor', () => {
     await increaseTo(time + 86400);
 
     while (await ldt.balanceOf(tokenDistributorAddress) > 0n) {
-      const distribution = await tokenDistributor.distribute(owner);
+      const distribution = await tokenDistributor.distribute();
 
       const balance = await ldt.balanceOf(owner);
       const currentDistribution = await tokenDistributor.currentDistribution();
@@ -73,7 +73,7 @@ describe('TokenDistributor', () => {
     await increaseTo(time + 86400);
 
     while (await ldt.balanceOf(tokenDistributorAddress) > 0n) {
-      const distribution = await tokenDistributor.distribute(owner);
+      const distribution = await tokenDistributor.distribute();
 
       block = await distribution.getBlock();
       time = block?.timestamp ?? 0;
@@ -81,6 +81,6 @@ describe('TokenDistributor', () => {
       await increaseTo(time + 86400);
     }
 
-    await expect(tokenDistributor.distribute(owner)).revertedWith('DISTRIBUTED');
+    await expect(tokenDistributor.distribute()).revertedWith('DISTRIBUTED');
   });
 });
