@@ -28,6 +28,10 @@ export type TokenAddresses = {
     ltbb: EthereumAddress,
     ltbs: EthereumAddress,
     ltbg: EthereumAddress,
+
+    ldt_tbb: EthereumAddress,
+    ldt_tbs: EthereumAddress,
+    ldt_tbg: EthereumAddress,
   }
 }
 

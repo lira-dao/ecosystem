@@ -16,6 +16,10 @@ export const tokens: TokenAddresses = {
 
     wbtc: '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f',
     weth: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
+
+    ldt_tbb: '0x0',
+    ldt_tbs: '0x0',
+    ldt_tbg: '0x0',
   },
   421614: {
     ldt: '0x62F53E68662B013ea03B7BA6803b624632179eD3',
@@ -31,6 +35,10 @@ export const tokens: TokenAddresses = {
 
     wbtc: '0xeD26d7763314A722A6A243057Bc76EF67C869D84',
     weth: '0xdF5c1B370C7aE6C86d98A591C4aBe3453656a4b0',
+
+    ldt_tbb: '0xe37D38ea196bfa7877B15f0a4603b4528A318637',
+    ldt_tbs: '0xA79B6fab69c6A8DAdC263ABa17046D5A413909eC',
+    ldt_tbg: '0xBf59EcBEB30397b44e5fB0F980e22243b1eBCbbc',
   },
   17000: {
     ldt: '0xECB20AE07a7d8d7e87CF5d06B28620A700aB84F0',
@@ -46,6 +54,10 @@ export const tokens: TokenAddresses = {
 
     wbtc: '0xA07ac236fEBc390c798504E927DC8D6a4e1FfcA3',
     weth: '0x335149F2fBe655E6D4243E0e2C19565F10B8b026',
+
+    ldt_tbb: '0x0',
+    ldt_tbs: '0x0',
+    ldt_tbg: '0x0',
   },
 };
 
@@ -186,22 +198,22 @@ export const dexPairs: DexPairs = {
 };
 
 export const farmingStakers: FarmingStaker[] = [{
-  address: '0x804371AF10097789e46c23964f3234AD6555EF65',
-  pool: '0x1B0073f9224842c65556785F2cd965A98368c73e',
+  address: '0xE0F1F09C8D951d121fd8381fEd6CB7bc64f84b2a',
+  pool: '0xe37D38ea196bfa7877B15f0a4603b4528A318637',
   tokens: [
     '0xB80C1fA67A59DC863A02cC410196E0DFBD139c73',
     '0x62F53E68662B013ea03B7BA6803b624632179eD3',
   ],
 }, {
-  address: '0xb8df3e6eF009a2892EaDEAf1d55Cc5F323A1C72c',
-  pool: '0x227ac448644879B8383FceE2D56154a813A826Cf',
+  address: '0xE77ed8C1B32D4dB071Ed77f215bfF5723EAB252A',
+  pool: '0xA79B6fab69c6A8DAdC263ABa17046D5A413909eC',
   tokens: [
     '0x09F9Ad9B11FFda7470DA7E48A575e172Dda0A759',
     '0x62F53E68662B013ea03B7BA6803b624632179eD3',
   ],
 }, {
-  address: '0x951892e6A14cb7f224362024c5d05B86228D3092',
-  pool: '0xF47a2f40Bdef63553026eC01AB80E85E236b395C',
+  address: '0x48588346B464874eABE444Bcd0C98DA3Ed36dBb5',
+  pool: '0xBf59EcBEB30397b44e5fB0F980e22243b1eBCbbc',
   tokens: [
     '0x178a15e434A56d78526FCF4a6748a0482bf043Bb',
     '0x62F53E68662B013ea03B7BA6803b624632179eD3',
