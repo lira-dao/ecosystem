@@ -124,54 +124,54 @@ export const dexPairs: DexPairs = {
         '0xdF5c1B370C7aE6C86d98A591C4aBe3453656a4b0',
       ],
     },
-    '0x382D8e8d06efF471A4Ba3C18b22E2f28482f8d66': {
-      address: '0x382D8e8d06efF471A4Ba3C18b22E2f28482f8d66',
+    '0xD4AC7D0ea9C10624572dC1e1bD670Fc14E4485b5': {
+      address: '0xD4AC7D0ea9C10624572dC1e1bD670Fc14E4485b5',
       symbol: 'LDT-LIRA',
       tokens: [
         '0x62F53E68662B013ea03B7BA6803b624632179eD3',
         '0xC4868aA029ADD5705FA203580669d2175889D615',
       ],
     },
-    '0x62aBd928808E4FBdFDd3Aa46219Cf04980473146': {
-      address: '0x62aBd928808E4FBdFDd3Aa46219Cf04980473146',
+    '0x7ed19143F09bc1ecFb464B8A36BbCfA5bAe3c660': {
+      address: '0x7ed19143F09bc1ecFb464B8A36BbCfA5bAe3c660',
       symbol: 'LDT-WBTC',
       tokens: [
         '0x62F53E68662B013ea03B7BA6803b624632179eD3',
         '0xeD26d7763314A722A6A243057Bc76EF67C869D84',
       ],
     },
-    '0x08fF368019Fa4Ed537621732Cc74e3f772B8C199': {
-      address: '0x08fF368019Fa4Ed537621732Cc74e3f772B8C199',
-      symbol: 'ETH-WBTC',
-      tokens: [
-        '0xeD26d7763314A722A6A243057Bc76EF67C869D84',
-        '0xdF5c1B370C7aE6C86d98A591C4aBe3453656a4b0',
-      ],
-    },
-    '0x1B0073f9224842c65556785F2cd965A98368c73e': {
-      address: '0x1B0073f9224842c65556785F2cd965A98368c73e',
-      symbol: 'LDT-TBb',
-      tokens: [
-        '0x62F53E68662B013ea03B7BA6803b624632179eD3',
-        '0xB80C1fA67A59DC863A02cC410196E0DFBD139c73',
-      ],
-    },
-    '0x227ac448644879B8383FceE2D56154a813A826Cf': {
-      address: '0x227ac448644879B8383FceE2D56154a813A826Cf',
-      symbol: 'LDT-TBs',
-      tokens: [
-        '0x62F53E68662B013ea03B7BA6803b624632179eD3',
-        '0x09F9Ad9B11FFda7470DA7E48A575e172Dda0A759',
-      ],
-    },
-    '0xF47a2f40Bdef63553026eC01AB80E85E236b395C': {
-      address: '0xF47a2f40Bdef63553026eC01AB80E85E236b395C',
-      symbol: 'LDT-TBg',
-      tokens: [
-        '0x62F53E68662B013ea03B7BA6803b624632179eD3',
-        '0x178a15e434A56d78526FCF4a6748a0482bf043Bb',
-      ],
-    },
+    // '0x08fF368019Fa4Ed537621732Cc74e3f772B8C199': {
+    //   address: '0x08fF368019Fa4Ed537621732Cc74e3f772B8C199',
+    //   symbol: 'ETH-WBTC',
+    //   tokens: [
+    //     '0xeD26d7763314A722A6A243057Bc76EF67C869D84',
+    //     '0xdF5c1B370C7aE6C86d98A591C4aBe3453656a4b0',
+    //   ],
+    // },
+    // '0x1B0073f9224842c65556785F2cd965A98368c73e': {
+    //   address: '0x1B0073f9224842c65556785F2cd965A98368c73e',
+    //   symbol: 'LDT-TBb',
+    //   tokens: [
+    //     '0x62F53E68662B013ea03B7BA6803b624632179eD3',
+    //     '0xB80C1fA67A59DC863A02cC410196E0DFBD139c73',
+    //   ],
+    // },
+    // '0x227ac448644879B8383FceE2D56154a813A826Cf': {
+    //   address: '0x227ac448644879B8383FceE2D56154a813A826Cf',
+    //   symbol: 'LDT-TBs',
+    //   tokens: [
+    //     '0x62F53E68662B013ea03B7BA6803b624632179eD3',
+    //     '0x09F9Ad9B11FFda7470DA7E48A575e172Dda0A759',
+    //   ],
+    // },
+    // '0xF47a2f40Bdef63553026eC01AB80E85E236b395C': {
+    //   address: '0xF47a2f40Bdef63553026eC01AB80E85E236b395C',
+    //   symbol: 'LDT-TBg',
+    //   tokens: [
+    //     '0x62F53E68662B013ea03B7BA6803b624632179eD3',
+    //     '0x178a15e434A56d78526FCF4a6748a0482bf043Bb',
+    //   ],
+    // },
   },
   17000: {
     '0xc306A71E151Bb11c1cF5c97dCCA5991c05864797': {
