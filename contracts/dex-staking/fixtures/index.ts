@@ -7,8 +7,6 @@ import { increaseTo } from '@nomicfoundation/hardhat-network-helpers/dist/src/he
 export async function lpStakerFixture() {
   const { tbbPairAddress, ldtAddress, tbbAddress, deployer, ...router } = await dexRouterFixture();
 
-  console.log('bbbbb', await router.tbbPair.balanceOf(deployer));
-
   const stakerContract = await hre.ethers.getContractFactory('LPStakerV3');
   const staker = await stakerContract.deploy(tbbPairAddress, ldtAddress, tbbAddress);
   const stakerAddress = await staker.getAddress();
@@ -46,10 +44,10 @@ export async function rewardSplitterFixture() {
   const tbbStaker = await stakerContract.deploy(tbbPairAddress, ldtAddress, tbbAddress);
   const tbbStakerAddress = await tbbStaker.getAddress();
 
-  const tbsStaker = await stakerContract.deploy(tbsPairAddress, ldtAddress, tbbAddress);
+  const tbsStaker = await stakerContract.deploy(tbsPairAddress, ldtAddress, tbsAddress);
   const tbsStakerAddress = await tbsStaker.getAddress();
 
-  const tbgStaker = await stakerContract.deploy(tbgPairAddress, ldtAddress, tbbAddress);
+  const tbgStaker = await stakerContract.deploy(tbgPairAddress, ldtAddress, tbgAddress);
   const tbgStakerAddress = await tbgStaker.getAddress();
 
   const tokenDistributor = await tokenDistributorFactory.connect(deployer).deploy(ldtAddress);
@@ -79,6 +77,10 @@ export async function rewardSplitterFixture() {
   await tbb.transferOwnership(rewardSplitterAddress);
   await tbs.transferOwnership(rewardSplitterAddress);
   await tbg.transferOwnership(rewardSplitterAddress);
+
+  await tbbStaker.transferOwnership(rewardSplitterAddress);
+  await tbsStaker.transferOwnership(rewardSplitterAddress);
+  await tbgStaker.transferOwnership(rewardSplitterAddress);
 
   return {
     ...dex,
