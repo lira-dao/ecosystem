@@ -56,7 +56,7 @@ export const dexAddress: DexAddresses = {
   },
   421614: {
     factory: '0x3e6F923C47b647a730cDCD8F5B094fA931f9D57d',
-    router: '0x155c88569d76e3648734Ca10b354948AAf8b888F',
+    router: '0x0ae8E4F1eEe84E8f7499F383130Cbe9494A36575',
   },
   17000: {
     factory: '0x7aD0E6943265f3A9194BdB38Aed6DC943D16c726',
