@@ -60,7 +60,7 @@ describe('RewardSplitter', () => {
     console.log('tb farm before', await tbb.balanceOf(tbgStakerAddress));
     console.log('ldt farm before', await ldt.balanceOf(tbgStakerAddress));
 
-    await rewardSplitter.requestDistribution();
+    const tx = await rewardSplitter.requestDistribution();
 
     console.log('tb farm after', formatUnits(await tbb.balanceOf(tbbStakerAddress), 18));
     console.log('ldt farm after', formatUnits(await ldt.balanceOf(tbbStakerAddress), 18));

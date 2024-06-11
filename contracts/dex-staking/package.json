@@ -32,6 +32,6 @@
   },
   "scripts": {
     "compile": "hardhat compile --show-stack-traces",
-    "test": "npx hardhat test --show-stack-traces"
+    "test": "REPORT_GAS=true npx hardhat test --show-stack-traces"
   }
 }
