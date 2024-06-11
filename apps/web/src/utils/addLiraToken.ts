@@ -1,5 +1,7 @@
 import MetaMaskSDK from '@metamask/sdk';
 
+// TODO: Move
+
 const MMSDK = new MetaMaskSDK({});
 export const ethereum = MMSDK.getProvider();
 

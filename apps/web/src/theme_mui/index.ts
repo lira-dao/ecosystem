@@ -181,6 +181,7 @@ const muiTheme = createTheme({
     },
   },
   palette: {
+    mode: 'dark',
     common: {
       black: '#0A0A0A',
       white: '#FFFFFF'
@@ -207,11 +208,11 @@ const muiTheme = createTheme({
       900: '#3B3F44',
     },
     background: {
-      default: '#F8F9FA',
-      paper: '#FFFFFF',
+      default: '#121212',
+      paper: '#1D1D1D',
     },
     text: {
-      primary: '#0A0A0A',
+      primary: colors.white,
       secondary: colors['white-80'],
       disabled: 'rgba(255, 255, 255, 0.38)',
     },
