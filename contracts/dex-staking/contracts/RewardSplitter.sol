@@ -212,13 +212,51 @@ contract RewardSplitter is Ownable2Step {
         return ((amount0 * _rate.ldt) / 10000, (amount1 * _rate.tb) / 10000);
     }
 
-    function recoverOwnership() public onlyOwner {
-        Ownable(tbbAddress).transferOwnership(owner());
-        Ownable(tbsAddress).transferOwnership(owner());
-        Ownable(tbgAddress).transferOwnership(owner());
+    function setTbbRewardRate(uint _ldtRate, uint _tbbRate) external onlyOwner {
+        require(_ldtRate >= 1 && _ldtRate <= 10000, 'INVALID_LDT_RATE');
+        require(_tbbRate >= 1 && _tbbRate <= 10000, 'INVALID_TB_RATE');
 
+        tbbRewardRate.ldt = _ldtRate;
+        tbbRewardRate.tb = _tbbRate;
+    }
+
+    function setTbsRewardRate(uint _ldtRate, uint _tbsRate) external onlyOwner {
+        require(_ldtRate >= 1 && _ldtRate <= 10000, 'INVALID_LDT_RATE');
+        require(_tbsRate >= 1 && _tbsRate <= 10000, 'INVALID_TB_RATE');
+
+        tbsRewardRate.ldt = _ldtRate;
+        tbsRewardRate.tb = _tbsRate;
+    }
+
+    function setTbgRewardRate(uint _ldtRate, uint _tbgRate) external onlyOwner {
+        require(_ldtRate >= 1 && _ldtRate <= 10000, 'INVALID_LDT_RATE');
+        require(_tbgRate >= 1 && _tbgRate <= 10000, 'INVALID_TB_RATE');
+
+        tbgRewardRate.ldt = _ldtRate;
+        tbgRewardRate.tb = _tbgRate;
+    }
+
+    function recoverOwnershipTbb() external onlyOwner {
+        Ownable(tbbAddress).transferOwnership(owner());
+    }
+
+    function recoverOwnershipTbs() external onlyOwner {
+        Ownable(tbsAddress).transferOwnership(owner());
+    }
+
+    function recoverOwnershipTbg() external onlyOwner {
+        Ownable(tbgAddress).transferOwnership(owner());
+    }
+
+    function recoverOwnershipTbbFarm() external onlyOwner {
         Ownable(tbbFarmAddress).transferOwnership(owner());
+    }
+
+    function recoverOwnershipTbsFarm() external onlyOwner {
         Ownable(tbsFarmAddress).transferOwnership(owner());
+    }
+
+    function recoverOwnershipTbgFarm() external onlyOwner {
         Ownable(tbgFarmAddress).transferOwnership(owner());
     }
 }
