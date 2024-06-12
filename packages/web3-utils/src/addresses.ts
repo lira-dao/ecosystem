@@ -1,4 +1,4 @@
-import { DexAddresses, DexPairs, FarmingStaker, TokenAddresses } from './types';
+import { DexAddresses, DexPairs, FarmingStaker, TokenAddresses, TokenDistributorAddress } from './types';
 
 
 export const tokens: TokenAddresses = {
@@ -60,6 +60,10 @@ export const tokens: TokenAddresses = {
     ldt_tbg: '0x0',
   },
 };
+
+export const tokenDistributor: TokenDistributorAddress = {
+  461614: '0xB367c6955C0953A49Bc15e7D2c4528D39800Ceb0',
+}
 
 export const dexAddress: DexAddresses = {
   42161: {
