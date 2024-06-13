@@ -36,8 +36,8 @@ export function FarmingTable({ farms, isConnected }: Props) {
                 <TableCell component="th" scope="row">
                   <Box display="flex" alignItems="center" sx={{ textWrap: 'nowrap' }}>
                     <Box display="flex" mr={1}>
-                      <img src={farm.tokens[0]?.icon} width={30} alt={`${farm.tokens[0]?.name} logo`} />
-                      <img src={farm.tokens[1]?.icon} width={30} alt={`${farm.tokens[1]?.name} logo`} />
+                      <img src={farm.tokens[1]?.icon} width={30} alt={`${farm.tokens[0]?.name} logo`} />
+                      <img src={farm.tokens[0]?.icon} width={30} alt={`${farm.tokens[1]?.name} logo`} />
                     </Box>
                     {farm.pair.symbol}
                   </Box>
