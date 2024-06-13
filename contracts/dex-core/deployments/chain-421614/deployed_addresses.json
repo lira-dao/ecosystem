@@ -1,9 +1,0 @@
-{
-  "UniswapV2Factory#UniswapV2Factory": "0x3e6F923C47b647a730cDCD8F5B094fA931f9D57d",
-  "LdtWethPair#UniswapV2Pair": "0xB198D2c850735738c8D8db541292dA6E0Bd290D9",
-  "LdtLiraPair#UniswapV2Pair": "0xD4AC7D0ea9C10624572dC1e1bD670Fc14E4485b5",
-  "LdtWbtcPair#UniswapV2Pair": "0x7ed19143F09bc1ecFb464B8A36BbCfA5bAe3c660",
-  "LdtTbbPair#UniswapV2Pair": "0xe37D38ea196bfa7877B15f0a4603b4528A318637",
-  "LdtTbsPair#UniswapV2Pair": "0xA79B6fab69c6A8DAdC263ABa17046D5A413909eC",
-  "LdtTbgPair#UniswapV2Pair": "0xBf59EcBEB30397b44e5fB0F980e22243b1eBCbbc"
-}
