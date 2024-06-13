@@ -3,6 +3,7 @@ import {
   DexPairs,
   FarmingStaker,
   FarmingStakersAddresses,
+  RewardSplitterAddress,
   TokenAddresses,
   TokenDistributorAddress,
 } from './types';
@@ -67,10 +68,6 @@ export const tokens: TokenAddresses = {
     ldt_tbg: '0x0',
   },
 };
-
-export const tokenDistributor: TokenDistributorAddress = {
-  421614: '0xB367c6955C0953A49Bc15e7D2c4528D39800Ceb0',
-}
 
 export const dexAddress: DexAddresses = {
   42161: {
@@ -237,4 +234,12 @@ export const farmingStakersAddresses: FarmingStakersAddresses = {
     tbs: '0x0e734c5A4B597c3677Ebc2c9344615A33528F890',
     tbg: '0xDD91afc825b63985387b49b9F40EC6F8815Bb635',
   }
+}
+
+export const tokenDistributor: TokenDistributorAddress = {
+  421614: '0xB367c6955C0953A49Bc15e7D2c4528D39800Ceb0',
+}
+
+export const rewardSplitter: RewardSplitterAddress = {
+  421614: '0x42AB7B34A7b6529eed468e07e2f755E23E56eB5f',
 }

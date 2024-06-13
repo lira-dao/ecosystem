@@ -39,6 +39,10 @@ export type TokenDistributorAddress = {
   [key: number]: EthereumAddress,
 }
 
+export type RewardSplitterAddress = {
+  [key: number]: EthereumAddress,
+}
+
 export type DexAddresses = {
   [key: number]: {
     factory: EthereumAddress,
