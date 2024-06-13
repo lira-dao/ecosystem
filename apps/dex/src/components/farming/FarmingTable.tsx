@@ -47,7 +47,7 @@ export function FarmingTable({ farms, isConnected }: Props) {
                 {isConnected && <TableCell align="right" sx={{ textWrap: 'nowrap' }}>{farm.amount} LP</TableCell>}
                 {isConnected && (
                   <TableCell align="right" sx={{ textWrap: 'nowrap' }}>
-                    {farm.rewards[0]} {farm.tokens[0]?.symbol}<br />{farm.rewards[1]} {farm.tokens[1]?.symbol}
+                    {farm.rewards[0]} {farm.tokens[1]?.symbol}<br />{farm.rewards[1]} {farm.tokens[0]?.symbol}
                   </TableCell>
                 )}
                 {isConnected && (
