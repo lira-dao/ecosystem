@@ -58,6 +58,14 @@ export type DexPairs = {
   }
 }
 
+export type FarmingStakersAddresses = {
+  [key: number]: {
+    tbb: EthereumAddress,
+    tbs: EthereumAddress,
+    tbg: EthereumAddress,
+  }
+}
+
 export interface FarmingStaker {
   address: EthereumAddress,
   pool: EthereumAddress,

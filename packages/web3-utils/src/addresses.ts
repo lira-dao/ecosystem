@@ -1,4 +1,11 @@
-import { DexAddresses, DexPairs, FarmingStaker, TokenAddresses, TokenDistributorAddress } from './types';
+import {
+  DexAddresses,
+  DexPairs,
+  FarmingStaker,
+  FarmingStakersAddresses,
+  TokenAddresses,
+  TokenDistributorAddress,
+} from './types';
 
 
 export const tokens: TokenAddresses = {
@@ -62,7 +69,7 @@ export const tokens: TokenAddresses = {
 };
 
 export const tokenDistributor: TokenDistributorAddress = {
-  461614: '0xB367c6955C0953A49Bc15e7D2c4528D39800Ceb0',
+  421614: '0xB367c6955C0953A49Bc15e7D2c4528D39800Ceb0',
 }
 
 export const dexAddress: DexAddresses = {
@@ -223,3 +230,11 @@ export const farmingStakers: FarmingStaker[] = [{
     '0x62F53E68662B013ea03B7BA6803b624632179eD3',
   ],
 }];
+
+export const farmingStakersAddresses: FarmingStakersAddresses = {
+  421614: {
+    tbb: '0xDB2DF71cA3d4d8993b410d6F404F11A88237A01A',
+    tbs: '0x0e734c5A4B597c3677Ebc2c9344615A33528F890',
+    tbg: '0xDD91afc825b63985387b49b9F40EC6F8815Bb635',
+  }
+}
