@@ -63,17 +63,17 @@ export function useFarmingStakers(): Farm[] {
       address: staker.address,
       pair: dexPairs[staker.pool],
       // @ts-ignore
-      amount: new BigNumber(amounts.data?.[i].result?.[0].toString()).div(new BigNumber(10).pow(18)).toFormat(6) || '',
-      balance: new BigNumber(balances.data?.[i].result?.toString() || '0').div(new BigNumber(10).pow(18)).toFormat(6) || '',
+      amount: new BigNumber(amounts.data?.[i].result?.[0].toString()).div(new BigNumber(10).pow(18)).toFormat(6, 1) || '',
+      balance: new BigNumber(balances.data?.[i].result?.toString() || '0').div(new BigNumber(10).pow(18)).toFormat(6, 1) || '',
       tokens: [
         getCurrencyByAddress(staker.tokens[0]),
         getCurrencyByAddress(staker.tokens[1]),
       ],
       rewards: [
         // @ts-ignore
-        new BigNumber(rewards.data?.[i].result?.[0].toString()).div(new BigNumber(10).pow(18)).toFormat(6) || '',
+        new BigNumber(rewards.data?.[i].result?.[0].toString()).div(new BigNumber(10).pow(18)).toFormat(6, 1) || '',
         // @ts-ignore
-        new BigNumber(rewards.data?.[i].result?.[1].toString()).div(new BigNumber(10).pow(18)).toFormat(6) || '',
+        new BigNumber(rewards.data?.[i].result?.[1].toString()).div(new BigNumber(10).pow(18)).toFormat(6, 1) || '',
       ],
       totalStaked: new BigNumber(totalStaked.data?.[i].result?.toString() ?? '0').div(new BigNumber(10).pow(18)).toFormat(6) || '',
     };
