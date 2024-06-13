@@ -50,6 +50,7 @@ contract TokenDistributor is Ownable2Step {
 
     constructor(address _token) Ownable(msg.sender) {
         token = IERC20(_token);
+        distributor = msg.sender;
     }
 
     function deposit(Distribution[] memory _distributions) public {
