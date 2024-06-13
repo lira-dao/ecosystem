@@ -5,7 +5,6 @@ import { InputPanel } from '../components/swap/InputPanel';
 import { Container } from '../components/swap/Container';
 import { CurrencySelector } from '../components/CurrencySelector';
 import { NumericalInput } from '../components/StyledInput';
-import Big from 'big.js';
 import { formatUnits, parseUnits } from 'viem';
 import { SwapSection } from '../components/swap/SwapSection';
 import { Currency } from '@lira-dao/web3-utils';
@@ -20,6 +19,7 @@ import { PrimaryButton } from '../components/PrimaryButton';
 import { useApprove } from '../hooks/useApprove';
 import { useAllowance } from '../hooks/useAllowance';
 import { useSnackbar } from 'notistack';
+import BigNumber from 'bignumber.js';
 
 
 enum TreasuryHeaderTab {
@@ -132,6 +132,33 @@ export function TreasuryMint() {
     setOpen(false);
   };
 
+  const onSetPercentage = (percentage: bigint) => {
+    switch (percentage) {
+      case 25n:
+      case 50n:
+      case 75n:
+        setFirstValue(((new BigNumber(balanceA.data?.toString() || '0').times(percentage.toString()).div(100)).div(new BigNumber(10).pow(18))).toString())
+
+        setFirstValue(formatUnits(((balanceA.data || 0n) * percentage) / 100n, 18));
+        break;
+      case 100n:
+        setFirstValue(new BigNumber(balanceA.data?.toString() || '0').div(new BigNumber(10).pow(18)).toString());
+        break;
+    }
+  };
+
+  const onMintClick = () => {
+    setActive(TreasuryHeaderTab.Mint)
+    setFirstValue('')
+    setSecondValue('')
+  }
+
+  const onBurnClick = () => {
+    setActive(TreasuryHeaderTab.Burn)
+    setFirstValue('')
+    setSecondValue('')
+  }
+
   return (
     <x.div w="100%" maxWidth="480px" borderRadius="16px" padding={4}>
       <x.div display="flex" justifyContent="center" mt={2}>
@@ -141,11 +168,11 @@ export function TreasuryMint() {
       <x.div display="flex" pt={8}>
         <StyledTabItem
           $active={active === TreasuryHeaderTab.Mint}
-          onClick={() => setActive(TreasuryHeaderTab.Mint)}
+          onClick={onMintClick}
         >MINT</StyledTabItem>
         <StyledTabItem
           $active={active === TreasuryHeaderTab.Burn}
-          onClick={() => setActive(TreasuryHeaderTab.Burn)}
+          onClick={onBurnClick}
         >BURN</StyledTabItem>
       </x.div>
 
@@ -171,9 +198,47 @@ export function TreasuryMint() {
                 onChange={(e) => onCurrencyChange(e.target.value)}
               />
 
-              <x.div w="100%" display="flex" mt={2} justifyContent="flex-end">
-                <x.p color="gray155">{new Big(formatUnits(balanceA.data ?? 0n, currencyA.decimals)).toFixed(6)}</x.p>
-              </x.div>
+              {active === TreasuryHeaderTab.Mint ? (
+                <x.div w="100%" display="flex" mt={2} justifyContent="flex-end">
+                  <x.p color="gray155">{new BigNumber(formatUnits(balanceA.data ?? 0n, currencyA.decimals)).toFixed(6, 1)}</x.p>
+                </x.div>
+              ) : (
+                <x.div w="100%" display="flex" mt={2} justifyContent="space-between">
+                  <x.div display="flex">
+                    <x.p
+                      mr={2}
+                      cursor="pointer"
+                      color={{ _: 'gray155', hover: 'white' }}
+                      onClick={() => onSetPercentage(25n)}
+                    >25%
+                    </x.p>
+                    <x.p
+                      mr={2}
+                      cursor="pointer"
+                      color={{ _: 'gray155', hover: 'white' }}
+                      onClick={() => onSetPercentage(50n)}
+                    >50%
+                    </x.p>
+                    <x.p
+                      mr={2}
+                      cursor="pointer"
+                      color={{ _: 'gray155', hover: 'white' }}
+                      onClick={() => onSetPercentage(75n)}
+                    >75%
+                    </x.p>
+                    <x.p
+                      mr={2}
+                      cursor="pointer"
+                      color={{ _: 'gray155', hover: 'white' }}
+                      onClick={() => onSetPercentage(100n)}
+                    >100%
+                    </x.p>
+                  </x.div>
+                  <x.div>
+                    <x.p color="gray155">{new BigNumber(formatUnits(balanceA.data ?? 0n, 18)).toFixed(6, 1)}</x.p>
+                  </x.div>
+                </x.div>
+              )}
             </x.div>
           </Container>
         </InputPanel>
@@ -203,7 +268,7 @@ export function TreasuryMint() {
               />
 
               <x.div w="100%" display="flex" justifyContent="flex-end" mt={2}>
-                <x.p color="gray155">{new Big(formatUnits(balanceB.data ?? 0n, currencyB.decimals)).toFixed(6)}</x.p>
+                <x.p color="gray155">{new BigNumber(formatUnits(balanceB.data ?? 0n, currencyB.decimals)).toFixed(6, 1)}</x.p>
               </x.div>
             </x.div>
           </Container>
