@@ -79,10 +79,12 @@ export function Stake() {
       case 25n:
       case 50n:
       case 75n:
+        setValue(((new BigNumber(balance.data?.toString() || '0').times(percentage.toString()).div(100)).div(new BigNumber(10).pow(18))).toString())
+
         setValue(formatUnits(((balance.data || 0n) * percentage) / 100n, 18));
         break;
       case 100n:
-        setValue(formatUnits(balance.data || 0n, 18));
+        setValue(new BigNumber(balance.data?.toString() || '0').div(new BigNumber(10).pow(18)).toString());
         break;
     }
   };
