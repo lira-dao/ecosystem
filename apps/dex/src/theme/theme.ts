@@ -7,6 +7,7 @@ export const muiDarkTheme = createTheme({
     mode: 'dark',
   },
   colors: {
+    green: '#B6FE46',
     gray155: '#9B9B9B',
   },
   typography: {
