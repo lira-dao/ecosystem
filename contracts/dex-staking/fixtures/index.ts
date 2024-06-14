@@ -3,7 +3,6 @@ import { dexRouterFixture } from '@lira-dao/dex-periphery/fixtures';
 import { tokenDistributorFactory } from '@lira-dao/token-distributor/fixtures';
 import { increaseTo } from '@nomicfoundation/hardhat-network-helpers/dist/src/helpers/time';
 
-
 export async function lpStakerFixture() {
   const { tbbPairAddress, ldtAddress, tbbAddress, deployer, ...router } = await dexRouterFixture();
 
