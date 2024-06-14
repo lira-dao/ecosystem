@@ -42,12 +42,14 @@ declare module 'styled-components' {
 declare module '@mui/material/styles' {
   interface Theme {
     colors: {
+      green: string;
       gray155: string;
     };
   }
   // allow configuration using `createTheme`
   interface ThemeOptions {
     colors?: {
+      green: string;
       gray155?: string;
     };
   }
