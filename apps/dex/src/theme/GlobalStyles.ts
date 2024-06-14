@@ -33,22 +33,12 @@ export const GlobalStyles = createGlobalStyle`
     font-weight: 400;
   }
 
-  @font-face {
-    font-family: "Avenir Next";
-    src: url(${AvenirNextBold}) format("opentype");
-    font-weight: 700;
-  }
+
 
   @font-face {
     font-family: "Avenir Next";
     src: url(${AvenirNextRegular}) format("opentype");
     font-weight: 500;
-  }
-
-  @font-face {
-    font-family: "Avenir Next";
-    src: url(${AvenirNextLite}) format("opentype");
-    font-weight: 400;
   }
 
   body {
