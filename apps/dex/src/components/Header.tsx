@@ -65,9 +65,9 @@ export function Header() {
       alignItems="center"
       mb={{ _: 8, lg: 0 }}
     >
-      <NavLink to="/">
-        <img src={logo} alt="lira dao logo" />
-      </NavLink>
+      <a href="https://liradao.org" target="_blank" rel="noopener noreferrer">
+        <img src={logo} alt="lira dao logo" width={120} />
+      </a>
 
       <x.div ml={{ _: 0, lg: 8 }} display="flex" flexGrow={1}>
         <MenuItem text="SWAP" to="swap" />
