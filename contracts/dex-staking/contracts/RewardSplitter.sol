@@ -61,17 +61,20 @@ contract RewardSplitter is Ownable2Step {
     uint8 public tbAmbassadorIncentiveReward = 10;
     uint8 public tbGreenEnergyProducersReward = 5;
 
-    uint8 public ldtFarmingReward = 40;
-    uint8 public ldtStakingReward = 20;
-    uint8 public ldtTeamReward = 14;
-    uint8 public ldtDaoFundReward = 10;
+    uint8 public ldtFarmingReward = 20;
+    uint8 public ldtStakingReward = 40;
+    uint8 public ldtTeamReward = 10;
+    uint8 public ldtDaoFundReward = 14;
     uint8 public ldtAmbassadorIncentiveReward = 10;
     uint8 public ldtGreenEnergyProducersReward = 5;
     uint8 public ldtMarketingReward = 1;
 
-    RewardRate public tbbRewardRate = RewardRate(10, 10);
-    RewardRate public tbsRewardRate = RewardRate(10, 10);
-    RewardRate public tbgRewardRate = RewardRate(10, 10);
+    RewardRate public tbbRewardRate = RewardRate(200, 200);
+    RewardRate public tbsRewardRate = RewardRate(500, 500);
+    RewardRate public tbgRewardRate = RewardRate(1000, 1000);
+
+    uint public constant MIN_RATE = 1;
+    uint public constant MAX_RATE = 100_000;
 
     constructor(
         address _rewardToken,
@@ -209,28 +212,28 @@ contract RewardSplitter is Ownable2Step {
         uint amount0 = (totalStaked * balance0) / lpTotalSupply;
         uint amount1 = (totalStaked * balance1) / lpTotalSupply;
 
-        return ((amount0 * _rate.ldt) / 10000, (amount1 * _rate.tb) / 10000);
+        return ((amount0 * _rate.ldt) / MAX_RATE, (amount1 * _rate.tb) / MAX_RATE);
     }
 
     function setTbbRewardRate(uint _ldtRate, uint _tbbRate) external onlyOwner {
-        require(_ldtRate >= 1 && _ldtRate <= 10000, 'INVALID_LDT_RATE');
-        require(_tbbRate >= 1 && _tbbRate <= 10000, 'INVALID_TB_RATE');
+        require(_ldtRate >= MIN_RATE && _ldtRate <= MAX_RATE, 'INVALID_LDT_RATE');
+        require(_tbbRate >= MIN_RATE && _tbbRate <= MAX_RATE, 'INVALID_TB_RATE');
 
         tbbRewardRate.ldt = _ldtRate;
         tbbRewardRate.tb = _tbbRate;
     }
 
     function setTbsRewardRate(uint _ldtRate, uint _tbsRate) external onlyOwner {
-        require(_ldtRate >= 1 && _ldtRate <= 10000, 'INVALID_LDT_RATE');
-        require(_tbsRate >= 1 && _tbsRate <= 10000, 'INVALID_TB_RATE');
+        require(_ldtRate >= MIN_RATE && _ldtRate <= MAX_RATE, 'INVALID_LDT_RATE');
+        require(_tbsRate >= MIN_RATE && _tbsRate <= MAX_RATE, 'INVALID_TB_RATE');
 
         tbsRewardRate.ldt = _ldtRate;
         tbsRewardRate.tb = _tbsRate;
     }
 
     function setTbgRewardRate(uint _ldtRate, uint _tbgRate) external onlyOwner {
-        require(_ldtRate >= 1 && _ldtRate <= 10000, 'INVALID_LDT_RATE');
-        require(_tbgRate >= 1 && _tbgRate <= 10000, 'INVALID_TB_RATE');
+        require(_ldtRate >= MIN_RATE && _ldtRate <= MAX_RATE, 'INVALID_LDT_RATE');
+        require(_tbgRate >= MIN_RATE && _tbgRate <= MAX_RATE, 'INVALID_TB_RATE');
 
         tbgRewardRate.ldt = _ldtRate;
         tbgRewardRate.tb = _tbgRate;
@@ -258,5 +261,9 @@ contract RewardSplitter is Ownable2Step {
 
     function recoverOwnershipTbgFarm() external onlyOwner {
         Ownable(tbgFarmAddress).transferOwnership(owner());
+    }
+
+    function setDistributor(address _distributor) external onlyOwner {
+        distributor = _distributor;
     }
 }
