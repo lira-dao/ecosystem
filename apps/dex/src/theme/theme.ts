@@ -24,6 +24,15 @@ export const muiDarkTheme = createTheme({
       '"Segoe UI Emoji"',
       '"Segoe UI Symbol"',
     ].join(','),
+    h1: {
+      fontFamily: 'Avenir Next',
+    },
+    h2: {
+      fontFamily: 'Avenir Next',
+    },
+    h3: {
+      fontFamily: 'Avenir Next',
+    }
   },
 });
 
