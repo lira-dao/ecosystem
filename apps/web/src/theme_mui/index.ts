@@ -12,6 +12,40 @@ import AvenirNextLite from './fonts/AvenirNextLTPro-It.otf';
 import '@mui/material/styles';
 
 
+declare module '@mui/material/styles' {
+  interface TypographyVariants {
+    xs: React.CSSProperties,
+    sm: React.CSSProperties,
+    base: React.CSSProperties,
+    lg: React.CSSProperties,
+    xl: React.CSSProperties,
+    '2xl': React.CSSProperties,
+    '3xl': React.CSSProperties,
+    '4xl': React.CSSProperties,
+    '5xl': React.CSSProperties,
+    '6xl': React.CSSProperties,
+    '7xl': React.CSSProperties,
+    '8xl': React.CSSProperties,
+    '9xl': React.CSSProperties,
+  }
+
+  interface TypographyVariantsOptions {
+    xs: React.CSSProperties,
+    sm: React.CSSProperties,
+    base: React.CSSProperties,
+    lg: React.CSSProperties,
+    xl: React.CSSProperties,
+    '2xl': React.CSSProperties,
+    '3xl': React.CSSProperties,
+    '4xl': React.CSSProperties,
+    '5xl': React.CSSProperties,
+    '6xl': React.CSSProperties,
+    '7xl': React.CSSProperties,
+    '8xl': React.CSSProperties,
+    '9xl': React.CSSProperties,
+  }
+}
+
 declare module '@mui/material/Typography' {
   interface TypographyPropsVariantOverrides {
     xs: true,
@@ -245,13 +279,13 @@ const muiTheme = createTheme({
     lg: { fontSize: '1.125rem', lineHeight: '1.75rem' },
     xl: { fontSize: '1.25rem', lineHeight: '1.75rem' },
     '2xl': { fontSize: '1.5rem', lineHeight: '2rem' },
-    '3xl': { fontSize: '1.875rem', lineHeight: '2.25rem' },
+    '3xl': { fontSize: '1.875rem', lineHeight: '2.25rem', fontFamily: "Avenir Next" },
     '4xl': { fontSize: '2.25rem', lineHeight: '2.5rem' },
-    '5xl': { fontSize: '3rem', lineHeight: '1rem' },
-    '6xl': { fontSize: '3.75rem', lineHeight: '1rem' },
-    '7xl': { fontSize: '4.5rem', lineHeight: '1rem' },
-    '8xl': { fontSize: '5rem', lineHeight: '1rem' },
-    '9xl': { fontSize: '8rem', lineHeight: '1rem' }
+    '5xl': { fontSize: '3rem', lineHeight: '3rem', fontFamily: "Avenir Next" },
+    '6xl': { fontSize: '3.75rem', lineHeight: '4rem' },
+    '7xl': { fontSize: '4.5rem', lineHeight: '5.5rem', fontFamily: "Avenir Next" },
+    '8xl': { fontSize: '5rem', lineHeight: '6.2rem', fontFamily: "Avenir Next" },
+    '9xl': { fontSize: '6.5rem', lineHeight: '7.5rem', fontFamily: "Avenir Next" }
   } as ExtendedTypographyOptions,
 } as ThemeOptions);
 
