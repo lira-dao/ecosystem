@@ -4,7 +4,7 @@ import { Box, CssBaseline, Grid, Link, Typography, useTheme } from '@mui/materia
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../../theme_mui';
 import logo from '../../img/logo-dao.png';
-import button from '../../img/enter-app-3.png';
+import button from '../../img/enter-app.png';
 import twitter from '../../img/twitter.svg';
 import discord from '../../img/discord.svg';
 

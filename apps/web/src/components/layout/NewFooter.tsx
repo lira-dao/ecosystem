@@ -70,9 +70,10 @@ const FooterText: React.FC<FooterTextProps> = ({ children }) => (
   <Typography
     sx={{
       color: 'white',
-      fontWeight: 700,
+      fontWeight: 600,
       lineHeight: '26px',
       fontSize: 'lg.fontSize',
+      marginBottom: '40px'
     }}
   >
     {children}
