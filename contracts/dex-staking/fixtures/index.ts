@@ -4,20 +4,19 @@ import { tokenDistributorFactory } from '@lira-dao/token-distributor/fixtures';
 import { increaseTo } from '@nomicfoundation/hardhat-network-helpers/dist/src/helpers/time';
 
 export async function lpStakerFixture() {
-  const { tbbPairAddress, ldtAddress, tbbAddress, deployer, ...router } = await dexRouterFixture();
+  const router = await dexRouterFixture();
 
-  const stakerContract = await hre.ethers.getContractFactory('LPStakerV3');
-  const staker = await stakerContract.deploy(tbbPairAddress, ldtAddress, tbbAddress);
+  const stakerContract = await hre.ethers.getContractFactory('LPStakerV4');
+  const staker = await stakerContract.deploy(router.tbbPairAddress, router.ldtAddress, router.tbbAddress);
   const stakerAddress = await staker.getAddress();
+
+  await router.tbb.approve(stakerAddress, hre.ethers.MaxUint256);
+  await router.ldt.approve(stakerAddress, hre.ethers.MaxUint256);
 
   return {
     ...router,
-    deployer,
-    ldtAddress,
     staker,
     stakerAddress,
-    tbbAddress,
-    tbbPairAddress,
   };
 }
 
@@ -38,7 +37,7 @@ export async function rewardSplitterFixture() {
     ...dex
   } = await dexRouterFixture();
 
-  const stakerContract = await hre.ethers.getContractFactory('LPStakerV3');
+  const stakerContract = await hre.ethers.getContractFactory('LPStakerV4');
 
   const tbbStaker = await stakerContract.deploy(tbbPairAddress, ldtAddress, tbbAddress);
   const tbbStakerAddress = await tbbStaker.getAddress();

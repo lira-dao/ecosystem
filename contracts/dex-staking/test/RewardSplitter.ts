@@ -30,12 +30,12 @@ describe('RewardSplitter', () => {
       tbsStakerAddress,
     } = await rewardSplitterFixture();
 
-    console.log('LDT', await ldt.balanceOf(rewardSplitterAddress));
+    // console.log('LDT', await ldt.balanceOf(rewardSplitterAddress));
 
     // await tbbPair.approve(stakerAddress, 158n * 10n ** 18n);
     // await staker.stake(158n * 10n ** 18n);
 
-    console.log('tbb pair', await tbbPair.balanceOf(deployer));
+    // console.log('tbb pair', await tbbPair.balanceOf(deployer));
 
     await tbbPair.approve(tbbStakerAddress, await tbbPair.balanceOf(deployer));
     await tbbStaker.stake(await tbbPair.balanceOf(deployer));
@@ -48,28 +48,28 @@ describe('RewardSplitter', () => {
 
     await rewardSplitter.approveTb();
 
-    console.log('tbb pool', formatUnits(await tbb.balanceOf(tbbPairAddress), 18));
-    console.log('tbb total staked', formatUnits(await tbbStaker.totalStaked(), 18));
-
-    console.log('tb farm before', await tbb.balanceOf(tbbStakerAddress));
-    console.log('ldt farm before', await ldt.balanceOf(tbbStakerAddress));
-
-    console.log('tb farm before', await tbb.balanceOf(tbsStakerAddress));
-    console.log('ldt farm before', await ldt.balanceOf(tbsStakerAddress));
-
-    console.log('tb farm before', await tbb.balanceOf(tbgStakerAddress));
-    console.log('ldt farm before', await ldt.balanceOf(tbgStakerAddress));
+    // console.log('tbb pool', formatUnits(await tbb.balanceOf(tbbPairAddress), 18));
+    // console.log('tbb total staked', formatUnits(await tbbStaker.totalStaked(), 18));
+    //
+    // console.log('tb farm before', await tbb.balanceOf(tbbStakerAddress));
+    // console.log('ldt farm before', await ldt.balanceOf(tbbStakerAddress));
+    //
+    // console.log('tb farm before', await tbb.balanceOf(tbsStakerAddress));
+    // console.log('ldt farm before', await ldt.balanceOf(tbsStakerAddress));
+    //
+    // console.log('tb farm before', await tbb.balanceOf(tbgStakerAddress));
+    // console.log('ldt farm before', await ldt.balanceOf(tbgStakerAddress));
 
     const tx = await rewardSplitter.requestDistribution();
 
-    console.log('tb farm after', formatUnits(await tbb.balanceOf(tbbStakerAddress), 18));
-    console.log('ldt farm after', formatUnits(await ldt.balanceOf(tbbStakerAddress), 18));
-
-    console.log('tb farm after', formatUnits(await tbs.balanceOf(tbsStakerAddress), 18));
-    console.log('ldt farm after', formatUnits(await ldt.balanceOf(tbsStakerAddress), 18));
-
-    console.log('tb farm after', formatUnits(await tbg.balanceOf(tbgStakerAddress), 18));
-    console.log('ldt farm after', formatUnits(await ldt.balanceOf(tbgStakerAddress), 18));
+    // console.log('tb farm after', formatUnits(await tbb.balanceOf(tbbStakerAddress), 18));
+    // console.log('ldt farm after', formatUnits(await ldt.balanceOf(tbbStakerAddress), 18));
+    //
+    // console.log('tb farm after', formatUnits(await tbs.balanceOf(tbsStakerAddress), 18));
+    // console.log('ldt farm after', formatUnits(await ldt.balanceOf(tbsStakerAddress), 18));
+    //
+    // console.log('tb farm after', formatUnits(await tbg.balanceOf(tbgStakerAddress), 18));
+    // console.log('ldt farm after', formatUnits(await ldt.balanceOf(tbgStakerAddress), 18));
   });
 
   it('owner should recover tbb ownership', async () => {
@@ -149,21 +149,21 @@ describe('RewardSplitter', () => {
 
     let rate = await rewardSplitter.tbbRewardRate()
 
-    expect(rate.ldt).eq(10n);
-    expect(rate.tb).eq(10n);
+    expect(rate.ldt).eq(200n);
+    expect(rate.tb).eq(200n);
 
     await expect(rewardSplitter.setTbbRewardRate(0n, 1n)).revertedWith('INVALID_LDT_RATE');
-    await expect(rewardSplitter.setTbbRewardRate(10001n, 1n)).revertedWith('INVALID_LDT_RATE');
+    await expect(rewardSplitter.setTbbRewardRate(100001n, 1n)).revertedWith('INVALID_LDT_RATE');
 
     await expect(rewardSplitter.setTbbRewardRate(1n, 0n)).revertedWith('INVALID_TB_RATE');
-    await expect(rewardSplitter.setTbbRewardRate(1n, 10001n)).revertedWith('INVALID_TB_RATE');
+    await expect(rewardSplitter.setTbbRewardRate(1n, 100001n)).revertedWith('INVALID_TB_RATE');
 
-    await rewardSplitter.setTbbRewardRate(1n, 10000n);
+    await rewardSplitter.setTbbRewardRate(1n, 100000n);
 
     rate = await rewardSplitter.tbbRewardRate();
 
     expect(rate.ldt).eq(1n);
-    expect(rate.tb).eq(10000n);
+    expect(rate.tb).eq(100000n);
   });
 
   it('owner should set a new tbs reward rate', async () => {
@@ -171,21 +171,21 @@ describe('RewardSplitter', () => {
 
     let rate = await rewardSplitter.tbsRewardRate()
 
-    expect(rate.ldt).eq(10n);
-    expect(rate.tb).eq(10n);
+    expect(rate.ldt).eq(500n);
+    expect(rate.tb).eq(500n);
 
     await expect(rewardSplitter.setTbsRewardRate(0n, 1n)).revertedWith('INVALID_LDT_RATE');
-    await expect(rewardSplitter.setTbsRewardRate(10001n, 1n)).revertedWith('INVALID_LDT_RATE');
+    await expect(rewardSplitter.setTbsRewardRate(100001n, 1n)).revertedWith('INVALID_LDT_RATE');
 
     await expect(rewardSplitter.setTbsRewardRate(1n, 0n)).revertedWith('INVALID_TB_RATE');
-    await expect(rewardSplitter.setTbsRewardRate(1n, 10001n)).revertedWith('INVALID_TB_RATE');
+    await expect(rewardSplitter.setTbsRewardRate(1n, 100001n)).revertedWith('INVALID_TB_RATE');
 
-    await rewardSplitter.setTbsRewardRate(1n, 10000n);
+    await rewardSplitter.setTbsRewardRate(1n, 100000n);
 
     rate = await rewardSplitter.tbsRewardRate();
 
     expect(rate.ldt).eq(1n);
-    expect(rate.tb).eq(10000n);
+    expect(rate.tb).eq(100000n);
   });
 
   it('owner should set a new tbg reward rate', async () => {
@@ -193,20 +193,20 @@ describe('RewardSplitter', () => {
 
     let rate = await rewardSplitter.tbgRewardRate()
 
-    expect(rate.ldt).eq(10n);
-    expect(rate.tb).eq(10n);
+    expect(rate.ldt).eq(1000n);
+    expect(rate.tb).eq(1000n);
 
     await expect(rewardSplitter.setTbgRewardRate(0n, 1n)).revertedWith('INVALID_LDT_RATE');
-    await expect(rewardSplitter.setTbgRewardRate(10001n, 1n)).revertedWith('INVALID_LDT_RATE');
+    await expect(rewardSplitter.setTbgRewardRate(100001n, 1n)).revertedWith('INVALID_LDT_RATE');
 
     await expect(rewardSplitter.setTbgRewardRate(1n, 0n)).revertedWith('INVALID_TB_RATE');
-    await expect(rewardSplitter.setTbgRewardRate(1n, 10001n)).revertedWith('INVALID_TB_RATE');
+    await expect(rewardSplitter.setTbgRewardRate(1n, 100001n)).revertedWith('INVALID_TB_RATE');
 
-    await rewardSplitter.setTbgRewardRate(1n, 10000n);
+    await rewardSplitter.setTbgRewardRate(1n, 100000n);
 
     rate = await rewardSplitter.tbgRewardRate();
 
     expect(rate.ldt).eq(1n);
-    expect(rate.tb).eq(10000n);
+    expect(rate.tb).eq(100000n);
   });
 });

@@ -18,12 +18,16 @@ contract RewardSplitter is Ownable2Step {
         uint ldtFarmingRewards;
         uint ldtTeamRewards;
 
-        uint tbFarmingRewardAmount;
-        uint tbTeamRewardAmount;
+        uint tbFarmingReward;
+        uint tbTeamReward;
 
-        uint tbbFarmingRewardAmount;
-        uint tbsFarmingRewardAmount;
-        uint tbgFarmingRewardAmount;
+        uint tbbFarmingReward;
+        uint tbsFarmingReward;
+        uint tbgFarmingReward;
+
+        uint tbbTeamReward;
+        uint tbsTeamReward;
+        uint tbgTeamReward;
 
         uint tbbAmount;
         uint tbbLdtAmount;
@@ -40,7 +44,26 @@ contract RewardSplitter is Ownable2Step {
         uint tb;
     }
 
-    address public rewardToken;
+    struct LdtSplit {
+        uint8 farmingReward;
+        uint8 stakingReward;
+        uint8 teamReward;
+        uint8 daoFundReward;
+        uint8 ambassadorIncentiveReward;
+        uint8 greenEnergyProducersReward;
+        uint8 marketingReward;
+    }
+
+    struct TbSplit {
+        uint8 farmingReward;
+        uint8 stakingReward;
+        uint8 teamReward;
+        uint8 daoFundReward;
+        uint8 ambassadorIncentiveReward;
+        uint8 greenEnergyProducersReward;
+    }
+
+    address public ldt;
 
     address public tbbAddress;
     address public tbsAddress;
@@ -54,30 +77,20 @@ contract RewardSplitter is Ownable2Step {
 
     uint8 public tbRate = 80;
 
-    uint8 public tbFarmingReward = 40;
-    uint8 public tbStakingReward = 25;
-    uint8 public tbTeamReward = 10;
-    uint8 public tbDaoFundReward = 10;
-    uint8 public tbAmbassadorIncentiveReward = 10;
-    uint8 public tbGreenEnergyProducersReward = 5;
-
-    uint8 public ldtFarmingReward = 20;
-    uint8 public ldtStakingReward = 40;
-    uint8 public ldtTeamReward = 10;
-    uint8 public ldtDaoFundReward = 14;
-    uint8 public ldtAmbassadorIncentiveReward = 10;
-    uint8 public ldtGreenEnergyProducersReward = 5;
-    uint8 public ldtMarketingReward = 1;
-
     RewardRate public tbbRewardRate = RewardRate(200, 200);
     RewardRate public tbsRewardRate = RewardRate(500, 500);
     RewardRate public tbgRewardRate = RewardRate(1000, 1000);
+
+    RewardRate public teamRewardRate = RewardRate(1000, 1000);
+
+    LdtSplit public ldtSplit;
+    TbSplit public tbSplit;
 
     uint public constant MIN_RATE = 1;
     uint public constant MAX_RATE = 100_000;
 
     constructor(
-        address _rewardToken,
+        address _ldt,
         address _distributor,
         address _tbbAddress,
         address _tbbFarmAddress,
@@ -86,7 +99,7 @@ contract RewardSplitter is Ownable2Step {
         address _tbgAddress,
         address _tbgFarmAddress
     ) Ownable(msg.sender) {
-        rewardToken = _rewardToken;
+        ldt = _ldt;
         distributor = _distributor;
         tbbAddress = _tbbAddress;
         tbbFarmAddress = _tbbFarmAddress;
@@ -94,21 +107,24 @@ contract RewardSplitter is Ownable2Step {
         tbsFarmAddress = _tbsFarmAddress;
         tbgAddress = _tbgAddress;
         tbgFarmAddress = _tbgFarmAddress;
+
+        setLdtSplit(LdtSplit(20, 40, 10, 14, 10, 5, 1));
+        setTbSplit(TbSplit(40, 25, 10, 10, 10, 5));
     }
 
-    function approveTb() public onlyOwner {
-        IERC20(rewardToken).approve(tbbAddress, type(uint256).max);
-        IERC20(rewardToken).approve(tbsAddress, type(uint256).max);
-        IERC20(rewardToken).approve(tbgAddress, type(uint256).max);
+    function approveTokens() public onlyOwner {
+        IERC20(ldt).approve(tbbAddress, type(uint256).max);
+        IERC20(ldt).approve(tbsAddress, type(uint256).max);
+        IERC20(ldt).approve(tbgAddress, type(uint256).max);
 
         IERC20(tbbAddress).approve(tbbFarmAddress, type(uint256).max);
-        IERC20(rewardToken).approve(tbbFarmAddress, type(uint256).max);
+        IERC20(ldt).approve(tbbFarmAddress, type(uint256).max);
 
         IERC20(tbsAddress).approve(tbsFarmAddress, type(uint256).max);
-        IERC20(rewardToken).approve(tbsFarmAddress, type(uint256).max);
+        IERC20(ldt).approve(tbsFarmAddress, type(uint256).max);
 
         IERC20(tbgAddress).approve(tbgFarmAddress, type(uint256).max);
-        IERC20(rewardToken).approve(tbgFarmAddress, type(uint256).max);
+        IERC20(ldt).approve(tbgFarmAddress, type(uint256).max);
     }
 
     function requestDistribution() external onlyOwner {
@@ -116,20 +132,17 @@ contract RewardSplitter is Ownable2Step {
 
         IDistributor(distributor).distribute();
 
-        rewards.ldtBalance = IERC20(rewardToken).balanceOf(address(this));
+        rewards.ldtBalance = IERC20(ldt).balanceOf(address(this));
 
         rewards.tbRewards = (rewards.ldtBalance * tbRate) / 100;
         rewards.ldtRewards = rewards.ldtBalance - rewards.tbRewards;
 
-        rewards.ldtFarmingRewards = (rewards.ldtRewards * ldtFarmingReward) / 100;
-        rewards.ldtTeamRewards = (rewards.ldtRewards * ldtTeamReward) / 100;
+        rewards.ldtFarmingRewards = (rewards.ldtRewards * ldtSplit.farmingReward) / 100;
+        rewards.tbFarmingReward = (rewards.tbRewards * tbSplit.farmingReward) / 100;
 
-        rewards.tbFarmingRewardAmount = (rewards.tbRewards * tbFarmingReward) / 100;
-        rewards.tbTeamRewardAmount = (rewards.tbRewards * tbTeamReward) / 100;
-
-        rewards.tbbFarmingRewardAmount = (rewards.tbFarmingRewardAmount * 20) / 100;
-        rewards.tbsFarmingRewardAmount = (rewards.tbFarmingRewardAmount * 30) / 100;
-        rewards.tbgFarmingRewardAmount = rewards.tbFarmingRewardAmount - rewards.tbbFarmingRewardAmount - rewards.tbsFarmingRewardAmount;
+        rewards.tbbFarmingReward = (rewards.tbFarmingReward * 20) / 100;
+        rewards.tbsFarmingReward = (rewards.tbFarmingReward * 30) / 100;
+        rewards.tbgFarmingReward = rewards.tbFarmingReward - rewards.tbbFarmingReward - rewards.tbsFarmingReward;
 
         (uint tbbAmount0, uint tbbAmount1) = calculateStakingLiquidity(tbbFarmAddress, tbbRewardRate);
         (uint tbsAmount0, uint tbsAmount1) = calculateStakingLiquidity(tbsFarmAddress, tbsRewardRate);
@@ -153,27 +166,30 @@ contract RewardSplitter is Ownable2Step {
         }
 
         if (tbbAmount1 > rewards.tbbFarmingRewardAmount / ITreasuryToken(tbbAddress).rate()) {
-            // reward full block
             ITreasuryToken(tbbAddress).mint(address(this), rewards.tbbFarmingRewardAmount / ITreasuryToken(tbbAddress).rate());
         } else {
-            // reward partial block
             ITreasuryToken(tbbAddress).mint(address(this), tbbAmount1);
         }
 
         if (tbsAmount1 > rewards.tbsFarmingRewardAmount / ITreasuryToken(tbsAddress).rate()) {
-            // reward full block
             ITreasuryToken(tbsAddress).mint(address(this), rewards.tbsFarmingRewardAmount / ITreasuryToken(tbsAddress).rate());
         } else {
-            // reward partial block
             ITreasuryToken(tbsAddress).mint(address(this), tbsAmount1);
         }
 
         if (tbgAmount1 > rewards.tbgFarmingRewardAmount / ITreasuryToken(tbgAddress).rate()) {
-            // reward full block
             ITreasuryToken(tbgAddress).mint(address(this), rewards.tbgFarmingRewardAmount / ITreasuryToken(tbgAddress).rate());
         } else {
-            // reward partial block
             ITreasuryToken(tbgAddress).mint(address(this), tbgAmount1);
+        }
+
+        if (ldtSplit.teamReward > 0) {
+            rewards.ldtTeamRewards = (rewards.ldtRewards * ldtSplit.teamReward) / 100;
+            rewards.tbTeamReward = (rewards.tbRewards * tbSplit.teamReward) / 100;
+
+            rewards.tbbTeamReward = (rewards.tbTeamReward * 20) / 100;
+            rewards.tbsTeamReward = (rewards.tbTeamReward * 30) / 100;
+            rewards.tbgTeamReward = rewards.tbTeamReward - rewards.tbbTeamReward - rewards.tbsTeamReward;
         }
 
         rewards.tbbAmount = IERC20(tbbAddress).balanceOf(address(this));
@@ -184,15 +200,15 @@ contract RewardSplitter is Ownable2Step {
         ILPStaker(tbsFarmAddress).distributeRewards(rewards.tbsLdtAmount, rewards.tbsAmount);
         ILPStaker(tbgFarmAddress).distributeRewards(rewards.tbgLdtAmount, rewards.tbgAmount);
 
-        if (IERC20(rewardToken).balanceOf(address(this)) > 0) {
-            IERC20(rewardToken).transfer(distributor, IERC20(rewardToken).balanceOf(address(this)));
+        if (IERC20(ldt).balanceOf(address(this)) > 0) {
+            IERC20(ldt).transfer(distributor, IERC20(ldt).balanceOf(address(this)));
         }
     }
 
     function getLdtLiquidity(address _farm) public view returns (uint256 liquidity) {
         address lpToken = ILPStaker(_farm).lpToken();
 
-        liquidity = IERC20(rewardToken).balanceOf(lpToken);
+        liquidity = IERC20(ldt).balanceOf(lpToken);
     }
 
     function calculateStakingLiquidity(address _farm, RewardRate memory _rate) public view returns (uint256, uint256) {
@@ -203,8 +219,8 @@ contract RewardSplitter is Ownable2Step {
         address t0 = IUniswapV2Pair(lpToken).token0();
         address t1 = IUniswapV2Pair(lpToken).token1();
 
-        (address token0, address token1) = t0 == rewardToken ? (t0, t1) : (t1, t0);
-        require(token0 == rewardToken, 'INVALID_REWARD_TOKEN');
+        (address token0, address token1) = t0 == ldt ? (t0, t1) : (t1, t0);
+        require(token0 == ldt, 'INVALID_TOKEN');
 
         uint balance0 = IERC20(token0).balanceOf(lpToken);
         uint balance1 = IERC20(token1).balanceOf(lpToken);
@@ -239,6 +255,14 @@ contract RewardSplitter is Ownable2Step {
         tbgRewardRate.tb = _tbgRate;
     }
 
+    function setTeamRewardRate(uint _ldtRate, uint _tbgRate) external onlyOwner {
+        require(_ldtRate >= MIN_RATE && _ldtRate <= MAX_RATE, 'INVALID_LDT_RATE');
+        require(_tbgRate >= MIN_RATE && _tbgRate <= MAX_RATE, 'INVALID_TB_RATE');
+
+        teamRewardRate.ldt = _ldtRate;
+        teamRewardRate.tb = _tbgRate;
+    }
+
     function recoverOwnershipTbb() external onlyOwner {
         Ownable(tbbAddress).transferOwnership(owner());
     }
@@ -265,5 +289,34 @@ contract RewardSplitter is Ownable2Step {
 
     function setDistributor(address _distributor) external onlyOwner {
         distributor = _distributor;
+    }
+
+    function setLdtSplit(LdtSplit _ldtSplit) external onlyOwner {
+        require(
+            _ldtSplit.farmingReward +
+            _ldtSplit.stakingReward +
+            _ldtSplit.teamReward +
+            _ldtSplit.daoFundReward +
+            _ldtSplit.ambassadorIncentiveReward +
+            _ldtSplit.greenEnergyProducersReward +
+            _ldtSplit.marketingReward <= 100,
+            'INVALID_SPLIT'
+        );
+
+        ldtSplit = _ldtSplit;
+    }
+
+    function setTbSplit(TbSplit _tbSplit) external onlyOwner {
+        require(
+            _tbSplit.farmingReward +
+            _tbSplit.stakingReward +
+            _tbSplit.teamReward +
+            _tbSplit.daoFundReward +
+            _tbSplit.ambassadorIncentiveReward +
+            _tbSplit.greenEnergyProducersReward <= 100,
+            'INVALID_SPLIT'
+        );
+
+        tbSplit = _tbSplit;
     }
 }

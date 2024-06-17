@@ -3,40 +3,95 @@ import { expect } from 'chai';
 
 
 describe('LPStaker', () => {
-  it('must have an lp token address');
+  it('must have an lp token address', async () => {
+    const { staker, tbbPairAddress } = await lpStakerFixture();
 
-  it('must have a reward token addresses');
+    expect(await staker.lpToken()).eq(tbbPairAddress);
+  });
 
-  it('starker must return staker data');
+  it('must have a reward token addresses', async () => {
+    const { staker, ldtAddress, tbbAddress } = await lpStakerFixture();
 
-  it('must a have a total staked amount');
+    expect(await staker.rewardToken1()).eq(ldtAddress);
+    expect(await staker.rewardToken2()).eq(tbbAddress);
+  });
 
-  it('must add a new round when rewards are distributed');
+  it('starker must return staker data', async () => {
+    const { staker, stakerAddress, tbbPair, deployer } = await lpStakerFixture();
 
-  it('user can stake lp token');
+    console.log('asdasd', await tbbPair.balanceOf(deployer));
 
-  it('user can unskate lp token');
+    await tbbPair.approve(stakerAddress, 10n ** 18n);
+
+    await staker.stake(10n ** 18n);
+
+    const stakerData = await staker.stakers(deployer);
+
+    expect(stakerData.length).eq(2);
+    expect(stakerData[0]).eq(10n ** 18n);
+    expect(stakerData[1]).eq(0n);
+  });
+
+  it('must a have a total staked amount', async () => {
+    const { staker, stakerAddress, tbbPair } = await lpStakerFixture();
+
+    expect(await staker.totalStaked()).eq(0n);
+
+    await tbbPair.approve(stakerAddress, 10n ** 18n);
+
+    await staker.stake(10n ** 18n);
+
+    expect(await staker.totalStaked()).eq(10n ** 18n);
+  });
+
+  it('must add a new round when rewards are distributed', async () => {
+    const { staker, stakerAddress, ldt, tbb, tbbPair, deployer } = await lpStakerFixture();
+
+    expect(await staker.totalStaked()).eq(0n);
+
+    await tbbPair.approve(stakerAddress, 10n ** 18n);
+
+    await staker.stake(10n ** 18n);
+
+    await tbb.mint(deployer, 10n ** 18n);
+
+    console.log('balance', await ldt.balanceOf(deployer), await tbb.balanceOf(deployer));
+
+    await staker.distributeRewards(10n ** 18n, 10n ** 5n);
+
+    const round = await staker.rewardRounds(0n, 1n);
+
+    expect(await staker.rewardRounds(0n, 0n)).eq(10n ** 18n * 10n ** 18n);
+    expect(await staker.rewardRounds(0n, 1n)).eq(10n ** 5n * 10n ** 18n);
+  });
+
+  it('user can stake and unstake lp token');
 
   it('must distribute rewards');
 
-  it('user can harwest rewards');
+  it('user can harvest rewards');
 
   it('must revert if user tries to increase stake with pending rewards');
 
   it('must revert if user tries to decrease stake with pending rewards');
 
   it('must distribute staking rewards', async () => {
-    const { stakerAddress, ldt, tbb } = await lpStakerFixture();
+    const { staker, stakerAddress, ldt, tbb, tbbPair, deployer } = await lpStakerFixture();
 
-    // @ts-ignore
-    // await tbbPair.connect(user1).approve(stakerAddress, 10n ** 50n);
-    // @ts-ignore
-    // await tbbPair.connect(user2).approve(stakerAddress, 10n ** 50n);
-    // @ts-ignore
-    // await tbbPair.connect(user3).approve(stakerAddress, 10n ** 50n);
+    expect(await staker.totalStaked()).eq(0n);
 
-    await ldt.approve(stakerAddress, 10n ** 50n);
-    await tbb.approve(stakerAddress, 10n ** 50n);
+    await tbbPair.approve(stakerAddress, 10n ** 18n);
+
+    await staker.stake(10n ** 18n);
+
+    await tbb.mint(deployer, 10n ** 20n);
+
+    for (let i = 0; i < 120; i++) {
+      await staker.distributeRewards(10n ** 18n, 10n ** 5n);
+    }
+
+    await staker.harvest();
+    console.log('pendingRewards', await staker.pendingRewards(deployer));
 
     // await staker.connect(user1).stake(10n ** 10n);
     // await staker.connect(user2).stake(10n ** 10n);

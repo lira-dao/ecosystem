@@ -67,7 +67,7 @@ export async function dexRouterFixture() {
   await tbs.approve(dexRouterAddress, hre.ethers.MaxUint256);
   await tbg.approve(dexRouterAddress, hre.ethers.MaxUint256);
 
-  // tbb 100_000_000_000
+  // tbb
   await tbb.setIsMintEnabled(true);
   await tbb.mint(deployer, parseUnits('1000', 18));
 
@@ -122,8 +122,6 @@ export async function dexRouterFixture() {
     deployer,
     999999999999999,
   );
-
-  console.log('aaaaaaa', await tbbPair.balanceOf(deployer));
 
   return {
     dao,
