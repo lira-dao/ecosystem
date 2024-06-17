@@ -98,12 +98,12 @@ contract TokenDistributor is Ownable2Step {
         // update last balance
         lastBalance = token.balanceOf(address(this));
 
-        // update last distributed
-        nextDistribution += distributions[currentDistribution].cadence;
-
-        if (distributions[currentDistribution].emitted > distributions[currentDistribution].amount) {
+        if (currentDistribution < distributions.length - 1 && distributions[currentDistribution].emitted > distributions[currentDistribution].amount) {
             currentDistribution = currentDistribution + 1;
         }
+
+        // update last distributed
+        nextDistribution += distributions[currentDistribution].cadence;
     }
 
     function setDistributor(address _distributor) public onlyOwner {

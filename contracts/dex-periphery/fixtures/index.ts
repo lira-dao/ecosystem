@@ -21,7 +21,7 @@ export async function dexRouterFixture() {
   const { dexFactory, dexFactoryAddress, dexPairFactory } = await loadFixture(dexFactoryFixture);
   const { weth, wethAddress } = await loadFixture(mockWethFixture);
 
-  const { ldt, ldtAddress, vault: ldtVault, liquidity: ldtLiquidity } = await loadFixture(liraDaoTokenFixture);
+  const { ldt, ldtAddress, vault: ldtVault, liquidity: ldtLiquidity, team: ldtTeam } = await loadFixture(liraDaoTokenFixture);
   // @ts-ignore
   await ldt.connect(ldtLiquidity).transfer(deployer, await ldt.balanceOf(ldtLiquidity));
 
@@ -132,6 +132,7 @@ export async function dexRouterFixture() {
     ldtAddress,
     ldtVault,
     ldtLiquidity,
+    ldtTeam,
     tbb,
     tbbAddress,
     tbs,

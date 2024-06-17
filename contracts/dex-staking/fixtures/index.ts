@@ -6,7 +6,7 @@ import { increaseTo } from '@nomicfoundation/hardhat-network-helpers/dist/src/he
 export async function lpStakerFixture() {
   const router = await dexRouterFixture();
 
-  const stakerContract = await hre.ethers.getContractFactory('LPStakerV4');
+  const stakerContract = await hre.ethers.getContractFactory('LPStaker');
   const staker = await stakerContract.deploy(router.tbbPairAddress, router.ldtAddress, router.tbbAddress);
   const stakerAddress = await staker.getAddress();
 
@@ -34,10 +34,11 @@ export async function rewardSplitterFixture() {
     tbs,
     tbsAddress,
     tbsPairAddress,
+    ldtTeam,
     ...dex
   } = await dexRouterFixture();
 
-  const stakerContract = await hre.ethers.getContractFactory('LPStakerV4');
+  const stakerContract = await hre.ethers.getContractFactory('LPStaker');
 
   const tbbStaker = await stakerContract.deploy(tbbPairAddress, ldtAddress, tbbAddress);
   const tbbStakerAddress = await tbbStaker.getAddress();
@@ -67,7 +68,9 @@ export async function rewardSplitterFixture() {
   await increaseTo(time + 86400);
 
   const rewardSplitterFactory = await hre.ethers.getContractFactory('RewardSplitter');
-  const rewardSplitter = await rewardSplitterFactory.deploy(ldtAddress, tokenDistributorAddress, tbbAddress, tbbStakerAddress, tbsAddress, tbsStakerAddress, tbgAddress, tbgStakerAddress);
+  const rewardSplitter = await rewardSplitterFactory.deploy(
+    ldtAddress, tokenDistributorAddress, tbbAddress, tbbStakerAddress, tbsAddress, tbsStakerAddress, tbgAddress, tbgStakerAddress, ldtTeam,
+  );
   const rewardSplitterAddress = await rewardSplitter.getAddress();
 
   await tokenDistributor.setDistributor(rewardSplitterAddress);
@@ -85,6 +88,7 @@ export async function rewardSplitterFixture() {
     deployer,
     ldt,
     ldtAddress,
+    ldtTeam,
     rewardSplitter,
     rewardSplitterAddress,
     tbb,

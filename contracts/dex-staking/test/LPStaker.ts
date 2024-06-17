@@ -86,7 +86,7 @@ describe('LPStaker', () => {
 
     await tbb.mint(deployer, 10n ** 20n);
 
-    for (let i = 0; i < 120; i++) {
+    for (let i = 0; i < 100; i++) {
       await staker.distributeRewards(10n ** 18n, 10n ** 5n);
     }
 

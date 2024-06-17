@@ -1,18 +1,18 @@
 import { rewardSplitterFixture } from '../fixtures';
 import { expect } from 'chai';
-import { formatUnits } from 'ethers';
 
 describe('RewardSplitter', () => {
   it('must have ldt as reward token address', async () => {
     const { rewardSplitter, ldtAddress } = await rewardSplitterFixture();
 
-    expect(await rewardSplitter.rewardToken()).eq(ldtAddress);
+    expect(await rewardSplitter.ldt()).eq(ldtAddress);
   });
 
   it('must calculate rewards', async () => {
     const {
       deployer,
       ldt,
+      ldtTeam,
       rewardSplitter,
       rewardSplitterAddress,
       tbb,
@@ -46,7 +46,7 @@ describe('RewardSplitter', () => {
     await tbgPair.approve(tbgStakerAddress, await tbgPair.balanceOf(deployer));
     await tbgStaker.stake(await tbgPair.balanceOf(deployer));
 
-    await rewardSplitter.approveTb();
+    await rewardSplitter.approveTokens();
 
     // console.log('tbb pool', formatUnits(await tbb.balanceOf(tbbPairAddress), 18));
     // console.log('tbb total staked', formatUnits(await tbbStaker.totalStaked(), 18));
@@ -60,7 +60,43 @@ describe('RewardSplitter', () => {
     // console.log('tb farm before', await tbb.balanceOf(tbgStakerAddress));
     // console.log('ldt farm before', await ldt.balanceOf(tbgStakerAddress));
 
+    // @ts-ignore
+    await ldt.connect(ldtTeam).burn(await ldt.balanceOf(ldtTeam));
+    await ldt.burn(await ldt.balanceOf(deployer));
+
+    console.log('team balances', {
+      ldt: await ldt.balanceOf(ldtTeam),
+      tbb: await tbb.balanceOf(ldtTeam),
+      tbs: await tbs.balanceOf(ldtTeam),
+      tbg: await tbg.balanceOf(ldtTeam),
+    });
+
+    console.log('deployer balances', {
+      ldt: await ldt.balanceOf(deployer),
+      tbb: await tbb.balanceOf(deployer),
+      tbs: await tbs.balanceOf(deployer),
+      tbg: await tbg.balanceOf(deployer),
+    });
+
     const tx = await rewardSplitter.requestDistribution();
+
+    //await tbbStaker.harvest()
+    //await tbsStaker.harvest()
+    //await tbgStaker.harvest()
+
+    console.log('team balances', {
+      ldt: await ldt.balanceOf(ldtTeam),
+      tbb: await tbb.balanceOf(ldtTeam),
+      tbs: await tbs.balanceOf(ldtTeam),
+      tbg: await tbg.balanceOf(ldtTeam),
+    });
+
+    console.log('deployer balances', {
+      ldt: await ldt.balanceOf(deployer),
+      tbb: await tbb.balanceOf(deployer),
+      tbs: await tbs.balanceOf(deployer),
+      tbg: await tbg.balanceOf(deployer),
+    });
 
     // console.log('tb farm after', formatUnits(await tbb.balanceOf(tbbStakerAddress), 18));
     // console.log('ldt farm after', formatUnits(await ldt.balanceOf(tbbStakerAddress), 18));
@@ -147,7 +183,7 @@ describe('RewardSplitter', () => {
   it('owner should set a new tbb reward rate', async () => {
     const { rewardSplitter } = await rewardSplitterFixture();
 
-    let rate = await rewardSplitter.tbbRewardRate()
+    let rate = await rewardSplitter.tbbRewardRate();
 
     expect(rate.ldt).eq(200n);
     expect(rate.tb).eq(200n);
@@ -169,7 +205,7 @@ describe('RewardSplitter', () => {
   it('owner should set a new tbs reward rate', async () => {
     const { rewardSplitter } = await rewardSplitterFixture();
 
-    let rate = await rewardSplitter.tbsRewardRate()
+    let rate = await rewardSplitter.tbsRewardRate();
 
     expect(rate.ldt).eq(500n);
     expect(rate.tb).eq(500n);
@@ -191,7 +227,7 @@ describe('RewardSplitter', () => {
   it('owner should set a new tbg reward rate', async () => {
     const { rewardSplitter } = await rewardSplitterFixture();
 
-    let rate = await rewardSplitter.tbgRewardRate()
+    let rate = await rewardSplitter.tbgRewardRate();
 
     expect(rate.ldt).eq(1000n);
     expect(rate.tb).eq(1000n);
