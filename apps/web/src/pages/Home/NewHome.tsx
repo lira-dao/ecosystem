@@ -7,7 +7,7 @@ import { NewLiraInfo } from './components/NewLiraInfo';
 import { NewLiraPower } from './components/NewLiraPower';
 import StyledDivider from './components/NewStyledDivider';
 import ColorWrap from '../../components/ui/NewColorWrap';
-import button from '../../img/enter-app-3.png';
+import button from '../../img/enter-app.png';
 
 
 export function NewHome() {
