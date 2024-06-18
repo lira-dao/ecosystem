@@ -74,10 +74,10 @@ export function DaoTeam() {
       }
     }}>
       <CardHeader
-        avatar={<Avatar src={member.avatarUrl} aria-label="member-avatar" />}
+        avatar={<Avatar src={member.avatarUrl} aria-label="member-avatar" sx={{ width: 64, height: 64 }} />}
         title={member.name}
         subheader={member.role}
-        titleTypographyProps={{ variant: 'h6', component: 'div' }}
+        titleTypographyProps={{ variant: 'body1', color: 'primary.main' }}
         subheaderTypographyProps={{ color: 'text.secondary' }}
       />
       <CardContent sx={{ flexGrow: 1 }}>
@@ -87,7 +87,7 @@ export function DaoTeam() {
       </CardContent>
       <CardActions disableSpacing sx={{ mt: 'auto', p: 2, justifyContent: member.nickName ? 'space-between' : 'flex-end' }}>
         {member.nickName && (
-          <Typography sx={{ ml: 2, fontSize: '0.875rem', fontWeight: 'bold', color: 'text.secondary' }}>
+          <Typography sx={{ ml: 2, fontSize: '0.875rem', fontWeight: 'bold', color: 'text.primary' }}>
             {member.nickName}
           </Typography>
         )}
