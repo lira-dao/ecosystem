@@ -72,7 +72,7 @@ export function DaoTeam() {
         avatar={<Avatar src={member.avatarUrl} aria-label="member-avatar" />}
         title={member.name}
         subheader={member.role}
-        titleTypographyProps={{ variant: 'h6' }}
+        titleTypographyProps={{ variant: 'h6', component: 'div' }}
         subheaderTypographyProps={{ color: 'text.secondary' }}
       />
       <CardContent sx={{ flexGrow: 1 }}>
@@ -81,7 +81,15 @@ export function DaoTeam() {
         </Typography>
       </CardContent>
       <CardActions disableSpacing sx={{ justifyContent: 'flex-end', p: 2 }}>
-        <IconButton href={member.linkedInUrl} target="_blank" sx={{ color: 'primary.main' }}>
+        <IconButton
+          href={member.linkedInUrl}
+          target="_blank" 
+          sx={{
+            color: 'primary.main',
+            '&:visited': {
+              color: 'primary.main'
+            }
+          }}>
           <LinkedInIcon />
         </IconButton>
       </CardActions>
