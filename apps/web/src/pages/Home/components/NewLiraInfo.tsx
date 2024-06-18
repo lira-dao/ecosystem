@@ -37,16 +37,14 @@ export const NewLiraInfo: React.FC = () => {
         <Grid container spacing={4} sx={{ mb: '120px', alignItems: 'center', justifyContent: 'center', paddingX: 2 }} >
           <Image img={gradientLiraChain} alt="Lira Chain" />
           <Content
-            title={<Typography variant="h6" sx={{ fontWeight: 'bold', padding: "0 0 30px" }}>Why <ColorWrap>Choose</ColorWrap> LIRA CHAIN?</Typography>}
-            text="LIRA CHAIN is a cutting-edge Layer 1 blockchain solution designed to revolutionize decentralized
-              finance (DeFi) and governance. Built with scalability, security, and decentralization at its core, LIRA CHAIN
-              offers a robust infrastructure for executing smart contracts, deploying decentralized applications
-              (DApps), and facilitating secure and efficient transactions. Powered by the native cryptocurrency LIRA DAO
-              COIN (LDC), LIRA CHAIN enables users to participate in governance processes, stake their tokens, and
-              engage in decentralized decision-making within the ecosystem. With its innovative features and
-              community-driven ethos, LIRA CHAIN paves the way for a decentralized future, empowering individuals to
-              take control of their financial destinies and shape the evolution of decentralized ecosystems. Join us
-              on the journey towards a new era of decentralized innovation with LIRA CHAIN."
+            title={<Typography variant="h6" sx={{ fontWeight: 'bold', padding: "0 0 30px" }}>Why <ColorWrap>Choose</ColorWrap> LIRA DEX?</Typography>}
+            text="LIRA DEX stands out in the crowded field of decentralized exchanges by offering a unique and sustainable
+              approach to liquidity mining and reward distribution. Unlike traditional DEXs that calculate rewards based
+              on fiat values, LIRA DEX uses the quantity of LDT tokens to determine rewards, ensuring stability and predictability.
+              Our innovative reward system prevents hyperinflation and hyperdeflation, fostering a healthier market environment. 
+              Additionally, with a significant portion of fees redistributed directly to liquidity providers and a commitment to 
+              sustainable growth, LIRA DEX provides a secure, transparent, and rewarding platform for all participants. 
+              Choose LIRA DEX for a more stable and reliable trading experience."
           />
         </Grid>
         <Grid container spacing={4} sx={{ mb: '120px', alignItems: 'center', justifyContent: 'center', flexDirection: 'row-reverse' }}>
@@ -79,13 +77,11 @@ export const NewLiraInfo: React.FC = () => {
         <Grid container spacing={4} sx={{ mb: '120px', alignItems: 'center', justifyContent: 'center', flexDirection: 'row-reverse' }}>
           <Image img={gradientLiraDex} alt="Lira DEX" />
           <Content
-            title={<Typography variant="h6" sx={{ fontWeight: 'bold', padding: "0 0 30px" }} gutterBottom>LIRA <ColorWrap>DEX</ColorWrap></Typography>}
-            text="LIRA DEX is the decentralized exchange (DEX) built on the LIRA blockchain, providing users with a secure
-              and efficient platform for trading digital assets. Powered by cutting-edge technology and designed with
-              user experience in mind, LIRA DEX offers seamless access to a wide range of cryptocurrencies, facilitating
-              peer-to-peer transactions with minimal fees and maximum security. With its decentralized architecture
-              and non-custodial nature, LIRA DEX empowers users to retain control over their assets while participating in
-              a vibrant and liquid marketplace. Join us on LIRA DEX and experience the future of decentralized trading firsthand."
+            title={<Typography variant="h6" sx={{ fontWeight: 'bold', padding: "0 0 30px" }} gutterBottom>Become an <ColorWrap>Ambassador</ColorWrap></Typography>}
+            text="Join the LIRA DAO Ambassador Program and help expand our vibrant community. As an ambassador, you'll earn rewards
+              through a multi-tiered referral system and contribute to the growth of the LIRA ecosystem. Maintain an active TB
+              token staking position for six months to qualify and start benefiting from our comprehensive incentive structure.
+              Learn more on our whitepaper about how you can get involved and make a difference with LIRA DAO."
           />
         </Grid>
       </Container>
