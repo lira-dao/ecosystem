@@ -56,7 +56,13 @@ const DexContractsTable: React.FC = () => {
           <TableBody>
             {dexAddresses.map((dexAddress) => (
               <TableRow key={dexAddress.address}>
-                <TableCell>{dexAddress.name}</TableCell>
+                <TableCell>
+                  <Box sx={{ display: 'flex' }}>
+                    <Typography variant="body2">
+                      {dexAddress.name}
+                    </Typography>
+                  </Box>
+                </TableCell>
                 <TableCell>
                   <Box sx={{ display: 'flex' }}>
                     <Typography variant="body2" noWrap>

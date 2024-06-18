@@ -11,7 +11,7 @@ import TokensTable from './components/TokensTable';
 export function Contracts() {
   return (
     <ThemeProvider theme={muiTheme}>
-      <Container maxWidth="lg" sx={{ p: 4, display: 'flex', flexDirection: 'column', width: '100%' }}>
+      <Container maxWidth="xl" sx={{ p: 4, display: 'flex', flexDirection: 'column', width: '100%' }}>
         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 4 }}>
           <Typography variant="h4" component="h1" color="white">Tokens</Typography>
         </Box>

@@ -63,7 +63,13 @@ const LiquidityPoolsTable: React.FC = () => {
           <TableBody>
             {liraDaoPools.map((pair: Pair) => (
               <TableRow key={pair.address}>
-                <TableCell>{pair.name}</TableCell>
+                <TableCell>
+                  <Box sx={{ display: 'flex' }}>
+                    <Typography variant="body2" noWrap>
+                      {pair.name}
+                    </Typography>
+                  </Box>
+                </TableCell>
                 <TableCell>
                   <Box sx={{ display: 'flex' }}>
                     <Typography variant="body2" noWrap>
