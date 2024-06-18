@@ -86,8 +86,8 @@ const TokensTable: React.FC = () => {
         <Table aria-label="tokens table">
           <TableHead>
             <TableRow>
-              <TableCell>Token Name</TableCell>
-              <TableCell>Token Address</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Address</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
