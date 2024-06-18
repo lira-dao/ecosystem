@@ -99,7 +99,7 @@ contract TokenDistributor is Ownable2Step {
         // update last balance
         lastBalance = token.balanceOf(address(this));
 
-        if (currentDistribution < distributions.length - 1 && distributions[currentDistribution].emitted > distributions[currentDistribution].amount) {
+        if (currentDistribution < distributions.length - 1 && distributions[currentDistribution].emitted >= distributions[currentDistribution].amount) {
             currentDistribution = currentDistribution + 1;
         }
 

@@ -70,7 +70,7 @@ describe('TokenDistributor', () => {
 
     await increaseTo(time + 86400);
 
-    while (true) {
+    while (await ldt.balanceOf(tokenDistributorAddress) > 0n) {
       const distribution = await tokenDistributor.distribute();
 
       block = await distribution.getBlock();
@@ -81,7 +81,7 @@ describe('TokenDistributor', () => {
 
     await expect(tokenDistributor.distribute()).revertedWith('DISTRIBUTED');
 
-    await ldt.transfer(tokenDistributorAddress, 1000n)
+    await ldt.transfer(tokenDistributorAddress, 100n)
 
     while (await ldt.balanceOf(tokenDistributorAddress) > 0n) {
       const distribution = await tokenDistributor.distribute();
