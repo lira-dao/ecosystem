@@ -98,8 +98,8 @@ export function NewHome() {
           </Box>
           <Box sx={{ width: [1, 1, '98%', '92%'] }}>
             <Typography fontSize="3xl" marginY={3} lineHeight='2.3rem'>
-              Join us on the forefront of decentralized finance and governance with the LIRA DAO TOKEN (LDT) presale on
-              the Arbitrum network. Seize this exclusive opportunity to become an early participant in the foundational
+              Join us on the forefront of decentralized finance and governance with the LIRA DAO TOKEN (LDT) on the
+              Arbitrum network. Seize this exclusive opportunity to become an early participant in the foundational
               phase of the LIRA ecosystem. With bonus incentives, secure token acquisition, and a vibrant community
               ecosystem, now is the time to embark on your journey towards a decentralized future.
             </Typography>
