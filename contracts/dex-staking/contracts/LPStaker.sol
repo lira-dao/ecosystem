@@ -4,7 +4,6 @@ pragma solidity ^0.8.24;
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
-import './interfaces/IUniswapV2Pair.sol';
 
 
 contract LPStaker is Ownable {
@@ -19,7 +18,7 @@ contract LPStaker is Ownable {
     event Unstake(address wallet, uint256 amount);
     event Harvest(address wallet, uint256 amountToken1, uint256 amountToken2);
 
-    IUniswapV2Pair public lpToken;
+    IERC20 public lpToken;
     IERC20 public rewardToken1;
     IERC20 public rewardToken2;
 
@@ -29,7 +28,7 @@ contract LPStaker is Ownable {
 
     uint256 public totalStaked;
 
-    constructor(IUniswapV2Pair _lpToken, IERC20 _rewardToken1, IERC20 _rewardToken2) Ownable(msg.sender) {
+    constructor(IERC20 _lpToken, IERC20 _rewardToken1, IERC20 _rewardToken2) Ownable(msg.sender) {
         lpToken = _lpToken;
         rewardToken1 = _rewardToken1;
         rewardToken2 = _rewardToken2;
@@ -39,11 +38,12 @@ contract LPStaker is Ownable {
         Staker storage staker = stakers[msg.sender];
         require(staker.amount == 0 || staker.lastRewardRound == rewardRounds.length, 'PENDING_REWARDS');
 
-        lpToken.transferFrom(msg.sender, address(this), _amount);
         staker.amount += _amount;
         staker.lastRewardRound = rewardRounds.length;
 
         totalStaked += _amount;
+
+        lpToken.safeTransferFrom(msg.sender, address(this), _amount);
 
         emit Stake(msg.sender, _amount);
     }
@@ -53,9 +53,9 @@ contract LPStaker is Ownable {
         require(staker.lastRewardRound == rewardRounds.length, 'PENDING_REWARDS');
 
         staker.amount -= _amount;
-
-        lpToken.transfer(msg.sender, _amount);
         totalStaked -= _amount;
+
+        lpToken.safeTransfer(msg.sender, _amount);
 
         emit Unstake(msg.sender, _amount);
     }
@@ -77,6 +77,8 @@ contract LPStaker is Ownable {
             round += 1;
         }
 
+        stakers[msg.sender].lastRewardRound = round;
+
         if (pendingReward1 > 0) {
             rewardToken1.safeTransfer(msg.sender, pendingReward1);
         }
@@ -84,8 +86,6 @@ contract LPStaker is Ownable {
         if (pendingReward2 > 0) {
             rewardToken2.safeTransfer(msg.sender, pendingReward2);
         }
-
-        stakers[msg.sender].lastRewardRound = round;
 
         emit Harvest(msg.sender, pendingReward1, pendingReward2);
     }
@@ -115,12 +115,5 @@ contract LPStaker is Ownable {
 
         rewardToken1.safeTransferFrom(msg.sender, address(this), rewardAmount1);
         rewardToken2.safeTransferFrom(msg.sender, address(this), rewardAmount2);
-    }
-
-    // TEST FUNCTION: MUST BE REMOVED IN FINAL IMPLEMENTATION
-    function empty() public onlyOwner {
-        lpToken.transfer(msg.sender, lpToken.balanceOf(address(this)));
-        rewardToken1.transfer(msg.sender, rewardToken1.balanceOf(address(this)));
-        rewardToken2.transfer(msg.sender, rewardToken2.balanceOf(address(this)));
     }
 }
