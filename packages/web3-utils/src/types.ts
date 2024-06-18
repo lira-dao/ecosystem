@@ -12,10 +12,6 @@ export interface Currency {
   symbol: string;
 }
 
-export type AddressList = {
-  [id: string]: EthereumAddress,
-}
-
 export type TokenAddresses = {
   [key: number]: {
     ldt: EthereumAddress,
@@ -57,8 +53,8 @@ export interface Pair {
 }
 
 export type DexPairs = {
-  [id: number]: {
-    [id: EthereumAddress]: Pair,
+  [key: number]: {
+    [key: EthereumAddress]: Pair,
   }
 }
 
@@ -74,4 +70,8 @@ export interface FarmingStaker {
   address: EthereumAddress,
   pool: EthereumAddress,
   tokens: [EthereumAddress, EthereumAddress],
+}
+
+export interface FarmingStakers {
+  [key: number]: FarmingStaker[],
 }

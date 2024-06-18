@@ -31,6 +31,7 @@ export const networks = {
 
   arbitrum: {
     url: process.env.INFURA_ARBITRUM,
+    chainId: 42161,
     accounts: [process.env.DEPLOYER_PRIVATE_KEY || ''],
   },
 };

@@ -1,6 +1,6 @@
 import { Currency, erc20Abi, EthereumAddress, farmingStakers, lpStakerAbi, Pair } from '@lira-dao/web3-utils';
 import { useDexPairs } from './useDexPairs';
-import { useAccount, useReadContracts } from 'wagmi';
+import { useAccount, useChainId, useReadContracts } from 'wagmi';
 import { getCurrencyByAddress } from '../utils';
 import BigNumber from 'bignumber.js';
 
@@ -18,9 +18,10 @@ export interface Farm {
 export function useFarmingStakers(): Farm[] {
   const dexPairs = useDexPairs();
   const account = useAccount();
+  const chainId = useChainId();
 
   const totalStaked = useReadContracts({
-    contracts: farmingStakers.map(fs => ({
+    contracts: farmingStakers[chainId].map(fs => ({
       abi: lpStakerAbi,
       address: fs.address,
       functionName: 'totalStaked',
@@ -28,7 +29,7 @@ export function useFarmingStakers(): Farm[] {
   });
 
   const amounts = useReadContracts({
-    contracts: farmingStakers.map(fs => ({
+    contracts: farmingStakers[chainId].map(fs => ({
       abi: lpStakerAbi,
       address: fs.address,
       functionName: 'stakers',
@@ -36,7 +37,7 @@ export function useFarmingStakers(): Farm[] {
     })),
   });
 
-  const rewardsContracts = farmingStakers.map(fs => ({
+  const rewardsContracts = farmingStakers[chainId].map(fs => ({
     abi: lpStakerAbi,
     address: fs.address,
     functionName: 'pendingRewards',
@@ -47,7 +48,7 @@ export function useFarmingStakers(): Farm[] {
     contracts: rewardsContracts,
   });
 
-  const balanceContracts = farmingStakers.map(fs => ({
+  const balanceContracts = farmingStakers[chainId].map(fs => ({
     abi: erc20Abi,
     address: fs.pool,
     functionName: 'balanceOf',
@@ -58,7 +59,7 @@ export function useFarmingStakers(): Farm[] {
     contracts: balanceContracts,
   });
 
-  return farmingStakers.map((staker, i) => {
+  return farmingStakers[chainId].map((staker, i) => {
     return {
       address: staker.address,
       pair: dexPairs[staker.pool],

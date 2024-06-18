@@ -1,7 +1,7 @@
 import {
   DexAddresses,
   DexPairs,
-  FarmingStaker,
+  FarmingStaker, FarmingStakers,
   FarmingStakersAddresses,
   RewardSplitterAddress,
   TokenAddresses,
@@ -25,9 +25,9 @@ export const tokens: TokenAddresses = {
     wbtc: '0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f',
     weth: '0x82aF49447D8a07e3bd95BD0d56f35241523fBab1',
 
-    ldt_tbb: '0x0',
-    ldt_tbs: '0x0',
-    ldt_tbg: '0x0',
+    ldt_tbb: '0xAfb2aaA7b90905f32fDb3E61010F0dc2705827ca',
+    ldt_tbs: '0xaFFEBBcbd0DD5AEDeCCdAB84b4103828780fD972',
+    ldt_tbg: '0xe24dB13D645218672D4D5Fc15f572328b32946A4',
   },
   421614: {
     ldt: '0x62F53E68662B013ea03B7BA6803b624632179eD3',
@@ -205,7 +205,7 @@ export const dexPairs: DexPairs = {
   },
 };
 
-export const farmingStakers: FarmingStaker[] = [{
+export const farmingStakersArbitrumSepolia: FarmingStaker[] = [{
   address: '0xF43ae7150aFc0bf086Bb44FaDaFF527f223133c8',
   pool: '0x63cB832062De3C0B86aeDdcC41A54AA8DAcae7D6',
   tokens: [
@@ -228,7 +228,40 @@ export const farmingStakers: FarmingStaker[] = [{
   ],
 }];
 
+export const farmingStakersArbitrumOne: FarmingStaker[] = [{
+  address: '0x7aFfdD28D244FeBfB4A6e8db14D5aA42AB8396Ce',
+  pool: '0xAfb2aaA7b90905f32fDb3E61010F0dc2705827ca',
+  tokens: [
+    '0x9C0385b4F1f3B277ab352B817fC56763081a503c',
+    '0x2A5E22b32b3E0Daa7a8C199e10Df9D9E1264Fd3f',
+  ],
+}, {
+  address: '0x0a84C2f54E3C7A00eb57922eEDB03440429E123b',
+  pool: '0xaFFEBBcbd0DD5AEDeCCdAB84b4103828780fD972',
+  tokens: [
+    '0x4bB0Eb07a8ECDcF5f434095Aa34Cc3f69292bcA1',
+    '0x2A5E22b32b3E0Daa7a8C199e10Df9D9E1264Fd3f',
+  ],
+}, {
+  address: '0xFA8c04138407756dDAe054287df603b3aed39662',
+  pool: '0xe24dB13D645218672D4D5Fc15f572328b32946A4',
+  tokens: [
+    '0xDB0aEb568EfE3598e9A58407c8b52BcFaC2c11e5',
+    '0x2A5E22b32b3E0Daa7a8C199e10Df9D9E1264Fd3f',
+  ],
+}];
+
+export const farmingStakers: FarmingStakers = {
+  42161: farmingStakersArbitrumOne,
+  421614: farmingStakersArbitrumSepolia,
+}
+
 export const farmingStakersAddresses: FarmingStakersAddresses = {
+  42161: {
+    tbb: '0x7aFfdD28D244FeBfB4A6e8db14D5aA42AB8396Ce',
+    tbs: '0x0a84C2f54E3C7A00eb57922eEDB03440429E123b',
+    tbg: '0xFA8c04138407756dDAe054287df603b3aed39662',
+  },
   421614: {
     tbb: '0xF43ae7150aFc0bf086Bb44FaDaFF527f223133c8',
     tbs: '0x62eA7348b14f6d8700b3db23CC5F48a10d74b29A',

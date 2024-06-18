@@ -11,6 +11,7 @@
       "env": [
         "DEPLOYER_PRIVATE_KEY",
         "INFURA_HOLESKY",
+        "INFURA_ARBITRUM",
         "INFURA_ARBITRUM_SEPOLIA",
         "INFURA_POLYGON_AMOY",
         "ETHERSCAN_ARBITRUM",
