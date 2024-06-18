@@ -111,8 +111,13 @@ contract TokenDistributor is Ownable2Step {
         splitter = _splitter;
     }
 
-    // TEST FUNCTION: MUST BE REMOVED IN FINAL IMPLEMENTATION
-    function empty() public onlyOwner {
-        token.transfer(msg.sender, token.balanceOf(address(this)));
+    /**
+     * Emergency function to recover tokens from the contract
+     * @param tokenAddress ERC20 address, cannot be the lp or reward tokens address
+     */
+    function emergencyWithdraw(IERC20 tokenAddress) public onlyOwner {
+        require(tokenAddress != token, 'CANNOT_WITHDRAW_LOCKED_TOKEN');
+
+        IERC20(tokenAddress).transfer(owner(), IERC20(tokenAddress).balanceOf(address(this)));
     }
 }

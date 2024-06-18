@@ -161,7 +161,7 @@ importers:
         version: link:../../packages/web3-utils
       '@metamask/sdk':
         specifier: ^0.3.0
-        version: 0.3.3(@types/react@18.3.2)(bufferutil@4.0.8)(react-native@0.71.19(@babel/core@7.24.5)(@babel/preset-env@7.24.5(@babel/core@7.24.5))(bufferutil@4.0.8)(react@18.3.1))(react@18.3.1)(webpack-dev-server@4.15.2(bufferutil@4.0.8)(webpack-cli@5.1.4)(webpack@5.91.0))
+        version: 0.3.3(@types/react@18.3.2)(bufferutil@4.0.8)(react-native@0.71.19(@babel/core@7.24.5)(@babel/preset-env@7.24.5(@babel/core@7.24.5))(bufferutil@4.0.8)(react@18.3.1))(react@18.3.1)
       '@mui/icons-material':
         specifier: ^5.15.18
         version: 5.15.18(@mui/material@5.15.18(@emotion/react@11.11.4(@types/react@18.3.2)(react@18.3.1))(@emotion/styled@11.11.5(@emotion/react@11.11.4(@types/react@18.3.2)(react@18.3.1))(@types/react@18.3.2)(react@18.3.1))(@types/react@18.3.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.2)(react@18.3.1)
@@ -832,6 +832,9 @@ importers:
       '@lira-dao/ldt':
         specifier: workspace:^
         version: link:../lira-dao-token
+      '@lira-dao/web3-utils':
+        specifier: workspace:^
+        version: link:../../packages/web3-utils
       '@nomicfoundation/hardhat-chai-matchers':
         specifier: ^2.0.0
         version: 2.0.6(@nomicfoundation/hardhat-ethers@3.0.6(ethers@6.12.1(bufferutil@4.0.8))(hardhat@2.22.4(bufferutil@4.0.8)(ts-node@10.9.2(@types/node@20.12.12)(typescript@5.4.5))(typescript@5.4.5)))(chai@4.4.1)(ethers@6.12.1(bufferutil@4.0.8))(hardhat@2.22.4(bufferutil@4.0.8)(ts-node@10.9.2(@types/node@20.12.12)(typescript@5.4.5))(typescript@5.4.5))

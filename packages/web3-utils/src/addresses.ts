@@ -270,9 +270,11 @@ export const farmingStakersAddresses: FarmingStakersAddresses = {
 }
 
 export const tokenDistributor: TokenDistributorAddress = {
+  42161: '0x70520d9BF8FE4E9eE4aCEaE6168B629961AF0A11',
   421614: '0x7F80B08dDCE1737a6957C279d33EfAFCB354912C',
 }
 
 export const rewardSplitter: RewardSplitterAddress = {
+  42161: '0xbBBbE9b62Cab1852461D4137b10E959F5577e5BE',
   421614: '0x27e8B443610190a7239359df3318be2A28c77731',
 }
