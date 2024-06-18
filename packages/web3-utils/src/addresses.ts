@@ -206,21 +206,21 @@ export const dexPairs: DexPairs = {
 };
 
 export const farmingStakers: FarmingStaker[] = [{
-  address: '0xDB2DF71cA3d4d8993b410d6F404F11A88237A01A',
+  address: '0xF43ae7150aFc0bf086Bb44FaDaFF527f223133c8',
   pool: '0x63cB832062De3C0B86aeDdcC41A54AA8DAcae7D6',
   tokens: [
     '0xb81B1310037Fb2866B267792C2537ced143d3DE8',
     '0x62F53E68662B013ea03B7BA6803b624632179eD3',
   ],
 }, {
-  address: '0x0e734c5A4B597c3677Ebc2c9344615A33528F890',
+  address: '0x62eA7348b14f6d8700b3db23CC5F48a10d74b29A',
   pool: '0x58D8C1b01c2B9BFc74B0425f8CA3180b9C70De4C',
   tokens: [
     '0xeE388b955fEb0567Cf86dFAAcdf393aEC14184aa',
     '0x62F53E68662B013ea03B7BA6803b624632179eD3',
   ],
 }, {
-  address: '0xDD91afc825b63985387b49b9F40EC6F8815Bb635',
+  address: '0x0faF2b848325dfA42CEc69E34f1d44379ee7191c',
   pool: '0x7BAbb27A79A3f470bEea87A9008Fc22681F42e2c',
   tokens: [
     '0x34597dc215fcfd707c4B9b2D4ba4f69f45A91A82',
@@ -230,16 +230,16 @@ export const farmingStakers: FarmingStaker[] = [{
 
 export const farmingStakersAddresses: FarmingStakersAddresses = {
   421614: {
-    tbb: '0xDB2DF71cA3d4d8993b410d6F404F11A88237A01A',
-    tbs: '0x0e734c5A4B597c3677Ebc2c9344615A33528F890',
-    tbg: '0xDD91afc825b63985387b49b9F40EC6F8815Bb635',
+    tbb: '0xF43ae7150aFc0bf086Bb44FaDaFF527f223133c8',
+    tbs: '0x62eA7348b14f6d8700b3db23CC5F48a10d74b29A',
+    tbg: '0x0faF2b848325dfA42CEc69E34f1d44379ee7191c',
   }
 }
 
 export const tokenDistributor: TokenDistributorAddress = {
-  421614: '0xEb1721894C89A8494b1867c45f43d0317Dbfba2f',
+  421614: '0x7F80B08dDCE1737a6957C279d33EfAFCB354912C',
 }
 
 export const rewardSplitter: RewardSplitterAddress = {
-  421614: '0xEAA2080654C3459c9B2ae7173529576578145538',
+  421614: '0x27e8B443610190a7239359df3318be2A28c77731',
 }

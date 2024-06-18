@@ -416,7 +416,7 @@ importers:
         specifier: workspace:*
         version: link:../treasury-tokens
       '@lira-dao/web3-utils':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/web3-utils
       '@nomicfoundation/hardhat-chai-matchers':
         specifier: ^2.0.0

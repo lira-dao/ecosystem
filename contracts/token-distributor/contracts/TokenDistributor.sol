@@ -4,6 +4,7 @@ pragma solidity ^0.8.24;
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/access/Ownable2Step.sol';
 
+
 /**
  * @title Token Distributor
  * @author LIRA DAO Team
@@ -29,7 +30,7 @@ contract TokenDistributor is Ownable2Step {
     // token to distribute
     IERC20 public token;
 
-    address public distributor;
+    address public splitter;
 
     // distribution list
     Distribution[] public distributions;
@@ -43,17 +44,17 @@ contract TokenDistributor is Ownable2Step {
     // next distribution timestamp
     uint public nextDistribution = 0;
 
-    modifier onlyDistributor() {
-        msg.sender == distributor;
+    modifier onlySplitter() {
+        msg.sender == splitter;
         _;
     }
 
     constructor(address _token) Ownable(msg.sender) {
         token = IERC20(_token);
-        distributor = msg.sender;
+        splitter = msg.sender;
     }
 
-    function deposit(Distribution[] memory _distributions) public {
+    function deposit(Distribution[] memory _distributions) public onlyOwner {
         require(distributions.length == 0, 'ALREADY_STARTED');
 
         uint supply = 0;
@@ -68,7 +69,7 @@ contract TokenDistributor is Ownable2Step {
         nextDistribution = block.timestamp;
     }
 
-    function distribute() public onlyDistributor {
+    function distribute() public onlySplitter {
         require(block.timestamp > nextDistribution, 'CADENCE');
 
         uint tokenBalance = token.balanceOf(address(this));
@@ -90,7 +91,7 @@ contract TokenDistributor is Ownable2Step {
 
         require(distributionAmount > 0, 'DISTRIBUTED');
 
-        token.transfer(distributor, distributionAmount);
+        token.transfer(splitter, distributionAmount);
 
         // update emitted amount
         distributions[currentDistribution].emitted = distributions[currentDistribution].emitted + distributionAmount;
@@ -106,8 +107,8 @@ contract TokenDistributor is Ownable2Step {
         nextDistribution += distributions[currentDistribution].cadence;
     }
 
-    function setDistributor(address _distributor) public onlyOwner {
-        distributor = _distributor;
+    function setSplitter(address _splitter) public onlyOwner {
+        splitter = _splitter;
     }
 
     // TEST FUNCTION: MUST BE REMOVED IN FINAL IMPLEMENTATION

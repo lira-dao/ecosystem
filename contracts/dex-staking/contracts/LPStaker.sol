@@ -4,9 +4,10 @@ pragma solidity ^0.8.24;
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
+import '@openzeppelin/contracts/utils/ReentrancyGuard.sol';
 
 
-contract LPStaker is Ownable {
+contract LPStaker is Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
     struct Staker {
@@ -34,7 +35,7 @@ contract LPStaker is Ownable {
         rewardToken2 = _rewardToken2;
     }
 
-    function stake(uint256 _amount) public {
+    function stake(uint256 _amount) public nonReentrant {
         Staker storage staker = stakers[msg.sender];
         require(staker.amount == 0 || staker.lastRewardRound == rewardRounds.length, 'PENDING_REWARDS');
 
@@ -48,7 +49,7 @@ contract LPStaker is Ownable {
         emit Stake(msg.sender, _amount);
     }
 
-    function unstake(uint256 _amount) public {
+    function unstake(uint256 _amount) public nonReentrant {
         Staker storage staker = stakers[msg.sender];
         require(staker.lastRewardRound == rewardRounds.length, 'PENDING_REWARDS');
 
@@ -60,7 +61,7 @@ contract LPStaker is Ownable {
         emit Unstake(msg.sender, _amount);
     }
 
-    function harvest() public {
+    function harvest() public nonReentrant {
         uint256 amount = stakers[msg.sender].amount;
         uint256 round = stakers[msg.sender].lastRewardRound;
 
@@ -107,13 +108,25 @@ contract LPStaker is Ownable {
         return (pendingReward1, pendingReward2);
     }
 
-    function distributeRewards(uint256 rewardAmount1, uint256 rewardAmount2) public onlyOwner {
+    function distributeRewards(uint256 rewardAmount1, uint256 rewardAmount2) public onlyOwner nonReentrant {
         uint256 roundRewardPerShare1 = (rewardAmount1 * 1e36) / totalStaked;
         uint256 roundRewardPerShare2 = (rewardAmount2 * 1e36) / totalStaked;
 
         rewardRounds.push([roundRewardPerShare1, roundRewardPerShare2]);
 
-        rewardToken1.safeTransferFrom(msg.sender, address(this), rewardAmount1);
-        rewardToken2.safeTransferFrom(msg.sender, address(this), rewardAmount2);
+        rewardToken1.safeTransferFrom(owner(), address(this), rewardAmount1);
+        rewardToken2.safeTransferFrom(owner(), address(this), rewardAmount2);
+    }
+
+    /**
+     * Emergency function to recover tokens from the contract
+     * @param tokenAddress ERC20 address, cannot be the lp or reward tokens address
+     */
+    function emergencyWithdraw(IERC20 tokenAddress) public onlyOwner {
+        require(tokenAddress != lpToken, 'CANNOT_WITHDRAW_LOCKED_TOKEN');
+        require(tokenAddress != rewardToken1, 'CANNOT_WITHDRAW_LOCKED_TOKEN');
+        require(tokenAddress != rewardToken2, 'CANNOT_WITHDRAW_LOCKED_TOKEN');
+
+        IERC20(tokenAddress).safeTransfer(owner(), IERC20(tokenAddress).balanceOf(address(this)));
     }
 }

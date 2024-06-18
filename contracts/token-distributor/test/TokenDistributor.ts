@@ -1,7 +1,5 @@
 import { loadFixture } from '@nomicfoundation/hardhat-network-helpers';
 import { tokenDistributorFixture } from '../fixtures';
-
-import { appendFileSync } from 'fs';
 import { expect } from 'chai';
 import { increaseTo } from '@nomicfoundation/hardhat-network-helpers/dist/src/helpers/time';
 
@@ -22,7 +20,7 @@ describe('TokenDistributor', () => {
     // const filePath = `./distribution-${new Date().getTime()}.csv`;
     // fs.closeSync(fs.openSync(filePath, 'w'));
 
-    await ldt.approve(tokenDistributorAddress, 4_500_000_000n);
+    await ldt.approve(tokenDistributorAddress, 4_500_000_000n * (10n ** 18n));
 
     const deposit = await tokenDistributor.deposit([
       { amount: 2_025_000_000n * (10n ** 18n), emitted: 0n, rate: 5_547_945n * (10n ** 18n), cadence: 86400n },
@@ -71,6 +69,19 @@ describe('TokenDistributor', () => {
     let time = block?.timestamp ?? 0;
 
     await increaseTo(time + 86400);
+
+    while (true) {
+      const distribution = await tokenDistributor.distribute();
+
+      block = await distribution.getBlock();
+      time = block?.timestamp ?? 0;
+
+      await increaseTo(time + 86400);
+    }
+
+    await expect(tokenDistributor.distribute()).revertedWith('DISTRIBUTED');
+
+    await ldt.transfer(tokenDistributorAddress, 1000n)
 
     while (await ldt.balanceOf(tokenDistributorAddress) > 0n) {
       const distribution = await tokenDistributor.distribute();

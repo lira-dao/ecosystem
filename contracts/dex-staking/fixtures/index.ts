@@ -73,7 +73,7 @@ export async function rewardSplitterFixture() {
   );
   const rewardSplitterAddress = await rewardSplitter.getAddress();
 
-  await tokenDistributor.setDistributor(rewardSplitterAddress);
+  await tokenDistributor.setSplitter(rewardSplitterAddress);
 
   await tbb.transferOwnership(rewardSplitterAddress);
   await tbs.transferOwnership(rewardSplitterAddress);
