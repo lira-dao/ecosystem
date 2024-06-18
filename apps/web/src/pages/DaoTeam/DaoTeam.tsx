@@ -12,6 +12,7 @@ interface DaoTeamMember {
   description: string;
   avatarUrl: string;
   linkedInUrl: string;
+  nickName?: string;
 }
 
 const members: DaoTeamMember[] = [
@@ -20,28 +21,32 @@ const members: DaoTeamMember[] = [
     role:"Co-founder",
     description:"Specialist in tokenomics and smart contract logic since 2018, Bitcoin analyst.",
     avatarUrl: avatarImage,
-    linkedInUrl: "https://www.linkedin.com/in/erwin-roio-49858b156/"
+    linkedInUrl: "https://www.linkedin.com/in/erwin-roio-49858b156/",
+    nickName: "n0x"
   },
   {
     name:"Federico Paletta",
     role:"Co-founder",
     description:"Lead technical officer with extensive experience in the blockchain sector.",
     avatarUrl: avatarImage,
-    linkedInUrl: "https://www.linkedin.com/in/federico-paletta-b1999a91/"
+    linkedInUrl: "https://www.linkedin.com/in/federico-paletta-b1999a91/",
+    nickName: "Fredev"
   },
 {
     name:"Jacopo Iessi",
     role:"Co-founder",
     description:"Head of official social media platforms.",
     avatarUrl: avatarImage,
-    linkedInUrl: "https://www.linkedin.com/in/jacopo-iessi-666a9a19a/"
+    linkedInUrl: "https://www.linkedin.com/in/jacopo-iessi-666a9a19a/",
+    nickName: "Thelroth"
   },
   {
     name:"Nicholas Angelucci",
     role:"Co-founder",
     description:"Expert developer in modern computing, including Artificial Intelligence and blockchain technology.",
     avatarUrl: avatarImage,
-    linkedInUrl: "https://www.linkedin.com/in/nicholas-angelucci-65629616a/"
+    linkedInUrl: "https://www.linkedin.com/in/nicholas-angelucci-65629616a/",
+    nickName: "Nicholas"
   },
   {
     name:"Gabriele Passeri",
@@ -80,7 +85,12 @@ export function DaoTeam() {
           {member.description}
         </Typography>
       </CardContent>
-      <CardActions disableSpacing sx={{ justifyContent: 'flex-end', p: 2 }}>
+      <CardActions disableSpacing sx={{ mt: 'auto', p: 2, justifyContent: member.nickName ? 'space-between' : 'flex-end' }}>
+        {member.nickName && (
+          <Typography sx={{ ml: 2, fontSize: '0.875rem', fontWeight: 'bold', color: 'text.secondary' }}>
+            {member.nickName}
+          </Typography>
+        )}
         <IconButton
           href={member.linkedInUrl}
           target="_blank" 
