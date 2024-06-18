@@ -81,7 +81,7 @@ describe('TokenDistributor', () => {
 
     await expect(tokenDistributor.distribute()).revertedWith('DISTRIBUTED');
 
-    await ldt.transfer(tokenDistributorAddress, 100n)
+    await ldt.transfer(tokenDistributorAddress, 1000n)
 
     while (await ldt.balanceOf(tokenDistributorAddress) > 0n) {
       const distribution = await tokenDistributor.distribute();
