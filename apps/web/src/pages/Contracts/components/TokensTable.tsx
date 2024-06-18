@@ -94,7 +94,13 @@ const TokensTable: React.FC = () => {
           <TableBody>
             {liraDaoTokens.map((token) => (
               <TableRow key={token.address}>
-                <TableCell>{token.name}</TableCell>
+                <TableCell>
+                  <Box sx={{ display: 'flex' }}>
+                    <Typography variant="body2" noWrap>
+                      {token.name}
+                    </Typography>
+                  </Box>
+                </TableCell>
                 <TableCell>
                   <Box sx={{ display: 'flex' }}>
                     <Typography variant="body2" noWrap>
