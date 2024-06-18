@@ -51,6 +51,7 @@ export const NewHeader: React.FC = () => {
   const location = useLocation();
 
   const isContractsActive = location.pathname === '/contracts';
+  const isDaoTeamActive = location.pathname === '/dao_team';
 
   return (
     <ThemeProvider theme={theme}>
@@ -60,11 +61,11 @@ export const NewHeader: React.FC = () => {
         height: 176,
         m: { xs: '20px 20px 0', sm: '0 20px' },
         display: 'flex',
-        flexDirection: { xs: 'column', sm: 'row' },
+        flexDirection: { xs: 'column', sm: 'column', md: 'row' },
         justifyContent: 'space-between',
         alignItems: 'center'
       }}>
-        <Box sx={{ display: 'flex', width: [1, 1 / 3], alignItems: 'center', justifyContent: ['center', 'flex-start'], mt: 2 }}>
+        <Box sx={{ width: [ 1, 1, 1 / 3, 1 / 3 ], display: 'flex', alignItems: 'center', justifyContent: ['center', 'center', 'flex-start'], mt: 2 }}>
           <NavLink to="/">
             <img src={logo} height={66} alt="lira dao logo" />
           </NavLink>
@@ -75,16 +76,22 @@ export const NewHeader: React.FC = () => {
             <img src={discord} height={28} alt="Discord" />
           </Link>
         </Box>
-        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+        <Box sx={{ width: [ 1, 1, 2 / 3, 2 / 3 ], display: 'flex', justifyContent: 'center', flexWrap: 'nowrap' }}>
           <a href="https://whitepaper.liradao.org" target="_blank" rel="noreferrer">
-            <MenuItem mx={4}>
+            <MenuItem mx={3}>
               WHITEPAPER
             </MenuItem>
           </a>
 
           <NavLink to="/contracts">
-            <MenuItem mx={4} isActive={isContractsActive}>
+            <MenuItem mx={3} isActive={isContractsActive}>
               CONTRACTS
+            </MenuItem>
+          </NavLink>
+
+          <NavLink to="/dao_team">
+            <MenuItem mx={3} isActive={isDaoTeamActive}>
+              DAO TEAM
             </MenuItem>
           </NavLink>
         </Box>
