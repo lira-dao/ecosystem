@@ -42,7 +42,7 @@ const TokenomicsTable: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <TableContainer component={Paper}>
-        <Table aria-label="dex table">
+        <Table aria-label="tokenomics table">
           <TableHead>
             <TableRow>
               <TableCell style={{ width: '35%' }}>Contract</TableCell>
