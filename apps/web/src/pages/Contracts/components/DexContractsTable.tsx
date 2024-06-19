@@ -73,7 +73,7 @@ const DexContractsTable: React.FC = () => {
                     </CopyButton>
                   </Box>
                 </TableCell>
-                <TableCell align="center">
+                <TableCell>
                   <Box>
                     <a
                       href={dexAddress.arbiscanLink}
