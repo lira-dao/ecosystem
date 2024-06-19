@@ -55,9 +55,9 @@ const LiquidityPoolsTable: React.FC = () => {
         <Table aria-label="pools table">
           <TableHead>
             <TableRow>
-              <TableCell>Pair</TableCell>
-              <TableCell>Address</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell style={{ width: '35%' }}>Pair</TableCell>
+              <TableCell style={{ width: '50%' }}>Address</TableCell>
+              <TableCell style={{ width: '15%' }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

@@ -48,9 +48,9 @@ const DexContractsTable: React.FC = () => {
         <Table aria-label="dex table">
           <TableHead>
             <TableRow>
-              <TableCell>Contract</TableCell>
-              <TableCell>Address</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell style={{ width: '35%' }}>Contract</TableCell>
+              <TableCell style={{ width: '50%' }}>Address</TableCell>
+              <TableCell style={{ width: '15%' }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -64,7 +64,7 @@ const DexContractsTable: React.FC = () => {
                   </Box>
                 </TableCell>
                 <TableCell>
-                  <Box sx={{ display: 'flex' }}>
+                  <Box sx={{ display: 'flex', width: '100%' }}>
                     <Typography variant="body2" noWrap>
                       {dexAddress.address}
                     </Typography>
