@@ -6,6 +6,8 @@ import muiTheme from '../../theme_mui';
 import DexContractsTable from './components/DexContractsTable';
 import LiquidityPoolsTable from './components/LiquidityPoolsTable';
 import TokensTable from './components/TokensTable';
+import TokenomicsTable from './components/TokenomicsTable';
+import StakerContractsTable from './components/StakerContractsTable';
 
 
 export function Contracts() {
@@ -29,6 +31,18 @@ export function Contracts() {
         </Box>
 
         <LiquidityPoolsTable></LiquidityPoolsTable>
+
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 8, mb: 4 }}>
+          <Typography variant="h4" component="h1" color="white">Tokenomics</Typography>
+        </Box>
+
+        <TokenomicsTable></TokenomicsTable>
+
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 8, mb: 4 }}>
+          <Typography variant="h4" component="h1" color="white">Staker</Typography>
+        </Box>
+
+        <StakerContractsTable></StakerContractsTable>
       </Container>
     </ThemeProvider>
   );
