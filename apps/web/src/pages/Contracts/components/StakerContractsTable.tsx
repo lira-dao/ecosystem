@@ -47,7 +47,7 @@ const StakerContractsTable: React.FC = () => {
   return (
     <ThemeProvider theme={theme}>
       <TableContainer component={Paper}>
-        <Table aria-label="dex table">
+        <Table aria-label="staker table">
           <TableHead>
             <TableRow>
               <TableCell style={{ width: '35%' }}>Contract</TableCell>
