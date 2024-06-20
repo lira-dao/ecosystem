@@ -8,6 +8,7 @@ import LiquidityPoolsTable from './components/LiquidityPoolsTable';
 import TokensTable from './components/TokensTable';
 import TokenomicsTable from './components/TokenomicsTable';
 import StakerContractsTable from './components/StakerContractsTable';
+import LiquiditySafeContractsTable from './components/LiquiditySafeContractsTable';
 
 
 export function Contracts() {
@@ -43,6 +44,12 @@ export function Contracts() {
         </Box>
 
         <StakerContractsTable></StakerContractsTable>
+
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 8, mb: 4 }}>
+          <Typography variant="h4" component="h1" color="white">Liquidity Safe</Typography>
+        </Box>
+
+        <LiquiditySafeContractsTable></LiquiditySafeContractsTable>
       </Container>
     </ThemeProvider>
   );
