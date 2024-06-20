@@ -9,6 +9,7 @@ import TokensTable from './components/TokensTable';
 import TokenomicsTable from './components/TokenomicsTable';
 import StakerContractsTable from './components/StakerContractsTable';
 import LiquiditySafeContractsTable from './components/LiquiditySafeContractsTable';
+import TeamSafeContractsTable from './components/TeamSafeContractsTable';
 
 
 export function Contracts() {
@@ -50,6 +51,12 @@ export function Contracts() {
         </Box>
 
         <LiquiditySafeContractsTable></LiquiditySafeContractsTable>
+
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 8, mb: 4 }}>
+          <Typography variant="h4" component="h1" color="white">Team Safe</Typography>
+        </Box>
+
+        <TeamSafeContractsTable></TeamSafeContractsTable>
       </Container>
     </ThemeProvider>
   );
