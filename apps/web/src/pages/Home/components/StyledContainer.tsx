@@ -9,7 +9,7 @@ interface NewStyledContainerProps {
   sx?: SxProps<Theme>;
 }
 
-export const NewStyledContainer: React.FC<NewStyledContainerProps> = ({
+export const StyledContainer: React.FC<NewStyledContainerProps> = ({
   children,
   backgroundPosition,
   sx

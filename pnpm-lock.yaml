@@ -225,12 +225,6 @@ importers:
       sort-by:
         specifier: ^1.2.0
         version: 1.2.0
-      styled-components:
-        specifier: ^6.1.8
-        version: 6.1.11(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      styled-system:
-        specifier: ^5.1.5
-        version: 5.1.5
       typescript:
         specifier: ^5.2.2
         version: 5.4.5

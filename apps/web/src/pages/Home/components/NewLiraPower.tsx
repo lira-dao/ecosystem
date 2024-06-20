@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Container, Typography, ThemeProvider } from '@mui/material';
 import muiTheme from '../../../theme_mui';
 import liraHands from '../../../img/lira-hands.png';
-import ColorWrap from '../../../components/ui/NewColorWrap';
+import ColorWrap from '../../../components/ui/ColorWrap';
 
 export const NewLiraPower: React.FC = () => {
   return (
