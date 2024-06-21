@@ -45,7 +45,7 @@ export function Contracts() {
       <StakerContractsTable></StakerContractsTable>
 
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mt: 8, mb: 4 }}>
-        <Typography variant="h4" component="h1" color="white">Liquidity Safe</Typography>
+        <Typography variant="h4" component="h1" color="white">Liquidity Fund Safe</Typography>
       </Box>
 
       <LiquiditySafeContractsTable></LiquiditySafeContractsTable>

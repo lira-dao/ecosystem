@@ -14,7 +14,7 @@ import {
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import { ThemeProvider } from '@mui/material/styles';
-import theme from '../../../theme_mui';
+import theme from '../../../theme';
 
 import CopyButton from './CopyButton';
 import arbitrumLogo from '../../../img/arbitrum-shield.png';
