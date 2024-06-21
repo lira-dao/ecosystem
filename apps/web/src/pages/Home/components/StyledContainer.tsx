@@ -3,13 +3,13 @@ import { Box, SxProps, Theme } from '@mui/material';
 import daVinciLira from '../../../img/da-vinci-lira.svg';
 
 
-interface NewStyledContainerProps {
+interface StyledContainerProps {
   children?: React.ReactNode;
   backgroundPosition: string[];
   sx?: SxProps<Theme>;
 }
 
-export const NewStyledContainer: React.FC<NewStyledContainerProps> = ({
+export const StyledContainer: React.FC<StyledContainerProps> = ({
   children,
   backgroundPosition,
   sx

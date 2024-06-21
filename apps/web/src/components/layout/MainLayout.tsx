@@ -1,14 +1,14 @@
 import { Outlet } from 'react-router-dom';
-import { NewHeader } from './NewHeader';
-import { NewFooter } from './NewFooter';
+import { Header } from './Header';
+import { Footer } from './Footer';
 
 
 export function MainLayout() {
   return (
     <>
-      <NewHeader />
+      <Header />
       <Outlet />
-      <NewFooter />
+      <Footer />
     </>
   );
 }

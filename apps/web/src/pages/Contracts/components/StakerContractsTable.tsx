@@ -10,8 +10,6 @@ import {
   Box,
   Typography
 } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
-import theme from '../../../theme_mui';
 
 import CopyButton from './CopyButton';
 import arbitrumLogo from '../../../img/arbitrum-shield.png';
@@ -45,58 +43,56 @@ const StakerContractsTable: React.FC = () => {
   const handleCopyToClipboard = (address: string) => navigator.clipboard.writeText(address);
 
   return (
-    <ThemeProvider theme={theme}>
-      <TableContainer component={Paper}>
-        <Table aria-label="staker table">
-          <TableHead>
-            <TableRow>
-              <TableCell style={{ width: '35%' }}>Contract</TableCell>
-              <TableCell style={{ width: '50%' }}>Address</TableCell>
-              <TableCell style={{ width: '15%' }}>Actions</TableCell>
+    <TableContainer component={Paper}>
+      <Table aria-label="staker table">
+        <TableHead>
+          <TableRow>
+            <TableCell style={{ width: '35%' }}>Contract</TableCell>
+            <TableCell style={{ width: '50%' }}>Address</TableCell>
+            <TableCell style={{ width: '15%' }}>Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {stakerAddresses.map((staker) => (
+            <TableRow key={staker.address}>
+              <TableCell>
+                <Box sx={{ display: 'flex' }}>
+                  <Typography variant="body2">
+                    {staker.name}
+                  </Typography>
+                </Box>
+              </TableCell>
+              <TableCell>
+                <Box sx={{ display: 'flex' }}>
+                  <Typography variant="body2" noWrap>
+                    {staker.address}
+                  </Typography>
+                  <CopyButton onClick={() => handleCopyToClipboard(staker.address)}>
+                    Copy
+                  </CopyButton>
+                </Box>
+              </TableCell>
+              <TableCell>
+                <Box>
+                  <a
+                    href={staker.arbiscanLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ cursor: 'pointer', marginRight: 10 }}
+                  >
+                    <img
+                      src={arbitrumLogo}
+                      alt="arbitrum icon"
+                      width={30}
+                    />
+                  </a>
+                </Box>
+              </TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {stakerAddresses.map((staker) => (
-              <TableRow key={staker.address}>
-                <TableCell>
-                  <Box sx={{ display: 'flex' }}>
-                    <Typography variant="body2">
-                      {staker.name}
-                    </Typography>
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box sx={{ display: 'flex' }}>
-                    <Typography variant="body2" noWrap>
-                      {staker.address}
-                    </Typography>
-                    <CopyButton onClick={() => handleCopyToClipboard(staker.address)}>
-                      Copy
-                    </CopyButton>
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box>
-                    <a
-                      href={staker.arbiscanLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ cursor: 'pointer', marginRight: 10 }}
-                    >
-                      <img
-                        src={arbitrumLogo}
-                        alt="arbitrum icon"
-                        width={30}
-                      />
-                    </a>
-                  </Box>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </ThemeProvider>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 

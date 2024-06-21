@@ -1,244 +1,149 @@
+import React from 'react';
 import { NavLink } from 'react-router-dom';
-import styled, { ThemeProvider } from 'styled-components';
-import { Col, Row } from '@lira-dao/ui';
-import { Typography } from '../ui';
+import { Box, Grid } from '@mui/material';
+import Link from "@mui/material/Link";
+
+import Typography from "@mui/material/Typography";
+import { ThemeProvider } from '@mui/material/styles';
+import theme from '../../theme';
 import logo from '../../img/logo-dao.png';
 import twitter from '../../img/twitter.svg';
 import discord from '../../img/discord.svg';
-import theme from '../../theme';
 
+interface FooterTitleProps {
+  children: React.ReactNode;
+}
 
-const StyledFooterTitle = styled(Typography)`
-  color: ${props => props.theme.colors['white']};
-  font-weight: 700;
-  line-height: 48px;
-  font-size: 32px;
-  letter-spacing: 0em;
-  text-align: left;
+const FooterTitle: React.FC<FooterTitleProps> = ({ children }) => (
+  <Typography
+    sx={{
+      color: 'white',
+      fontWeight: 700,
+      lineHeight: '48px',
+      fontSize: '32px',
+      letterSpacing: '0em',
+      textAlign: 'left',
+      textDecorationLine: 'underline'
+    }}
+  >
+    {children}
+  </Typography>
+);
 
-  text-decoration-line: underline;
-`;
+interface FooterItemProps {
+  children: React.ReactNode;
+}
 
-const StyledFooterItem = styled(Typography)`
-  color: ${props => props.theme.colors['white-80']};
-  cursor: pointer;
-  font-weight: 400;
-  line-height: 26px;
+const FooterItem: React.FC<FooterItemProps> = ({ children }) => (
+  <Typography
+    sx={{
+      color: 'text.secondary',
+      cursor: 'pointer',
+      fontWeight: 400,
+      lineHeight: '26px',
+      fontSize: 'lg.fontSize',
+      letterSpacing: '0em',
+      textAlign: 'left',
+      // margin: '0px',
+      padding: { xs: '12px 0' },
+      '&:hover': {
+        color: 'white',
+      },
+      '&:active': {
+        color: 'primary.main'
+      },
+      '::selection': {
+        color: 'inherit',
+        backgroundColor: 'transparent'
+      }
+    }}
+  >
+    {children}
+  </Typography>
+);
 
-  ::selection {
-    color: inherit;
-    background: transparent;
-    text-shadow: none;
-  }
+interface FooterTextProps {
+  children: React.ReactNode;
+}
 
-  /* For Mozilla Firefox */
-
-  ::-moz-selection {
-    color: inherit;
-    background: transparent;
-    text-shadow: none;
-  }
-
-  &:hover {
-    color: ${props => props.theme.colors.white};
-  }
-
-  &:active {
-    color: ${props => props.theme.colors.primary};
-  }
-`;
-
-const StyledFooterText = styled(Typography)`
-  color: ${props => props.theme.colors['white']};
-  font-weight: 700;
-  line-height: 26px;
-`;
+const FooterText: React.FC<FooterTextProps> = ({ children }) => (
+  <Typography
+    sx={{
+      color: 'white',
+      fontWeight: 600,
+      lineHeight: '26px',
+      fontSize: 'lg.fontSize',
+      marginBottom: '40px'
+    }}
+  >
+    {children}
+  </Typography>
+);
 
 export function Footer() {
   return (
     <ThemeProvider theme={theme}>
-      <Col margin={['20px 20px 0']} marginTop={['80px']}>
-        <Row
-          width={['100%']}
-          marginBottom={['50px']}
-          flexDirection={['column', 'row', 'row', 'row']}
-          justifyContent="space-around"
+      <Box 
+        sx={{
+          margin: '20px 20px 0',
+          marginTop: '80px',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <Box
+          sx={{
+            width: '100%',
+            marginBottom: '50px',
+            flexDirection: ['column', 'row', 'row', 'row'],
+            justifyContent: 'space-around',
+            display: 'flex'
+          }}
         >
-          <Col width={[1, 1 / 3]} flexDirection={['column']} justifyContent={'center'}>
-            <Row>
+          <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+            <Grid item xs={12} sm={4} display="flex" flexDirection="column" sx={{ mb: { xs: 4, sm: 0 } }}>
               <NavLink to="/">
-                <img src={logo} height={66} alt="lira dao logo" />
+                <img src={logo} height={66} alt="LIRA DAO logo" />
               </NavLink>
-            </Row>
-            <Row>
-              <a href="https://twitter.com/LIRA_DAO" target="_blank" rel="noreferrer" style={{ margin: '16px' }}>
-                <img src={twitter} height={28} alt="lira dao twitter" />
-              </a>
-              <a href="https://discord.gg/fDRBajCB9V" target="_blank" rel="noreferrer" style={{ margin: '16px' }}>
-                <img src={discord} height={28} alt="lira dao discord" />
-              </a>
-            </Row>
-          </Col>
+              <Box sx={{ display: 'flex', mt: 2 }}>
+                <Link href="https://twitter.com/LIRA_DAO" target="_blank" rel="noreferrer" style={{ margin: '16px' }}>
+                  <img src={twitter} height={28} alt="Twitter" />
+                </Link>
+                <Link href="https://discord.gg/fDRBajCB9V" target="_blank" rel="noreferrer" style={{ margin: '16px' }}>
+                  <img src={discord} height={28} alt="Discord" />
+                </Link>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={4} display="flex" flexDirection="column">
+              <FooterTitle>SECTIONS</FooterTitle>
 
-          <Col width={[1, 1 / 3]} alignItems={'stretch'}>
-            <StyledFooterTitle>
-              SECTIONS
-            </StyledFooterTitle>
-
-            <Row>
-              <Col width={[1 / 2]}>
+              <Box sx={{ pt: 4, pb: 4}}>
                 <a href="https://whitepaper.liradao.org" target="_blank" rel="noreferrer">
-                  <StyledFooterItem>
+                  <FooterItem>
                     White Paper
-                  </StyledFooterItem>
+                  </FooterItem>
                 </a>
-              </Col>
+              </Box>
+            </Grid>
+            <Grid item xs={12} sm={4} display="flex" flexDirection="column">
+              <FooterTitle>INFO</FooterTitle>
 
-              {/* <Col width={[1 / 2]}>
-              <NavLink to="/">
-                <StyledFooterItem>
-                  Ecosystem
-                </StyledFooterItem>
-              </NavLink>
-            </Col> */}
-
-              {/* <Col width={[1 / 2]}>
-              <NavLink to="/">
-                <StyledFooterItem>
-                  Token Economics
-                </StyledFooterItem>
-              </NavLink>
-            </Col> */}
-            </Row>
-
-            {/* <Row>
-            <Col width={[1 / 2]}>
-              <NavLink to="/">
-                <StyledFooterItem>
-                  Mining
-                </StyledFooterItem>
-              </NavLink>
-            </Col>
-
-            <Col width={[1 / 2]}>
-              <a href='https://whitepaper.liradao.org' target="_blank" rel="noreferrer">
-                <StyledFooterItem>
-                  White Paper
-                </StyledFooterItem>
-              </a>
-            </Col>
-          </Row> */}
-
-            {/* <Row>
-            <Col width={[1 / 2]}>
-              <NavLink to="/">
-                <StyledFooterItem>
-                  Blockchain Data
-                </StyledFooterItem>
-              </NavLink>
-            </Col>
-          </Row> */}
-          </Col>
-
-          <Col width={[1, 1 / 3]}>
-            <StyledFooterTitle>
-              INFO
-            </StyledFooterTitle>
-
-            <Row>
-              <Col width={[1 / 2]}>
-                <NavLink to="/">
-                  <StyledFooterItem>
-                    LIRA DAO
-                  </StyledFooterItem>
-                </NavLink>
-                <StyledFooterItem>
+              <Box sx={{ pt: 4, pb: 4}}>
+                <FooterItem>
+                  LIRA DAO
+                </FooterItem>
+                <FooterItem>
                   social@liradao.org
-                </StyledFooterItem>
-                {/*<NavLink to="/blockchain-data">
-                <StyledFooterItem>
-                  Blockchain Data
-                </StyledFooterItem>
-              </NavLink>*/}
-              </Col>
+                </FooterItem>
+              </Box>
+            </Grid>
+          </Grid>
+        </Box>
 
-              {/* <Col width={[1 / 2]}>
-              <NavLink to="/">
-                <StyledFooterItem>
-                  Blog
-                </StyledFooterItem>
-              </NavLink>
-            </Col> */}
-            </Row>
-
-            {/* <Row>
-            <Col width={[1 / 2]}>
-                <NavLink to="/">
-                    <StyledFooterItem>
-                      Contact
-                    </StyledFooterItem>
-                </NavLink>
-            </Col>
-
-            <Col width={[1 / 2]}>
-              <NavLink to="/">
-                <StyledFooterItem>
-                  Jobs
-                </StyledFooterItem>
-              </NavLink>
-            </Col>
-          </Row> */}
-
-            {/* <Row>
-            <Col width={[1 / 2]}>
-              <NavLink to="/">
-                <StyledFooterItem>
-                  Sponsors
-                </StyledFooterItem>
-              </NavLink>
-            </Col>
-          </Row> */}
-
-            {/* <Row>
-            <Col width={[1 / 2]}>
-              <NavLink to="/">
-                <StyledFooterItem>
-                  Support
-                </StyledFooterItem>
-              </NavLink>
-            </Col>
-          </Row> */}
-          </Col>
-        </Row>
-
-        <Row width={'100%'}>
-          <Col width={[1, 1, 1, 1 / 2]}>
-            <StyledFooterText>©2024 LIRA DAO. All rights reserved</StyledFooterText>
-          </Col>
-
-          {/* <Col width={[1 / 2]} alignItems={['right']}>
-          <Row justifyContent={'end'}>
-            <a href='https://whitepaper.liradao.org' target="_blank" rel="noreferrer">
-              <StyledFooterItem marginRight={53}>
-                Terms of use
-              </StyledFooterItem>
-            </a>
-
-            <NavLink to="/">
-              <StyledFooterItem marginX={53}>
-                Privacy policy
-              </StyledFooterItem>
-            </NavLink>
-
-            <NavLink to="/">
-              <StyledFooterItem marginX={53}>
-                Cookies policy
-              </StyledFooterItem>
-            </NavLink>
-          </Row>
-        </Col> */}
-        </Row>
-      </Col>
+        <Box sx={{ width: '100%' }}>
+          <FooterText>©2024 LIRA DAO. All rights reserved</FooterText>
+        </Box>
+      </Box>
     </ThemeProvider>
   );
 }

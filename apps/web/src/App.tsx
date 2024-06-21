@@ -1,8 +1,10 @@
 import React from 'react';
 import { RouterProvider } from 'react-router-dom';
-import packageJson from '../package.json';
-import { router } from './router';
+import { ThemeProvider } from '@mui/material/styles';
 import CacheBuster from 'react-cache-buster';
+import { router } from './router';
+import theme from './theme';
+import packageJson from '../package.json';
 
 
 function App() {
@@ -15,7 +17,9 @@ function App() {
       isVerboseMode={false}
       loadingComponent={null}
     >
-      <RouterProvider router={router} />
+      <ThemeProvider theme={theme}>
+        <RouterProvider router={router} />
+      </ThemeProvider>
     </CacheBuster>
   );
 }
