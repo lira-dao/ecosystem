@@ -28,11 +28,11 @@ interface Wallet {
 
 const teamSafeAddresses: Wallet[] = [
   { name: 'Team Safe', address: '0x67Ca1A1BF9C9253f9aE475aA63e6730F8d4f3885', arbiscanLink: 'https://arbiscan.io/address/0x67Ca1A1BF9C9253f9aE475aA63e6730F8d4f3885' },
-  { name: 'Wallet Federico', address: '0xC4d7588b089b1F1b9C1c4D70f5ae9de848aC8d2d', arbiscanLink: 'https://arbiscan.io/address/0xC4d7588b089b1F1b9C1c4D70f5ae9de848aC8d2d' },
-  { name: 'Wallet Erwin', address: '0xD2F5A6274401e860fd4F655424A0A3bf80732d92', arbiscanLink: 'https://arbiscan.io/address/0xD2F5A6274401e860fd4F655424A0A3bf80732d92' },
-  { name: 'Wallet Jacopo', address: '0x72710250265fAfbe9B56c37e5Fdabfa08b892830', arbiscanLink: 'https://arbiscan.io/address/0x72710250265fAfbe9B56c37e5Fdabfa08b892830' },
-  { name: 'Wallet Nicholas', address: '0x0e0d31371e36cfF1476A19eEa0E77a2A072FB1A8', arbiscanLink: 'https://arbiscan.io/address/0x0e0d31371e36cfF1476A19eEa0E77a2A072FB1A8' },
-  { name: 'Wallet Gabriele', address: '0x0A70f73d2C4c927a606f5DdDf751254455e8cDdA', arbiscanLink: 'https://arbiscan.io/address/0x0A70f73d2C4c927a606f5DdDf751254455e8cDdA' }
+  { name: 'Wallet F.Paletta', address: '0xC4d7588b089b1F1b9C1c4D70f5ae9de848aC8d2d', arbiscanLink: 'https://arbiscan.io/address/0xC4d7588b089b1F1b9C1c4D70f5ae9de848aC8d2d' },
+  { name: 'Wallet E.Roio', address: '0xD2F5A6274401e860fd4F655424A0A3bf80732d92', arbiscanLink: 'https://arbiscan.io/address/0xD2F5A6274401e860fd4F655424A0A3bf80732d92' },
+  { name: 'Wallet J.Iessi', address: '0x72710250265fAfbe9B56c37e5Fdabfa08b892830', arbiscanLink: 'https://arbiscan.io/address/0x72710250265fAfbe9B56c37e5Fdabfa08b892830' },
+  { name: 'Wallet N.Angelucci', address: '0x0e0d31371e36cfF1476A19eEa0E77a2A072FB1A8', arbiscanLink: 'https://arbiscan.io/address/0x0e0d31371e36cfF1476A19eEa0E77a2A072FB1A8' },
+  { name: 'Wallet G.Passeri', address: '0x0A70f73d2C4c927a606f5DdDf751254455e8cDdA', arbiscanLink: 'https://arbiscan.io/address/0x0A70f73d2C4c927a606f5DdDf751254455e8cDdA' }
 ];
 
 const TeamSafeContractsTable: React.FC = () => {

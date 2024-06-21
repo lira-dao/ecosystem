@@ -26,11 +26,11 @@ interface Wallet {
 
 const liquiditySafeAddresses: Wallet[] = [
   { name: 'Liquidity Safe', address: '0x5C852c448e218e09510248201EA478741D902d3F', arbiscanLink: 'https://arbiscan.io/address/0x5C852c448e218e09510248201EA478741D902d3F' },
-  { name: 'Wallet Federico', address: '0x88adac19584a893aff6D1D545C1E3F16decB2929', arbiscanLink: 'https://arbiscan.io/address/0x88adac19584a893aff6D1D545C1E3F16decB2929' },
-  { name: 'Wallet Erwin', address: '0xA21af6c98ce1792eB68770dcf4F94b3d19daFabc', arbiscanLink: 'https://arbiscan.io/address/0xA21af6c98ce1792eB68770dcf4F94b3d19daFabc' },
-  { name: 'Wallet Jacopo', address: '0x48A7C14F0B515c454EB74c5148d0eA19c42eE6ce', arbiscanLink: 'https://arbiscan.io/address/0x48A7C14F0B515c454EB74c5148d0eA19c42eE6ce' },
-  { name: 'Wallet Nicholas', address: '0x6d62d10D72752baE9695e83BB5Ca62748eb3a411', arbiscanLink: 'https://arbiscan.io/address/0x6d62d10D72752baE9695e83BB5Ca62748eb3a411' },
-  { name: 'Wallet Gabriele', address: '0x098F23E7416B03F1DB2828cBABCd1F72714bceF1', arbiscanLink: 'https://arbiscan.io/address/0x098F23E7416B03F1DB2828cBABCd1F72714bceF1' }
+  { name: 'Wallet F.Paletta', address: '0x88adac19584a893aff6D1D545C1E3F16decB2929', arbiscanLink: 'https://arbiscan.io/address/0x88adac19584a893aff6D1D545C1E3F16decB2929' },
+  { name: 'Wallet E.Roio', address: '0xA21af6c98ce1792eB68770dcf4F94b3d19daFabc', arbiscanLink: 'https://arbiscan.io/address/0xA21af6c98ce1792eB68770dcf4F94b3d19daFabc' },
+  { name: 'Wallet J.Iessi', address: '0x48A7C14F0B515c454EB74c5148d0eA19c42eE6ce', arbiscanLink: 'https://arbiscan.io/address/0x48A7C14F0B515c454EB74c5148d0eA19c42eE6ce' },
+  { name: 'Wallet N.Angelucci', address: '0x6d62d10D72752baE9695e83BB5Ca62748eb3a411', arbiscanLink: 'https://arbiscan.io/address/0x6d62d10D72752baE9695e83BB5Ca62748eb3a411' },
+  { name: 'Wallet G.Passeri', address: '0x098F23E7416B03F1DB2828cBABCd1F72714bceF1', arbiscanLink: 'https://arbiscan.io/address/0x098F23E7416B03F1DB2828cBABCd1F72714bceF1' }
 ];
 
 const LiquiditySafeContractsTable: React.FC = () => {
