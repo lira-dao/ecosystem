@@ -95,7 +95,7 @@ export const Header: React.FC = () => {
             </MenuItem>
           </NavLink>
         </Box>
-        <Box sx={{ display: ['none', 'none', 'none', 'flex'], justifyContent: 'flex-end' }}>
+        <Box sx={{ width: [ 1 / 3 ], display: ['none', 'none', 'none', 'flex'], justifyContent: 'flex-end' }}>
           <a href="https://dex.liradao.org" target="_blank" rel="noreferrer">
             <img src={button} width={200} alt="Buy LDT" />
           </a>
