@@ -37,13 +37,37 @@ contract TokenStaker is Ownable, ReentrancyGuard {
 
     event Harvest(address indexed account, uint amount);
 
-    constructor(IERC20 _token) Ownable(msg.sender) {
+    constructor(IERC20 _token, IERC20 _rewardToken1, IERC20 _rewardToken2) Ownable(msg.sender) {
         token = _token;
+        rewardToken1 = _rewardToken1;
+        rewardToken2 = _rewardToken2;
     }
 
-    function stake(uint _amount) external nonReentrant {}
+    function stake(uint _amount) external nonReentrant {
+        Staker storage staker = stakers[msg.sender];
+        require(staker.amount == 0 || staker.lastRewardRound == rewardRounds.length, 'PENDING_REWARDS');
 
-    function unstake(uint _amount) external nonReentrant {}
+        staker.amount += _amount;
+        staker.lastRewardRound = rewardRounds.length;
+
+        totalStaked += _amount;
+
+        token.safeTransferFrom(msg.sender, address(this), _amount);
+
+        emit Stake(msg.sender, _amount);
+    }
+
+    function unstake(uint _amount) external nonReentrant {
+        Staker storage staker = stakers[msg.sender];
+        require(staker.lastRewardRound == rewardRounds.length, 'PENDING_REWARDS');
+
+        staker.amount -= _amount;
+        totalStaked -= _amount;
+
+        token.safeTransfer(msg.sender, _amount);
+
+        emit Unstake(msg.sender, _amount);
+    }
 
     function harvest() external nonReentrant {}
 
