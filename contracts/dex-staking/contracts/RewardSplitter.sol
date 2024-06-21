@@ -6,6 +6,7 @@ import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@lira-dao/token-distributor/contracts/interfaces/IDistributor.sol';
 import '@lira-dao/treasury-tokens/contracts/interfaces/ITreasuryToken.sol';
 import './interfaces/ILPStaker.sol';
+import './interfaces/IStaker.sol';
 import './interfaces/IUniswapV2Pair.sol';
 
 
@@ -22,6 +23,28 @@ contract RewardSplitter is Ownable2Step {
         uint rewardAmountTb;
         uint liquidityLdt;
         uint liquidityTb;
+    }
+
+    struct TokenStakingRewards {
+        uint ldt;
+        uint tb;
+
+        uint tbbMintAmount;
+        uint tbsMintAmount;
+        uint tbgMintAmount;
+
+        uint tbbTotalStaked;
+        uint tbsTotalStaked;
+        uint tbgTotalStaked;
+
+        uint tbbAmount;
+        uint tbbLdtAmount;
+
+        uint tbsAmount;
+        uint tbsLdtAmount;
+
+        uint tbgAmount;
+        uint tbgLdtAmount;
     }
 
     struct Rewards {
@@ -55,6 +78,8 @@ contract RewardSplitter is Ownable2Step {
         RewardLiquidity tbbLiquidity;
         RewardLiquidity tbsLiquidity;
         RewardLiquidity tbgLiquidity;
+
+        TokenStakingRewards tokenStaking;
     }
 
     struct RewardRate {
@@ -90,6 +115,10 @@ contract RewardSplitter is Ownable2Step {
     address public tbbFarmAddress;
     address public tbsFarmAddress;
     address public tbgFarmAddress;
+
+    address public tbbStakeAddress;
+    address public tbsStakeAddress;
+    address public tbgStakeAddress;
 
     address public teamAddress;
 
@@ -147,25 +176,42 @@ contract RewardSplitter is Ownable2Step {
     }
 
     function requestDistribution() external onlyOwner {
-        Rewards memory rewards = Rewards(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, RewardLiquidity(0, 0, 0, 0), RewardLiquidity(0, 0, 0, 0), RewardLiquidity(0, 0, 0, 0));
+        Rewards memory rewards = Rewards(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, RewardLiquidity(0, 0, 0, 0), RewardLiquidity(0, 0, 0, 0), RewardLiquidity(0, 0, 0, 0), TokenStakingRewards(0,0,0,0,0,0,0,0,0,0,0,0,0,0));
 
         IDistributor(distributor).distribute();
 
         rewards.ldtBalance = IERC20(ldt).balanceOf(address(this));
 
+        // total rewards
         rewards.tbRewards = (rewards.ldtBalance * tbRate) / 100;
         rewards.ldtRewards = rewards.ldtBalance - rewards.tbRewards;
 
+        // total farming rewards
         rewards.ldtFarmingReward = (rewards.ldtRewards * ldtSplit.farmingReward) / 100;
         rewards.tbFarmingReward = (rewards.tbRewards * tbSplit.farmingReward) / 100;
 
+        // tb farming rewards
         rewards.tbbFarmingReward = (rewards.tbFarmingReward * 20) / 100;
         rewards.tbsFarmingReward = (rewards.tbFarmingReward * 30) / 100;
         rewards.tbgFarmingReward = rewards.tbFarmingReward - rewards.tbbFarmingReward - rewards.tbsFarmingReward;
 
+        // farming liquidity
         rewards.tbbLiquidity = calculateStakingLiquidity(tbbFarmAddress, tbbRewardRate);
         rewards.tbsLiquidity = calculateStakingLiquidity(tbsFarmAddress, tbsRewardRate);
         rewards.tbgLiquidity = calculateStakingLiquidity(tbgFarmAddress, tbgRewardRate);
+
+        // total staking rewards
+        rewards.tokenStaking.ldt = (rewards.ldtRewards * ldtSplit.stakingReward) / 100;
+        rewards.tokenStaking.tb = (rewards.tbRewards * tbSplit.farmingReward) / 100;
+
+        // tb staking rewards
+        rewards.tokenStaking.tbbMintAmount = (rewards.tokenStaking.tb * 20) / 100;
+        rewards.tokenStaking.tbsMintAmount = (rewards.tokenStaking.tb * 30) / 100;
+        rewards.tokenStaking.tbgMintAmount = rewards.tokenStaking.tb - rewards.tokenStaking.tbbMintAmount - rewards.tokenStaking.tbsMintAmount;
+
+        rewards.tokenStaking.tbbTotalStaked = IStaker(tbbStakeAddress).totalStaked();
+        rewards.tokenStaking.tbsTotalStaked = IStaker(tbsStakeAddress).totalStaked();
+        rewards.tokenStaking.tbgTotalStaked = IStaker(tbgStakeAddress).totalStaked();
 
         uint totalLdt = rewards.tbbLiquidity.rewardAmountLdt + rewards.tbsLiquidity.rewardAmountLdt + rewards.tbgLiquidity.rewardAmountLdt;
 
@@ -201,6 +247,8 @@ contract RewardSplitter is Ownable2Step {
         } else {
             ITreasuryToken(tbgAddress).mint(address(this), rewards.tbgLiquidity.rewardAmountTb);
         }
+
+        // staking rewards
 
         if (ldtSplit.teamReward > 0) {
             rewards.ldtTeamReward = (rewards.ldtRewards * ldtSplit.teamReward) / 100;

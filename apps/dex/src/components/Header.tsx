@@ -30,7 +30,7 @@ const StyledMenuItem = styled(NavLink)`
   }
 
   &.active {
-    color: ${th.color('primary')}!important;
+    color: ${th.color('primary')} !important;
   }
 
   &:visited {
@@ -74,7 +74,7 @@ export function Header() {
         <MenuItem text="TREASURY" to="treasury" />
         <MenuItem text="POOLS" to="pools" />
         <MenuItem text="FARMING" to="farming" />
-        {/*<MenuItem text="STACKING" to="stacking" />*/}
+        <MenuItem text="STAKING" to="staking" />
         {process.env.REACT_APP_TESTNET === 'true' && <MenuItem text="FAUCETS" to="faucets" />}
       </x.div>
 

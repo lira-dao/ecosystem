@@ -31,7 +31,7 @@ export function Stake() {
     stakeError,
     isError,
     error,
-  } = useFarmingStaker(params.farm as EthereumAddress, 'stake', value);
+  } = useFarmingStaker(params.staker as EthereumAddress, 'stake', value);
 
   const isAllowDisabled = useMemo(() => approve.isPending || allowance.isPending, [approve, allowance]);
 

@@ -1,11 +1,13 @@
 import {
   DexAddresses,
   DexPairs,
-  FarmingStaker, FarmingStakers,
+  FarmingStaker,
+  FarmingStakers,
   FarmingStakersAddresses,
   RewardSplitterAddress,
   TokenAddresses,
   TokenDistributorAddress,
+  TokenStaker, TokenStakers,
 } from './types';
 
 
@@ -267,6 +269,33 @@ export const farmingStakersAddresses: FarmingStakersAddresses = {
     tbs: '0x62eA7348b14f6d8700b3db23CC5F48a10d74b29A',
     tbg: '0x0faF2b848325dfA42CEc69E34f1d44379ee7191c',
   }
+}
+
+export const tokenStakersArbitrumSepolia: TokenStaker[] = [{
+  address: '0x7DB000F68bb1B638ca779909cbDC90374b6b250e',
+  token: '0xb81B1310037Fb2866B267792C2537ced143d3DE8',
+  tokens: [
+    '0xb81B1310037Fb2866B267792C2537ced143d3DE8',
+    '0x62F53E68662B013ea03B7BA6803b624632179eD3',
+  ],
+}, {
+  address: '0xB2E52F2177CC2249B7F6b50AD5CE9393B42d1496',
+  token: '0xeE388b955fEb0567Cf86dFAAcdf393aEC14184aa',
+  tokens: [
+    '0xeE388b955fEb0567Cf86dFAAcdf393aEC14184aa',
+    '0x62F53E68662B013ea03B7BA6803b624632179eD3',
+  ],
+}, {
+  address: '0xaD5D9fbd71F75A7D760CcB6fD49987C071eE03be',
+  token: '0x34597dc215fcfd707c4B9b2D4ba4f69f45A91A82',
+  tokens: [
+    '0x34597dc215fcfd707c4B9b2D4ba4f69f45A91A82',
+    '0x62F53E68662B013ea03B7BA6803b624632179eD3',
+  ],
+}];
+
+export const tokenStakers: TokenStakers = {
+  421614: tokenStakersArbitrumSepolia,
 }
 
 export const tokenDistributor: TokenDistributorAddress = {

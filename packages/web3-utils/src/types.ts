@@ -72,6 +72,16 @@ export interface FarmingStaker {
   tokens: [EthereumAddress, EthereumAddress],
 }
 
+export interface TokenStaker {
+  address: EthereumAddress,
+  token: EthereumAddress,
+  tokens: [EthereumAddress, EthereumAddress],
+}
+
 export interface FarmingStakers {
   [key: number]: FarmingStaker[],
+}
+
+export interface TokenStakers {
+  [key: number]: TokenStaker[],
 }
