@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { Box, CssBaseline, Grid, Link, Typography, useTheme } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import theme from '../../theme_mui';
+import theme from '../../theme';
 import logo from '../../img/logo-dao.png';
 import button from '../../img/enter-app.png';
 import twitter from '../../img/twitter.svg';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import muiTheme from '../../../theme_mui';
+import muiTheme from '../../../theme';
 
 interface StyledDividerProps {
   width?: string | number;

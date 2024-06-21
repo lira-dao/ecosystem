@@ -13,7 +13,7 @@ import {
   Typography
 } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import theme from '../../../theme_mui';
+import theme from '../../../theme';
 
 import { EthereumAddress, tokens , dexPairs } from '@lira-dao/web3-utils';
 import {

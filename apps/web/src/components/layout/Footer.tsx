@@ -5,7 +5,7 @@ import Link from "@mui/material/Link";
 
 import Typography from "@mui/material/Typography";
 import { ThemeProvider } from '@mui/material/styles';
-import theme from '../../theme_mui';
+import theme from '../../theme';
 import logo from '../../img/logo-dao.png';
 import twitter from '../../img/twitter.svg';
 import discord from '../../img/discord.svg';
