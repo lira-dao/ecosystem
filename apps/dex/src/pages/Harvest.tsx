@@ -15,7 +15,7 @@ export function Harvest() {
   const { enqueueSnackbar } = useSnackbar();
   const params = useParams();
 
-  const { pendingRewards, tokens, write, isPending, havePendingRewards, confirmed, reset, pendingRewardsAmounts } = useFarmingStaker(params.farm as EthereumAddress, 'harvest');
+  const { pendingRewards, tokens, write, isPending, havePendingRewards, confirmed, reset, pendingRewardsAmounts } = useFarmingStaker(params.staker as EthereumAddress, 'harvest');
 
   useEffect(() => {
     if (confirmed) {

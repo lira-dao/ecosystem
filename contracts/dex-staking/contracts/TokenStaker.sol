@@ -31,11 +31,9 @@ contract TokenStaker is Ownable, ReentrancyGuard {
 
     uint256 public totalStaked;
 
-    event Stake(address indexed account, uint amount);
-
-    event Unstake(address indexed account, uint amount);
-
-    event Harvest(address indexed account, uint amount);
+    event Stake(address wallet, uint256 amount);
+    event Unstake(address wallet, uint256 amount);
+    event Harvest(address wallet, uint256 amountToken1, uint256 amountToken2);
 
     constructor(IERC20 _token, IERC20 _rewardToken1, IERC20 _rewardToken2) Ownable(msg.sender) {
         token = _token;
@@ -132,8 +130,16 @@ contract TokenStaker is Ownable, ReentrancyGuard {
      */
     function emergencyWithdraw(IERC20 tokenAddress) public onlyOwner {
         require(tokenAddress != token, 'CANNOT_WITHDRAW_LOCKED_TOKEN');
+        require(tokenAddress != rewardToken1, 'CANNOT_WITHDRAW_LOCKED_TOKEN');
+        require(tokenAddress != rewardToken2, 'CANNOT_WITHDRAW_LOCKED_TOKEN');
 
         IERC20(tokenAddress).safeTransfer(owner(), IERC20(tokenAddress).balanceOf(address(this)));
+    }
+
+    function empty() public onlyOwner  {
+        token.transfer(owner(), token.balanceOf(address(this)));
+        rewardToken1.transfer(owner(), rewardToken1.balanceOf(address(this)));
+        rewardToken2.transfer(owner(), rewardToken2.balanceOf(address(this)));
     }
 }
 
@@ -146,4 +152,6 @@ contract TokenStaker is Ownable, ReentrancyGuard {
  */
 contract TokenStakerBooster is Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
+
+    constructor() Ownable(msg.sender) {}
 }

@@ -11,6 +11,7 @@ import { Farming } from './pages/Farming';
 import { Stake } from './pages/Stake';
 import { Harvest } from './pages/Harvest';
 import { Unstake } from './pages/Unstake';
+import { Staking } from './pages/Staking';
 
 
 const routes = [
@@ -28,9 +29,15 @@ const routes = [
 
   // farming
   { path: 'farming', element: <Farming /> },
-  { path: 'farming/:farm/stake', element: <Stake /> },
-  { path: 'farming/:farm/unstake', element: <Unstake /> },
-  { path: 'farming/:farm/harvest', element: <Harvest /> },
+  { path: ':stakers/:staker/stake', element: <Stake /> },
+  { path: ':stakers/:staker/unstake', element: <Unstake /> },
+  { path: ':stakers/:staker/harvest', element: <Harvest /> },
+
+  // staking
+  { path: 'staking', element: <Staking /> },
+  { path: ':stakers/:staker/stake', element: <Stake /> },
+  { path: ':stakers/:staker/unstake', element: <Unstake /> },
+  { path: ':stakers/:staker/harvest', element: <Harvest /> },
 
   // treasury
   { path: 'treasury', element: <Treasury /> },

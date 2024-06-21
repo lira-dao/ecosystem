@@ -176,7 +176,7 @@ contract RewardSplitter is Ownable2Step {
     }
 
     function requestDistribution() external onlyOwner {
-        Rewards memory rewards = Rewards(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, RewardLiquidity(0, 0, 0, 0), RewardLiquidity(0, 0, 0, 0), RewardLiquidity(0, 0, 0, 0));
+        Rewards memory rewards = Rewards(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, RewardLiquidity(0, 0, 0, 0), RewardLiquidity(0, 0, 0, 0), RewardLiquidity(0, 0, 0, 0), TokenStakingRewards(0,0,0,0,0,0,0,0,0,0,0,0,0,0));
 
         IDistributor(distributor).distribute();
 
@@ -249,7 +249,6 @@ contract RewardSplitter is Ownable2Step {
         }
 
         // staking rewards
-        if () {}
 
         if (ldtSplit.teamReward > 0) {
             rewards.ldtTeamReward = (rewards.ldtRewards * ldtSplit.teamReward) / 100;
