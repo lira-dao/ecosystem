@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Box, CssBaseline, Grid, Link, Typography, useTheme } from '@mui/material';
+import { Box, CssBaseline, Link, Typography, useTheme, useMediaQuery } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from '../../theme';
 import logo from '../../img/logo-dao.png';
@@ -9,13 +9,15 @@ import twitter from '../../img/twitter.svg';
 import discord from '../../img/discord.svg';
 
 interface MenuItemProps {
-  children: React.ReactNode;
+  smallText: string;
+  text: string;
   mx: number;
-  isActive?: boolean ;
+  isActive?: boolean;
 }
 
-const MenuItem: React.FC<MenuItemProps> = ({ children, isActive }) => {
+const MenuItem: React.FC<MenuItemProps> = ({ text, smallText, isActive, mx }) => {
   const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.down('sm')); // This will check for screen sizes smaller than 'sm'
 
   return (
     <Typography
@@ -25,7 +27,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ children, isActive }) => {
         fontWeight: 400,
         fontSize: '18px',
         lineHeight: '27px',
-        mx: 4,
+        mx: mx,
         '&:hover': {
           color: theme.palette.common.white
         },
@@ -42,7 +44,7 @@ const MenuItem: React.FC<MenuItemProps> = ({ children, isActive }) => {
         }
       }}
     >
-      { children }
+      {matches ? smallText : text}
     </Typography>
   );
 };
@@ -78,21 +80,15 @@ export const Header: React.FC = () => {
         </Box>
         <Box sx={{ width: [ 1, 1, 2 / 3, 2 / 3 ], display: 'flex', justifyContent: 'center', flexWrap: 'nowrap' }}>
           <a href="https://whitepaper.liradao.org" target="_blank" rel="noreferrer">
-            <MenuItem mx={3}>
-              WHITEPAPER
-            </MenuItem>
+            <MenuItem text="WHITEPAPER" smallText="WHITEPAPER" mx={3} />
           </a>
 
           <NavLink to="/contracts">
-            <MenuItem mx={3} isActive={isContractsActive}>
-              CONTRACTS
-            </MenuItem>
+            <MenuItem text="CONTRACTS" smallText="CONTRACTS" mx={3} isActive={isContractsActive} />
           </NavLink>
 
           <NavLink to="/dao_team">
-            <MenuItem mx={3} isActive={isDaoTeamActive}>
-              DAO TEAM
-            </MenuItem>
+            <MenuItem text="DAO TEAM" smallText="TEAM" mx={3} isActive={isDaoTeamActive} />
           </NavLink>
         </Box>
         <Box sx={{ width: [ 1 / 3 ], display: ['none', 'none', 'none', 'flex'], justifyContent: 'flex-end' }}>
