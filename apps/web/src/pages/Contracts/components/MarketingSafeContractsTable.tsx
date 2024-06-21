@@ -28,7 +28,7 @@ interface Wallet {
 
 const marketingSafeAddresses: Wallet[] = [
   { name: 'Marketing Safe', address: '0xfe302984015FD1308448e8dfaB7898907f20c39c', arbiscanLink: 'https://arbiscan.io/address/0xfe302984015FD1308448e8dfaB7898907f20c39c' },
-  { name: 'Wallet Federico', address: '0xC4d7588b089b1F1b9C1c4D70f5ae9de848aC8d2d', arbiscanLink: 'https://arbiscan.io/address/0xC4d7588b089b1F1b9C1c4D70f5ae9de848aC8d2d' },
+  { name: 'Wallet Federico', address: '0xDCfEE97113be3fb92C7E5F588e17Ec52b0F0cB6A', arbiscanLink: 'https://arbiscan.io/address/0xDCfEE97113be3fb92C7E5F588e17Ec52b0F0cB6A' },
   { name: 'Wallet Erwin', address: '0x6d44EA07013D3614C98b9a494f97163eA28ce0Be', arbiscanLink: 'https://arbiscan.io/address/0x6d44EA07013D3614C98b9a494f97163eA28ce0Be' },
   { name: 'Wallet Jacopo', address: '0x99d16B139f5c9A0844B72619fb36D5Fb2fEa8B1e', arbiscanLink: 'https://arbiscan.io/address/0x99d16B139f5c9A0844B72619fb36D5Fb2fEa8B1e' },
   { name: 'Wallet Nicholas', address: '0x862149B7ee3C554597D78d469D43C334eaBE09Ac', arbiscanLink: 'https://arbiscan.io/address/0x862149B7ee3C554597D78d469D43C334eaBE09Ac' },
