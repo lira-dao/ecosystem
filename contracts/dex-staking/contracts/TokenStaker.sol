@@ -16,7 +16,20 @@ import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 contract TokenStaker is Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
+    struct Staker {
+        uint256 amount;
+        uint256 lastRewardRound;
+    }
+
     IERC20 public token;
+    IERC20 public rewardToken1;
+    IERC20 public rewardToken2;
+
+    mapping(address => Staker) public stakers;
+
+    uint256[2][] public rewardRounds;
+
+    uint256 public totalStaked;
 
     event Stake(address indexed account, uint amount);
 
@@ -49,4 +62,15 @@ contract TokenStaker is Ownable, ReentrancyGuard {
 
         IERC20(tokenAddress).safeTransfer(owner(), IERC20(tokenAddress).balanceOf(address(this)));
     }
+}
+
+/**
+ * @title Token Staker Booster V1
+ * @author LIRA DAO Team
+ * @custom:security-contact contact@liradao.org
+ *
+ * To know more about the ecosystem you can find us on https://liradao.org don't trust, verify!
+ */
+contract TokenStakerBooster is Ownable, ReentrancyGuard {
+    using SafeERC20 for IERC20;
 }
