@@ -69,13 +69,62 @@ contract TokenStaker is Ownable, ReentrancyGuard {
         emit Unstake(msg.sender, _amount);
     }
 
-    function harvest() external nonReentrant {}
+    function harvest() public nonReentrant {
+        uint256 amount = stakers[msg.sender].amount;
+        uint256 round = stakers[msg.sender].lastRewardRound;
 
-    function pendingRewards(address _address) public view returns (uint) {
-        return 0;
+        uint256 pendingReward1 = 0;
+        uint256 pendingReward2 = 0;
+
+        uint256 totalGas = gasleft();
+        uint256 gasLimit = (totalGas * 10) / 100;
+
+        while (round < rewardRounds.length && gasleft() > gasLimit) {
+            pendingReward1 += (amount * rewardRounds[round][0]) / 1e36;
+            pendingReward2 += (amount * rewardRounds[round][1]) / 1e36;
+
+            round += 1;
+        }
+
+        stakers[msg.sender].lastRewardRound = round;
+
+        if (pendingReward1 > 0) {
+            rewardToken1.safeTransfer(msg.sender, pendingReward1);
+        }
+
+        if (pendingReward2 > 0) {
+            rewardToken2.safeTransfer(msg.sender, pendingReward2);
+        }
+
+        emit Harvest(msg.sender, pendingReward1, pendingReward2);
     }
 
-    function distributeRewards(uint _amount) external onlyOwner nonReentrant {}
+    function pendingRewards(address _address) public view returns (uint256, uint256) {
+        Staker storage staker = stakers[_address];
+
+        uint256 pendingReward1 = 0;
+        uint256 pendingReward2 = 0;
+        uint256 round = staker.lastRewardRound;
+
+        while (round < rewardRounds.length) {
+            pendingReward1 += (stakers[_address].amount * rewardRounds[round][0]) / 1e36;
+            pendingReward2 += (stakers[_address].amount * rewardRounds[round][1]) / 1e36;
+
+            round += 1;
+        }
+
+        return (pendingReward1, pendingReward2);
+    }
+
+    function distributeRewards(uint256 rewardAmount1, uint256 rewardAmount2) public onlyOwner nonReentrant {
+        uint256 roundRewardPerShare1 = (rewardAmount1 * 1e36) / totalStaked;
+        uint256 roundRewardPerShare2 = (rewardAmount2 * 1e36) / totalStaked;
+
+        rewardRounds.push([roundRewardPerShare1, roundRewardPerShare2]);
+
+        rewardToken1.safeTransferFrom(owner(), address(this), rewardAmount1);
+        rewardToken2.safeTransferFrom(owner(), address(this), rewardAmount2);
+    }
 
     /**
      * Emergency function to recover tokens from the contract
