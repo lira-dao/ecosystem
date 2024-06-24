@@ -1,11 +1,6 @@
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { x } from '@xstyled/styled-components';
 import { formatUnits, parseUnits } from 'viem';
-import { InputPanel } from '../components/swap/InputPanel';
-import { Container } from '../components/swap/Container';
-import { NumericalInput } from '../components/StyledInput';
-import { CurrencySelector } from '../components/CurrencySelector';
-import { SwapSection } from '../components/swap/SwapSection';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { getCurrencies, getCurrencyByAddress, getPairedCurrencies } from '../utils';
 import { usePair } from '../hooks/usePair';
@@ -13,7 +8,6 @@ import { useBalance } from '../hooks/useBalance';
 import { useAllowance } from '../hooks/useAllowance';
 import { useApprove } from '../hooks/useApprove';
 import { useAddLiquidity } from '../hooks/useAddLiquidity';
-import Big from 'big.js';
 import BigNumber from 'bignumber.js';
 import { useDexAddresses } from '../hooks/useDexAddresses';
 import { useAccount, useBalance as useBalanceWagmi, useChainId } from 'wagmi';
@@ -23,6 +17,7 @@ import { useSnackbar } from 'notistack';
 import { useDebounce } from 'use-debounce';
 import { useParams } from 'react-router-dom';
 import { useDexPairs } from '../hooks/useDexPairs';
+import { CurrencyInput } from '../components/swap/CurrencyInput';
 
 
 export function AddLiquidity() {
@@ -57,7 +52,7 @@ export function AddLiquidity() {
   const allowanceB = useAllowance(currencyB?.address as EthereumAddress, dexAddresses.router);
 
   const approveA = useApprove(currencyA.address, dexAddresses.router, parseUnits(firstValue.toString(), currencyA.decimals));
-  const approveB = useApprove(currencyB?.address as EthereumAddress, dexAddresses.router, parseUnits(secondValue.toString(), currencyB?.decimals || 0));
+  const approveB = useApprove(currencyB?.address as EthereumAddress, dexAddresses.router, parseUnits(secondValue.toString(), currencyB?.decimals || 18));
 
   const account = useAccount();
   const accountBalance = useBalanceWagmi({ address: account.address });
@@ -82,7 +77,7 @@ export function AddLiquidity() {
     currencyA,
     parseUnits(firstValue.toString(), currencyA.decimals),
     currencyB,
-    parseUnits(secondValue.toString(), currencyB?.decimals || 0),
+    parseUnits(secondValue.toString(), currencyB?.decimals || 18),
   );
 
   const needAllowanceA = useMemo(() =>
@@ -112,7 +107,7 @@ export function AddLiquidity() {
 
       if (pair.priceCurrencyB.gt(0)) {
         setSecondValue(
-          pair.priceCurrencyA.times(new BigNumber(e.target.value)).toString(),
+          pair.priceCurrencyA.times(new BigNumber(e.target.value)).toFixed(),
         );
       }
 
@@ -120,9 +115,29 @@ export function AddLiquidity() {
       setSecondValue(e.target.value);
       if (pair.priceCurrencyB.gt(0)) {
         setFirstValue(
-          pair.priceCurrencyB.times(new BigNumber(e.target.value)).toString(),
+          pair.priceCurrencyB.times(new BigNumber(e.target.value)).toFixed(),
         );
       }
+    }
+  };
+
+  const onSetPercentageA = (value: string) => {
+    setFirstValue(value);
+
+    if (pair.priceCurrencyB.gt(0)) {
+      setSecondValue(
+        pair.priceCurrencyA.times(new BigNumber(value)).toFixed(),
+      );
+    }
+  };
+
+  const onSetPercentageB = (value: string) => {
+    setSecondValue(value);
+
+    if (pair.priceCurrencyB.gt(0)) {
+      setFirstValue(
+        pair.priceCurrencyB.times(new BigNumber(value)).toFixed(),
+      );
     }
   };
 
@@ -218,55 +233,37 @@ export function AddLiquidity() {
         <x.p fontSize="3xl">Add Liquidity</x.p>
       </x.div>
 
-      <SwapSection mt={6} mb={4}>
-        <InputPanel>
-          <Container>
-            <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
-              <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
-                <x.p color="gray155" userSelect="none">Deposit</x.p>
-                <CurrencySelector
-                  disabled={false}
-                  selected={false}
-                  currency={currencyA}
-                  onClick={onCurrencySelectAClick}
-                />
-              </x.div>
+      <CurrencyInput
+        balance={currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n}
+        currency={currencyA}
+        disabled={false}
+        formattedBalance={new BigNumber(formatUnits(currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n, currencyA.decimals)).toFixed(6, 1)}
+        id="currencyA"
+        insufficientBalance={insufficientBalanceA}
+        onChangeValue={onChangeValues}
+        onCurrencySelectClick={onCurrencySelectAClick}
+        onSetPercentage={onSetPercentageA}
+        selected={false}
+        showPercentages
+        title="Deposit"
+        value={firstValue}
+      />
 
-              <NumericalInput id="currencyA" disabled={!currencyB} value={firstValue} onChange={onChangeValues} />
-
-              <x.div w="100%" display="flex" mt={2} justifyContent="space-between">
-                <x.p color="red-400">{insufficientBalanceA ? 'Insufficient Balance' : ''}</x.p>
-                <x.p color="gray155">{new Big(formatUnits(currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n, currencyA.decimals)).toFixed(6)}</x.p>
-              </x.div>
-            </x.div>
-          </Container>
-        </InputPanel>
-      </SwapSection>
-
-      <SwapSection mt={6} mb={4}>
-        <InputPanel>
-          <Container>
-            <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
-              <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
-                <x.p color="gray155" userSelect="none">Deposit</x.p>
-                <CurrencySelector
-                  disabled={false}
-                  selected={false}
-                  currency={currencyB}
-                  onClick={onCurrencySelectBClick}
-                />
-              </x.div>
-
-              <NumericalInput id="currencyB" disabled={!currencyB} value={secondValue} onChange={onChangeValues} />
-
-              <x.div w="100%" display="flex" justifyContent="space-between" mt={2}>
-                <x.p color="red-400">{insufficientBalanceB ? 'Insufficient Balance' : ''}</x.p>
-                <x.p color="gray155">{new Big(formatUnits(currencyB?.isNative ? accountBalance.data?.value || 0n : balanceB.data ?? 0n, currencyB?.decimals || 18)).toFixed(6)}</x.p>
-              </x.div>
-            </x.div>
-          </Container>
-        </InputPanel>
-      </SwapSection>
+      <CurrencyInput
+        balance={currencyB?.isNative ? accountBalance.data?.value || 0n : balanceB.data ?? 0n}
+        currency={currencyB}
+        disabled={false}
+        formattedBalance={new BigNumber(formatUnits(currencyB?.isNative ? accountBalance.data?.value || 0n : balanceB.data ?? 0n, currencyB?.decimals || 18)).toFixed(6, 1)}
+        id="currencyB"
+        insufficientBalance={insufficientBalanceB}
+        onChangeValue={onChangeValues}
+        onCurrencySelectClick={onCurrencySelectBClick}
+        onSetPercentage={onSetPercentageB}
+        selected={false}
+        showPercentages
+        title="Deposit"
+        value={secondValue}
+      />
 
       {(currencyA && currencyB) && (
         <x.div mb={8}>

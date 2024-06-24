@@ -235,7 +235,7 @@ export function Swap() {
 
               <x.div w="100%" display="flex" mt={2} justifyContent="space-between">
                 <x.p color="red-400">{insufficientBalanceA ? 'Insufficient Balance' : ''}</x.p>
-                <x.p color="gray155">{new Big(formatUnits(currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n, currencyA.decimals)).toFixed(6)}</x.p>
+                <x.p color="gray155">{new BigNumber(formatUnits(currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n, currencyA.decimals)).toFixed(6, 1)}</x.p>
               </x.div>
             </x.div>
           </Container>
@@ -279,7 +279,7 @@ export function Swap() {
               />
 
               <x.div w="100%" display="flex" justifyContent="flex-end" mt={2}>
-                <x.p color="gray155">{new Big(formatUnits(currencyB?.isNative ? accountBalance.data?.value || 0n : balanceB.data ?? 0n, currencyB?.decimals || 18)).toFixed(6)}</x.p>
+                <x.p color="gray155">{new BigNumber(formatUnits(currencyB?.isNative ? accountBalance.data?.value || 0n : balanceB.data ?? 0n, currencyB?.decimals || 18)).toFixed(6, 1)}</x.p>
               </x.div>
             </x.div>
           </Container>
