@@ -1,11 +1,12 @@
 import { rewardSplitterFixture } from '../fixtures';
 import { expect } from 'chai';
+import { parseUnits } from 'ethers';
 
 describe('RewardSplitter', () => {
   it('must have ldt as reward token address', async () => {
     const { rewardSplitter, ldtAddress } = await rewardSplitterFixture();
 
-    expect(await rewardSplitter.ldt()).eq(ldtAddress);
+    expect((await rewardSplitter.addresses()).ldt).eq(ldtAddress);
   });
 
   it('must calculate rewards', async () => {
@@ -14,20 +15,21 @@ describe('RewardSplitter', () => {
       ldt,
       ldtTeam,
       rewardSplitter,
-      rewardSplitterAddress,
       tbb,
+      tbbFarm,
+      tbbFarmAddress,
       tbbPair,
-      tbbPairAddress,
       tbbStaker,
-      tbbStakerAddress,
       tbg,
+      tbgFarm,
+      tbgFarmAddress,
       tbgPair,
       tbgStaker,
-      tbgStakerAddress,
       tbs,
+      tbsFarm,
+      tbsFarmAddress,
       tbsPair,
       tbsStaker,
-      tbsStakerAddress,
     } = await rewardSplitterFixture();
 
     // console.log('LDT', await ldt.balanceOf(rewardSplitterAddress));
@@ -37,31 +39,44 @@ describe('RewardSplitter', () => {
 
     // console.log('tbb pair', await tbbPair.balanceOf(deployer));
 
-    await tbbPair.approve(tbbStakerAddress, await tbbPair.balanceOf(deployer));
-    await tbbStaker.stake(await tbbPair.balanceOf(deployer));
+    await tbbPair.approve(tbbFarmAddress, await tbbPair.balanceOf(deployer));
+    await tbbFarm.stake(await tbbPair.balanceOf(deployer));
 
-    await tbsPair.approve(tbsStakerAddress, await tbsPair.balanceOf(deployer));
-    await tbsStaker.stake(await tbsPair.balanceOf(deployer));
+    await tbsPair.approve(tbsFarmAddress, await tbsPair.balanceOf(deployer));
+    await tbsFarm.stake(await tbsPair.balanceOf(deployer));
 
-    await tbgPair.approve(tbgStakerAddress, await tbgPair.balanceOf(deployer));
-    await tbgStaker.stake(await tbgPair.balanceOf(deployer));
+    await tbgPair.approve(tbgFarmAddress, await tbgPair.balanceOf(deployer));
+    await tbgFarm.stake(await tbgPair.balanceOf(deployer));
 
     await rewardSplitter.approveTokens();
 
     // console.log('tbb pool', formatUnits(await tbb.balanceOf(tbbPairAddress), 18));
-    // console.log('tbb total staked', formatUnits(await tbbStaker.totalStaked(), 18));
+    // console.log('tbb total staked', formatUnits(await tbbFarm.totalStaked(), 18));
     //
-    // console.log('tb farm before', await tbb.balanceOf(tbbStakerAddress));
-    // console.log('ldt farm before', await ldt.balanceOf(tbbStakerAddress));
+    // console.log('tb farm before', await tbb.balanceOf(tbbFarmAddress));
+    // console.log('ldt farm before', await ldt.balanceOf(tbbFarmAddress));
     //
-    // console.log('tb farm before', await tbb.balanceOf(tbsStakerAddress));
-    // console.log('ldt farm before', await ldt.balanceOf(tbsStakerAddress));
+    // console.log('tb farm before', await tbb.balanceOf(tbsFarmAddress));
+    // console.log('ldt farm before', await ldt.balanceOf(tbsFarmAddress));
     //
-    // console.log('tb farm before', await tbb.balanceOf(tbgStakerAddress));
-    // console.log('ldt farm before', await ldt.balanceOf(tbgStakerAddress));
+    // console.log('tb farm before', await tbb.balanceOf(tbgFarmAddress));
+    // console.log('ldt farm before', await ldt.balanceOf(tbgFarmAddress));
+
+    await tbb.mint(deployer, parseUnits('1', 18));
+    await tbbStaker.stake(parseUnits('1', 18));
+
+    await tbs.mint(deployer, parseUnits('1', 18));
+    await tbsStaker.stake(parseUnits('1', 18));
+
+    await tbg.mint(deployer, parseUnits('1', 18));
+    await tbgStaker.stake(parseUnits('1', 18));
+
 
     // @ts-ignore
     await ldt.connect(ldtTeam).burn(await ldt.balanceOf(ldtTeam));
+    // await tbb.burn(await tbb.balanceOf(deployer));
+    // await tbs.burn(await tbs.balanceOf(deployer));
+    // await tbg.burn(await tbg.balanceOf(deployer));
     await ldt.burn(await ldt.balanceOf(deployer));
 
     console.log('team balances', {
@@ -80,9 +95,10 @@ describe('RewardSplitter', () => {
 
     const tx = await rewardSplitter.requestDistribution();
 
-    //await tbbStaker.harvest()
-    //await tbsStaker.harvest()
-    //await tbgStaker.harvest()
+    //await tbbFarm.harvest()
+    //await tbsFarm.harvest()
+    //await tbgFarm.harvest()
+    await tbbStaker.harvest();
 
     console.log('team balances', {
       ldt: await ldt.balanceOf(ldtTeam),
@@ -98,14 +114,14 @@ describe('RewardSplitter', () => {
       tbg: await tbg.balanceOf(deployer),
     });
 
-    // console.log('tb farm after', formatUnits(await tbb.balanceOf(tbbStakerAddress), 18));
-    // console.log('ldt farm after', formatUnits(await ldt.balanceOf(tbbStakerAddress), 18));
+    // console.log('tb farm after', formatUnits(await tbb.balanceOf(tbbFarmAddress), 18));
+    // console.log('ldt farm after', formatUnits(await ldt.balanceOf(tbbFarmAddress), 18));
     //
-    // console.log('tb farm after', formatUnits(await tbs.balanceOf(tbsStakerAddress), 18));
-    // console.log('ldt farm after', formatUnits(await ldt.balanceOf(tbsStakerAddress), 18));
+    // console.log('tb farm after', formatUnits(await tbs.balanceOf(tbsFarmAddress), 18));
+    // console.log('ldt farm after', formatUnits(await ldt.balanceOf(tbsFarmAddress), 18));
     //
-    // console.log('tb farm after', formatUnits(await tbg.balanceOf(tbgStakerAddress), 18));
-    // console.log('ldt farm after', formatUnits(await ldt.balanceOf(tbgStakerAddress), 18));
+    // console.log('tb farm after', formatUnits(await tbg.balanceOf(tbgFarmAddress), 18));
+    // console.log('ldt farm after', formatUnits(await ldt.balanceOf(tbgFarmAddress), 18));
   });
 
   it('owner should recover tbb ownership', async () => {
@@ -145,58 +161,58 @@ describe('RewardSplitter', () => {
   });
 
   it('owner should recover tbb farm ownership', async () => {
-    const { rewardSplitter, rewardSplitterAddress, deployer, user, tbbStaker } = await rewardSplitterFixture();
+    const { rewardSplitter, rewardSplitterAddress, deployer, user, tbbFarm } = await rewardSplitterFixture();
 
-    expect(await tbbStaker.owner()).eq(rewardSplitterAddress);
+    expect(await tbbFarm.owner()).eq(rewardSplitterAddress);
 
     await expect(rewardSplitter.connect(user).recoverOwnershipTbbFarm()).revertedWithCustomError(rewardSplitter, 'OwnableUnauthorizedAccount');
 
     await rewardSplitter.recoverOwnershipTbbFarm();
 
-    expect(await tbbStaker.owner()).eq(deployer);
+    expect(await tbbFarm.owner()).eq(deployer);
   });
 
   it('owner should recover tbs farm ownership', async () => {
-    const { rewardSplitter, rewardSplitterAddress, deployer, user, tbsStaker } = await rewardSplitterFixture();
+    const { rewardSplitter, rewardSplitterAddress, deployer, user, tbsFarm } = await rewardSplitterFixture();
 
-    expect(await tbsStaker.owner()).eq(rewardSplitterAddress);
+    expect(await tbsFarm.owner()).eq(rewardSplitterAddress);
 
     await expect(rewardSplitter.connect(user).recoverOwnershipTbsFarm()).revertedWithCustomError(rewardSplitter, 'OwnableUnauthorizedAccount');
 
     await rewardSplitter.recoverOwnershipTbsFarm();
 
-    expect(await tbsStaker.owner()).eq(deployer);
+    expect(await tbsFarm.owner()).eq(deployer);
   });
 
   it('owner should recover tbg farm ownership', async () => {
-    const { rewardSplitter, rewardSplitterAddress, deployer, user, tbgStaker } = await rewardSplitterFixture();
+    const { rewardSplitter, rewardSplitterAddress, deployer, user, tbgFarm } = await rewardSplitterFixture();
 
-    expect(await tbgStaker.owner()).eq(rewardSplitterAddress);
+    expect(await tbgFarm.owner()).eq(rewardSplitterAddress);
 
     await expect(rewardSplitter.connect(user).recoverOwnershipTbgFarm()).revertedWithCustomError(rewardSplitter, 'OwnableUnauthorizedAccount');
 
     await rewardSplitter.recoverOwnershipTbgFarm();
 
-    expect(await tbgStaker.owner()).eq(deployer);
+    expect(await tbgFarm.owner()).eq(deployer);
   });
 
   it('owner should set a new tbb reward rate', async () => {
     const { rewardSplitter } = await rewardSplitterFixture();
 
-    let rate = await rewardSplitter.tbbRewardRate();
+    let rate = await rewardSplitter.tbbFarmingRewardRate();
 
     expect(rate.ldt).eq(200n);
     expect(rate.tb).eq(200n);
 
-    await expect(rewardSplitter.setTbbRewardRate(0n, 1n)).revertedWith('INVALID_LDT_RATE');
-    await expect(rewardSplitter.setTbbRewardRate(100001n, 1n)).revertedWith('INVALID_LDT_RATE');
+    await expect(rewardSplitter.setTbbFarmingRewardRate(0n, 1n)).revertedWith('INVALID_LDT_RATE');
+    await expect(rewardSplitter.setTbbFarmingRewardRate(100001n, 1n)).revertedWith('INVALID_LDT_RATE');
 
-    await expect(rewardSplitter.setTbbRewardRate(1n, 0n)).revertedWith('INVALID_TB_RATE');
-    await expect(rewardSplitter.setTbbRewardRate(1n, 100001n)).revertedWith('INVALID_TB_RATE');
+    await expect(rewardSplitter.setTbbFarmingRewardRate(1n, 0n)).revertedWith('INVALID_TB_RATE');
+    await expect(rewardSplitter.setTbbFarmingRewardRate(1n, 100001n)).revertedWith('INVALID_TB_RATE');
 
-    await rewardSplitter.setTbbRewardRate(1n, 100000n);
+    await rewardSplitter.setTbbFarmingRewardRate(1n, 100000n);
 
-    rate = await rewardSplitter.tbbRewardRate();
+    rate = await rewardSplitter.tbbFarmingRewardRate();
 
     expect(rate.ldt).eq(1n);
     expect(rate.tb).eq(100000n);
@@ -205,20 +221,20 @@ describe('RewardSplitter', () => {
   it('owner should set a new tbs reward rate', async () => {
     const { rewardSplitter } = await rewardSplitterFixture();
 
-    let rate = await rewardSplitter.tbsRewardRate();
+    let rate = await rewardSplitter.tbsFarmingRewardRate();
 
     expect(rate.ldt).eq(500n);
     expect(rate.tb).eq(500n);
 
-    await expect(rewardSplitter.setTbsRewardRate(0n, 1n)).revertedWith('INVALID_LDT_RATE');
-    await expect(rewardSplitter.setTbsRewardRate(100001n, 1n)).revertedWith('INVALID_LDT_RATE');
+    await expect(rewardSplitter.setTbsFarmingRewardRate(0n, 1n)).revertedWith('INVALID_LDT_RATE');
+    await expect(rewardSplitter.setTbsFarmingRewardRate(100001n, 1n)).revertedWith('INVALID_LDT_RATE');
 
-    await expect(rewardSplitter.setTbsRewardRate(1n, 0n)).revertedWith('INVALID_TB_RATE');
-    await expect(rewardSplitter.setTbsRewardRate(1n, 100001n)).revertedWith('INVALID_TB_RATE');
+    await expect(rewardSplitter.setTbsFarmingRewardRate(1n, 0n)).revertedWith('INVALID_TB_RATE');
+    await expect(rewardSplitter.setTbsFarmingRewardRate(1n, 100001n)).revertedWith('INVALID_TB_RATE');
 
-    await rewardSplitter.setTbsRewardRate(1n, 100000n);
+    await rewardSplitter.setTbsFarmingRewardRate(1n, 100000n);
 
-    rate = await rewardSplitter.tbsRewardRate();
+    rate = await rewardSplitter.tbsFarmingRewardRate();
 
     expect(rate.ldt).eq(1n);
     expect(rate.tb).eq(100000n);
@@ -227,20 +243,20 @@ describe('RewardSplitter', () => {
   it('owner should set a new tbg reward rate', async () => {
     const { rewardSplitter } = await rewardSplitterFixture();
 
-    let rate = await rewardSplitter.tbgRewardRate();
+    let rate = await rewardSplitter.tbgFarmingRewardRate()
 
     expect(rate.ldt).eq(1000n);
     expect(rate.tb).eq(1000n);
 
-    await expect(rewardSplitter.setTbgRewardRate(0n, 1n)).revertedWith('INVALID_LDT_RATE');
-    await expect(rewardSplitter.setTbgRewardRate(100001n, 1n)).revertedWith('INVALID_LDT_RATE');
+    await expect(rewardSplitter.setTbgFarmingRewardRate(0n, 1n)).revertedWith('INVALID_LDT_RATE');
+    await expect(rewardSplitter.setTbgFarmingRewardRate(100001n, 1n)).revertedWith('INVALID_LDT_RATE');
 
-    await expect(rewardSplitter.setTbgRewardRate(1n, 0n)).revertedWith('INVALID_TB_RATE');
-    await expect(rewardSplitter.setTbgRewardRate(1n, 100001n)).revertedWith('INVALID_TB_RATE');
+    await expect(rewardSplitter.setTbgFarmingRewardRate(1n, 0n)).revertedWith('INVALID_TB_RATE');
+    await expect(rewardSplitter.setTbgFarmingRewardRate(1n, 100001n)).revertedWith('INVALID_TB_RATE');
 
-    await rewardSplitter.setTbgRewardRate(1n, 100000n);
+    await rewardSplitter.setTbgFarmingRewardRate(1n, 100000n);
 
-    rate = await rewardSplitter.tbgRewardRate();
+    rate = await rewardSplitter.tbgFarmingRewardRate();
 
     expect(rate.ldt).eq(1n);
     expect(rate.tb).eq(100000n);

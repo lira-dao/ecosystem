@@ -45,6 +45,10 @@ contract RewardSplitter is Ownable2Step {
 
         uint tbgAmount;
         uint tbgLdtAmount;
+
+        RewardLiquidity tbbLiquidity;
+        RewardLiquidity tbsLiquidity;
+        RewardLiquidity tbgLiquidity;
     }
 
     struct Rewards {
@@ -106,29 +110,17 @@ contract RewardSplitter is Ownable2Step {
         uint8 greenEnergyProducersReward;
     }
 
-    address public ldt;
-
-    address public tbbAddress;
-    address public tbsAddress;
-    address public tbgAddress;
-
-    address public tbbFarmAddress;
-    address public tbsFarmAddress;
-    address public tbgFarmAddress;
-
-    address public tbbStakeAddress;
-    address public tbsStakeAddress;
-    address public tbgStakeAddress;
-
-    address public teamAddress;
-
-    address public distributor;
+    RewardSplitterAddresses public addresses;
 
     uint8 public tbRate = 80;
 
-    RewardRate public tbbRewardRate = RewardRate(200, 200);
-    RewardRate public tbsRewardRate = RewardRate(500, 500);
-    RewardRate public tbgRewardRate = RewardRate(1000, 1000);
+    RewardRate public tbbFarmingRewardRate = RewardRate(200, 200);
+    RewardRate public tbsFarmingRewardRate = RewardRate(500, 500);
+    RewardRate public tbgFarmingRewardRate = RewardRate(1000, 1000);
+
+    RewardRate public tbbStakingRewardRate = RewardRate(200, 200);
+    RewardRate public tbsStakingRewardRate = RewardRate(500, 500);
+    RewardRate public tbgStakingRewardRate = RewardRate(1000, 1000);
 
     RewardRate public teamRewardRate = RewardRate(1000, 1000);
 
@@ -139,48 +131,46 @@ contract RewardSplitter is Ownable2Step {
     uint public constant MAX_RATE = 100_000;
 
     constructor(
-        address _ldt,
-        address _distributor,
-        address _tbbAddress,
-        address _tbbFarmAddress,
-        address _tbsAddress,
-        address _tbsFarmAddress,
-        address _tbgAddress,
-        address _tbgFarmAddress,
-        address _teamAddress
+        RewardSplitterAddresses memory _addresses
     ) Ownable(msg.sender) {
-        ldt = _ldt;
-        distributor = _distributor;
-        tbbAddress = _tbbAddress;
-        tbbFarmAddress = _tbbFarmAddress;
-        tbsAddress = _tbsAddress;
-        tbsFarmAddress = _tbsFarmAddress;
-        tbgAddress = _tbgAddress;
-        tbgFarmAddress = _tbgFarmAddress;
-        teamAddress = _teamAddress;
+        addresses = _addresses;
+    }
+
+    function approveToken(address _token, address _spender) private {
+        IERC20(_token).approve(_spender, type(uint256).max);
     }
 
     function approveTokens() public onlyOwner {
-        IERC20(ldt).approve(tbbAddress, type(uint256).max);
-        IERC20(ldt).approve(tbsAddress, type(uint256).max);
-        IERC20(ldt).approve(tbgAddress, type(uint256).max);
+        approveToken(addresses.ldt, addresses.tbbAddress);
+        approveToken(addresses.ldt, addresses.tbsAddress);
+        approveToken(addresses.ldt, addresses.tbgAddress);
 
-        IERC20(tbbAddress).approve(tbbFarmAddress, type(uint256).max);
-        IERC20(ldt).approve(tbbFarmAddress, type(uint256).max);
+        approveToken(addresses.tbbAddress, addresses.tbbFarmAddress);
+        approveToken(addresses.tbbAddress, addresses.tbbStakerAddress);
+        approveToken(addresses.ldt, addresses.tbbFarmAddress);
+        approveToken(addresses.ldt, addresses.tbbStakerAddress);
 
-        IERC20(tbsAddress).approve(tbsFarmAddress, type(uint256).max);
-        IERC20(ldt).approve(tbsFarmAddress, type(uint256).max);
+        approveToken(addresses.tbsAddress, addresses.tbsFarmAddress);
+        approveToken(addresses.tbsAddress, addresses.tbsStakerAddress);
+        approveToken(addresses.ldt, addresses.tbsFarmAddress);
+        approveToken(addresses.ldt, addresses.tbsStakerAddress);
 
-        IERC20(tbgAddress).approve(tbgFarmAddress, type(uint256).max);
-        IERC20(ldt).approve(tbgFarmAddress, type(uint256).max);
+        approveToken(addresses.tbgAddress, addresses.tbgFarmAddress);
+        approveToken(addresses.tbgAddress, addresses.tbgStakerAddress);
+        approveToken(addresses.ldt, addresses.tbgFarmAddress);
+        approveToken(addresses.ldt, addresses.tbgStakerAddress);
     }
 
     function requestDistribution() external onlyOwner {
-        Rewards memory rewards = Rewards(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, RewardLiquidity(0, 0, 0, 0), RewardLiquidity(0, 0, 0, 0), RewardLiquidity(0, 0, 0, 0), TokenStakingRewards(0,0,0,0,0,0,0,0,0,0,0,0,0,0));
+        Rewards memory rewards = Rewards(
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            RewardLiquidity(0, 0, 0, 0), RewardLiquidity(0, 0, 0, 0), RewardLiquidity(0, 0, 0, 0),
+            TokenStakingRewards(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, RewardLiquidity(0, 0, 0, 0), RewardLiquidity(0, 0, 0, 0), RewardLiquidity(0, 0, 0, 0))
+        );
 
-        IDistributor(distributor).distribute();
+        IDistributor(addresses.distributor).distribute();
 
-        rewards.ldtBalance = IERC20(ldt).balanceOf(address(this));
+        rewards.ldtBalance = IERC20(addresses.ldt).balanceOf(address(this));
 
         // total rewards
         rewards.tbRewards = (rewards.ldtBalance * tbRate) / 100;
@@ -196,9 +186,9 @@ contract RewardSplitter is Ownable2Step {
         rewards.tbgFarmingReward = rewards.tbFarmingReward - rewards.tbbFarmingReward - rewards.tbsFarmingReward;
 
         // farming liquidity
-        rewards.tbbLiquidity = calculateStakingLiquidity(tbbFarmAddress, tbbRewardRate);
-        rewards.tbsLiquidity = calculateStakingLiquidity(tbsFarmAddress, tbsRewardRate);
-        rewards.tbgLiquidity = calculateStakingLiquidity(tbgFarmAddress, tbgRewardRate);
+        rewards.tbbLiquidity = calculateStakingLiquidity(addresses.tbbFarmAddress, tbbFarmingRewardRate);
+        rewards.tbsLiquidity = calculateStakingLiquidity(addresses.tbsFarmAddress, tbsFarmingRewardRate);
+        rewards.tbgLiquidity = calculateStakingLiquidity(addresses.tbgFarmAddress, tbgFarmingRewardRate);
 
         // total staking rewards
         rewards.tokenStaking.ldt = (rewards.ldtRewards * ldtSplit.stakingReward) / 100;
@@ -209,16 +199,43 @@ contract RewardSplitter is Ownable2Step {
         rewards.tokenStaking.tbsMintAmount = (rewards.tokenStaking.tb * 30) / 100;
         rewards.tokenStaking.tbgMintAmount = rewards.tokenStaking.tb - rewards.tokenStaking.tbbMintAmount - rewards.tokenStaking.tbsMintAmount;
 
-        rewards.tokenStaking.tbbTotalStaked = IStaker(tbbStakeAddress).totalStaked();
-        rewards.tokenStaking.tbsTotalStaked = IStaker(tbsStakeAddress).totalStaked();
-        rewards.tokenStaking.tbgTotalStaked = IStaker(tbgStakeAddress).totalStaked();
+        rewards.tokenStaking.tbbTotalStaked = IStaker(addresses.tbbStakerAddress).totalStaked() / 2;
+        rewards.tokenStaking.tbsTotalStaked = IStaker(addresses.tbsStakerAddress).totalStaked() / 2;
+        rewards.tokenStaking.tbgTotalStaked = IStaker(addresses.tbgStakerAddress).totalStaked() / 2;
+
+        // staking liquidity
+        rewards.tokenStaking.tbbLiquidity.rewardAmountLdt = (rewards.tokenStaking.tbbTotalStaked * ITreasuryToken(addresses.tbbAddress).rate() * tbbStakingRewardRate.ldt) / MAX_RATE;
+        rewards.tokenStaking.tbbLiquidity.rewardAmountTb = (rewards.tokenStaking.tbbTotalStaked * tbbStakingRewardRate.tb) / MAX_RATE;
+
+        rewards.tokenStaking.tbsLiquidity.rewardAmountLdt = (rewards.tokenStaking.tbsTotalStaked * ITreasuryToken(addresses.tbsAddress).rate() * tbsStakingRewardRate.ldt) / MAX_RATE;
+        rewards.tokenStaking.tbsLiquidity.rewardAmountTb = (rewards.tokenStaking.tbsTotalStaked * tbsStakingRewardRate.tb) / MAX_RATE;
+
+        rewards.tokenStaking.tbgLiquidity.rewardAmountLdt = (rewards.tokenStaking.tbgTotalStaked * ITreasuryToken(addresses.tbgAddress).rate() * tbgStakingRewardRate.ldt) / MAX_RATE;
+        rewards.tokenStaking.tbgLiquidity.rewardAmountTb = (rewards.tokenStaking.tbgTotalStaked * tbgStakingRewardRate.tb) / MAX_RATE;
+
+         uint totalStakingLdt = rewards.tokenStaking.tbbLiquidity.liquidityLdt + rewards.tokenStaking.tbsLiquidity.liquidityLdt + rewards.tokenStaking.tbgLiquidity.liquidityLdt;
+
+        if (totalStakingLdt > rewards.tokenStaking.ldt) {
+            uint tbbLiquidity = rewards.tokenStaking.tbbTotalStaked * ITreasuryToken(addresses.tbbAddress).rate();
+            uint tbsLiquidity = rewards.tokenStaking.tbsTotalStaked * ITreasuryToken(addresses.tbsAddress).rate();
+            uint tbgLiquidity = rewards.tokenStaking.tbgTotalStaked * ITreasuryToken(addresses.tbgAddress).rate();
+            uint totalLiquidity = tbbLiquidity + tbsLiquidity + tbgLiquidity;
+
+            rewards.tokenStaking.tbbLdtAmount = (tbbLiquidity * rewards.tokenStaking.ldt) / totalLiquidity;
+            rewards.tokenStaking.tbsLdtAmount = (tbsLiquidity * rewards.tokenStaking.ldt) / totalLiquidity;
+            rewards.tokenStaking.tbgLdtAmount = (tbgLiquidity * rewards.tokenStaking.ldt) / totalLiquidity;
+        } else {
+            rewards.tokenStaking.tbbLdtAmount = rewards.tokenStaking.tbbLiquidity.rewardAmountLdt;
+            rewards.tokenStaking.tbsLdtAmount = rewards.tokenStaking.tbsLiquidity.rewardAmountLdt;
+            rewards.tokenStaking.tbgLdtAmount = rewards.tokenStaking.tbgLiquidity.rewardAmountLdt;
+        }
 
         uint totalLdt = rewards.tbbLiquidity.rewardAmountLdt + rewards.tbsLiquidity.rewardAmountLdt + rewards.tbgLiquidity.rewardAmountLdt;
 
         if (totalLdt > rewards.ldtFarmingReward) {
-            uint tbbLiquidity = getLdtLiquidity(tbbFarmAddress);
-            uint tbsLiquidity = getLdtLiquidity(tbsFarmAddress);
-            uint tbgLiquidity = getLdtLiquidity(tbgFarmAddress);
+            uint tbbLiquidity = getLdtLiquidity(addresses.tbbFarmAddress);
+            uint tbsLiquidity = getLdtLiquidity(addresses.tbsFarmAddress);
+            uint tbgLiquidity = getLdtLiquidity(addresses.tbgFarmAddress);
             uint totalLiquidity = tbbLiquidity + tbsLiquidity + tbgLiquidity;
 
             rewards.tbbLdtAmount = (tbbLiquidity * rewards.ldtFarmingReward) / totalLiquidity;
@@ -230,23 +247,33 @@ contract RewardSplitter is Ownable2Step {
             rewards.tbgLdtAmount = rewards.tbgLiquidity.rewardAmountLdt;
         }
 
-        if (rewards.tbbLiquidity.rewardAmountTb > rewards.tbbFarmingReward / ITreasuryToken(tbbAddress).rate()) {
-            ITreasuryToken(tbbAddress).mint(address(this), rewards.tbbFarmingReward / ITreasuryToken(tbbAddress).rate());
+        if (rewards.tbbLiquidity.rewardAmountTb > rewards.tbbFarmingReward / ITreasuryToken(addresses.tbbAddress).rate()) {
+            ITreasuryToken(addresses.tbbAddress).mint(address(this), rewards.tbbFarmingReward / ITreasuryToken(addresses.tbbAddress).rate());
         } else {
-            ITreasuryToken(tbbAddress).mint(address(this), rewards.tbbLiquidity.rewardAmountTb);
+            ITreasuryToken(addresses.tbbAddress).mint(address(this), rewards.tbbLiquidity.rewardAmountTb);
         }
 
-        if (rewards.tbsLiquidity.rewardAmountTb > rewards.tbsFarmingReward / ITreasuryToken(tbsAddress).rate()) {
-            ITreasuryToken(tbsAddress).mint(address(this), rewards.tbsFarmingReward / ITreasuryToken(tbsAddress).rate());
+        rewards.tbbAmount = IERC20(addresses.tbbAddress).balanceOf(address(this));
+
+        if (rewards.tbsLiquidity.rewardAmountTb > rewards.tbsFarmingReward / ITreasuryToken(addresses.tbsAddress).rate()) {
+            ITreasuryToken(addresses.tbsAddress).mint(address(this), rewards.tbsFarmingReward / ITreasuryToken(addresses.tbsAddress).rate());
         } else {
-            ITreasuryToken(tbsAddress).mint(address(this), rewards.tbsLiquidity.rewardAmountTb);
+            ITreasuryToken(addresses.tbsAddress).mint(address(this), rewards.tbsLiquidity.rewardAmountTb);
         }
 
-        if (rewards.tbgLiquidity.rewardAmountTb > rewards.tbgFarmingReward / ITreasuryToken(tbgAddress).rate()) {
-            ITreasuryToken(tbgAddress).mint(address(this), rewards.tbgLiquidity.rewardAmountTb / ITreasuryToken(tbgAddress).rate());
+        rewards.tbsAmount = IERC20(addresses.tbsAddress).balanceOf(address(this));
+
+        if (rewards.tbgLiquidity.rewardAmountTb > rewards.tbgFarmingReward / ITreasuryToken(addresses.tbgAddress).rate()) {
+            ITreasuryToken(addresses.tbgAddress).mint(address(this), rewards.tbgLiquidity.rewardAmountTb / ITreasuryToken(addresses.tbgAddress).rate());
         } else {
-            ITreasuryToken(tbgAddress).mint(address(this), rewards.tbgLiquidity.rewardAmountTb);
+            ITreasuryToken(addresses.tbgAddress).mint(address(this), rewards.tbgLiquidity.rewardAmountTb);
         }
+
+        rewards.tbgAmount = IERC20(addresses.tbgAddress).balanceOf(address(this));
+
+        ILPStaker(addresses.tbbFarmAddress).distributeRewards(rewards.tbbLdtAmount, rewards.tbbAmount);
+        ILPStaker(addresses.tbsFarmAddress).distributeRewards(rewards.tbsLdtAmount, rewards.tbsAmount);
+        ILPStaker(addresses.tbgFarmAddress).distributeRewards(rewards.tbgLdtAmount, rewards.tbgAmount);
 
         // staking rewards
 
@@ -266,44 +293,50 @@ contract RewardSplitter is Ownable2Step {
                 rewards.ldtTeamReward = teamLdtReward;
             }
 
-            if ((rewards.tbbLiquidity.liquidityTb * teamRewardRate.tb) / MAX_RATE > rewards.tbbTeamReward / ITreasuryToken(tbbAddress).rate()) {
-                ITreasuryToken(tbbAddress).mint(teamAddress, rewards.tbbTeamReward / ITreasuryToken(tbbAddress).rate());
+            if ((rewards.tbbLiquidity.liquidityTb * teamRewardRate.tb) / MAX_RATE > rewards.tbbTeamReward / ITreasuryToken(addresses.tbbAddress).rate()) {
+                ITreasuryToken(addresses.tbbAddress).mint(addresses.teamAddress, rewards.tbbTeamReward / ITreasuryToken(addresses.tbbAddress).rate());
             } else {
-                ITreasuryToken(tbbAddress).mint(teamAddress, (rewards.tbbLiquidity.liquidityTb * teamRewardRate.tb) / MAX_RATE);
+                ITreasuryToken(addresses.tbbAddress).mint(addresses.teamAddress, (rewards.tbbLiquidity.liquidityTb * teamRewardRate.tb) / MAX_RATE);
             }
 
-            if ((rewards.tbsLiquidity.liquidityTb * teamRewardRate.tb) / MAX_RATE > rewards.tbsTeamReward / ITreasuryToken(tbsAddress).rate()) {
-                ITreasuryToken(tbsAddress).mint(teamAddress, rewards.tbsTeamReward / ITreasuryToken(tbsAddress).rate());
+            if ((rewards.tbsLiquidity.liquidityTb * teamRewardRate.tb) / MAX_RATE > rewards.tbsTeamReward / ITreasuryToken(addresses.tbsAddress).rate()) {
+                ITreasuryToken(addresses.tbsAddress).mint(addresses.teamAddress, rewards.tbsTeamReward / ITreasuryToken(addresses.tbsAddress).rate());
             } else {
-                ITreasuryToken(tbsAddress).mint(teamAddress, (rewards.tbsLiquidity.liquidityTb * teamRewardRate.tb) / MAX_RATE);
+                ITreasuryToken(addresses.tbsAddress).mint(addresses.teamAddress, (rewards.tbsLiquidity.liquidityTb * teamRewardRate.tb) / MAX_RATE);
             }
 
-            if ((rewards.tbgLiquidity.liquidityTb * teamRewardRate.tb) / MAX_RATE > rewards.tbgTeamReward / ITreasuryToken(tbgAddress).rate()) {
-                ITreasuryToken(tbgAddress).mint(teamAddress, rewards.tbgTeamReward / ITreasuryToken(tbgAddress).rate());
+            if ((rewards.tbgLiquidity.liquidityTb * teamRewardRate.tb) / MAX_RATE > rewards.tbgTeamReward / ITreasuryToken(addresses.tbgAddress).rate()) {
+                ITreasuryToken(addresses.tbgAddress).mint(addresses.teamAddress, rewards.tbgTeamReward / ITreasuryToken(addresses.tbgAddress).rate());
             } else {
-                ITreasuryToken(tbgAddress).mint(teamAddress, (rewards.tbgLiquidity.liquidityTb * teamRewardRate.tb) / MAX_RATE);
+                ITreasuryToken(addresses.tbgAddress).mint(addresses.teamAddress, (rewards.tbgLiquidity.liquidityTb * teamRewardRate.tb) / MAX_RATE);
             }
         }
 
-        rewards.tbbAmount = IERC20(tbbAddress).balanceOf(address(this));
-        rewards.tbsAmount = IERC20(tbsAddress).balanceOf(address(this));
-        rewards.tbgAmount = IERC20(tbgAddress).balanceOf(address(this));
+        // staking rewards
+        ITreasuryToken(addresses.tbbAddress).mint(address(this), rewards.tokenStaking.tbbAmount / ITreasuryToken(addresses.tbbAddress).rate());
+        rewards.tokenStaking.tbbAmount = IERC20(addresses.tbbAddress).balanceOf(address(this));
 
-        ILPStaker(tbbFarmAddress).distributeRewards(rewards.tbbLdtAmount, rewards.tbbAmount);
-        ILPStaker(tbsFarmAddress).distributeRewards(rewards.tbsLdtAmount, rewards.tbsAmount);
-        ILPStaker(tbgFarmAddress).distributeRewards(rewards.tbgLdtAmount, rewards.tbgAmount);
+        ITreasuryToken(addresses.tbsAddress).mint(address(this), rewards.tokenStaking.tbsAmount / ITreasuryToken(addresses.tbsAddress).rate());
+        rewards.tokenStaking.tbsAmount = IERC20(addresses.tbsAddress).balanceOf(address(this));
 
-        IERC20(ldt).transfer(teamAddress, rewards.ldtTeamReward);
+        ITreasuryToken(addresses.tbgAddress).mint(address(this), rewards.tokenStaking.tbgAmount / ITreasuryToken(addresses.tbgAddress).rate());
+        rewards.tokenStaking.tbgAmount = IERC20(addresses.tbgAddress).balanceOf(address(this));
 
-        if (IERC20(ldt).balanceOf(address(this)) > 0) {
-            IERC20(ldt).transfer(distributor, IERC20(ldt).balanceOf(address(this)));
+        IStaker(addresses.tbbStakerAddress).distributeRewards(rewards.tokenStaking.tbbLdtAmount, rewards.tokenStaking.tbbAmount);
+        IStaker(addresses.tbsStakerAddress).distributeRewards(rewards.tokenStaking.tbsLdtAmount, rewards.tokenStaking.tbsAmount);
+        IStaker(addresses.tbgStakerAddress).distributeRewards(rewards.tokenStaking.tbgLdtAmount, rewards.tokenStaking.tbgAmount);
+
+        IERC20(addresses.ldt).transfer(addresses.teamAddress, rewards.ldtTeamReward);
+
+        if (IERC20(addresses.ldt).balanceOf(address(this)) > 0) {
+            IERC20(addresses.ldt).transfer(addresses.distributor, IERC20(addresses.ldt).balanceOf(address(this)));
         }
     }
 
     function getLdtLiquidity(address _farm) public view returns (uint256 liquidity) {
         address lpToken = ILPStaker(_farm).lpToken();
 
-        liquidity = IERC20(ldt).balanceOf(lpToken);
+        liquidity = IERC20(addresses.ldt).balanceOf(lpToken);
     }
 
     function calculateStakingLiquidity(address _farm, RewardRate memory _rate) public view returns (RewardLiquidity memory) {
@@ -314,8 +347,8 @@ contract RewardSplitter is Ownable2Step {
         address t0 = IUniswapV2Pair(lpToken).token0();
         address t1 = IUniswapV2Pair(lpToken).token1();
 
-        (address token0, address token1) = t0 == ldt ? (t0, t1) : (t1, t0);
-        require(token0 == ldt, 'INVALID_TOKEN');
+        (address token0, address token1) = t0 == addresses.ldt ? (t0, t1) : (t1, t0);
+        require(token0 == addresses.ldt, 'INVALID_TOKEN');
 
         uint balance0 = IERC20(token0).balanceOf(lpToken);
         uint balance1 = IERC20(token1).balanceOf(lpToken);
@@ -331,28 +364,52 @@ contract RewardSplitter is Ownable2Step {
         );
     }
 
-    function setTbbRewardRate(uint _ldtRate, uint _tbbRate) external onlyOwner {
+    function setTbbFarmingRewardRate(uint _ldtRate, uint _tbbRate) external onlyOwner {
         require(_ldtRate >= MIN_RATE && _ldtRate <= MAX_RATE, 'INVALID_LDT_RATE');
         require(_tbbRate >= MIN_RATE && _tbbRate <= MAX_RATE, 'INVALID_TB_RATE');
 
-        tbbRewardRate.ldt = _ldtRate;
-        tbbRewardRate.tb = _tbbRate;
+        tbbFarmingRewardRate.ldt = _ldtRate;
+        tbbFarmingRewardRate.tb = _tbbRate;
     }
 
-    function setTbsRewardRate(uint _ldtRate, uint _tbsRate) external onlyOwner {
+    function setTbsFarmingRewardRate(uint _ldtRate, uint _tbsRate) external onlyOwner {
         require(_ldtRate >= MIN_RATE && _ldtRate <= MAX_RATE, 'INVALID_LDT_RATE');
         require(_tbsRate >= MIN_RATE && _tbsRate <= MAX_RATE, 'INVALID_TB_RATE');
 
-        tbsRewardRate.ldt = _ldtRate;
-        tbsRewardRate.tb = _tbsRate;
+        tbsFarmingRewardRate.ldt = _ldtRate;
+        tbsFarmingRewardRate.tb = _tbsRate;
     }
 
-    function setTbgRewardRate(uint _ldtRate, uint _tbgRate) external onlyOwner {
+    function setTbgFarmingRewardRate(uint _ldtRate, uint _tbgRate) external onlyOwner {
         require(_ldtRate >= MIN_RATE && _ldtRate <= MAX_RATE, 'INVALID_LDT_RATE');
         require(_tbgRate >= MIN_RATE && _tbgRate <= MAX_RATE, 'INVALID_TB_RATE');
 
-        tbgRewardRate.ldt = _ldtRate;
-        tbgRewardRate.tb = _tbgRate;
+        tbgFarmingRewardRate.ldt = _ldtRate;
+        tbgFarmingRewardRate.tb = _tbgRate;
+    }
+
+    function setTbbStakingRewardRate(uint _ldtRate, uint _tbbRate) external onlyOwner {
+        require(_ldtRate >= MIN_RATE && _ldtRate <= MAX_RATE, 'INVALID_LDT_RATE');
+        require(_tbbRate >= MIN_RATE && _tbbRate <= MAX_RATE, 'INVALID_TB_RATE');
+
+        tbbStakingRewardRate.ldt = _ldtRate;
+        tbbStakingRewardRate.tb = _tbbRate;
+    }
+
+    function setTbsStakingRewardRate(uint _ldtRate, uint _tbsRate) external onlyOwner {
+        require(_ldtRate >= MIN_RATE && _ldtRate <= MAX_RATE, 'INVALID_LDT_RATE');
+        require(_tbsRate >= MIN_RATE && _tbsRate <= MAX_RATE, 'INVALID_TB_RATE');
+
+        tbsStakingRewardRate.ldt = _ldtRate;
+        tbsStakingRewardRate.tb = _tbsRate;
+    }
+
+    function setTbgStakingRewardRate(uint _ldtRate, uint _tbgRate) external onlyOwner {
+        require(_ldtRate >= MIN_RATE && _ldtRate <= MAX_RATE, 'INVALID_LDT_RATE');
+        require(_tbgRate >= MIN_RATE && _tbgRate <= MAX_RATE, 'INVALID_TB_RATE');
+
+        tbgStakingRewardRate.ldt = _ldtRate;
+        tbgStakingRewardRate.tb = _tbgRate;
     }
 
     function setTeamRewardRate(uint _ldtRate, uint _tbgRate) external onlyOwner {
@@ -364,63 +421,63 @@ contract RewardSplitter is Ownable2Step {
     }
 
     function setTeamAddress(address _teamAddress) external onlyOwner {
-        teamAddress = _teamAddress;
+        addresses.teamAddress = _teamAddress;
     }
 
     function recoverOwnershipTbb() external onlyOwner {
-        Ownable(tbbAddress).transferOwnership(owner());
+        Ownable(addresses.tbbAddress).transferOwnership(owner());
     }
 
     function recoverOwnershipTbs() external onlyOwner {
-        Ownable(tbsAddress).transferOwnership(owner());
+        Ownable(addresses.tbsAddress).transferOwnership(owner());
     }
 
     function recoverOwnershipTbg() external onlyOwner {
-        Ownable(tbgAddress).transferOwnership(owner());
+        Ownable(addresses.tbgAddress).transferOwnership(owner());
     }
 
     function recoverOwnershipTbbFarm() external onlyOwner {
-        Ownable(tbbFarmAddress).transferOwnership(owner());
+        Ownable(addresses.tbbFarmAddress).transferOwnership(owner());
     }
 
     function recoverOwnershipTbsFarm() external onlyOwner {
-        Ownable(tbsFarmAddress).transferOwnership(owner());
+        Ownable(addresses.tbsFarmAddress).transferOwnership(owner());
     }
 
     function recoverOwnershipTbgFarm() external onlyOwner {
-        Ownable(tbgFarmAddress).transferOwnership(owner());
+        Ownable(addresses.tbgFarmAddress).transferOwnership(owner());
     }
 
     function setDistributor(address _distributor) external onlyOwner {
-        distributor = _distributor;
+        addresses.distributor = _distributor;
     }
 
-    function setLdtSplit(LdtSplit memory _ldtSplit) external onlyOwner {
-        require(
-            _ldtSplit.farmingReward +
-            _ldtSplit.stakingReward +
-            _ldtSplit.teamReward +
-            _ldtSplit.daoFundReward +
-            _ldtSplit.ambassadorIncentiveReward +
-            _ldtSplit.greenEnergyProducersReward +
-            _ldtSplit.marketingReward <= 100,
-            'INVALID_SPLIT'
-        );
+//    function setLdtSplit(LdtSplit memory _ldtSplit) external onlyOwner {
+//        require(
+//            _ldtSplit.farmingReward +
+//            _ldtSplit.stakingReward +
+//            _ldtSplit.teamReward +
+//            _ldtSplit.daoFundReward +
+//            _ldtSplit.ambassadorIncentiveReward +
+//            _ldtSplit.greenEnergyProducersReward +
+//            _ldtSplit.marketingReward <= 100,
+//            'INVALID_SPLIT'
+//        );
+//
+//        ldtSplit = _ldtSplit;
+//    }
 
-        ldtSplit = _ldtSplit;
-    }
-
-    function setTbSplit(TbSplit memory _tbSplit) external onlyOwner {
-        require(
-            _tbSplit.farmingReward +
-            _tbSplit.stakingReward +
-            _tbSplit.teamReward +
-            _tbSplit.daoFundReward +
-            _tbSplit.ambassadorIncentiveReward +
-            _tbSplit.greenEnergyProducersReward <= 100,
-            'INVALID_SPLIT'
-        );
-
-        tbSplit = _tbSplit;
-    }
+//    function setTbSplit(TbSplit memory _tbSplit) external onlyOwner {
+//        require(
+//            _tbSplit.farmingReward +
+//            _tbSplit.stakingReward +
+//            _tbSplit.teamReward +
+//            _tbSplit.daoFundReward +
+//            _tbSplit.ambassadorIncentiveReward +
+//            _tbSplit.greenEnergyProducersReward <= 100,
+//            'INVALID_SPLIT'
+//        );
+//
+//        tbSplit = _tbSplit;
+//    }
 }

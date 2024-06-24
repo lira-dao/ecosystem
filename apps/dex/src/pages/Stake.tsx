@@ -79,13 +79,22 @@ export function Stake() {
       case 25n:
       case 50n:
       case 75n:
-        setValue(((new BigNumber(balance.data?.toString() || '0').times(percentage.toString()).div(100)).div(new BigNumber(10).pow(18))).toString())
+        setValue(((new BigNumber(balance.data?.toString() || '0').times(percentage.toString()).div(100)).div(new BigNumber(10).pow(18))).toString());
 
         setValue(formatUnits(((balance.data || 0n) * percentage) / 100n, 18));
         break;
       case 100n:
         setValue(new BigNumber(balance.data?.toString() || '0').div(new BigNumber(10).pow(18)).toString());
         break;
+    }
+  };
+
+  const getError = (error?: string) => {
+    switch (error) {
+      case 'MINIMUM_STAKE_AMOUNT':
+        return 'The minimum stake amount in 1 treasury token';
+      case 'PENDING_REWARDS':
+        return 'You have pending rewards. Please harvest your current rewards before staking additional tokens.';
     }
   };
 
@@ -150,11 +159,9 @@ export function Stake() {
         </InputPanel>
       </SwapSection>
 
-      {stakeError && stakeError === 'PENDING_REWARDS' && (
+      {stakeError && (
         <x.div>
-          <x.p color="red-400">You have pending rewards. Please harvest your current rewards before staking additional
-            tokens.
-          </x.p>
+          <x.p color="red-400">{getError(stakeError)}</x.p>
         </x.div>
       )}
 
