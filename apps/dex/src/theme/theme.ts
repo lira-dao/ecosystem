@@ -1,5 +1,5 @@
 import { defaultTheme } from '@xstyled/styled-components';
-import { createTheme } from '@mui/material';
+import { createTheme, ThemeOptions } from '@mui/material';
 
 
 export const muiDarkTheme = createTheme({
@@ -9,6 +9,7 @@ export const muiDarkTheme = createTheme({
   colors: {
     green: '#B6FE46',
     gray155: '#9B9B9B',
+    white: '#FFFFFF'
   },
   typography: {
     fontFamily: [
