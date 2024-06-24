@@ -229,7 +229,7 @@ export function Swap() {
         value={firstValue}
       />
 
-      <x.div>
+      <x.div mb="-46px">
         <BaseButton
           backgroundColor={{ _: 'green-yellow-950', hover: 'green-yellow-900' }}
           border="6px solid black"
