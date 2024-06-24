@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
-import { x } from '@xstyled/styled-components';
+import { useTheme, x } from '@xstyled/styled-components';
 import { formatUnits, parseUnits } from 'viem';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { getCurrencies, getCurrencyByAddress, getPairedCurrencies } from '../utils';
@@ -18,9 +18,11 @@ import { useDebounce } from 'use-debounce';
 import { useParams } from 'react-router-dom';
 import { useDexPairs } from '../hooks/useDexPairs';
 import { CurrencyInput } from '../components/swap/CurrencyInput';
+import { PacmanLoader } from 'react-spinners';
 
 
 export function AddLiquidity() {
+  const th = useTheme();
   const params = useParams<{ pool: EthereumAddress }>();
   const pairs = useDexPairs();
   const pool = params.pool ? pairs[params.pool] : undefined;
@@ -94,6 +96,9 @@ export function AddLiquidity() {
       allowanceB.data !== undefined &&
       allowanceB.data < parseUnits(secondValue.toString(), currencyB.decimals),
     [allowanceB, secondValue]);
+
+  const isAllowCurrencyADisabled = useMemo(() => approveA.isPending || allowanceA.isPending, [approveA, allowanceA]);
+  const isAllowCurrencyBDisabled = useMemo(() => approveB.isPending || allowanceB.isPending, [approveB, allowanceB]);
 
   const onChangeValues = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === '') {
@@ -236,7 +241,7 @@ export function AddLiquidity() {
       <CurrencyInput
         balance={currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n}
         currency={currencyA}
-        disabled={false}
+        disabled={isAllowCurrencyADisabled || isAllowCurrencyBDisabled || addLiquidity.isPending}
         formattedBalance={new BigNumber(formatUnits(currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n, currencyA.decimals)).toFixed(6, 1)}
         id="currencyA"
         insufficientBalance={insufficientBalanceA}
@@ -252,7 +257,7 @@ export function AddLiquidity() {
       <CurrencyInput
         balance={currencyB?.isNative ? accountBalance.data?.value || 0n : balanceB.data ?? 0n}
         currency={currencyB}
-        disabled={false}
+        disabled={isAllowCurrencyADisabled || isAllowCurrencyBDisabled || addLiquidity.isPending}
         formattedBalance={new BigNumber(formatUnits(currencyB?.isNative ? accountBalance.data?.value || 0n : balanceB.data ?? 0n, currencyB?.decimals || 18)).toFixed(6, 1)}
         id="currencyB"
         insufficientBalance={insufficientBalanceB}
@@ -279,29 +284,44 @@ export function AddLiquidity() {
         </x.div>
       )}
 
-      {currencyB && (
-        <x.div display="flex" mb={4}>
-          {!currencyA.isNative && (
+      {(needAllowanceA && !insufficientBalanceA) && (
+        <x.div display="flex" mt={4} h="80px" alignItems="center" justifyContent="center">
+          {isAllowCurrencyADisabled ? (
+            <PacmanLoader color={th?.colors.gray155} />
+          ) : (
             <PrimaryButton
-              disabled={isDisabledAllowanceA}
+              disabled={isAllowCurrencyADisabled}
               onClick={() => approveA.write()}
-              mr={currencyB.isNative ? 0 : 4}
             >Approve {currencyA.symbol}</PrimaryButton>
-          )}
-          {!currencyB.isNative && (
-            <PrimaryButton
-              disabled={isDisabledAllowanceB}
-              onClick={() => approveB.write()}
-              ml={currencyA.isNative ? 0 : 4}
-            >Approve {currencyB.symbol}</PrimaryButton>
           )}
         </x.div>
       )}
 
-      <PrimaryButton
-        disabled={isDisabledSupply}
-        onClick={() => addLiquidity.write()}
-      >Supply</PrimaryButton>
+      {(needAllowanceB && !insufficientBalanceB && !needAllowanceA) && (
+        <x.div display="flex" h="80px" alignItems="center" justifyContent="center">
+          {isAllowCurrencyBDisabled ? (
+            <PacmanLoader color={th?.colors.gray155} />
+          ) : (
+            <PrimaryButton
+              disabled={isAllowCurrencyBDisabled}
+              onClick={() => approveB.write()}
+            >Approve {currencyB?.symbol}</PrimaryButton>
+          )}
+        </x.div>
+      )}
+
+      {(!needAllowanceA && !insufficientBalanceA && !needAllowanceB && !insufficientBalanceB) && (
+        <x.div display="flex" mt={4} h="80px" alignItems="center" justifyContent="center">
+          {addLiquidity.isPending ? (
+            <PacmanLoader color={th?.colors.gray155} />
+          ) : (
+            <PrimaryButton
+              disabled={!firstValue && !secondValue}
+              onClick={() => addLiquidity.write()}
+            >Supply</PrimaryButton>
+          )}
+        </x.div>
+      )}
 
       <SelectCurrencyModal
         open={open}

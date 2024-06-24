@@ -16,6 +16,7 @@ interface CurrencyInputProps {
   formattedBalance: string;
   id: string;
   insufficientBalance: boolean;
+  isDisabledCurrencySelector?: boolean;
   onChangeValue: (e: ChangeEvent<HTMLInputElement>) => void;
   onCurrencySelectClick: () => void;
   onSetPercentage: (value: string) => void;
@@ -28,10 +29,11 @@ interface CurrencyInputProps {
 export function CurrencyInput({
   balance,
   currency,
-  disabled,
+  disabled = false,
   formattedBalance,
   id,
   insufficientBalance,
+  isDisabledCurrencySelector = false,
   onChangeValue,
   onCurrencySelectClick,
   onSetPercentage,
@@ -49,7 +51,7 @@ export function CurrencyInput({
       );
     }
   };
-
+  console.log('disabled', disabled);
   return (
     <SwapSection mt={6} mb={4}>
       <InputPanel>
@@ -58,7 +60,7 @@ export function CurrencyInput({
             <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
               <x.p color="gray155" userSelect="none">{title}</x.p>
               <CurrencySelector
-                disabled={disabled}
+                disabled={isDisabledCurrencySelector}
                 selected={selected}
                 currency={currency}
                 onClick={onCurrencySelectClick}
@@ -66,7 +68,7 @@ export function CurrencyInput({
             </x.div>
 
             <x.div w="100%" h="54px" display="flex" flexDirection="column">
-              <NumericalInput id={id} disabled={!currency} value={value} onChange={onChangeValue} />
+              <NumericalInput id={id} disabled={!currency || disabled} value={value} onChange={onChangeValue} />
               <x.p color="red-400">{insufficientBalance ? 'Insufficient Balance' : ''}</x.p>
             </x.div>
 
