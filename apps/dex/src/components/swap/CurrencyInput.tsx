@@ -77,6 +77,13 @@ export function CurrencyInput({
                     mr={2}
                     cursor="pointer"
                     color={{ _: 'gray155', hover: 'white' }}
+                    onClick={() => onSetPercentageInternal(10)}
+                  >10%
+                  </x.p>
+                  <x.p
+                    mr={2}
+                    cursor="pointer"
+                    color={{ _: 'gray155', hover: 'white' }}
                     onClick={() => onSetPercentageInternal(25)}
                   >25%
                   </x.p>

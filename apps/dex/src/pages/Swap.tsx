@@ -255,7 +255,6 @@ export function Swap() {
         onCurrencySelectClick={onCurrencySelectBClick}
         onSetPercentage={onCurrencyBChange}
         selected={false}
-        showPercentages
         title="You Receive"
         value={secondValue}
       />
