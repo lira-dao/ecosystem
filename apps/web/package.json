@@ -1,6 +1,6 @@
 {
   "name": "@lira-dao/web",
-  "version": "1.10.2",
+  "version": "1.10.3",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.4",
