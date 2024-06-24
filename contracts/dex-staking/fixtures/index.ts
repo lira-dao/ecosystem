@@ -188,3 +188,99 @@ export async function rewardSplitterFixture() {
     tokenDistributor,
   };
 }
+
+export async function rewardSplitterV2Factory() {
+  const {
+    deployer,
+    ldt,
+    ldtAddress,
+    tbbAddress,
+    tbsAddress,
+    tbgAddress,
+    tbbPairAddress,
+    tbsPairAddress,
+    tbgPairAddress,
+    ...dex
+  } = await dexRouterFixture();
+
+  const lpStakerContract = await hre.ethers.getContractFactory('LPStaker');
+
+  const tbbFarm = await lpStakerContract.deploy(tbbPairAddress, ldtAddress, tbbAddress);
+  const tbbFarmAddress = await tbbFarm.getAddress();
+
+  const tbsFarm = await lpStakerContract.deploy(tbsPairAddress, ldtAddress, tbsAddress);
+  const tbsFarmAddress = await tbsFarm.getAddress();
+
+  const tbgFarm = await lpStakerContract.deploy(tbgPairAddress, ldtAddress, tbgAddress);
+  const tbgFarmAddress = await tbgFarm.getAddress();
+
+  const distributor = await tokenDistributorFactory.connect(deployer).deploy(ldtAddress);
+  const distributorAddress = await distributor.getAddress();
+  await ldt.approve(distributorAddress, 4_500_000_000n * (10n ** 18n));
+
+  // @ts-ignore
+  const deposit = await distributor.deposit([
+    { amount: 2_025_000_000n * (10n ** 18n), emitted: 0n, rate: 5_547_945n * (10n ** 18n), cadence: 86400n },
+    { amount: 1_125_000_000n * (10n ** 18n), emitted: 0n, rate: 3_082_191n * (10n ** 18n), cadence: 86400n },
+    { amount: 675_000_000n * (10n ** 18n), emitted: 0n, rate: 1_849_315n * (10n ** 18n), cadence: 86400n },
+    { amount: 675_000_000n * (10n ** 18n), emitted: 0n, rate: 924_657n * (10n ** 18n), cadence: 86400n },
+  ]);
+
+  let block = await deposit.getBlock();
+  let time = block?.timestamp ?? 0;
+  await increaseTo(time + 86400);
+
+  const farmSplitterFactory = await hre.ethers.getContractFactory('FarmSplitter');
+  const farmSplitter = await farmSplitterFactory.deploy(
+    ldtAddress,
+    tbbAddress,
+    tbsAddress,
+    tbgAddress,
+    [
+      tbbFarmAddress,
+      tbsFarmAddress,
+      tbgFarmAddress,
+    ],
+  );
+
+  const farmSplitterAddress = await farmSplitter.getAddress();
+
+  const rewardSplitterFactory = await hre.ethers.getContractFactory('RewardSplitterV2');
+  const rewardSplitter = await rewardSplitterFactory.deploy(
+    ldtAddress,
+    tbbAddress,
+    tbbFarmAddress,
+    tbsAddress,
+    tbsFarmAddress,
+    tbgAddress,
+    tbgFarmAddress,
+    distributorAddress,
+    farmSplitterAddress,
+  );
+
+  const rewardSplitterAddress = await rewardSplitter.getAddress();
+
+  await distributor.setSplitter(rewardSplitterAddress);
+
+  return {
+    ...dex,
+    deployer,
+    distributor,
+    distributorAddress,
+    ldt,
+    ldtAddress,
+    rewardSplitter,
+    rewardSplitterAddress,
+    tbbAddress,
+    tbgAddress,
+    tbsAddress,
+    farmSplitter,
+    farmSplitterAddress,
+    tbbFarm,
+    tbbFarmAddress,
+    tbsFarm,
+    tbsFarmAddress,
+    tbgFarm,
+    tbgFarmAddress,
+  };
+}

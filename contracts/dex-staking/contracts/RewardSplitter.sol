@@ -9,7 +9,6 @@ import './interfaces/ILPStaker.sol';
 import './interfaces/IStaker.sol';
 import './interfaces/IUniswapV2Pair.sol';
 
-
 /**
  * @title Reward Splitter V1
  * @author LIRA DAO Team
@@ -17,7 +16,7 @@ import './interfaces/IUniswapV2Pair.sol';
  *
  * To know more about the ecosystem you can find us on https://liradao.org don't trust, verify!
  */
-contract RewardSplitter is Ownable2Step {
+/*contract RewardSplitter is Ownable2Step {
     struct RewardLiquidity {
         uint rewardAmountLdt;
         uint rewardAmountTb;
@@ -110,8 +109,6 @@ contract RewardSplitter is Ownable2Step {
         uint8 greenEnergyProducersReward;
     }
 
-    RewardSplitterAddresses public addresses;
-
     uint8 public tbRate = 80;
 
     RewardRate public tbbFarmingRewardRate = RewardRate(200, 200);
@@ -130,11 +127,7 @@ contract RewardSplitter is Ownable2Step {
     uint public constant MIN_RATE = 1;
     uint public constant MAX_RATE = 100_000;
 
-    constructor(
-        RewardSplitterAddresses memory _addresses
-    ) Ownable(msg.sender) {
-        addresses = _addresses;
-    }
+    constructor() Ownable(msg.sender) {}
 
     function approveToken(address _token, address _spender) private {
         IERC20(_token).approve(_spender, type(uint256).max);
@@ -480,4 +473,240 @@ contract RewardSplitter is Ownable2Step {
 //
 //        tbSplit = _tbSplit;
 //    }
+}*/
+
+contract RewardSplitterV2 is Ownable2Step {
+    struct DoubleReward {
+        uint ldt;
+        uint tb;
+    }
+
+    struct Rewards {
+        uint total;
+        uint ldt;
+        uint tb;
+        DoubleReward farming;
+        DoubleReward staking;
+        DoubleReward team;
+    }
+
+    struct RewardRate {
+        uint ldt;
+        uint tb;
+    }
+
+    struct LdtRewards {
+        uint8 farming;
+        uint8 staking;
+        uint8 team;
+        uint8 daoFund;
+        uint8 ambassadorIncentive;
+        uint8 greenEnergy;
+        uint8 marketing;
+    }
+
+    struct TbRewards {
+        uint8 farming;
+        uint8 staking;
+        uint8 team;
+        uint8 daoFund;
+        uint8 ambassadorIncentive;
+        uint8 greenEnergy;
+    }
+
+    address public distributor;
+
+    address public ldt;
+    address public tbb;
+    address public tbbFarm;
+    address public tbs;
+    address public tbsFarm;
+    address public tbg;
+    address public tbgFarm;
+
+    address public farmSplitter;
+
+    uint8 public tbRate = 80;
+
+    LdtRewards public ldtRewards = LdtRewards(20, 40, 10, 14, 10, 5, 1);
+    TbRewards public tbRewards = TbRewards(40, 25, 10, 10, 10, 5);
+
+    event DistributeRewards(Rewards rewards);
+    event DistributeFarmingRewards(FarmingRewards rewards);
+
+    constructor(
+        address _ldt,
+        address _tbb,
+        address _tbbFarm,
+        address _tbs,
+        address _tbsFarm,
+        address _tbg,
+        address _tbgFarm,
+        address _distributor,
+        address _farmSplitter
+    ) Ownable(msg.sender) {
+        ldt = _ldt;
+        tbb = _tbb;
+        tbbFarm = _tbbFarm;
+        tbs = _tbs;
+        tbsFarm = _tbsFarm;
+        tbg = _tbg;
+        tbgFarm = _tbgFarm;
+        distributor = _distributor;
+        farmSplitter = _farmSplitter;
+    }
+
+    function approve(address _token, address _spender) private {
+        IERC20(_token).approve(_spender, type(uint256).max);
+    }
+
+    function approveTokens() public {
+    }
+
+    function distributeRewards() public onlyOwner {
+        IDistributor(distributor).distribute();
+
+        Rewards memory rewards;
+
+        rewards.total = IERC20(ldt).balanceOf(address(this));
+
+        // total rewards
+        rewards.tb = (rewards.total * tbRate) / 100;
+        rewards.ldt = rewards.total - rewards.tb;
+
+        rewards.farming.ldt = (rewards.ldt * ldtRewards.farming) / 100;
+        rewards.farming.tb = (rewards.tb * tbRewards.farming) / 100;
+
+        rewards.staking.ldt = (rewards.ldt * ldtRewards.staking) / 100;
+        rewards.staking.tb = (rewards.tb * tbRewards.staking) / 100;
+
+        rewards.team.ldt = (rewards.ldt * ldtRewards.team) / 100;
+        rewards.team.tb = (rewards.tb * tbRewards.team) / 100;
+
+        FarmingRewards memory farmingRewards = IFarmSplitter(farmSplitter).calculate(rewards.farming.ldt, rewards.farming.tb);
+
+        IStaker(tbbFarm).distributeRewards(farmingRewards.tbb.ldt, farmingRewards.tbb.tb);
+        IStaker(tbsFarm).distributeRewards(farmingRewards.tbs.ldt, farmingRewards.tbs.tb);
+        IStaker(tbgFarm).distributeRewards(farmingRewards.tbg.ldt, farmingRewards.tbg.tb);
+
+        emit DistributeFarmingRewards(farmingRewards);
+        emit DistributeRewards(rewards);
+    }
+}
+
+    struct Reward {
+        uint ldt;
+        uint tb;
+        uint ldtLiquidity;
+        uint tbLiquidity;
+    }
+
+    struct Farm {
+        Reward liquidity;
+        uint ldt;
+        uint tb;
+    }
+
+    struct FarmingRewards {
+        Farm tbb;
+        Farm tbs;
+        Farm tbg;
+    }
+
+    struct RewardRate {
+        uint ldt;
+        uint tb;
+    }
+
+interface IFarmSplitter {
+    function calculate(uint _ldt, uint _tb) external view returns (FarmingRewards memory rewards);
+}
+
+contract FarmSplitter is Ownable2Step {
+    address public ldt;
+    address public tbb;
+    address public tbs;
+    address public tbg;
+    address[] public farms;
+
+    RewardRate public tbbFarmingRewardRate = RewardRate(200, 200);
+    RewardRate public tbsFarmingRewardRate = RewardRate(500, 500);
+    RewardRate public tbgFarmingRewardRate = RewardRate(1000, 1000);
+
+    uint public constant MIN_RATE = 1;
+    uint public constant MAX_RATE = 100_000;
+
+    constructor(address _ldt, address _tbb, address _tbs, address _tbg, address[] memory _farms) Ownable(msg.sender) {
+        ldt = _ldt;
+        tbb = _tbb;
+        tbs = _tbs;
+        tbg = _tbg;
+        farms = _farms;
+    }
+
+    function calculate(uint _ldt, uint _tb) external returns (FarmingRewards memory rewards) {
+        uint tbbFarmingReward = (_tb * 20) / 100;
+        uint tbsFarmingReward = (_tb * 30) / 100;
+        uint tbgFarmingReward = _tb - tbbFarmingReward - tbsFarmingReward;
+
+        rewards.tbb.liquidity = calculateReward(farms[0], tbbFarmingRewardRate);
+        rewards.tbs.liquidity = calculateReward(farms[1], tbsFarmingRewardRate);
+        rewards.tbg.liquidity = calculateReward(farms[2], tbgFarmingRewardRate);
+
+        uint totalLdt = rewards.tbb.liquidity.ldtLiquidity + rewards.tbs.liquidity.ldtLiquidity + rewards.tbg.liquidity.ldtLiquidity;
+
+        if (totalLdt > _ldt) {
+            uint tbbLiquidity = getLdtLiquidity(farms[0]);
+            uint tbsLiquidity = getLdtLiquidity(farms[1]);
+            uint tbgLiquidity = getLdtLiquidity(farms[2]);
+            uint totalLiquidity = tbbLiquidity + tbsLiquidity + tbgLiquidity;
+
+            rewards.tbb.ldt = (tbbLiquidity * _ldt) / totalLiquidity;
+            rewards.tbs.ldt = (tbsLiquidity * _ldt) / totalLiquidity;
+            rewards.tbg.ldt = (tbgLiquidity * _ldt) / totalLiquidity;
+        } else {
+            rewards.tbb.ldt = rewards.tbb.liquidity.ldt;
+            rewards.tbs.ldt = rewards.tbb.liquidity.ldt;
+            rewards.tbg.ldt = rewards.tbb.liquidity.ldt;
+        }
+
+        if (rewards.tbb.liquidity.tb > tbbFarmingReward / ITreasuryToken(tbb).rate()) {
+            rewards.tbb.tb = tbbFarmingReward / ITreasuryToken(tbb).rate();
+        } else {
+            rewards.tbb.tb = rewards.tbb.liquidity.tb;
+        }
+
+        return rewards;
+    }
+
+    function calculateReward(address _farm, RewardRate memory _rate) public view returns (Reward memory) {
+        uint256 totalStaked = ILPStaker(_farm).totalStaked();
+        address lpToken = ILPStaker(_farm).lpToken();
+        uint256 lpTotalSupply = IERC20(lpToken).totalSupply();
+
+        address t0 = IUniswapV2Pair(lpToken).token0();
+        address t1 = IUniswapV2Pair(lpToken).token1();
+
+        (address token0, address token1) = t0 == ldt ? (t0, t1) : (t1, t0);
+        require(token0 == ldt, 'INVALID_TOKEN');
+
+        uint balance0 = IERC20(token0).balanceOf(lpToken);
+        uint balance1 = IERC20(token1).balanceOf(lpToken);
+
+        uint amount0 = (totalStaked * balance0) / lpTotalSupply;
+        uint amount1 = (totalStaked * balance1) / lpTotalSupply;
+
+        return Reward(
+            (amount0 * _rate.ldt) / MAX_RATE,
+            (amount1 * _rate.tb) / MAX_RATE,
+            amount0,
+            amount1
+        );
+    }
+
+    function getLdtLiquidity(address _farm) public view returns (uint256 liquidity) {
+        address lpToken = ILPStaker(_farm).lpToken();
+
+        liquidity = IERC20(ldt).balanceOf(lpToken);
+    }
 }
