@@ -26,14 +26,15 @@ import { usePair } from '../hooks/usePair';
 import BigNumber from 'bignumber.js';
 import { useParams } from 'react-router-dom';
 import { useDexPairs } from '../hooks/useDexPairs';
+import { CurrencyInput } from '../components/swap/CurrencyInput';
 
 
 export function Swap() {
   const params = useParams<{ pool: EthereumAddress }>();
   const pairs = useDexPairs();
   const pool = params.pool ? pairs[params.pool] : undefined;
-  const currency0 = pool ? getCurrencyByAddress(pool.tokens[0]) : undefined;
-  const currency1 = pool ? getCurrencyByAddress(pool.tokens[1]) : undefined;
+  const currency0 = pool ? getCurrencyByAddress(pool.tokens[1]) : undefined;
+  const currency1 = pool ? getCurrencyByAddress(pool.tokens[0]) : undefined;
 
   const th = useTheme();
   const chainId = useChainId();
@@ -43,8 +44,8 @@ export function Swap() {
   const [selecting, setSelecting] = useState<number | null>(null);
   const [selectingCurrencies, setSelectingCurrencies] = useState<Currency[]>([]);
 
-  const [currencyA, setCurrencyA] = useState<Currency>(currency0 ? currency0 : getCurrencies(chainId)[0]);
-  const [currencyB, setCurrencyB] = useState<Currency | undefined>(currency1);
+  const [currencyA, setCurrencyA] = useState<Currency>(currency0 ? currency0 : getCurrencies(chainId)[5]);
+  const [currencyB, setCurrencyB] = useState<Currency | undefined>(currency1 ? currency1 : getCurrencies(chainId)[0]);
 
   const [firstValue, setFirstValue] = useState<string>('');
   const [secondValue, setSecondValue] = useState<string>('');
@@ -212,35 +213,21 @@ export function Swap() {
         <x.p fontSize="3xl">Swap</x.p>
       </x.div>
 
-      <SwapSection mt={6} mb={4}>
-        <InputPanel>
-          <Container>
-            <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
-              <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
-                <x.p color="gray155" userSelect="none">You Pay</x.p>
-                <CurrencySelector
-                  disabled={false}
-                  selected={false}
-                  currency={currencyA}
-                  onClick={onCurrencySelectAClick}
-                />
-              </x.div>
-
-              <NumericalInput
-                id="currencyA"
-                disabled={amountsIn.isLoading || !currencyB}
-                value={firstValue}
-                onChange={(e) => onCurrencyAChange(e.target.value)}
-              />
-
-              <x.div w="100%" display="flex" mt={2} justifyContent="space-between">
-                <x.p color="red-400">{insufficientBalanceA ? 'Insufficient Balance' : ''}</x.p>
-                <x.p color="gray155">{new BigNumber(formatUnits(currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n, currencyA.decimals)).toFixed(6, 1)}</x.p>
-              </x.div>
-            </x.div>
-          </Container>
-        </InputPanel>
-      </SwapSection>
+      <CurrencyInput
+        balance={currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n}
+        currency={currencyA}
+        disabled={false}
+        formattedBalance={new BigNumber(formatUnits(currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n, currencyA.decimals)).toFixed(6, 1)}
+        id="currencyA"
+        insufficientBalance={insufficientBalanceA}
+        onChangeValue={(e) => onCurrencyAChange(e.target.value)}
+        onCurrencySelectClick={onCurrencySelectAClick}
+        onSetPercentage={onCurrencyAChange}
+        selected={false}
+        showPercentages
+        title="You Pay"
+        value={firstValue}
+      />
 
       <x.div>
         <BaseButton
@@ -257,34 +244,21 @@ export function Swap() {
         </BaseButton>
       </x.div>
 
-      <SwapSection mt={4}>
-        <InputPanel>
-          <Container>
-            <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
-              <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
-                <x.p color="gray155" userSelect="none">You Receive</x.p>
-                <CurrencySelector
-                  disabled={false}
-                  selected={false}
-                  currency={currencyB}
-                  onClick={onCurrencySelectBClick}
-                />
-              </x.div>
-
-              <NumericalInput
-                id="currencyB"
-                disabled={amountsOut.isLoading || !currencyB}
-                value={secondValue}
-                onChange={(e) => onCurrencyBChange(e.target.value)}
-              />
-
-              <x.div w="100%" display="flex" justifyContent="flex-end" mt={2}>
-                <x.p color="gray155">{new BigNumber(formatUnits(currencyB?.isNative ? accountBalance.data?.value || 0n : balanceB.data ?? 0n, currencyB?.decimals || 18)).toFixed(6, 1)}</x.p>
-              </x.div>
-            </x.div>
-          </Container>
-        </InputPanel>
-      </SwapSection>
+      <CurrencyInput
+        balance={currencyB?.isNative ? accountBalance.data?.value || 0n : balanceB.data ?? 0n}
+        currency={currencyB}
+        disabled={false}
+        formattedBalance={new BigNumber(formatUnits(currencyB?.isNative ? accountBalance.data?.value || 0n : balanceB.data ?? 0n, currencyB?.decimals || 18)).toFixed(6, 1)}
+        id="currencyB"
+        insufficientBalance={false}
+        onChangeValue={(e) => onCurrencyBChange(e.target.value)}
+        onCurrencySelectClick={onCurrencySelectBClick}
+        onSetPercentage={onCurrencyBChange}
+        selected={false}
+        showPercentages
+        title="You Receive"
+        value={secondValue}
+      />
 
       {(currencyA && currencyB) && (
         <x.div mt={4}>
