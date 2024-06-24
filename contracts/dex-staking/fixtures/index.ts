@@ -194,16 +194,20 @@ export async function rewardSplitterV2Factory() {
     deployer,
     ldt,
     ldtAddress,
+    tbb,
     tbbAddress,
-    tbsAddress,
-    tbgAddress,
     tbbPairAddress,
-    tbsPairAddress,
+    tbg,
+    tbgAddress,
     tbgPairAddress,
+    tbs,
+    tbsAddress,
+    tbsPairAddress,
     ...dex
   } = await dexRouterFixture();
 
   const lpStakerContract = await hre.ethers.getContractFactory('LPStaker');
+  const tokenStakerContract = await hre.ethers.getContractFactory('TokenStaker');
 
   const tbbFarm = await lpStakerContract.deploy(tbbPairAddress, ldtAddress, tbbAddress);
   const tbbFarmAddress = await tbbFarm.getAddress();
@@ -213,6 +217,15 @@ export async function rewardSplitterV2Factory() {
 
   const tbgFarm = await lpStakerContract.deploy(tbgPairAddress, ldtAddress, tbgAddress);
   const tbgFarmAddress = await tbgFarm.getAddress();
+
+  const tbbStaker = await tokenStakerContract.deploy(tbbAddress, ldtAddress, tbbAddress);
+  const tbbStakerAddress = await tbbStaker.getAddress();
+
+  const tbsStaker = await tokenStakerContract.deploy(tbsAddress, ldtAddress, tbsAddress);
+  const tbsStakerAddress = await tbsStaker.getAddress();
+
+  const tbgStaker = await tokenStakerContract.deploy(tbgAddress, ldtAddress, tbgAddress);
+  const tbgStakerAddress = await tbgStaker.getAddress();
 
   const distributor = await tokenDistributorFactory.connect(deployer).deploy(ldtAddress);
   const distributorAddress = await distributor.getAddress();
@@ -242,45 +255,88 @@ export async function rewardSplitterV2Factory() {
       tbgFarmAddress,
     ],
   );
-
   const farmSplitterAddress = await farmSplitter.getAddress();
+
+  const stakingSplitterFactory = await hre.ethers.getContractFactory('StakingSplitter');
+  const stakingSplitter = await stakingSplitterFactory.deploy(
+    ldtAddress,
+    tbbAddress,
+    tbsAddress,
+    tbgAddress,
+    [
+      tbbStakerAddress,
+      tbsStakerAddress,
+      tbgStakerAddress,
+    ],
+  );
+  const stakingSplitterAddress = await stakingSplitter.getAddress();
 
   const rewardSplitterFactory = await hre.ethers.getContractFactory('RewardSplitterV2');
   const rewardSplitter = await rewardSplitterFactory.deploy(
     ldtAddress,
     tbbAddress,
-    tbbFarmAddress,
     tbsAddress,
-    tbsFarmAddress,
     tbgAddress,
-    tbgFarmAddress,
     distributorAddress,
     farmSplitterAddress,
+    stakingSplitterAddress,
+    [tbbFarmAddress, tbsFarmAddress, tbgFarmAddress],
+    [tbbStakerAddress, tbsStakerAddress, tbgStakerAddress],
   );
 
   const rewardSplitterAddress = await rewardSplitter.getAddress();
 
   await distributor.setSplitter(rewardSplitterAddress);
 
+  await tbb.transferOwnership(rewardSplitterAddress);
+  await tbs.transferOwnership(rewardSplitterAddress);
+  await tbg.transferOwnership(rewardSplitterAddress);
+
+  await tbbFarm.transferOwnership(rewardSplitterAddress);
+  await tbsFarm.transferOwnership(rewardSplitterAddress);
+  await tbgFarm.transferOwnership(rewardSplitterAddress);
+
+  await tbbStaker.transferOwnership(rewardSplitterAddress);
+  await tbsStaker.transferOwnership(rewardSplitterAddress);
+  await tbgStaker.transferOwnership(rewardSplitterAddress);
+
+  await rewardSplitter.approveTokens();
+
+  await tbb.approve(tbbStakerAddress, hre.ethers.MaxUint256);
+  await tbs.approve(tbsStakerAddress, hre.ethers.MaxUint256);
+  await tbg.approve(tbgStakerAddress, hre.ethers.MaxUint256);
+
   return {
     ...dex,
     deployer,
     distributor,
     distributorAddress,
+    farmSplitter,
+    farmSplitterAddress,
     ldt,
     ldtAddress,
     rewardSplitter,
     rewardSplitterAddress,
+    tbb,
     tbbAddress,
-    tbgAddress,
-    tbsAddress,
-    farmSplitter,
-    farmSplitterAddress,
     tbbFarm,
+    tbbStaker,
+    tbbStakerAddress,
     tbbFarmAddress,
-    tbsFarm,
-    tbsFarmAddress,
+    tbbPairAddress,
+    tbg,
+    tbgAddress,
+    tbgStaker,
+    tbgStakerAddress,
     tbgFarm,
     tbgFarmAddress,
+    tbgPairAddress,
+    tbs,
+    tbsStaker,
+    tbsStakerAddress,
+    tbsAddress,
+    tbsFarm,
+    tbsFarmAddress,
+    tbsPairAddress,
   };
 }

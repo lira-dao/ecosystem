@@ -1,5 +1,6 @@
 import { rewardSplitterV2Factory } from '../fixtures';
 import { expect } from 'chai';
+import { parseUnits } from 'ethers';
 
 describe('RewardSplitterV2', () => {
   it('should have ldt address', async () => {
@@ -51,6 +52,9 @@ describe('RewardSplitterV2', () => {
       tbgPair,
       tbgFarm,
       deployer,
+      tbbStaker,
+      tbsStaker,
+      tbgStaker,
     } = await rewardSplitterV2Factory();
 
     console.log('LP', {
@@ -68,13 +72,22 @@ describe('RewardSplitterV2', () => {
     await tbgPair.approve(tbgFarmAddress, await tbgPair.balanceOf(deployer));
     await tbgFarm.stake(await tbgPair.balanceOf(deployer));
 
+    await tbb.mint(deployer, parseUnits('1', 18));
+    await tbbStaker.stake(parseUnits('1', 18));
+
+    await tbs.mint(deployer, parseUnits('1', 18));
+    await tbsStaker.stake(parseUnits('1', 18));
+
+    await tbg.mint(deployer, parseUnits('1', 18));
+    await tbgStaker.stake(parseUnits('1', 18));
+
     await expect(rewardSplitter.distributeRewards())
       .emit(rewardSplitter, 'DistributeRewards')
       .withArgs([
         5_547_945_000_000_000_000_000_000n, // total
         1_109_589_000_000_000_000_000_000n, // ldt 20%
         4_438_356_000_000_000_000_000_000n, // tb 80%
-        [221917800000000000000000n, 1_775_342_400_000_000_000_000_000n], // farming
+        [221_917_800_000_000_000_000_000n, 1_775_342_400_000_000_000_000_000n], // farming
         [443_835_600_000_000_000_000_000n, 1_109_589_000_000_000_000_000_000n], // staking
         [110_958_900_000_000_000_000_000n, 443_835_600_000_000_000_000_000n], // team
       ])
@@ -89,12 +102,32 @@ describe('RewardSplitterV2', () => {
           [
             [4999999999999999999500n, 499999999999999999n, 999999999999999999900000n, 99999999999999999990n],
             73972600000000000000000n,
-            0,
+            499999999999999999n,
           ],
           [
             [9999999999999999996837n, 99999999999999999n, 999999999999999999683772n, 9999999999999999996n],
             73972600000000000000000n,
-            0,
+            99999999999999999n,
+          ],
+        ],
+      )
+      .emit(rewardSplitter, 'DistributeStakingRewards')
+      .withArgs(
+        [
+          [
+            [1000000000000000000n, 1000000000000000n, 500000000000000000n, 500000000000000000n],
+            1000000000000000000n,
+            1000000000000000n,
+          ],
+          [
+            [25000000000000000000n, 2500000000000000n, 500000000000000000n, 500000000000000000n],
+            1000000000000000000n,
+            2500000000000000n,
+          ],
+          [
+            [500000000000000000000n, 5000000000000000n, 500000000000000000n, 500000000000000000n],
+            1000000000000000000n,
+            5000000000000000n,
           ],
         ],
       );
@@ -108,9 +141,13 @@ describe('RewardSplitterV2', () => {
       tbg: await tbg.balanceOf(deployer),
     });
 
-    await tbbFarm.harvest();
-    //await tbsFarm.harvest();
-    //await tbgFarm.harvest();
+    // await tbbFarm.harvest();
+    // await tbsFarm.harvest();
+    // await tbgFarm.harvest();
+
+    await tbbStaker.harvest();
+    await tbsStaker.harvest();
+    await tbgStaker.harvest();
 
     console.log('deployer balances', {
       ldt: await ldt.balanceOf(deployer),
