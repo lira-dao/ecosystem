@@ -27,6 +27,7 @@ interface AppTheme extends ITheme, XStyledDefaultTheme {
     'red-700': string;
     'red-800': string;
     'red-900': string;
+    white: string;
   };
 }
 
@@ -44,13 +45,14 @@ declare module '@mui/material/styles' {
     colors: {
       green: string;
       gray155: string;
+      white: string;
     };
   }
-  // allow configuration using `createTheme`
   interface ThemeOptions {
     colors?: {
       green: string;
       gray155?: string;
+      white: string;
     };
   }
 }

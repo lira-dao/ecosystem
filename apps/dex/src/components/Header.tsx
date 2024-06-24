@@ -1,42 +1,29 @@
-import { th, x } from '@xstyled/styled-components';
+import React, { useState } from 'react';
+import { Drawer, IconButton, Box, useTheme, useMediaQuery } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 import { NavLink, To } from 'react-router-dom';
-import logo from '../img/logo-dex.png';
 import styled from 'styled-components';
+import logo from '../img/logo-dex.png';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { ConnectButton } from './ConnectButton';
 import { useAccount } from 'wagmi';
+import { ThemeProvider } from '@mui/material/styles';
+import { muiDarkTheme } from '../theme/theme';
 
+const StyledMenuItem = styled(NavLink)(({ theme }) => ({
+  color: theme.colors.gray155 + ' !important',
+  cursor: 'pointer',
+  fontSize: theme.typography?.pxToRem(16),
+  fontWeight: theme.typography?.fontWeightMedium,
+  textDecoration: 'none',
 
-const StyledMenuItem = styled(NavLink)`
-  color: ${th.color('white-a80')};
-  cursor: pointer;
-  font-size: ${th.fontSize('xl')};
-  font-weight: 500;
-
-  ::selection {
-    color: inherit;
-    background: transparent;
-    text-shadow: none;
+  '&.active': {
+    color: theme.colors.primary + '!important',
+  },
+  '&:hover': {
+    color: theme.colors.white + '!important',
   }
-
-  ::-moz-selection {
-    color: inherit;
-    background: transparent;
-    text-shadow: none;
-  }
-
-  &:hover {
-    color: ${th.color('white')};
-  }
-
-  &.active {
-    color: ${th.color('primary')} !important;
-  }
-
-  &:visited {
-    color: ${th.color('white-a80')};
-  }
-`;
+}));
 
 interface MenuItemProps {
   text: string;
@@ -45,48 +32,107 @@ interface MenuItemProps {
 
 function MenuItem({ text, to }: MenuItemProps) {
   return (
-    <x.div m={4}>
+    <Box component="div" m={4}>
       <StyledMenuItem to={to}>{text}</StyledMenuItem>
-    </x.div>
+    </Box>
   );
 }
 
 export function Header() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const { isConnected } = useAccount();
   const { open } = useWeb3Modal();
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-  return (
-    <x.header
-      w="100%"
-      px={4}
-      pt={4}
-      display="flex"
-      flexDirection={{ _: 'column', lg: 'row' }}
-      alignItems="center"
-      mb={{ _: 8, lg: 0 }}
-    >
-      <a href="https://liradao.org" target="_blank" rel="noopener noreferrer">
-        <img src={logo} alt="lira dao logo" width={120} />
-      </a>
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
 
-      <x.div ml={{ _: 0, lg: 8 }} display="flex" flexGrow={1}>
-        <MenuItem text="SWAP" to="swap" />
-        <MenuItem text="TREASURY" to="treasury" />
-        <MenuItem text="POOLS" to="pools" />
-        <MenuItem text="FARMING" to="farming" />
-        <MenuItem text="STAKING" to="staking" />
-        {process.env.REACT_APP_TESTNET === 'true' && <MenuItem text="FAUCETS" to="faucets" />}
-      </x.div>
-
-      <x.div display="flex">
+  const drawerContent = (
+    <>
+      <Box onClick={handleDrawerToggle} sx={{ width: 250 }}>
+        <MenuItem text="SWAP" to="/swap" />
+        <MenuItem text="TREASURY" to="/treasury" />
+        <MenuItem text="POOLS" to="/pools" />
+        <MenuItem text="FARMING" to="/farming" />
+        {process.env.REACT_APP_TESTNET === 'true' && <MenuItem text="FAUCETS" to="/faucets" />}
+      </Box>
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        mt: 'auto',
+        p: 2
+      }}>
         {isConnected ? (
-          <>
+          <Box component="span" sx={{ p: 2 }}>
             <w3m-account-button balance="hide" />
-          </>
+          </Box>
         ) : (
           <ConnectButton onClick={() => open()} />
         )}
-      </x.div>
-    </x.header>
+      </Box>
+    </>
+  );
+
+  return (
+    <ThemeProvider theme={muiDarkTheme}>
+      <Box
+        sx={{
+          width: '100%',
+          p: 2,
+          display: 'flex',
+          flexDirection: { xs: 'row', md: 'row' },
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          mb: 4,
+        }}
+      >
+        <a href="https://liradao.org" target="_blank" rel="noopener noreferrer">
+          <img src={logo} alt="lira dao logo" width={120} />
+        </a>
+
+        {isMobile && (
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerToggle}
+            sx={{ my: 1, '&:focus': { outline: 'none' } }}
+          >
+            <MenuIcon />
+          </IconButton>
+        )}
+
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true,
+          }}
+        >
+          {drawerContent}
+        </Drawer>
+
+        {!isMobile && (
+          <Box sx={{ display: 'flex', flexGrow: 1 }}>
+            <MenuItem text="SWAP" to="/swap" />
+            <MenuItem text="TREASURY" to="/treasury" />
+            <MenuItem text="POOLS" to="/pools" />
+            <MenuItem text="FARMING" to="/farming" />
+            {process.env.REACT_APP_TESTNET === 'true' && <MenuItem text="FAUCETS" to="/faucets" />}
+          </Box>
+        )}
+
+        {!isMobile && (isConnected ? (
+          <Box component="span" sx={{ p: 2 }}>
+            <w3m-account-button balance="hide" />
+          </Box>
+        ) : (
+          <ConnectButton onClick={() => open()} />
+        ))}
+      </Box>
+    </ThemeProvider>
   );
 }
