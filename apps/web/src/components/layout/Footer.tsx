@@ -1,7 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Box, Grid } from '@mui/material';
-import Link from "@mui/material/Link";
+import { Box, Grid, Link } from '@mui/material';
 
 import Typography from "@mui/material/Typography";
 import { ThemeProvider } from '@mui/material/styles';
@@ -9,6 +8,7 @@ import theme from '../../theme';
 import logo from '../../img/logo-dao.png';
 import twitter from '../../img/twitter.svg';
 import discord from '../../img/discord.svg';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 interface FooterTitleProps {
   children: React.ReactNode;
@@ -95,9 +95,9 @@ export function Footer() {
           sx={{
             width: '100%',
             marginBottom: '50px',
+            display: 'flex',
             flexDirection: ['column', 'row', 'row', 'row'],
-            justifyContent: 'space-around',
-            display: 'flex'
+            justifyContent: 'space-around'
           }}
         >
           <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
@@ -111,6 +111,9 @@ export function Footer() {
                 </Link>
                 <Link href="https://discord.gg/fDRBajCB9V" target="_blank" rel="noreferrer" style={{ margin: '16px' }}>
                   <img src={discord} height={28} alt="Discord" />
+                </Link>
+                <Link href="https://github.com/lira-dao/ecosystem" target="_blank" rel="noreferrer" sx={{ margin: '16px' }}>
+                  <GitHubIcon sx={{ color: 'white', fontSize: '32px' }} />
                 </Link>
               </Box>
             </Grid>
