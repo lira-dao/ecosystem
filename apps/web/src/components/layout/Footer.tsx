@@ -112,7 +112,7 @@ export function Footer() {
                 <Link href="https://discord.gg/fDRBajCB9V" target="_blank" rel="noreferrer" style={{ margin: '16px' }}>
                   <img src={discord} height={28} alt="Discord" />
                 </Link>
-                <Link href="https://github.com/lira-dao/ecosystem" target="_blank" rel="noreferrer" sx={{ margin: '16px' }}>
+                <Link href="https://github.com/lira-dao" target="_blank" rel="noreferrer" sx={{ margin: '16px' }}>
                   <GitHubIcon sx={{ color: 'white', fontSize: '32px' }} />
                 </Link>
               </Box>
