@@ -1,5 +1,5 @@
 import { defaultTheme } from '@xstyled/styled-components';
-import { createTheme, ThemeOptions } from '@mui/material';
+import { createTheme } from '@mui/material';
 
 
 export const muiDarkTheme = createTheme({
@@ -35,6 +35,15 @@ export const muiDarkTheme = createTheme({
       fontFamily: 'Avenir Next',
     }
   },
+  components: {
+    MuiDrawer: {
+      styleOverrides: {
+        paper: {
+          backgroundImage: 'none'
+        }
+      }
+    }
+  }
 });
 
 export const theme = {
