@@ -189,7 +189,7 @@ export async function rewardSplitterFixture() {
   };
 }
 
-export async function rewardSplitterV2Factory() {
+export async function rewardSplitterV2Fixture() {
   const {
     deployer,
     ldt,
@@ -243,7 +243,7 @@ export async function rewardSplitterV2Factory() {
   let time = block?.timestamp ?? 0;
   await increaseTo(time + 86400);
 
-  const farmSplitterFactory = await hre.ethers.getContractFactory('FarmSplitter');
+  const farmSplitterFactory = await hre.ethers.getContractFactory('FarmingSplitter');
   const farmSplitter = await farmSplitterFactory.deploy(
     ldtAddress,
     tbbAddress,

@@ -5,5 +5,8 @@
   "RewardSplitter#RewardSplitter": "0x27e8B443610190a7239359df3318be2A28c77731",
   "TokenStakerTbg#LPStaker": "0x27BBb0C460BeCF0AD7075db24f0Eb796E2AADEb8",
   "TokenStakerTbs#LPStaker": "0x41F170da2148DdD06bcc16852ebB3c039b32f930",
-  "TokenStakerTbb#LPStaker": "0x464b4b4099A97384D091CDd71E9616B5a95fBfF3"
+  "TokenStakerTbb#LPStaker": "0x464b4b4099A97384D091CDd71E9616B5a95fBfF3",
+  "FarmingSplitter#FarmingSplitter": "0x291a23eC12831421Dd65cB29C6AB5551C4f35a4D",
+  "StakingSplitter#StakingSplitter": "0xa60ca86E1a4c6d544b59D6B9cB8De7bC7160B102",
+  "RewardSplitterV2#RewardSplitterV2": "0x3Ed90D349Cee114c8A0A1674cf17eBf740608d0E"
 }

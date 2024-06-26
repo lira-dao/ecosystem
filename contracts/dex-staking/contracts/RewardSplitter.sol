@@ -649,9 +649,17 @@ contract RewardSplitterV2 is Ownable2Step {
         IStaker(stakers[1]).distributeRewards(stakingRewards.tbs.ldt, stakingRewards.tbs.tb);
         IStaker(stakers[2]).distributeRewards(stakingRewards.tbg.ldt, stakingRewards.tbg.tb);
 
+        if (IERC20(ldt).balanceOf(address(this)) > 0) {
+            IERC20(ldt).transfer(distributor, IERC20(ldt).balanceOf(address(this)));
+        }
+
         emit DistributeFarmingRewards(farmingRewards);
         emit DistributeStakingRewards(stakingRewards);
         emit DistributeRewards(rewards);
+    }
+
+    function recoverOwnership(address _address) external onlyOwner {
+        Ownable(_address).transferOwnership(owner());
     }
 }
 
@@ -703,8 +711,8 @@ contract StakingSplitter is Ownable2Step {
             rewards.tbg.ldt = (tbgLiquidity * _ldt) / totalLiquidity;
         } else {
             rewards.tbb.ldt = rewards.tbb.liquidity.ldt;
-            rewards.tbs.ldt = rewards.tbb.liquidity.ldt;
-            rewards.tbg.ldt = rewards.tbb.liquidity.ldt;
+            rewards.tbs.ldt = rewards.tbs.liquidity.ldt;
+            rewards.tbg.ldt = rewards.tbg.liquidity.ldt;
         }
 
         if (rewards.tbb.liquidity.tb > tbbFarmingReward / ITreasuryToken(tbb).rate()) {
@@ -742,7 +750,7 @@ contract StakingSplitter is Ownable2Step {
     }
 }
 
-contract FarmSplitter is Ownable2Step {
+contract FarmingSplitter is Ownable2Step {
     address public ldt;
     address public tbb;
     address public tbs;

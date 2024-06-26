@@ -4,10 +4,12 @@ import {
   FarmingStaker,
   FarmingStakers,
   FarmingStakersAddresses,
-  RewardSplitterAddress,
+  NetworkAddresses,
+  RewardSplitterAddress, StakersAddresses,
   TokenAddresses,
   TokenDistributorAddress,
-  TokenStaker, TokenStakers,
+  TokenStaker,
+  TokenStakers,
 } from './types';
 
 
@@ -256,7 +258,7 @@ export const farmingStakersArbitrumOne: FarmingStaker[] = [{
 export const farmingStakers: FarmingStakers = {
   42161: farmingStakersArbitrumOne,
   421614: farmingStakersArbitrumSepolia,
-}
+};
 
 export const farmingStakersAddresses: FarmingStakersAddresses = {
   42161: {
@@ -268,8 +270,8 @@ export const farmingStakersAddresses: FarmingStakersAddresses = {
     tbb: '0xF43ae7150aFc0bf086Bb44FaDaFF527f223133c8',
     tbs: '0x62eA7348b14f6d8700b3db23CC5F48a10d74b29A',
     tbg: '0x0faF2b848325dfA42CEc69E34f1d44379ee7191c',
-  }
-}
+  },
+};
 
 export const tokenStakersArbitrumSepolia: TokenStaker[] = [{
   address: '0x7DB000F68bb1B638ca779909cbDC90374b6b250e',
@@ -294,16 +296,32 @@ export const tokenStakersArbitrumSepolia: TokenStaker[] = [{
   ],
 }];
 
+export const stakerAddresses: StakersAddresses = {
+  421614: {
+    tbb: '0x7DB000F68bb1B638ca779909cbDC90374b6b250e',
+    tbs: '0xB2E52F2177CC2249B7F6b50AD5CE9393B42d1496',
+    tbg: '0xaD5D9fbd71F75A7D760CcB6fD49987C071eE03be',
+  }
+}
+
 export const tokenStakers: TokenStakers = {
   421614: tokenStakersArbitrumSepolia,
-}
+};
 
 export const tokenDistributor: TokenDistributorAddress = {
   42161: '0x70520d9BF8FE4E9eE4aCEaE6168B629961AF0A11',
   421614: '0x7F80B08dDCE1737a6957C279d33EfAFCB354912C',
-}
+};
 
 export const rewardSplitter: RewardSplitterAddress = {
   42161: '0xbBBbE9b62Cab1852461D4137b10E959F5577e5BE',
   421614: '0x27e8B443610190a7239359df3318be2A28c77731',
-}
+};
+
+export const farmingSplitter: NetworkAddresses = {
+  421614: '0x291a23eC12831421Dd65cB29C6AB5551C4f35a4D',
+};
+
+export const stakingSplitter: NetworkAddresses = {
+  421614: '0xa60ca86E1a4c6d544b59D6B9cB8De7bC7160B102',
+};

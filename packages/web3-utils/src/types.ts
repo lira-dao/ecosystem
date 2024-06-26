@@ -39,6 +39,10 @@ export type RewardSplitterAddress = {
   [key: number]: EthereumAddress,
 }
 
+export type NetworkAddresses = {
+  [key: number]: EthereumAddress,
+}
+
 export type DexAddresses = {
   [key: number]: {
     factory: EthereumAddress,
@@ -59,6 +63,14 @@ export type DexPairs = {
 }
 
 export type FarmingStakersAddresses = {
+  [key: number]: {
+    tbb: EthereumAddress,
+    tbs: EthereumAddress,
+    tbg: EthereumAddress,
+  }
+}
+
+export type StakersAddresses = {
   [key: number]: {
     tbb: EthereumAddress,
     tbs: EthereumAddress,

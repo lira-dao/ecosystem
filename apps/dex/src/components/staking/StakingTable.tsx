@@ -60,7 +60,7 @@ export function StakingTable({ stakers, isConnected }: Props) {
               <TableCell component="th" scope="row">
                 <Box display="flex" alignItems="center" sx={{ textWrap: 'nowrap' }}>
                   <Box display="flex" mr={1}>
-                    <img src={staker.tokens[1]?.icon} width={30} alt={`${staker.tokens[0]?.name} logo`} />
+                    <img src={staker.tokens[0]?.icon} width={30} alt={`${staker.tokens[0]?.name} logo`} />
                   </Box>
                   {staker.token?.symbol}
                 </Box>
