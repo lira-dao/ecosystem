@@ -213,6 +213,13 @@ const theme = createTheme({
         }
       `,
     },
+    MuiDrawer: {
+      styleOverrides: {
+        paper: {
+          backgroundImage: 'none'
+        }
+      }
+    }
   },
   palette: {
     mode: 'dark',
