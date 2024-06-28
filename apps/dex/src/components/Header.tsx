@@ -51,7 +51,7 @@ export function Header() {
 
   const drawerContent = (
     <>
-      <Box onClick={handleDrawerToggle} sx={{ width: 250 }}>
+      <Box onClick={handleDrawerToggle} sx={{ width: 250 }} marginTop={2}>
         <MenuItem text="SWAP" to="/swap" />
         <MenuItem text="TREASURY" to="/treasury" />
         <MenuItem text="POOLS" to="/pools" />
