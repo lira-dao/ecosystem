@@ -3,52 +3,6 @@ import { dexRouterFixture } from '@lira-dao/dex-periphery/fixtures';
 import { tokenDistributorFactory } from '@lira-dao/token-distributor/fixtures';
 import { increaseTo } from '@nomicfoundation/hardhat-network-helpers/dist/src/helpers/time';
 
-export async function addressBookFixture() {
-  const [deployer, dao, user] = await hre.ethers.getSigners();
-
-  const router = await dexRouterFixture();
-
-  const lpStakerContract = await hre.ethers.getContractFactory('LPStaker');
-  const tokenStakerContract = await hre.ethers.getContractFactory('TokenStaker');
-
-  const tbbFarm = await lpStakerContract.deploy(router.tbbPairAddress, router.ldtAddress, router.tbbAddress);
-  const tbbFarmAddress = await tbbFarm.getAddress();
-
-  const tbsFarm = await lpStakerContract.deploy(router.tbsPairAddress, router.ldtAddress, router.tbsAddress);
-  const tbsFarmAddress = await tbsFarm.getAddress();
-
-  const tbgFarm = await lpStakerContract.deploy(router.tbgPairAddress, router.ldtAddress, router.tbgAddress);
-  const tbgFarmAddress = await tbgFarm.getAddress();
-
-  const tbbStaker = await tokenStakerContract.deploy(router.tbbAddress, router.ldtAddress, router.tbbAddress);
-  const tbbStakerAddress = await tbbStaker.getAddress();
-
-  const tbsStaker = await tokenStakerContract.deploy(router.tbsAddress, router.ldtAddress, router.tbsAddress);
-  const tbsStakerAddress = await tbsStaker.getAddress();
-
-  const tbgStaker = await tokenStakerContract.deploy(router.tbgAddress, router.ldtAddress, router.tbgAddress);
-  const tbgStakerAddress = await tbgStaker.getAddress();
-
-  const addressBookContract = await hre.ethers.getContractFactory('AddressBook');
-  const addressBook = await addressBookContract.deploy(
-    { ldt: router.ldtAddress, tbb: router.tbbAddress, tbs: router.tbsAddress, tbg: router.tbgAddress },
-    { tbb: tbbFarmAddress, tbs: tbsFarmAddress, tbg: tbgFarmAddress },
-    { tbb: tbbStakerAddress, tbs: tbsStakerAddress, tbg: tbgStakerAddress },
-  );
-  const addressBookAddress = await addressBook.getAddress();
-
-  return {
-    ...router,
-    addressBook,
-    addressBookAddress,
-    tbbFarmAddress,
-    tbbStakerAddress,
-    tbsFarmAddress,
-    tbsStakerAddress,
-    tbgFarmAddress,
-    tbgStakerAddress,
-  };
-}
 
 export async function lpStakerFixture() {
   const router = await dexRouterFixture();
