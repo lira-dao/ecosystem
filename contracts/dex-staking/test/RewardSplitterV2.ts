@@ -38,6 +38,7 @@ describe('RewardSplitterV2', () => {
       rewardSplitter,
       rewardSplitterAddress,
       ldt,
+      ldtTeam,
       distributorAddress,
       tbb,
       tbbFarmAddress,
@@ -61,6 +62,16 @@ describe('RewardSplitterV2', () => {
       tbb: await tbbPair.balanceOf(deployer),
       tbs: await tbsPair.balanceOf(deployer),
       tbg: await tbgPair.balanceOf(deployer),
+    });
+
+    // @ts-ignore
+    await ldt.connect(ldtTeam).burn(await ldt.balanceOf(ldtTeam));
+
+    console.log('team before', {
+      ldt: await ldt.balanceOf(ldtTeam),
+      tbb: await tbb.balanceOf(ldtTeam),
+      tbs: await tbs.balanceOf(ldtTeam),
+      tbg: await tbg.balanceOf(ldtTeam),
     });
 
     await tbbPair.approve(tbbFarmAddress, await tbbPair.balanceOf(deployer));
@@ -87,9 +98,9 @@ describe('RewardSplitterV2', () => {
         5_547_945_000_000_000_000_000_000n, // total
         1_109_589_000_000_000_000_000_000n, // ldt 20%
         4_438_356_000_000_000_000_000_000n, // tb 80%
-        [221_917_800_000_000_000_000_000n, 1_775_342_400_000_000_000_000_000n], // farming
-        [443_835_600_000_000_000_000_000n, 1_109_589_000_000_000_000_000_000n], // staking
-        [110_958_900_000_000_000_000_000n, 443_835_600_000_000_000_000_000n], // team
+        [parseUnits('221917.8', 18), parseUnits('1775342.4', 18)], // farming
+        [parseUnits('443835.6', 18), parseUnits('1109589', 18)], // staking
+        [parseUnits('110958.9', 18), parseUnits('443835.6', 18)], // team
       ])
       .emit(rewardSplitter, 'DistributeFarmingRewards')
       .withArgs(
@@ -115,24 +126,40 @@ describe('RewardSplitterV2', () => {
       .withArgs(
         [
           [
-            [parseUnits('1', 18), parseUnits('0.001', 18), parseUnits('0.5', 18), parseUnits('0.5', 18)],
+            [parseUnits('1', 18), parseUnits('0.001', 18), parseUnits('500', 18), parseUnits('0.5', 18)],
             parseUnits('1', 18),
             parseUnits('0.001', 18),
           ],
           [
-            [parseUnits('25', 18), parseUnits('0.0025', 18), parseUnits('0.5', 18), parseUnits('0.5', 18)],
+            [parseUnits('25', 18), parseUnits('0.0025', 18), parseUnits('5000', 18), parseUnits('0.5', 18)],
             parseUnits('25', 18),
             parseUnits('0.0025', 18),
           ],
           [
-            [parseUnits('500', 18), parseUnits('0.005', 18), parseUnits('0.5', 18), parseUnits('0.5', 18)],
+            [parseUnits('500', 18), parseUnits('0.005', 18), parseUnits('50000', 18), parseUnits('0.5', 18)],
             parseUnits('500', 18),
             parseUnits('0.005', 18),
           ],
         ],
+      )
+      .emit(rewardSplitter, 'DistributeTeamRewards')
+      .withArgs(
+        [
+          30554999999999999995521n,
+          10_004999999999999999n,
+          1_004999999999999999n,
+          104999999999999999n,
+        ],
       );
 
     await ldt.burn(await ldt.balanceOf(deployer));
+
+    console.log('team after', {
+      ldt: await ldt.balanceOf(ldtTeam),
+      tbb: await tbb.balanceOf(ldtTeam),
+      tbs: await tbs.balanceOf(ldtTeam),
+      tbg: await tbg.balanceOf(ldtTeam),
+    });
 
     console.log('deployer balances', {
       ldt: await ldt.balanceOf(deployer),
