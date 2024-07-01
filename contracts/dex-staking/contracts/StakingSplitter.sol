@@ -6,7 +6,13 @@ import '@lira-dao/treasury-tokens/contracts/interfaces/ITreasuryToken.sol';
 import './interfaces/IStaker.sol';
 import './libs/RewardsLibrary.sol';
 
-
+/**
+ * @title Staking Splitter V1
+ * @author LIRA DAO Team
+ * @custom:security-contact contact@liradao.org
+ *
+ * To know more about the ecosystem you can find us on https://liradao.org don't trust, verify!
+ */
 contract StakingSplitter is Ownable2Step {
     address public ldt;
     address public tbb;

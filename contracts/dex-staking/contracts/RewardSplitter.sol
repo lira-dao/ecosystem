@@ -10,7 +10,13 @@ import './interfaces/ISplitter.sol';
 import './interfaces/ITeamSplitter.sol';
 import './libs/RewardsLibrary.sol';
 
-
+/**
+ * @title Reward Splitter V2
+ * @author LIRA DAO Team
+ * @custom:security-contact contact@liradao.org
+ *
+ * To know more about the ecosystem you can find us on https://liradao.org don't trust, verify!
+ */
 contract RewardSplitterV2 is Ownable2Step {
     struct DoubleReward {
         uint ldt;

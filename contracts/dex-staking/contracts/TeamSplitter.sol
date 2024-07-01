@@ -5,7 +5,13 @@ import '@openzeppelin/contracts/access/Ownable2Step.sol';
 import '@lira-dao/treasury-tokens/contracts/interfaces/ITreasuryToken.sol';
 import './libs/RewardsLibrary.sol';
 
-
+/**
+ * @title Team Splitter V1
+ * @author LIRA DAO Team
+ * @custom:security-contact contact@liradao.org
+ *
+ * To know more about the ecosystem you can find us on https://liradao.org don't trust, verify!
+ */
 contract TeamSplitter is Ownable2Step {
     address public tbb;
     address public tbs;
