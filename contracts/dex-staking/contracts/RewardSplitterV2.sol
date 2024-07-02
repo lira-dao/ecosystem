@@ -18,6 +18,12 @@ import './libs/RewardsLibrary.sol';
  * To know more about the ecosystem you can find us on https://liradao.org don't trust, verify!
  */
 contract RewardSplitterV2 is Ownable2Step {
+    struct StakerAddresses {
+        address[] farms;
+        address[] stakers;
+        address[] boosters;
+    }
+
     struct DoubleReward {
         uint ldt;
         uint tb;
@@ -29,6 +35,7 @@ contract RewardSplitterV2 is Ownable2Step {
         uint tb;
         DoubleReward farming;
         DoubleReward staking;
+        DoubleReward boosting;
         DoubleReward team;
     }
 
@@ -60,10 +67,12 @@ contract RewardSplitterV2 is Ownable2Step {
 
     address[] public farms;
     address[] public stakers;
+    address[] public boosters;
 
     address public farmSplitter;
     address public stakingSplitter;
     address public teamSplitter;
+    address public boostingSplitter;
 
     address public teamVault;
 
@@ -75,6 +84,7 @@ contract RewardSplitterV2 is Ownable2Step {
     event DistributeRewards(Rewards rewards);
     event DistributeFarmingRewards(RewardsLibrary.RewardsAmounts rewards);
     event DistributeStakingRewards(RewardsLibrary.RewardsAmounts rewards);
+    event DistributeBoostingRewards(RewardsLibrary.RewardsAmounts rewards);
     event DistributeTeamRewards(RewardsLibrary.TeamRewardsAmounts rewards);
 
     constructor(
@@ -85,10 +95,10 @@ contract RewardSplitterV2 is Ownable2Step {
         address _distributor,
         address _farmSplitter,
         address _stakingSplitter,
+        address _boostingSplitter,
         address _teamSplitter,
         address _teamVault,
-        address[] memory _farms,
-        address[] memory _stakers
+        StakerAddresses memory _addresses
     ) Ownable(msg.sender) {
         ldt = _ldt;
         tbb = _tbb;
@@ -97,10 +107,12 @@ contract RewardSplitterV2 is Ownable2Step {
         distributor = _distributor;
         farmSplitter = _farmSplitter;
         stakingSplitter = _stakingSplitter;
+        boostingSplitter = _boostingSplitter;
         teamSplitter = _teamSplitter;
         teamVault = _teamVault;
-        farms = _farms;
-        stakers = _stakers;
+        farms = _addresses.farms;
+        stakers = _addresses.stakers;
+        boosters = _addresses.boosters;
     }
 
     function approve(address _token, address _spender) private {
@@ -117,18 +129,24 @@ contract RewardSplitterV2 is Ownable2Step {
 
         approve(ldt, stakers[0]);
         approve(tbb, stakers[0]);
+        approve(ldt, boosters[0]);
+        approve(tbb, boosters[0]);
 
         approve(ldt, farms[1]);
         approve(tbs, farms[1]);
 
         approve(ldt, stakers[1]);
         approve(tbs, stakers[1]);
+        approve(ldt, boosters[1]);
+        approve(tbs, boosters[1]);
 
         approve(ldt, farms[2]);
         approve(tbg, farms[2]);
 
         approve(ldt, stakers[2]);
         approve(tbg, stakers[2]);
+        approve(ldt, boosters[2]);
+        approve(tbg, boosters[2]);
     }
 
     function distributeRewards() public onlyOwner {
@@ -142,18 +160,30 @@ contract RewardSplitterV2 is Ownable2Step {
         rewards.tb = (rewards.total * tbRate) / 100;
         rewards.ldt = rewards.total - rewards.tb;
 
+        // farming rewards
         rewards.farming.ldt = (rewards.ldt * ldtRewards.farming) / 100;
         rewards.farming.tb = (rewards.tb * tbRewards.farming) / 100;
 
-        rewards.staking.ldt = (rewards.ldt * ldtRewards.staking) / 100;
-        rewards.staking.tb = (rewards.tb * tbRewards.staking) / 100;
+        // staking rewards
+        uint stakingRewardsLdt = (rewards.ldt * ldtRewards.staking) / 100;
+        uint stakingRewardsTb = (rewards.tb * tbRewards.staking) / 100;
 
+        rewards.staking.ldt = stakingRewardsLdt / 2;
+        rewards.staking.tb = stakingRewardsTb / 2;
+
+        // boosting rewards
+        rewards.boosting.ldt = stakingRewardsLdt - rewards.staking.ldt;
+        rewards.boosting.tb = stakingRewardsTb - rewards.staking.tb;
+
+        // team rewards
         rewards.team.ldt = (rewards.ldt * ldtRewards.team) / 100;
         rewards.team.tb = (rewards.tb * tbRewards.team) / 100;
 
         RewardsLibrary.RewardsAmounts memory farmingRewards = ISplitter(farmSplitter).calculate(rewards.farming.ldt, rewards.farming.tb);
 
         RewardsLibrary.RewardsAmounts memory stakingRewards = ISplitter(stakingSplitter).calculate(rewards.staking.ldt, rewards.staking.tb);
+
+        RewardsLibrary.RewardsAmounts memory boostingRewards = ISplitter(boostingSplitter).calculate(rewards.boosting.ldt, rewards.boosting.tb);
 
         uint ldtLiquidity =
             farmingRewards.tbb.liquidity.ldtLiquidity +
@@ -193,6 +223,21 @@ contract RewardSplitterV2 is Ownable2Step {
         IStaker(stakers[1]).distributeRewards(stakingRewards.tbs.ldt, stakingRewards.tbs.tb);
         IStaker(stakers[2]).distributeRewards(stakingRewards.tbg.ldt, stakingRewards.tbg.tb);
 
+        if (boostingRewards.tbb.ldt > 0 && boostingRewards.tbb.tb > 0) {
+            ITreasuryToken(tbb).mint(address(this), boostingRewards.tbb.tb);
+            IStaker(boosters[0]).distributeRewards(boostingRewards.tbb.ldt, boostingRewards.tbb.tb);
+        }
+
+        if (boostingRewards.tbs.ldt > 0 && boostingRewards.tbs.tb > 0) {
+            ITreasuryToken(tbs).mint(address(this), boostingRewards.tbs.tb);
+            IStaker(boosters[1]).distributeRewards(boostingRewards.tbs.ldt, boostingRewards.tbs.tb);
+        }
+
+        if (boostingRewards.tbg.ldt > 0 && boostingRewards.tbg.tb > 0) {
+            ITreasuryToken(tbg).mint(address(this), boostingRewards.tbg.tb);
+            IStaker(boosters[2]).distributeRewards(boostingRewards.tbg.ldt, boostingRewards.tbg.tb);
+        }
+
         IERC20(ldt).transfer(teamVault, teamRewards.ldt);
         ITreasuryToken(tbb).mint(teamVault, teamRewards.tbb);
         ITreasuryToken(tbs).mint(teamVault, teamRewards.tbs);
@@ -204,6 +249,7 @@ contract RewardSplitterV2 is Ownable2Step {
 
         emit DistributeFarmingRewards(farmingRewards);
         emit DistributeStakingRewards(stakingRewards);
+        emit DistributeBoostingRewards(boostingRewards);
         emit DistributeTeamRewards(teamRewards);
         emit DistributeRewards(rewards);
     }

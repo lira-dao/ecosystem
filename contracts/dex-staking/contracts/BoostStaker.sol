@@ -42,14 +42,14 @@ contract BoostStaker is Ownable, ReentrancyGuard {
     }
 
     function stake(uint _amount) external nonReentrant {
-        require(IStaker(stakerAddress).stakers(msg.sender).amount > 0, 'MINIMUM_STAKE_AMOUNT');
+        require(IStaker(stakerAddress).stakers(msg.sender).amount > 0, 'MINIMUM_BOOST_AMOUNT');
 
         IStaker.Staker storage staker = stakers[msg.sender];
         require(staker.amount == 0 || staker.lastRewardRound == rewardRounds.length, 'PENDING_BOOST_REWARDS');
 
         staker.amount += _amount;
 
-        require(staker.amount <= (IStaker(stakerAddress).stakers(msg.sender).amount * ITreasuryToken(rewardToken2).rate()) / 2);
+        require(staker.amount <= (IStaker(stakerAddress).stakers(msg.sender).amount * ITreasuryToken(rewardToken2).rate()) / 2, 'MAX_BOOST_AMOUNT');
 
         staker.lastRewardRound = rewardRounds.length;
 

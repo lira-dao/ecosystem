@@ -56,6 +56,9 @@ describe('RewardSplitterV2', () => {
       tbbStaker,
       tbsStaker,
       tbgStaker,
+      tbbBooster,
+      tbsBooster,
+      tbgBooster,
     } = await rewardSplitterV2Fixture();
 
     console.log('LP', {
@@ -85,12 +88,15 @@ describe('RewardSplitterV2', () => {
 
     await tbb.mint(deployer, parseUnits('1', 18));
     await tbbStaker.stake(parseUnits('1', 18));
+    await tbbBooster.stake(parseUnits('250', 18));
 
     await tbs.mint(deployer, parseUnits('1', 18));
     await tbsStaker.stake(parseUnits('1', 18));
+    await tbsBooster.stake(parseUnits('2500', 18));
 
     await tbg.mint(deployer, parseUnits('1', 18));
     await tbgStaker.stake(parseUnits('1', 18));
+    await tbgBooster.stake(parseUnits('25000', 18));
 
     await expect(rewardSplitter.distributeRewards())
       .emit(rewardSplitter, 'DistributeRewards')
@@ -99,7 +105,8 @@ describe('RewardSplitterV2', () => {
         1_109_589_000_000_000_000_000_000n, // ldt 20%
         4_438_356_000_000_000_000_000_000n, // tb 80%
         [parseUnits('221917.8', 18), parseUnits('1775342.4', 18)], // farming
-        [parseUnits('443835.6', 18), parseUnits('1109589', 18)], // staking
+        [parseUnits('221917.8', 18), parseUnits('554794.5', 18)], // staking
+        [parseUnits('221917.8', 18), parseUnits('554794.5', 18)], // booster
         [parseUnits('110958.9', 18), parseUnits('443835.6', 18)], // team
       ])
       .emit(rewardSplitter, 'DistributeFarmingRewards')
@@ -142,10 +149,30 @@ describe('RewardSplitterV2', () => {
           ],
         ],
       )
+      .emit(rewardSplitter, 'DistributeBoostingRewards')
+      .withArgs(
+        [
+          [
+            [parseUnits('0.5', 18), parseUnits('0.0005', 18), parseUnits('250', 18), parseUnits('0.25', 18)],
+            parseUnits('0.5', 18),
+            parseUnits('0.0005', 18),
+          ],
+          [
+            [parseUnits('12.5', 18), parseUnits('0.00125', 18), parseUnits('2500', 18), parseUnits('0.25', 18)],
+            parseUnits('12.5', 18),
+            parseUnits('0.00125', 18),
+          ],
+          [
+            [parseUnits('250', 18), parseUnits('0.0025', 18), parseUnits('25000', 18), parseUnits('0.25', 18)],
+            parseUnits('250', 18),
+            parseUnits('0.0025', 18),
+          ],
+        ],
+      )
       .emit(rewardSplitter, 'DistributeTeamRewards')
       .withArgs(
         [
-          30554999999999999995521n,
+          30_554_999999999999995521n,
           10_004999999999999999n,
           1_004999999999999999n,
           104999999999999999n,

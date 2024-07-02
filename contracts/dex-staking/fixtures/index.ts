@@ -236,6 +236,20 @@ export async function rewardSplitterV2Fixture() {
   );
   const stakingSplitterAddress = await stakingSplitter.getAddress();
 
+  const boosterSplitterFactory = await hre.ethers.getContractFactory('BoostingSplitter');
+  const boosterSplitter = await boosterSplitterFactory.deploy(
+    ldtAddress,
+    tbbAddress,
+    tbsAddress,
+    tbgAddress,
+    [
+      tbbBoosterAddress,
+      tbsBoosterAddress,
+      tbgBoosterAddress,
+    ],
+  );
+  const boosterSplitterAddress = await boosterSplitter.getAddress();
+
   const teamSplitterFactory = await hre.ethers.getContractFactory('TeamSplitter');
   const teamSplitter = await teamSplitterFactory.deploy(
     tbbAddress,
@@ -253,10 +267,14 @@ export async function rewardSplitterV2Fixture() {
     distributorAddress,
     farmSplitterAddress,
     stakingSplitterAddress,
+    boosterSplitter,
     teamSplitterAddress,
     ldtTeam,
-    [tbbFarmAddress, tbsFarmAddress, tbgFarmAddress],
-    [tbbStakerAddress, tbsStakerAddress, tbgStakerAddress],
+    {
+      farms: [tbbFarmAddress, tbsFarmAddress, tbgFarmAddress],
+      stakers: [tbbStakerAddress, tbsStakerAddress, tbgStakerAddress],
+      boosters: [tbbBoosterAddress, tbsBoosterAddress, tbgBoosterAddress],
+    },
   );
 
   const rewardSplitterAddress = await rewardSplitter.getAddress();
@@ -275,11 +293,19 @@ export async function rewardSplitterV2Fixture() {
   await tbsStaker.transferOwnership(rewardSplitterAddress);
   await tbgStaker.transferOwnership(rewardSplitterAddress);
 
+  await tbbBooster.transferOwnership(rewardSplitterAddress);
+  await tbsBooster.transferOwnership(rewardSplitterAddress);
+  await tbgBooster.transferOwnership(rewardSplitterAddress);
+
   await rewardSplitter.approveTokens();
 
   await tbb.approve(tbbStakerAddress, hre.ethers.MaxUint256);
   await tbs.approve(tbsStakerAddress, hre.ethers.MaxUint256);
   await tbg.approve(tbgStakerAddress, hre.ethers.MaxUint256);
+
+  await ldt.approve(tbbBoosterAddress, hre.ethers.MaxUint256);
+  await ldt.approve(tbsBoosterAddress, hre.ethers.MaxUint256);
+  await ldt.approve(tbgBoosterAddress, hre.ethers.MaxUint256);
 
   return {
     ...dex,
