@@ -28,7 +28,7 @@ contract TeamSplitter is Ownable2Step {
         tbg = _tbg;
     }
 
-    function setRewardRate(RewardsLibrary.RewardRate _rewardRate) external onlyOwner {
+    function setRewardRate(RewardsLibrary.RewardRate memory _rewardRate) external onlyOwner {
         rewardRate = _rewardRate;
     }
 

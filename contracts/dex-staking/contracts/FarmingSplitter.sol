@@ -37,15 +37,15 @@ contract FarmingSplitter is Ownable2Step {
         farms = _farms;
     }
 
-    function setTbbRewardRate(RewardsLibrary.RewardRate _tbbRewardRate) external onlyOwner {
+    function setTbbRewardRate(RewardsLibrary.RewardRate memory _tbbRewardRate) external onlyOwner {
         tbbRewardRate = _tbbRewardRate;
     }
 
-    function setTbsRewardRate(RewardsLibrary.RewardRate _tbsRewardRate) external onlyOwner {
+    function setTbsRewardRate(RewardsLibrary.RewardRate memory _tbsRewardRate) external onlyOwner {
         tbsRewardRate = _tbsRewardRate;
     }
 
-    function setTbgRewardRate(RewardsLibrary.RewardRate _tbgRewardRate) external onlyOwner {
+    function setTbgRewardRate(RewardsLibrary.RewardRate memory _tbgRewardRate) external onlyOwner {
         tbgRewardRate = _tbgRewardRate;
     }
 
@@ -96,7 +96,7 @@ contract FarmingSplitter is Ownable2Step {
         return rewards;
     }
 
-    function calculateReward(address _farm, RewardsLibrary.RewardRate memory _rate) public view returns (RewardsLibrary.Reward memory) {
+    function calculateReward(address _farm, RewardsLibrary.RewardRate memory _rate) private view returns (RewardsLibrary.Reward memory) {
         uint256 totalStaked = ILPStaker(_farm).totalStaked();
         address lpToken = ILPStaker(_farm).lpToken();
         uint256 lpTotalSupply = IERC20(lpToken).totalSupply();
@@ -121,7 +121,7 @@ contract FarmingSplitter is Ownable2Step {
         );
     }
 
-    function getLdtLiquidity(address _farm) public view returns (uint256 liquidity) {
+    function getLdtLiquidity(address _farm) private view returns (uint256 liquidity) {
         address lpToken = ILPStaker(_farm).lpToken();
 
         liquidity = IERC20(ldt).balanceOf(lpToken);

@@ -35,15 +35,15 @@ contract StakingSplitter is Ownable2Step {
         stakers = _stakers;
     }
 
-    function setTbbRewardRate(RewardsLibrary.RewardRate _tbbRewardRate) external onlyOwner {
+    function setTbbRewardRate(RewardsLibrary.RewardRate memory _tbbRewardRate) external onlyOwner {
         tbbRewardRate = _tbbRewardRate;
     }
 
-    function setTbsRewardRate(RewardsLibrary.RewardRate _tbsRewardRate) external onlyOwner {
+    function setTbsRewardRate(RewardsLibrary.RewardRate memory _tbsRewardRate) external onlyOwner {
         tbsRewardRate = _tbsRewardRate;
     }
 
-    function setTbgRewardRate(RewardsLibrary.RewardRate _tbgRewardRate) external onlyOwner {
+    function setTbgRewardRate(RewardsLibrary.RewardRate memory _tbgRewardRate) external onlyOwner {
         tbgRewardRate = _tbgRewardRate;
     }
 
@@ -94,7 +94,7 @@ contract StakingSplitter is Ownable2Step {
         return rewards;
     }
 
-    function calculateReward(address _staker, uint _tokenRate, RewardsLibrary.RewardRate memory _rate) public view returns (RewardsLibrary.Reward memory) {
+    function calculateReward(address _staker, uint _tokenRate, RewardsLibrary.RewardRate memory _rate) private view returns (RewardsLibrary.Reward memory) {
         uint liquidity = IStaker(_staker).totalStaked() / 2;
 
         return RewardsLibrary.Reward(

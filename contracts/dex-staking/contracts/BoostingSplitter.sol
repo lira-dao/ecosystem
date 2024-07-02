@@ -36,15 +36,15 @@ contract BoostingSplitter is Ownable2Step {
         boosters = _boosters;
     }
 
-    function setTbbRewardRate(RewardsLibrary.RewardRate _tbbRewardRate) external onlyOwner {
+    function setTbbRewardRate(RewardsLibrary.RewardRate memory _tbbRewardRate) external onlyOwner {
         tbbRewardRate = _tbbRewardRate;
     }
 
-    function setTbsRewardRate(RewardsLibrary.RewardRate _tbsRewardRate) external onlyOwner {
+    function setTbsRewardRate(RewardsLibrary.RewardRate memory _tbsRewardRate) external onlyOwner {
         tbsRewardRate = _tbsRewardRate;
     }
 
-    function setTbgRewardRate(RewardsLibrary.RewardRate _tbgRewardRate) external onlyOwner {
+    function setTbgRewardRate(RewardsLibrary.RewardRate memory _tbgRewardRate) external onlyOwner {
         tbgRewardRate = _tbgRewardRate;
     }
 
@@ -64,7 +64,6 @@ contract BoostingSplitter is Ownable2Step {
         uint totalLdt = rewards.tbb.liquidity.ldtLiquidity + rewards.tbs.liquidity.ldtLiquidity + rewards.tbg.liquidity.ldtLiquidity;
 
         if (totalLdt > _ldt) {
-            console.log('qui1');
             uint tbbLiquidity = rewards.tbb.liquidity.ldtLiquidity;
             uint tbsLiquidity = rewards.tbs.liquidity.ldtLiquidity;
             uint tbgLiquidity = rewards.tbg.liquidity.ldtLiquidity;
@@ -74,7 +73,6 @@ contract BoostingSplitter is Ownable2Step {
             rewards.tbs.ldt = (tbsLiquidity * _ldt) / totalLiquidity;
             rewards.tbg.ldt = (tbgLiquidity * _ldt) / totalLiquidity;
         } else {
-            console.log('qui2', rewards.tbb.liquidity.ldt);
             rewards.tbb.ldt = rewards.tbb.liquidity.ldt;
             rewards.tbs.ldt = rewards.tbs.liquidity.ldt;
             rewards.tbg.ldt = rewards.tbg.liquidity.ldt;
