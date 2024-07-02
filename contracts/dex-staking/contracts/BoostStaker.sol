@@ -18,9 +18,9 @@ import './interfaces/IStaker.sol';
 contract BoostStaker is Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
-    IERC20 public token;
-    IERC20 public rewardToken1;
-    IERC20 public rewardToken2;
+    address public token;
+    address public rewardToken1;
+    address public rewardToken2;
 
     address public stakerAddress;
 
@@ -34,7 +34,7 @@ contract BoostStaker is Ownable, ReentrancyGuard {
     event Unstake(address wallet, uint256 amount);
     event Harvest(address wallet, uint256 amountToken1, uint256 amountToken2);
 
-    constructor(IERC20 _token, IERC20 _rewardToken1, IERC20 _rewardToken2, address _stakerAddress) Ownable(msg.sender) {
+    constructor(address _token, address _rewardToken1, address _rewardToken2, address _stakerAddress) Ownable(msg.sender) {
         token = _token;
         rewardToken1 = _rewardToken1;
         rewardToken2 = _rewardToken2;
@@ -55,7 +55,7 @@ contract BoostStaker is Ownable, ReentrancyGuard {
 
         totalStaked += _amount;
 
-        token.safeTransferFrom(msg.sender, address(this), _amount);
+        IERC20(token).safeTransferFrom(msg.sender, address(this), _amount);
 
         emit Stake(msg.sender, _amount);
     }
@@ -68,7 +68,7 @@ contract BoostStaker is Ownable, ReentrancyGuard {
         staker.amount -= _amount;
         totalStaked -= _amount;
 
-        token.safeTransfer(msg.sender, _amount);
+        IERC20(token).safeTransfer(msg.sender, _amount);
 
         emit Unstake(msg.sender, _amount);
     }
@@ -93,11 +93,11 @@ contract BoostStaker is Ownable, ReentrancyGuard {
         stakers[msg.sender].lastRewardRound = round;
 
         if (pendingReward1 > 0) {
-            rewardToken1.safeTransfer(msg.sender, pendingReward1);
+            IERC20(rewardToken1).safeTransfer(msg.sender, pendingReward1);
         }
 
         if (pendingReward2 > 0) {
-            rewardToken2.safeTransfer(msg.sender, pendingReward2);
+            IERC20(rewardToken2).safeTransfer(msg.sender, pendingReward2);
         }
 
         emit Harvest(msg.sender, pendingReward1, pendingReward2);
@@ -126,15 +126,15 @@ contract BoostStaker is Ownable, ReentrancyGuard {
 
         rewardRounds.push([roundRewardPerShare1, roundRewardPerShare2]);
 
-        rewardToken1.safeTransferFrom(owner(), address(this), rewardAmount1);
-        rewardToken2.safeTransferFrom(owner(), address(this), rewardAmount2);
+        IERC20(rewardToken1).safeTransferFrom(owner(), address(this), rewardAmount1);
+        IERC20(rewardToken2).safeTransferFrom(owner(), address(this), rewardAmount2);
     }
 
     /**
      * Emergency function to recover tokens from the contract
      * @param tokenAddress ERC20 address, cannot be the staked token address
      */
-    function emergencyWithdraw(IERC20 tokenAddress) public onlyOwner {
+    function emergencyWithdraw(address tokenAddress) public onlyOwner {
         require(tokenAddress != token, 'CANNOT_WITHDRAW_LOCKED_TOKEN');
         require(tokenAddress != rewardToken1, 'CANNOT_WITHDRAW_LOCKED_TOKEN');
         require(tokenAddress != rewardToken2, 'CANNOT_WITHDRAW_LOCKED_TOKEN');
@@ -143,8 +143,8 @@ contract BoostStaker is Ownable, ReentrancyGuard {
     }
 
     function empty() public onlyOwner {
-        token.transfer(owner(), token.balanceOf(address(this)));
-        rewardToken1.transfer(owner(), rewardToken1.balanceOf(address(this)));
-        rewardToken2.transfer(owner(), rewardToken2.balanceOf(address(this)));
+        IERC20(token).transfer(owner(), IERC20(token).balanceOf(address(this)));
+        IERC20(rewardToken1).transfer(owner(), IERC20(rewardToken1).balanceOf(address(this)));
+        IERC20(rewardToken2).transfer(owner(), IERC20(rewardToken2).balanceOf(address(this)));
     }
 }

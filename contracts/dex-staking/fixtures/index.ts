@@ -163,6 +163,7 @@ export async function rewardSplitterV2Fixture() {
 
   const lpStakerContract = await hre.ethers.getContractFactory('LPStaker');
   const tokenStakerContract = await hre.ethers.getContractFactory('TokenStaker');
+  const boosterStakerContract = await hre.ethers.getContractFactory('BoostStaker');
 
   const tbbFarm = await lpStakerContract.deploy(tbbPairAddress, ldtAddress, tbbAddress);
   const tbbFarmAddress = await tbbFarm.getAddress();
@@ -176,11 +177,20 @@ export async function rewardSplitterV2Fixture() {
   const tbbStaker = await tokenStakerContract.deploy(tbbAddress, ldtAddress, tbbAddress);
   const tbbStakerAddress = await tbbStaker.getAddress();
 
+  const tbbBooster = await boosterStakerContract.deploy(ldtAddress, ldtAddress, tbbAddress, tbbStakerAddress);
+  const tbbBoosterAddress = await tbbBooster.getAddress();
+
   const tbsStaker = await tokenStakerContract.deploy(tbsAddress, ldtAddress, tbsAddress);
   const tbsStakerAddress = await tbsStaker.getAddress();
 
+  const tbsBooster = await boosterStakerContract.deploy(ldtAddress, ldtAddress, tbsAddress, tbsStakerAddress);
+  const tbsBoosterAddress = await tbsBooster.getAddress();
+
   const tbgStaker = await tokenStakerContract.deploy(tbgAddress, ldtAddress, tbgAddress);
   const tbgStakerAddress = await tbgStaker.getAddress();
+
+  const tbgBooster = await boosterStakerContract.deploy(ldtAddress, ldtAddress, tbgAddress, tbgStakerAddress);
+  const tbgBoosterAddress = await tbgBooster.getAddress();
 
   const distributor = await tokenDistributorFactory.connect(deployer).deploy(ldtAddress);
   const distributorAddress = await distributor.getAddress();
@@ -285,6 +295,8 @@ export async function rewardSplitterV2Fixture() {
     rewardSplitterAddress,
     tbb,
     tbbAddress,
+    tbbBooster,
+    tbbBoosterAddress,
     tbbFarm,
     tbbFarmAddress,
     tbbPairAddress,
@@ -292,6 +304,8 @@ export async function rewardSplitterV2Fixture() {
     tbbStakerAddress,
     tbg,
     tbgAddress,
+    tbgBooster,
+    tbgBoosterAddress,
     tbgFarm,
     tbgFarmAddress,
     tbgPairAddress,
@@ -299,6 +313,8 @@ export async function rewardSplitterV2Fixture() {
     tbgStakerAddress,
     tbs,
     tbsAddress,
+    tbsBooster,
+    tbsBoosterAddress,
     tbsFarm,
     tbsFarmAddress,
     tbsPairAddress,
