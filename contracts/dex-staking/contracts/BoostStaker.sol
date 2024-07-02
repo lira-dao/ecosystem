@@ -5,52 +5,52 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/utils/ReentrancyGuard.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
+import '@lira-dao/treasury-tokens/contracts/interfaces/ITreasuryToken.sol';
 import './interfaces/IStaker.sol';
 
 /**
- * @title Token Staker V1
+ * @title Boost Staker V1
  * @author LIRA DAO Team
  * @custom:security-contact contact@liradao.org
  *
  * To know more about the ecosystem you can find us on https://liradao.org don't trust, verify!
  */
-contract TokenStaker is Ownable, ReentrancyGuard {
+contract BoostStaker is Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
-
-    struct Staker {
-        uint256 amount;
-        uint256 lastRewardRound;
-    }
 
     IERC20 public token;
     IERC20 public rewardToken1;
     IERC20 public rewardToken2;
 
-    mapping(address => Staker) public stakers;
+    address public stakerAddress;
+
+    mapping(address => IStaker.Staker) public stakers;
 
     uint256[2][] public rewardRounds;
 
     uint256 public totalStaked;
 
-    address public boosterAddress;
-
     event Stake(address wallet, uint256 amount);
     event Unstake(address wallet, uint256 amount);
     event Harvest(address wallet, uint256 amountToken1, uint256 amountToken2);
 
-    constructor(IERC20 _token, IERC20 _rewardToken1, IERC20 _rewardToken2) Ownable(msg.sender) {
+    constructor(IERC20 _token, IERC20 _rewardToken1, IERC20 _rewardToken2, address _stakerAddress) Ownable(msg.sender) {
         token = _token;
         rewardToken1 = _rewardToken1;
         rewardToken2 = _rewardToken2;
+        stakerAddress = _stakerAddress;
     }
 
     function stake(uint _amount) external nonReentrant {
-        require(_amount >= 10 ** 18, 'MINIMUM_STAKE_AMOUNT');
+        require(IStaker(stakerAddress).stakers(msg.sender).amount > 0, 'MINIMUM_STAKE_AMOUNT');
 
-        Staker storage staker = stakers[msg.sender];
-        require(staker.amount == 0 || staker.lastRewardRound == rewardRounds.length, 'PENDING_REWARDS');
+        IStaker.Staker storage staker = stakers[msg.sender];
+        require(staker.amount == 0 || staker.lastRewardRound == rewardRounds.length, 'PENDING_BOOST_REWARDS');
 
         staker.amount += _amount;
+
+        require(staker.amount <= (IStaker(stakerAddress).stakers(msg.sender).amount * ITreasuryToken(rewardToken2).rate()) / 2);
+
         staker.lastRewardRound = rewardRounds.length;
 
         totalStaked += _amount;
@@ -61,13 +61,9 @@ contract TokenStaker is Ownable, ReentrancyGuard {
     }
 
     function unstake(uint _amount) external nonReentrant {
-        Staker storage staker = stakers[msg.sender];
-        require(staker.lastRewardRound == rewardRounds.length, 'PENDING_REWARDS');
+        IStaker.Staker storage staker = stakers[msg.sender];
+        require(staker.lastRewardRound == rewardRounds.length, 'PENDING_BOOST_REWARDS');
         require(_amount <= staker.amount, 'INVALID_AMOUNT');
-
-        if (boosterAddress != address(0)) {
-            IStaker(boosterAddress).unstake(IStaker(boosterAddress).stakers(msg.sender).amount);
-        }
 
         staker.amount -= _amount;
         totalStaked -= _amount;
@@ -108,7 +104,7 @@ contract TokenStaker is Ownable, ReentrancyGuard {
     }
 
     function pendingRewards(address _address) public view returns (uint256, uint256) {
-        Staker storage staker = stakers[_address];
+        IStaker.Staker storage staker = stakers[_address];
 
         uint256 pendingReward1 = 0;
         uint256 pendingReward2 = 0;
@@ -132,10 +128,6 @@ contract TokenStaker is Ownable, ReentrancyGuard {
 
         rewardToken1.safeTransferFrom(owner(), address(this), rewardAmount1);
         rewardToken2.safeTransferFrom(owner(), address(this), rewardAmount2);
-    }
-
-    function setBoosterAddress(address _boosterAddress) external onlyOwner {
-        boosterAddress = _boosterAddress;
     }
 
     /**
