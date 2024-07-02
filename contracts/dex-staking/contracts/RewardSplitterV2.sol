@@ -115,6 +115,22 @@ contract RewardSplitterV2 is Ownable2Step {
         boosters = _addresses.boosters;
     }
 
+    function setFarmSplitter(address _farmSplitter) external onlyOwner {
+        farmSplitter = _farmSplitter;
+    }
+
+    function setStakingSplitter(address _stakingSplitter) external onlyOwner {
+        stakingSplitter = _stakingSplitter;
+    }
+
+    function setBoostingSplitter(address _boostingSplitter) external onlyOwner {
+        boostingSplitter = _boostingSplitter;
+    }
+
+    function setTeamSplitter(address _teamSplitter) external onlyOwner {
+        teamSplitter = _teamSplitter;
+    }
+
     function approve(address _token, address _spender) private {
         IERC20(_token).approve(_spender, type(uint256).max);
     }
