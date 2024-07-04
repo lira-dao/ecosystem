@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
-import { Header } from './Header';
 import { x } from '@xstyled/styled-components';
+import { Header } from './Header';
+import { Footer } from './Footer';
 
 
 export function Layout() {
@@ -10,6 +11,7 @@ export function Layout() {
       <x.div w="100%" display="flex" alignItems="center" justifyContent="center">
         <Outlet />
       </x.div>
+      <Footer />
     </x.div>
   );
 }

@@ -27,6 +27,7 @@ import BigNumber from 'bignumber.js';
 import { useParams } from 'react-router-dom';
 import { useDexPairs } from '../hooks/useDexPairs';
 import { CurrencyInput } from '../components/swap/CurrencyInput';
+import { useFetchPrices } from '../hooks/usePrices';
 
 
 export function Swap() {
@@ -87,6 +88,9 @@ export function Swap() {
       allowance1.data !== undefined &&
       allowance1.data < parseUnits(firstValue.toString(), currencyA.decimals),
     [allowance1.data, currencyA.decimals, currencyA.isNative, firstValue]);
+
+  const { data: pricesData, error, isLoading } = useFetchPrices();
+  console.log("🚀 ~ Swap ~ prices:", pricesData)
 
   useEffect(() => {
     if (amountsOut.data) {
@@ -207,6 +211,13 @@ export function Swap() {
     setOpen(false);
   };
 
+  const normalizeCurrencySymbol = (symbol: string) => {
+    if (symbol.startsWith('W') && (symbol.includes('ETH') || symbol.includes('BTC'))) {
+        return symbol.substring(1);
+    }
+    return symbol;
+  }
+
   return (
     <x.div w="100%" maxWidth="480px" borderRadius="16px" padding={4}>
       <x.div display="flex" justifyContent="center" mt={2}>
@@ -227,6 +238,7 @@ export function Swap() {
         showPercentages
         title="You Pay"
         value={firstValue}
+        price={pricesData?.find(price => price.symbol === currencyA.symbol || (currencyA.symbol.startsWith('W') && (currencyA.symbol.includes('ETH') || currencyA.symbol.includes('BTC'))))?.price}
       />
 
       <x.div mb="-46px">
@@ -269,6 +281,13 @@ export function Swap() {
               <x.p>1 {currencyB.symbol} = {pair.priceCurrencyB.toFixed(pair.priceCurrencyB.lt(1) ? 8 : 2, 1)} {currencyA.symbol}</x.p>
             </x.div>
             <x.div></x.div>
+            <x.br></x.br>
+            <x.p>Recap Prices</x.p>
+            <x.div>
+              {pricesData && pricesData.map(crypto => (
+                <x.p key={crypto.symbol}>1 {crypto.symbol} = {parseFloat(crypto.price).toFixed(parseFloat(crypto.price) < 1 ? 8 : 2)} USD</x.p>
+              ))}
+            </x.div>
           </x.div>
         </x.div>
       )}

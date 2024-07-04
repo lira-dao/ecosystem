@@ -4,6 +4,7 @@ import { Currency } from '@lira-dao/web3-utils';
 import { SwapSection } from './SwapSection';
 import { InputPanel } from './InputPanel';
 import { CurrencySelector } from '../CurrencySelector';
+import { Price } from '../../hooks/usePrices';
 import { NumericalInput } from '../StyledInput';
 import { Container } from './Container';
 import BigNumber from 'bignumber.js';
@@ -24,6 +25,7 @@ interface CurrencyInputProps {
   showPercentages?: boolean;
   title: string;
   value: string;
+  price?: string;
 }
 
 export function CurrencyInput({
@@ -41,6 +43,7 @@ export function CurrencyInput({
   showPercentages = false,
   title,
   value,
+  price
 }: CurrencyInputProps) {
   const onSetPercentageInternal = (percentage: number) => {
     if (percentage === 100) {
@@ -52,6 +55,15 @@ export function CurrencyInput({
     }
   };
   console.log('disabled', disabled);
+  console.log('prices', price)
+
+  const isValidNumber = (val: string) => {
+    const number = parseFloat(val);
+    return !isNaN(number) && number > 0;
+  };
+
+  const usdEquivalent = isValidNumber(value) && price ? `$${(parseFloat(value) * parseFloat(price)).toFixed(2)} USD` : '';
+
   return (
     <SwapSection mt={6} mb={4}>
       <InputPanel>
@@ -69,7 +81,19 @@ export function CurrencyInput({
 
             <x.div w="100%" h="54px" display="flex" flexDirection="column">
               <NumericalInput id={id} disabled={!currency || disabled} value={value} onChange={onChangeValue} />
-              <x.p color="red-400">{insufficientBalance ? 'Insufficient Balance' : ''}</x.p>
+              {insufficientBalance && (
+                <x.div w="100%" display="flex" justifyContent={insufficientBalance ? 'space-between' : 'flex-end'}>
+                  <x.p color="red-400">Insufficient Balance</x.p>
+                  <x.p color="red-400">{(price && value !== '' && isValidNumber(value)) ? `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}` : ''}</x.p>
+                </x.div>
+              )}
+              {!insufficientBalance && (
+                <x.div w="100%" display="flex" justifyContent='flex-end'>
+                  <x.p color="gray155">{(price && value !== '' && isValidNumber(value)) ? `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}` : ''}</x.p>
+                </x.div>
+              )}
+              {/* <x.p color="red-400">{(insufficientBalance && price && value !== '' && isValidNumber(value)) ? `Insufficient Balance ~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}` : ''}</x.p> */}
+              {/* <x.p color="gray155">{(!insufficientBalance && price && value !== '' && isValidNumber(value)) ? `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}` : ''}</x.p> */}
             </x.div>
 
             <x.div w="100%" display="flex" justifyContent={showPercentages ? 'space-between' : 'flex-end'}>
