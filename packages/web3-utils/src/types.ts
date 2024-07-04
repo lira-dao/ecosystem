@@ -78,6 +78,14 @@ export type StakersAddresses = {
   }
 }
 
+export type BoosterAddresses = {
+  [key: number]: {
+    tbb: EthereumAddress,
+    tbs: EthereumAddress,
+    tbg: EthereumAddress,
+  }
+}
+
 export interface FarmingStaker {
   address: EthereumAddress,
   pool: EthereumAddress,
@@ -90,10 +98,20 @@ export interface TokenStaker {
   tokens: [EthereumAddress, EthereumAddress],
 }
 
+export interface BoostingStaker {
+  address: EthereumAddress,
+  token: EthereumAddress,
+  staker: EthereumAddress,
+}
+
 export interface FarmingStakers {
   [key: number]: FarmingStaker[],
 }
 
 export interface TokenStakers {
   [key: number]: TokenStaker[],
+}
+
+export interface BoostingStakers {
+  [key: number]: BoostingStaker[],
 }

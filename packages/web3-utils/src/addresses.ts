@@ -1,11 +1,15 @@
 import {
+  BoosterAddresses,
+  BoostingStaker,
+  BoostingStakers,
   DexAddresses,
   DexPairs,
   FarmingStaker,
   FarmingStakers,
   FarmingStakersAddresses,
   NetworkAddresses,
-  RewardSplitterAddress, StakersAddresses,
+  RewardSplitterAddress,
+  StakersAddresses,
   TokenAddresses,
   TokenDistributorAddress,
   TokenStaker,
@@ -210,21 +214,21 @@ export const dexPairs: DexPairs = {
 };
 
 export const farmingStakersArbitrumSepolia: FarmingStaker[] = [{
-  address: '0xF43ae7150aFc0bf086Bb44FaDaFF527f223133c8',
+  address: '0x0',
   pool: '0x63cB832062De3C0B86aeDdcC41A54AA8DAcae7D6',
   tokens: [
     '0xb81B1310037Fb2866B267792C2537ced143d3DE8',
     '0x62F53E68662B013ea03B7BA6803b624632179eD3',
   ],
 }, {
-  address: '0x62eA7348b14f6d8700b3db23CC5F48a10d74b29A',
+  address: '0x0',
   pool: '0x58D8C1b01c2B9BFc74B0425f8CA3180b9C70De4C',
   tokens: [
     '0xeE388b955fEb0567Cf86dFAAcdf393aEC14184aa',
     '0x62F53E68662B013ea03B7BA6803b624632179eD3',
   ],
 }, {
-  address: '0x0faF2b848325dfA42CEc69E34f1d44379ee7191c',
+  address: '0x0',
   pool: '0x7BAbb27A79A3f470bEea87A9008Fc22681F42e2c',
   tokens: [
     '0x34597dc215fcfd707c4B9b2D4ba4f69f45A91A82',
@@ -267,28 +271,28 @@ export const farmingStakersAddresses: FarmingStakersAddresses = {
     tbg: '0xFA8c04138407756dDAe054287df603b3aed39662',
   },
   421614: {
-    tbb: '0xF43ae7150aFc0bf086Bb44FaDaFF527f223133c8',
-    tbs: '0x62eA7348b14f6d8700b3db23CC5F48a10d74b29A',
-    tbg: '0x0faF2b848325dfA42CEc69E34f1d44379ee7191c',
+    tbb: '0x0',
+    tbs: '0x0',
+    tbg: '0x0',
   },
 };
 
 export const tokenStakersArbitrumSepolia: TokenStaker[] = [{
-  address: '0x7DB000F68bb1B638ca779909cbDC90374b6b250e',
+  address: '0x0',
   token: '0xb81B1310037Fb2866B267792C2537ced143d3DE8',
   tokens: [
     '0xb81B1310037Fb2866B267792C2537ced143d3DE8',
     '0x62F53E68662B013ea03B7BA6803b624632179eD3',
   ],
 }, {
-  address: '0xB2E52F2177CC2249B7F6b50AD5CE9393B42d1496',
+  address: '0x0',
   token: '0xeE388b955fEb0567Cf86dFAAcdf393aEC14184aa',
   tokens: [
     '0xeE388b955fEb0567Cf86dFAAcdf393aEC14184aa',
     '0x62F53E68662B013ea03B7BA6803b624632179eD3',
   ],
 }, {
-  address: '0xaD5D9fbd71F75A7D760CcB6fD49987C071eE03be',
+  address: '0x0',
   token: '0x34597dc215fcfd707c4B9b2D4ba4f69f45A91A82',
   tokens: [
     '0x34597dc215fcfd707c4B9b2D4ba4f69f45A91A82',
@@ -296,13 +300,39 @@ export const tokenStakersArbitrumSepolia: TokenStaker[] = [{
   ],
 }];
 
+export const boostingStakersArbitrumSepolia: BoostingStaker[] = [{
+  address: '0x0',
+  token: '0x0',
+  staker: '0x0',
+}, {
+  address: '0x0',
+  token: '0x0',
+  staker: '0x0',
+}, {
+  address: '0x0',
+  token: '0x0',
+  staker: '0x0',
+}];
+
+export const boostingStakers: BoostingStakers = {
+  421614: boostingStakersArbitrumSepolia,
+};
+
+export const boosterAddresses: BoosterAddresses = {
+  421614: {
+    tbb: '0x0',
+    tbs: '0x0',
+    tbg: '0x0',
+  },
+};
+
 export const stakerAddresses: StakersAddresses = {
   421614: {
-    tbb: '0x7DB000F68bb1B638ca779909cbDC90374b6b250e',
-    tbs: '0xB2E52F2177CC2249B7F6b50AD5CE9393B42d1496',
-    tbg: '0xaD5D9fbd71F75A7D760CcB6fD49987C071eE03be',
-  }
-}
+    tbb: '0x0',
+    tbs: '0x0',
+    tbg: '0x0',
+  },
+};
 
 export const tokenStakers: TokenStakers = {
   421614: tokenStakersArbitrumSepolia,
@@ -315,13 +345,21 @@ export const tokenDistributor: TokenDistributorAddress = {
 
 export const rewardSplitter: RewardSplitterAddress = {
   42161: '0xbBBbE9b62Cab1852461D4137b10E959F5577e5BE',
-  421614: '0x27e8B443610190a7239359df3318be2A28c77731',
+  421614: '0x0',
 };
 
 export const farmingSplitter: NetworkAddresses = {
-  421614: '0x291a23eC12831421Dd65cB29C6AB5551C4f35a4D',
+  421614: '0x0',
 };
 
 export const stakingSplitter: NetworkAddresses = {
-  421614: '0xa60ca86E1a4c6d544b59D6B9cB8De7bC7160B102',
+  421614: '0x0',
+};
+
+export const boostingSplitter: NetworkAddresses = {
+  421614: '0x0',
+};
+
+export const teamSplitter: NetworkAddresses = {
+  421614: '0x0',
 };
