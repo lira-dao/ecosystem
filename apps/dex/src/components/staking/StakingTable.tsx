@@ -48,6 +48,7 @@ export function StakingTable({ stakers, isConnected }: Props) {
             {isConnected && <TableCell align="right">My Deposit</TableCell>}
             <TableCell align="right"><Typography><span style={{ color: th.colors.green }}>Promo</span> APR</Typography></TableCell>
             {isConnected && <TableCell align="right">Rewards</TableCell>}
+            {isConnected && <TableCell align="right">Boost Rewards</TableCell>}
             {isConnected && <TableCell align="right">Actions</TableCell>}
           </TableRow>
         </TableHead>
@@ -72,9 +73,16 @@ export function StakingTable({ stakers, isConnected }: Props) {
                 align="right"
                 sx={{ textWrap: 'nowrap' }}
               ><Typography color={th.colors.green}>{getApr(staker.tokens[0]?.symbol)}</Typography></TableCell>
+
               {isConnected && (
                 <TableCell align="right" sx={{ textWrap: 'nowrap' }}>
-                  {staker.rewards[0]} {staker.tokens[1]?.symbol}<br />{staker.rewards[1]} {staker.tokens[0]?.symbol}
+                  {staker.rewards[1]} {staker.tokens[0]?.symbol}<br />{staker.rewards[0]} {staker.tokens[1]?.symbol}
+                </TableCell>
+              )}
+
+              {isConnected && (
+                <TableCell align="right" sx={{ textWrap: 'nowrap' }}>
+                  {staker.boostRewards[1]} {staker.tokens[0]?.symbol}<br />{staker.boostRewards[0]} {staker.tokens[1]?.symbol}
                 </TableCell>
               )}
 

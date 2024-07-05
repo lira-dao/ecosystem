@@ -163,7 +163,7 @@ export async function rewardSplitterV2Fixture() {
 
   const lpStakerContract = await hre.ethers.getContractFactory('LPStaker');
   const tokenStakerContract = await hre.ethers.getContractFactory('TokenStaker');
-  const boosterStakerContract = await hre.ethers.getContractFactory('BoostStaker');
+  const boosterStakerContract = await hre.ethers.getContractFactory('BoostingStaker');
 
   const tbbFarm = await lpStakerContract.deploy(tbbPairAddress, ldtAddress, tbbAddress);
   const tbbFarmAddress = await tbbFarm.getAddress();

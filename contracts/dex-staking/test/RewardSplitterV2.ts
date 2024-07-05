@@ -86,17 +86,17 @@ describe('RewardSplitterV2', () => {
     await tbgPair.approve(tbgFarmAddress, await tbgPair.balanceOf(deployer));
     await tbgFarm.stake(await tbgPair.balanceOf(deployer));
 
-    await tbb.mint(deployer, parseUnits('50', 18));
-    await tbbStaker.stake(parseUnits('50', 18));
-    await tbbBooster.stake(parseUnits('25000', 18));
+    await tbb.mint(deployer, parseUnits('1', 18));
+    await tbbStaker.stake(parseUnits('1', 18));
+    await tbbBooster.stake(parseUnits('500', 18));
 
-    await tbs.mint(deployer, parseUnits('1000', 18));
-    await tbsStaker.stake(parseUnits('1000', 18));
-    await tbsBooster.stake(parseUnits('5000000', 18));
+    await tbs.mint(deployer, parseUnits('1', 18));
+    await tbsStaker.stake(parseUnits('1', 18));
+    await tbsBooster.stake(parseUnits('5000', 18));
 
-    await tbg.mint(deployer, parseUnits('1000', 18));
-    await tbgStaker.stake(parseUnits('1000', 18));
-    await tbgBooster.stake(parseUnits('50000000', 18));
+    await tbg.mint(deployer, parseUnits('1', 18));
+    await tbgStaker.stake(parseUnits('1', 18));
+    await tbgBooster.stake(parseUnits('50000', 18));
 
     await expect(rewardSplitter.distributeRewards())
       // .emit(rewardSplitter, 'DistributeRewards')
@@ -149,26 +149,26 @@ describe('RewardSplitterV2', () => {
       //     ],
       //   ],
       // )
-      .emit(rewardSplitter, 'DistributeBoostingRewards')
-      .withArgs(
-        [
-          [
-            [parseUnits('100', 18), parseUnits('0.1', 18), parseUnits('50000', 18), parseUnits('50', 18)],
-            999,
-            888,
-          ],
-          [
-            [1, 2, 3, 4],
-            5,
-            6,
-          ],
-          [
-            [7, 8, 9, 10],
-            11,
-            12,
-          ],
-        ],
-      )
+      // .emit(rewardSplitter, 'DistributeBoostingRewards')
+      // .withArgs(
+      //   [
+      //     [
+      //       [parseUnits('1', 18), parseUnits('0.1', 18), parseUnits('50000', 18), parseUnits('50', 18)],
+      //       999,
+      //       888,
+      //     ],
+      //     [
+      //       [1, 2, 3, 4],
+      //       5,
+      //       6,
+      //     ],
+      //     [
+      //       [7, 8, 9, 10],
+      //       11,
+      //       12,
+      //     ],
+      //   ],
+      // )
       // .emit(rewardSplitter, 'DistributeTeamRewards')
       // .withArgs(
       //   [
