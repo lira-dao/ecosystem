@@ -213,7 +213,7 @@ export function Swap() {
 
   const normalizeCurrencySymbol = (symbol: string) => {
     if (symbol.startsWith('W') && (symbol.includes('ETH') || symbol.includes('BTC'))) {
-        return symbol.substring(1);
+      return symbol.substring(1);
     }
     return symbol;
   }
@@ -238,7 +238,7 @@ export function Swap() {
         showPercentages
         title="You Pay"
         value={firstValue}
-        price={pricesData?.find(price => price.symbol === currencyA.symbol || (currencyA.symbol.startsWith('W') && (currencyA.symbol.includes('ETH') || currencyA.symbol.includes('BTC'))))?.price}
+        price={pricesData?.find(price => price.symbol === currencyA.symbol || price.symbol === normalizeCurrencySymbol(currencyA.symbol))?.price}
       />
 
       <x.div mb="-46px">
@@ -269,6 +269,7 @@ export function Swap() {
         selected={false}
         title="You Receive"
         value={secondValue}
+        price={currencyB && pricesData?.find(price => price.symbol === currencyB.symbol || price.symbol === normalizeCurrencySymbol(currencyB.symbol))?.price}
       />
 
       {(currencyA && currencyB) && (
@@ -282,7 +283,7 @@ export function Swap() {
             </x.div>
             <x.div></x.div>
             <x.br></x.br>
-            <x.p>Recap Prices</x.p>
+            <x.p>Recap CoinMarketCap Prices</x.p>
             <x.div>
               {pricesData && pricesData.map(crypto => (
                 <x.p key={crypto.symbol}>1 {crypto.symbol} = {parseFloat(crypto.price).toFixed(parseFloat(crypto.price) < 1 ? 8 : 2)} USD</x.p>
