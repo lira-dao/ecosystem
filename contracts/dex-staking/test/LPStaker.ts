@@ -19,8 +19,6 @@ describe('LPStaker', () => {
   it('starker must return staker data', async () => {
     const { staker, stakerAddress, tbbPair, deployer } = await lpStakerFixture();
 
-    console.log('asdasd', await tbbPair.balanceOf(deployer));
-
     await tbbPair.approve(stakerAddress, 10n ** 18n);
 
     await staker.stake(10n ** 18n);
@@ -54,8 +52,6 @@ describe('LPStaker', () => {
     await staker.stake(10n ** 18n);
 
     await tbb.mint(deployer, 10n ** 18n);
-
-    console.log('balance', await ldt.balanceOf(deployer), await tbb.balanceOf(deployer));
 
     await staker.distributeRewards(10n ** 18n, 10n ** 5n);
 

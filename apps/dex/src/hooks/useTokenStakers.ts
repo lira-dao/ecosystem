@@ -2,7 +2,7 @@ import {
   Currency,
   erc20Abi,
   EthereumAddress, farmingStakers,
-  lpStakerAbi,
+  lpStakerAbi, tokenStakerAbi,
   tokenStakers,
 } from '@lira-dao/web3-utils';
 import BigNumber from 'bignumber.js';
@@ -17,6 +17,7 @@ export interface Staker {
   token: Currency | undefined
   tokens: (Currency | undefined)[],
   rewards: [string, string],
+  boostRewards: [string, string],
   totalStaked: string,
 }
 
@@ -47,6 +48,32 @@ export function useTokenStakers(): Staker[] {
     functionName: 'pendingRewards',
     args: [account.address],
   }));
+
+  const boostersContracts = tokenStakers[chainId].map(staker => ({
+    abi: tokenStakerAbi,
+    address: staker.address,
+    functionName: 'boosterAddress',
+  }));
+
+  const boosters = useReadContracts({
+    contracts: boostersContracts,
+  });
+
+  const boostRewardsContracts = boosters.data?.map(staker => ({
+    abi: tokenStakerAbi,
+    address: staker.result as EthereumAddress,
+    functionName: 'pendingRewards',
+    args: [account.address],
+  }));
+
+  console.log('boosterRewardsContracts', boostRewardsContracts);
+
+  const boostRewards = useReadContracts({
+    contracts: boostRewardsContracts,
+  });
+
+  console.log('boosters', boosters);
+  console.log('boostRewards', boostRewards);
 
   const rewards = useReadContracts({
     contracts: rewardsContracts,
@@ -79,6 +106,12 @@ export function useTokenStakers(): Staker[] {
         new BigNumber(rewards.data?.[i].result?.[0].toString()).div(new BigNumber(10).pow(18)).toFormat(4, 1) || '',
         // @ts-ignore
         new BigNumber(rewards.data?.[i].result?.[1].toString()).div(new BigNumber(10).pow(18)).toFormat(4, 1) || '',
+      ],
+      boostRewards: [
+        // @ts-ignore
+        new BigNumber(boostRewards.data?.[i].result?.[0].toString()).div(new BigNumber(10).pow(18)).toFormat(4, 1) || '',
+        // @ts-ignore
+        new BigNumber(boostRewards.data?.[i].result?.[1].toString()).div(new BigNumber(10).pow(18)).toFormat(4, 1) || '',
       ],
       totalStaked: new BigNumber(totalStaked.data?.[i].result?.toString() ?? '0').div(new BigNumber(10).pow(18)).toFormat(2) || '',
     };

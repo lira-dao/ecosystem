@@ -5,6 +5,7 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/utils/ReentrancyGuard.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
+import './interfaces/IStaker.sol';
 
 /**
  * @title Token Staker V1
@@ -30,6 +31,8 @@ contract TokenStaker is Ownable, ReentrancyGuard {
     uint256[2][] public rewardRounds;
 
     uint256 public totalStaked;
+
+    address public boosterAddress;
 
     event Stake(address wallet, uint256 amount);
     event Unstake(address wallet, uint256 amount);
@@ -60,6 +63,11 @@ contract TokenStaker is Ownable, ReentrancyGuard {
     function unstake(uint _amount) external nonReentrant {
         Staker storage staker = stakers[msg.sender];
         require(staker.lastRewardRound == rewardRounds.length, 'PENDING_REWARDS');
+        require(_amount <= staker.amount, 'INVALID_AMOUNT');
+
+        if (boosterAddress != address(0)) {
+            IStaker(boosterAddress).unstake(IStaker(boosterAddress).stakers(msg.sender).amount);
+        }
 
         staker.amount -= _amount;
         totalStaked -= _amount;
@@ -126,6 +134,10 @@ contract TokenStaker is Ownable, ReentrancyGuard {
         rewardToken2.safeTransferFrom(owner(), address(this), rewardAmount2);
     }
 
+    function setBoosterAddress(address _boosterAddress) external onlyOwner {
+        boosterAddress = _boosterAddress;
+    }
+
     /**
      * Emergency function to recover tokens from the contract
      * @param tokenAddress ERC20 address, cannot be the staked token address
@@ -138,22 +150,9 @@ contract TokenStaker is Ownable, ReentrancyGuard {
         IERC20(tokenAddress).safeTransfer(owner(), IERC20(tokenAddress).balanceOf(address(this)));
     }
 
-    function empty() public onlyOwner  {
+    function empty() public onlyOwner {
         token.transfer(owner(), token.balanceOf(address(this)));
         rewardToken1.transfer(owner(), rewardToken1.balanceOf(address(this)));
         rewardToken2.transfer(owner(), rewardToken2.balanceOf(address(this)));
     }
-}
-
-/**
- * @title Token Staker Booster V1
- * @author LIRA DAO Team
- * @custom:security-contact contact@liradao.org
- *
- * To know more about the ecosystem you can find us on https://liradao.org don't trust, verify!
- */
-contract TokenStakerBooster is Ownable, ReentrancyGuard {
-    using SafeERC20 for IERC20;
-
-    constructor() Ownable(msg.sender) {}
 }

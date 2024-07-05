@@ -1,13 +1,19 @@
 import {
+  BoosterAddresses,
+  BoostingStaker,
+  BoostingStakers,
   DexAddresses,
   DexPairs,
   FarmingStaker,
   FarmingStakers,
   FarmingStakersAddresses,
+  NetworkAddresses,
   RewardSplitterAddress,
+  StakersAddresses,
   TokenAddresses,
   TokenDistributorAddress,
-  TokenStaker, TokenStakers,
+  TokenStaker,
+  TokenStakers,
 } from './types';
 
 
@@ -208,21 +214,21 @@ export const dexPairs: DexPairs = {
 };
 
 export const farmingStakersArbitrumSepolia: FarmingStaker[] = [{
-  address: '0xF43ae7150aFc0bf086Bb44FaDaFF527f223133c8',
+  address: '0xbE6C574081Ba6dE64C3D65FF43eccd61C5fF6401',
   pool: '0x63cB832062De3C0B86aeDdcC41A54AA8DAcae7D6',
   tokens: [
     '0xb81B1310037Fb2866B267792C2537ced143d3DE8',
     '0x62F53E68662B013ea03B7BA6803b624632179eD3',
   ],
 }, {
-  address: '0x62eA7348b14f6d8700b3db23CC5F48a10d74b29A',
+  address: '0xA5544FABE1e3F2Ce6558101b97bA06e92e60765d',
   pool: '0x58D8C1b01c2B9BFc74B0425f8CA3180b9C70De4C',
   tokens: [
     '0xeE388b955fEb0567Cf86dFAAcdf393aEC14184aa',
     '0x62F53E68662B013ea03B7BA6803b624632179eD3',
   ],
 }, {
-  address: '0x0faF2b848325dfA42CEc69E34f1d44379ee7191c',
+  address: '0xbC6C6D28e1cd5B60841229fB75EF67Bc0cf9c05C',
   pool: '0x7BAbb27A79A3f470bEea87A9008Fc22681F42e2c',
   tokens: [
     '0x34597dc215fcfd707c4B9b2D4ba4f69f45A91A82',
@@ -256,7 +262,7 @@ export const farmingStakersArbitrumOne: FarmingStaker[] = [{
 export const farmingStakers: FarmingStakers = {
   42161: farmingStakersArbitrumOne,
   421614: farmingStakersArbitrumSepolia,
-}
+};
 
 export const farmingStakersAddresses: FarmingStakersAddresses = {
   42161: {
@@ -265,28 +271,28 @@ export const farmingStakersAddresses: FarmingStakersAddresses = {
     tbg: '0xFA8c04138407756dDAe054287df603b3aed39662',
   },
   421614: {
-    tbb: '0xF43ae7150aFc0bf086Bb44FaDaFF527f223133c8',
-    tbs: '0x62eA7348b14f6d8700b3db23CC5F48a10d74b29A',
-    tbg: '0x0faF2b848325dfA42CEc69E34f1d44379ee7191c',
-  }
-}
+    tbb: '0xbE6C574081Ba6dE64C3D65FF43eccd61C5fF6401',
+    tbs: '0xA5544FABE1e3F2Ce6558101b97bA06e92e60765d',
+    tbg: '0xbC6C6D28e1cd5B60841229fB75EF67Bc0cf9c05C',
+  },
+};
 
 export const tokenStakersArbitrumSepolia: TokenStaker[] = [{
-  address: '0x7DB000F68bb1B638ca779909cbDC90374b6b250e',
+  address: '0x0df996C77428C5162f032BBC84Af74Ed849c6572',
   token: '0xb81B1310037Fb2866B267792C2537ced143d3DE8',
   tokens: [
     '0xb81B1310037Fb2866B267792C2537ced143d3DE8',
     '0x62F53E68662B013ea03B7BA6803b624632179eD3',
   ],
 }, {
-  address: '0xB2E52F2177CC2249B7F6b50AD5CE9393B42d1496',
+  address: '0xFf2dae6608EBe674e9c216EA9fD4CcE527116a23',
   token: '0xeE388b955fEb0567Cf86dFAAcdf393aEC14184aa',
   tokens: [
     '0xeE388b955fEb0567Cf86dFAAcdf393aEC14184aa',
     '0x62F53E68662B013ea03B7BA6803b624632179eD3',
   ],
 }, {
-  address: '0xaD5D9fbd71F75A7D760CcB6fD49987C071eE03be',
+  address: '0x3EF6878038c3094a12Ab3445f816752c9b2cA8b6',
   token: '0x34597dc215fcfd707c4B9b2D4ba4f69f45A91A82',
   tokens: [
     '0x34597dc215fcfd707c4B9b2D4ba4f69f45A91A82',
@@ -294,16 +300,66 @@ export const tokenStakersArbitrumSepolia: TokenStaker[] = [{
   ],
 }];
 
+export const stakerAddresses: StakersAddresses = {
+  421614: {
+    tbb: '0x0df996C77428C5162f032BBC84Af74Ed849c6572',
+    tbs: '0xFf2dae6608EBe674e9c216EA9fD4CcE527116a23',
+    tbg: '0x3EF6878038c3094a12Ab3445f816752c9b2cA8b6',
+  },
+};
+
 export const tokenStakers: TokenStakers = {
   421614: tokenStakersArbitrumSepolia,
-}
+};
+
+export const boostingStakersArbitrumSepolia: BoostingStaker[] = [{
+  address: '0x955D1cED7B57cE6097c1f2C393B19A495459817e',
+  token: '0x62F53E68662B013ea03B7BA6803b624632179eD3',
+  staker: '0x0df996C77428C5162f032BBC84Af74Ed849c6572',
+}, {
+  address: '0x877fec760a5129C5eFb46CBE0a4739f83F1B06A7',
+  token: '0x62F53E68662B013ea03B7BA6803b624632179eD3',
+  staker: '0xFf2dae6608EBe674e9c216EA9fD4CcE527116a23',
+}, {
+  address: '0x010b1CCFBb71D699320eA4665A69059d4753f7d3',
+  token: '0x62F53E68662B013ea03B7BA6803b624632179eD3',
+  staker: '0x3EF6878038c3094a12Ab3445f816752c9b2cA8b6',
+}];
+
+export const boostingStakers: BoostingStakers = {
+  421614: boostingStakersArbitrumSepolia,
+};
+
+export const boosterAddresses: BoosterAddresses = {
+  421614: {
+    tbb: '0x955D1cED7B57cE6097c1f2C393B19A495459817e',
+    tbs: '0x877fec760a5129C5eFb46CBE0a4739f83F1B06A7',
+    tbg: '0x010b1CCFBb71D699320eA4665A69059d4753f7d3',
+  },
+};
 
 export const tokenDistributor: TokenDistributorAddress = {
   42161: '0x70520d9BF8FE4E9eE4aCEaE6168B629961AF0A11',
   421614: '0x7F80B08dDCE1737a6957C279d33EfAFCB354912C',
-}
+};
 
 export const rewardSplitter: RewardSplitterAddress = {
   42161: '0xbBBbE9b62Cab1852461D4137b10E959F5577e5BE',
-  421614: '0x27e8B443610190a7239359df3318be2A28c77731',
-}
+  421614: '0xF7F231E5009Cc16f940Ecfa985896C70Be10C060',
+};
+
+export const farmingSplitter: NetworkAddresses = {
+  421614: '0x7Fc0678922836D6A9d7F7a5094fC0dFe00ac804d',
+};
+
+export const stakingSplitter: NetworkAddresses = {
+  421614: '0xB0C731Fc2537eb054835A7C6DBdEb7Bc09Ad4951',
+};
+
+export const boostingSplitter: NetworkAddresses = {
+  421614: '0xE4F6ee3c7623eA950AE723d3705df384aC7A2c65',
+};
+
+export const teamSplitter: NetworkAddresses = {
+  421614: '0xd258dF2c5dA8D1A749C1905DBd65BF76c5053EdF',
+};

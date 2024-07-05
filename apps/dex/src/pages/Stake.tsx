@@ -9,9 +9,9 @@ import { InputPanel } from '../components/swap/InputPanel';
 import { Container } from '../components/swap/Container';
 import { NumericalInput } from '../components/StyledInput';
 import { SwapSection } from '../components/swap/SwapSection';
-import { useFarmingStaker } from '../hooks/useFarmingStaker';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { useSnackbar } from 'notistack';
+import { useTokenStaker } from '../hooks/useTokenStaker';
 
 
 export function Stake() {
@@ -31,7 +31,7 @@ export function Stake() {
     stakeError,
     isError,
     error,
-  } = useFarmingStaker(params.staker as EthereumAddress, 'stake', value);
+  } = useTokenStaker(params.stakers || '', params.staker as EthereumAddress, 'stake', value);
 
   const isAllowDisabled = useMemo(() => approve.isPending || allowance.isPending, [approve, allowance]);
 
