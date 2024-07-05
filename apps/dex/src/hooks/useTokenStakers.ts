@@ -1,7 +1,7 @@
 import {
   Currency,
   erc20Abi,
-  EthereumAddress, farmingStakers,
+  EthereumAddress,
   lpStakerAbi, tokenStakerAbi,
   tokenStakers,
 } from '@lira-dao/web3-utils';
@@ -19,6 +19,7 @@ export interface Staker {
   rewards: [string, string],
   boostRewards: [string, string],
   totalStaked: string,
+  boostAmount: string,
 }
 
 export function useTokenStakers(): Staker[] {
@@ -72,6 +73,15 @@ export function useTokenStakers(): Staker[] {
     contracts: boostRewardsContracts,
   });
 
+  const boostAmounts = useReadContracts({
+    contracts: boosters.data?.map(staker => ({
+      abi: tokenStakerAbi,
+      address: staker.result as EthereumAddress,
+      functionName: 'stakers',
+      args: [account.address],
+    })),
+  });
+
   console.log('boosters', boosters);
   console.log('boostRewards', boostRewards);
 
@@ -96,6 +106,8 @@ export function useTokenStakers(): Staker[] {
       token: getCurrencyByAddress(staker.token),
       // @ts-ignore
       amount: new BigNumber(amounts.data?.[i].result?.[0].toString()).div(new BigNumber(10).pow(18)).toFormat(2, 1) || '',
+      // @ts-ignore
+      boostAmount: new BigNumber(boostAmounts.data?.[i].result?.[0].toString()).div(new BigNumber(10).pow(18)).toFormat(2, 1) || '',
       balance: new BigNumber(balances.data?.[i].result?.toString() || '0').div(new BigNumber(10).pow(18)).toFormat(2, 1) || '',
       tokens: [
         getCurrencyByAddress(staker.tokens[0]),

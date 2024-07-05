@@ -4,6 +4,7 @@ import { ThemeProvider } from '@mui/material/styles';
 import { StakingTable } from '../components/staking/StakingTable';
 import { muiDarkTheme } from '../theme/theme';
 import { useTokenStakers } from '../hooks/useTokenStakers';
+import { StakerCards } from '../components/staking/StakerCards';
 
 
 export function Staking() {
@@ -12,7 +13,7 @@ export function Staking() {
 
   return (
     <ThemeProvider theme={muiDarkTheme}>
-      <Box sx={{width: {xs: '100%', xl: 'auto'}, display: 'flex', flexDirection: 'column', marginY: 4, paddingX: 2}}>
+      <Box sx={{width: '100%', maxWidth: '1200px',  display: 'flex', flexDirection: 'column', marginY: 4, paddingX: 2}}>
         <Box>
           <Typography sx={{typography: 'h3'}} fontWeight="bold" color="white">
             Stakers
@@ -20,8 +21,12 @@ export function Staking() {
         </Box>
 
         <Box mt={4}>
-          <StakingTable stakers={stakers} isConnected={isConnected} />
+          <StakerCards stakers={stakers} isConnected={isConnected} />
         </Box>
+
+        {/*<Box mt={4}>*/}
+        {/*  <StakingTable stakers={stakers} isConnected={isConnected} />*/}
+        {/*</Box>*/}
       </Box>
     </ThemeProvider>
   );

@@ -40,7 +40,7 @@ function MenuItem({ text, to }: MenuItemProps) {
 
 export function Header() {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
   const { isConnected } = useAccount();
   const { open } = useWeb3Modal();
   const [mobileOpen, setMobileOpen] = useState(false);
