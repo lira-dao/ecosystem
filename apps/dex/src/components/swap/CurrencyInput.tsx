@@ -26,6 +26,7 @@ interface CurrencyInputProps {
   title: string;
   value: string;
   price?: string;
+  priceETH?: number | null;  // price ETH in USD
 }
 
 export function CurrencyInput({
@@ -43,7 +44,8 @@ export function CurrencyInput({
   showPercentages = false,
   title,
   value,
-  price
+  price,
+  priceETH
 }: CurrencyInputProps) {
   const onSetPercentageInternal = (percentage: number) => {
     if (percentage === 100) {
@@ -63,6 +65,10 @@ export function CurrencyInput({
   };
 
   const usdEquivalent = isValidNumber(value) && price ? `$${(parseFloat(value) * parseFloat(price)).toFixed(2)} USD` : '';
+
+  const currencyPrice = (): string => {
+    return (price && value !== '' && isValidNumber(value)) ? (currency?.symbol === 'LDT' && priceETH ? `~$${(parseFloat(value) * parseFloat(price) * priceETH).toFixed(2)}` : `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}`) : ''
+  }
 
   return (
     <SwapSection mt={6} mb={4}>
@@ -84,16 +90,14 @@ export function CurrencyInput({
               {insufficientBalance && (
                 <x.div w="100%" display="flex" justifyContent={insufficientBalance ? 'space-between' : 'flex-end'}>
                   <x.p color="red-400">Insufficient Balance</x.p>
-                  <x.p color="red-400">{(price && value !== '' && isValidNumber(value)) ? `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}` : ''}</x.p>
+                  <x.p color="red-400">{currencyPrice()}</x.p>
                 </x.div>
               )}
               {!insufficientBalance && (
                 <x.div w="100%" display="flex" justifyContent='flex-end'>
-                  <x.p color="gray155">{(price && value !== '' && isValidNumber(value)) ? `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}` : ''}</x.p>
+                  <x.p color="gray155">{currencyPrice()}</x.p>
                 </x.div>
               )}
-              {/* <x.p color="red-400">{(insufficientBalance && price && value !== '' && isValidNumber(value)) ? `Insufficient Balance ~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}` : ''}</x.p> */}
-              {/* <x.p color="gray155">{(!insufficientBalance && price && value !== '' && isValidNumber(value)) ? `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}` : ''}</x.p> */}
             </x.div>
 
             <x.div w="100%" display="flex" justifyContent={showPercentages ? 'space-between' : 'flex-end'}>
