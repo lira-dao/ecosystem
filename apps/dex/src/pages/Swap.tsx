@@ -273,7 +273,7 @@ export function Swap() {
         title="You Pay"
         value={firstValue}
         price={computePrice(currencyA)}
-        priceETH={ethPriceUSD}
+        externalPrice={(currencyA?.symbol === 'WBTC' || currencyB?.symbol === 'WBTC') ? btcPriceUSD : ethPriceUSD}
       />
 
       <x.div mb="-46px">
@@ -305,7 +305,7 @@ export function Swap() {
         title="You Receive"
         value={secondValue}
         price={currencyB && computePrice(currencyB)}
-        priceETH={ethPriceUSD}
+        externalPrice={(currencyA?.symbol === 'WBTC' || currencyB?.symbol === 'WBTC') ? btcPriceUSD : ethPriceUSD}
       />
 
       {(currencyA && currencyB) && (

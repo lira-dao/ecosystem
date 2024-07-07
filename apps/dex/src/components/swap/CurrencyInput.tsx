@@ -4,7 +4,6 @@ import { Currency } from '@lira-dao/web3-utils';
 import { SwapSection } from './SwapSection';
 import { InputPanel } from './InputPanel';
 import { CurrencySelector } from '../CurrencySelector';
-import { Price } from '../../hooks/usePrices';
 import { NumericalInput } from '../StyledInput';
 import { Container } from './Container';
 import BigNumber from 'bignumber.js';
@@ -26,7 +25,7 @@ interface CurrencyInputProps {
   title: string;
   value: string;
   price?: string;
-  priceETH?: number | null;  // price ETH in USD
+  externalPrice?: number | null;  // price (ETH || BTC) in USD
 }
 
 export function CurrencyInput({
@@ -45,7 +44,7 @@ export function CurrencyInput({
   title,
   value,
   price,
-  priceETH
+  externalPrice
 }: CurrencyInputProps) {
   const onSetPercentageInternal = (percentage: number) => {
     if (percentage === 100) {
@@ -57,7 +56,6 @@ export function CurrencyInput({
     }
   };
   console.log('disabled', disabled);
-  console.log('prices', price)
 
   const isValidNumber = (val: string) => {
     const number = parseFloat(val);
@@ -67,7 +65,17 @@ export function CurrencyInput({
   const usdEquivalent = isValidNumber(value) && price ? `$${(parseFloat(value) * parseFloat(price)).toFixed(2)} USD` : '';
 
   const currencyPrice = (): string => {
-    return (price && value !== '' && isValidNumber(value)) ? (currency?.symbol === 'LDT' && priceETH ? `~$${(parseFloat(value) * parseFloat(price) * priceETH).toFixed(2)}` : `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}`) : ''
+    // if (price && value !== '' && isValidNumber(value)) {
+    //   if (currency?.symbol === 'LDT' && externalPrice) {
+    //     return `~$${(parseFloat(value) * parseFloat(price) * externalPrice).toFixed(2)}`;
+    //   } else {
+    //     return `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}`;
+    //   }
+    // }
+
+    // return '';
+
+    return (price && value !== '' && isValidNumber(value)) ? (currency?.symbol === 'LDT' && externalPrice ? `~$${(parseFloat(value) * parseFloat(price) * externalPrice).toFixed(2)}` : `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}`) : ''
   }
 
   return (
