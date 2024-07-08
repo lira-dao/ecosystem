@@ -1,8 +1,10 @@
 import {
+  boostingStakers,
   Currency,
   erc20Abi,
   EthereumAddress,
-  lpStakerAbi, tokenStakerAbi,
+  lpStakerAbi,
+  tokenStakerAbi,
   tokenStakers,
 } from '@lira-dao/web3-utils';
 import BigNumber from 'bignumber.js';
@@ -12,6 +14,7 @@ import { useAccount, useChainId, useReadContracts } from 'wagmi';
 
 export interface Staker {
   address: EthereumAddress;
+  boosterAddress: EthereumAddress;
   amount: string;
   balance: string;
   token: Currency | undefined
@@ -103,6 +106,7 @@ export function useTokenStakers(): Staker[] {
   return tokenStakers[chainId].map((staker, i) => {
     return {
       address: staker.address,
+      boosterAddress: boostingStakers[chainId][i].address,
       token: getCurrencyByAddress(staker.token),
       // @ts-ignore
       amount: new BigNumber(amounts.data?.[i].result?.[0].toString()).div(new BigNumber(10).pow(18)).toFormat(2, 1) || '',
