@@ -281,6 +281,10 @@ export async function rewardSplitterV2Fixture() {
 
   await distributor.setSplitter(rewardSplitterAddress);
 
+  await tbbStaker.setBoosterAddress(tbbBoosterAddress);
+  await tbsStaker.setBoosterAddress(tbsBoosterAddress);
+  await tbgStaker.setBoosterAddress(tbgBoosterAddress);
+
   await tbb.transferOwnership(rewardSplitterAddress);
   await tbs.transferOwnership(rewardSplitterAddress);
   await tbg.transferOwnership(rewardSplitterAddress);
