@@ -5,7 +5,7 @@ export const SwapSection = styled.box`
   height: 160px;
   display: flex;
   align-items: center;
-  background-color: eerie-black;
+  background-color: #1B2943;
   border-radius: 16px;
   color: white;
   font-size: 14px;

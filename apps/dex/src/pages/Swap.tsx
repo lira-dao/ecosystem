@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import Big from 'big.js';
-import { useTheme, x } from '@xstyled/styled-components';
+import { color, float, fontSize, height, left, marginLeft, paddingLeft, paddingRight, useTheme, width, x } from '@xstyled/styled-components';
 import { NumericalInput } from '../components/StyledInput';
 import { CurrencySelector } from '../components/CurrencySelector';
 import { PrimaryButton } from '../components/PrimaryButton';
@@ -26,6 +26,7 @@ import { usePair } from '../hooks/usePair';
 import BigNumber from 'bignumber.js';
 import { useParams } from 'react-router-dom';
 import { useDexPairs } from '../hooks/useDexPairs';
+import { Padding } from '@mui/icons-material';
 
 
 export function Swap() {
@@ -34,7 +35,6 @@ export function Swap() {
   const pool = params.pool ? pairs[params.pool] : undefined;
   const currency0 = pool ? getCurrencyByAddress(pool.tokens[0]) : undefined;
   const currency1 = pool ? getCurrencyByAddress(pool.tokens[1]) : undefined;
-
   const th = useTheme();
   const chainId = useChainId();
   const dexAddresses = useDexAddresses();
@@ -45,7 +45,6 @@ export function Swap() {
 
   const [currencyA, setCurrencyA] = useState<Currency>(currency0 ? currency0 : getCurrencies(chainId)[0]);
   const [currencyB, setCurrencyB] = useState<Currency | undefined>(currency1);
-
   const [firstValue, setFirstValue] = useState<string>('');
   const [secondValue, setSecondValue] = useState<string>('');
 
@@ -81,10 +80,10 @@ export function Swap() {
   }, [accountBalance.data?.value, balanceA.data, currencyA.decimals, currencyA.isNative, firstValue]);
 
   const needAllowance = useMemo(() =>
-      parseUnits(firstValue.toString(), currencyA.decimals) > 0 &&
-      !currencyA.isNative &&
-      allowance1.data !== undefined &&
-      allowance1.data < parseUnits(firstValue.toString(), currencyA.decimals),
+    parseUnits(firstValue.toString(), currencyA.decimals) > 0 &&
+    !currencyA.isNative &&
+    allowance1.data !== undefined &&
+    allowance1.data < parseUnits(firstValue.toString(), currencyA.decimals),
     [allowance1.data, currencyA.decimals, currencyA.isNative, firstValue]);
 
   useEffect(() => {
@@ -207,122 +206,124 @@ export function Swap() {
   };
 
   return (
-    <x.div w="100%" maxWidth="480px" borderRadius="16px" padding={4}>
-      <x.div display="flex" justifyContent="center" mt={2}>
+    <x.div w="100%" maxWidth="680px" borderRadius="16px" padding={4} mt={15}>
+      <x.div display="flex" justifyContent="center" mb={6}>
         <x.p fontSize="3xl">Swap</x.p>
       </x.div>
 
-      <SwapSection mt={6} mb={4}>
-        <InputPanel>
-          <Container>
-            <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
-              <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
-                <x.p color="gray155" userSelect="none">You Pay</x.p>
-                <CurrencySelector
-                  disabled={false}
-                  selected={false}
-                  currency={currencyA}
-                  onClick={onCurrencySelectAClick}
+      <x.div style={{ width: '100%', height: '70%', backgroundColor: '#091D40', border: 'none', padding: '10px 40px 10px 40px' }} borderRadius="12px">
+
+        <SwapSection mt={6} mb={4}>
+          <InputPanel>
+            <Container>
+              <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
+                <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
+                  <x.p color="gray155" userSelect="none">You Pay</x.p>
+                  <CurrencySelector
+                    disabled={false}
+                    selected={false}
+                    currency={currencyA}
+                    onClick={onCurrencySelectAClick}
+                  />
+                </x.div>
+
+                <NumericalInput
+                  id="currencyA"
+                  disabled={amountsIn.isLoading || !currencyB}
+                  value={firstValue}
+                  onChange={(e) => onCurrencyAChange(e.target.value)}
                 />
+                <x.div style={{ width: '100%', height: '2px', backgroundColor: '#40547D', border: 'none', marginTop: '10px' }}></x.div>
+                <x.div w="100%" display="flex" mt={2} justifyContent="space-between">
+                  <x.p color="red-400">{insufficientBalanceA ? 'Insufficient Balance' : ''}</x.p>
+                  <x.p color="gray155">${new Big(formatUnits(currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n, currencyA.decimals)).toFixed(6)}</x.p>
+                </x.div>
               </x.div>
+            </Container>
+          </InputPanel>
+        </SwapSection>
 
-              <NumericalInput
-                id="currencyA"
-                disabled={amountsIn.isLoading || !currencyB}
-                value={firstValue}
-                onChange={(e) => onCurrencyAChange(e.target.value)}
-              />
+        <x.div>
+          <BaseButton
+            backgroundColor={{ _: 'green-yellow-950', hover: 'green-yellow-900' }}
+            border="6px solid black"
+            p={2}
+            position="relative"
+            w="fit-content"
+            margin="-36px auto"
+            zIndex={1}
+            onClick={switchCurrencies}
+          >
+            <img src={repeatIcon} alt="switch currencies icon" width={20} />
+          </BaseButton>
+        </x.div>
 
-              <x.div w="100%" display="flex" mt={2} justifyContent="space-between">
-                <x.p color="red-400">{insufficientBalanceA ? 'Insufficient Balance' : ''}</x.p>
-                <x.p color="gray155">{new Big(formatUnits(currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n, currencyA.decimals)).toFixed(6)}</x.p>
-              </x.div>
-            </x.div>
-          </Container>
-        </InputPanel>
-      </SwapSection>
+        <SwapSection mt={4}>
+          <InputPanel>
+            <Container>
+              <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
+                <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
+                  <x.p color="gray155" userSelect="none">You Receive</x.p>
+                  <CurrencySelector
+                    disabled={false}
+                    selected={false}
+                    currency={currencyB}
+                    onClick={onCurrencySelectBClick}
+                  />
+                </x.div>
 
-      <x.div>
-        <BaseButton
-          backgroundColor={{ _: 'green-yellow-950', hover: 'green-yellow-900' }}
-          border="6px solid black"
-          p={2}
-          position="relative"
-          w="fit-content"
-          margin="-36px auto"
-          zIndex={1}
-          onClick={switchCurrencies}
-        >
-          <img src={repeatIcon} alt="switch currencies icon" width={20} />
-        </BaseButton>
-      </x.div>
-
-      <SwapSection mt={4}>
-        <InputPanel>
-          <Container>
-            <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
-              <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
-                <x.p color="gray155" userSelect="none">You Receive</x.p>
-                <CurrencySelector
-                  disabled={false}
-                  selected={false}
-                  currency={currencyB}
-                  onClick={onCurrencySelectBClick}
+                <NumericalInput
+                  id="currencyB"
+                  disabled={amountsOut.isLoading || !currencyB}
+                  value={secondValue}
+                  onChange={(e) => onCurrencyBChange(e.target.value)}
                 />
+                <x.div style={{ width: '100%', height: '2px', backgroundColor: '#40547D', border: 'none', marginTop: '10px' }}></x.div>
+                <x.div w="100%" display="flex" justifyContent="flex-end" mt={2}>
+                  <x.p color="gray155">${new Big(formatUnits(currencyB?.isNative ? accountBalance.data?.value || 0n : balanceB.data ?? 0n, currencyB?.decimals || 18)).toFixed(6)}</x.p>
+                </x.div>
               </x.div>
+            </Container>
+          </InputPanel>
+        </SwapSection>
 
-              <NumericalInput
-                id="currencyB"
-                disabled={amountsOut.isLoading || !currencyB}
-                value={secondValue}
-                onChange={(e) => onCurrencyBChange(e.target.value)}
-              />
+        {(currencyA && currencyB) && (
+          <x.div mt={2}>
+            {/* <x.p>Prices</x.p> */}
 
-              <x.div w="100%" display="flex" justifyContent="flex-end" mt={2}>
-                <x.p color="gray155">{new Big(formatUnits(currencyB?.isNative ? accountBalance.data?.value || 0n : balanceB.data ?? 0n, currencyB?.decimals || 18)).toFixed(6)}</x.p>
-              </x.div>
-            </x.div>
-          </Container>
-        </InputPanel>
-      </SwapSection>
-
-      {(currencyA && currencyB) && (
-        <x.div mt={4}>
-          <x.p>Prices</x.p>
-
-          <x.div>
             <x.div>
-              <x.p>1 {currencyA.symbol} = {pair.priceCurrencyA.toFixed(pair.priceCurrencyA.lt(1) ? 8 : 2, 1)} {currencyB.symbol}</x.p>
-              <x.p>1 {currencyB.symbol} = {pair.priceCurrencyB.toFixed(pair.priceCurrencyB.lt(1) ? 8 : 2, 1)} {currencyA.symbol}</x.p>
+              <x.div>
+                <x.p style={{ color: "#717A8C", fontSize: "14px", textAlign: "right" }}>1 {currencyA.symbol} = {pair.priceCurrencyA.toFixed(pair.priceCurrencyA.lt(1) ? 8 : 2, 1)} {currencyB.symbol}</x.p>
+                {/* <x.p>1 {currencyB.symbol} = {pair.priceCurrencyB.toFixed(pair.priceCurrencyB.lt(1) ? 8 : 2, 1)} {currencyA.symbol}</x.p> */}
+              </x.div>
+              <x.div></x.div>
             </x.div>
-            <x.div></x.div>
           </x.div>
-        </x.div>
-      )}
+        )}
 
-      {(needAllowance && !insufficientBalanceA) && (
-        <x.div display="flex" mt={4} mb={2} h="80px" alignItems="center" justifyContent="center">
-          {isAllowCurrencyADisabled ? (
-            <PacmanLoader color={th?.colors.gray155} />
-          ) : (
-            <PrimaryButton
-              disabled={isAllowCurrencyADisabled}
-              onClick={() => approve.write()}
-            >Approve {currencyA.symbol}</PrimaryButton>
-          )}
-        </x.div>
-      )}
+        {(needAllowance && !insufficientBalanceA) && (
+          <x.div display="flex" mt={4} mb={2} h="80px" alignItems="center" justifyContent="center">
+            {isAllowCurrencyADisabled ? (
+              <PacmanLoader color={th?.colors.gray155} />
+            ) : (
+              <PrimaryButton
+                disabled={isAllowCurrencyADisabled}
+                onClick={() => approve.write()}
+              >Approve {currencyA.symbol}</PrimaryButton>
+            )}
+          </x.div>
+        )}
 
-      {(!needAllowance && !insufficientBalanceA) && (
-        <x.div display="flex" mt={4} h="80px" alignItems="center" justifyContent="center">
-          {isSwapDisabled ? (
-            <PacmanLoader color={th?.colors.gray155} />
-          ) : (
-            <PrimaryButton disabled={!firstValue && !secondValue} onClick={() => swap.write()}>Swap</PrimaryButton>
-          )}
-        </x.div>
-      )}
-
+        {(!needAllowance && !insufficientBalanceA) && (
+          <x.div display="flex" mt={4} h="80px" alignItems="center" justifyContent="center">
+            {isSwapDisabled ? (
+              <PacmanLoader color={th?.colors.gray155} />
+            ) : (
+              <PrimaryButton disabled={!firstValue && !secondValue} onClick={() => swap.write()}>Swap</PrimaryButton>
+            )}
+          </x.div>
+        )}
+      </x.div>
       <SelectCurrencyModal
         open={open}
         onClose={() => setOpen(false)}
