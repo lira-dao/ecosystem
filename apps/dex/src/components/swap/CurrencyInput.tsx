@@ -26,6 +26,7 @@ interface CurrencyInputProps {
   value: string;
   price?: string;
   externalPrice?: number | null;  // price (ETH || BTC) in USD
+  ldtPrice?: number;
 }
 
 export function CurrencyInput({
@@ -44,7 +45,8 @@ export function CurrencyInput({
   title,
   value,
   price,
-  externalPrice
+  externalPrice,
+  ldtPrice
 }: CurrencyInputProps) {
   const onSetPercentageInternal = (percentage: number) => {
     if (percentage === 100) {
@@ -55,27 +57,39 @@ export function CurrencyInput({
       );
     }
   };
-  console.log('disabled', disabled);
 
   const isValidNumber = (val: string) => {
     const number = parseFloat(val);
     return !isNaN(number) && number > 0;
   };
 
-  const usdEquivalent = isValidNumber(value) && price ? `$${(parseFloat(value) * parseFloat(price)).toFixed(2)} USD` : '';
+  const usdEquivalent = isValidNumber(value) && price ? `$${(parseFloat(value) * parseFloat(price[0])).toFixed(2)} USD` : '';
 
   const currencyPrice = (): string => {
-    // if (price && value !== '' && isValidNumber(value)) {
-    //   if (currency?.symbol === 'LDT' && externalPrice) {
-    //     return `~$${(parseFloat(value) * parseFloat(price) * externalPrice).toFixed(2)}`;
-    //   } else {
-    //     return `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}`;
-    //   }
-    // }
+    if (!price || value === '' || !isValidNumber(value)) {
+      return '';
+    }
+  
+    switch (true) {
+      case (currency?.symbol === 'LDT'):
+        if (ldtPrice !== undefined) {
+          return externalPrice ? `~$${(parseFloat(value) * ldtPrice * externalPrice).toFixed(2)}` : '';
+        }
 
-    // return '';
+        return externalPrice ? `~$${(parseFloat(value) * parseFloat(price) * externalPrice).toFixed(2)}` : '';
+      case (currency?.symbol.includes('TB') || currency?.symbol === 'LIRA'):
+        if (ldtPrice !== undefined) {
+          // console.log(`Price in USD, 1 ${currency?.symbol}`, externalPrice ? `~$${((ldtPrice / parseFloat(price)) * externalPrice)}` : '');
 
-    return (price && value !== '' && isValidNumber(value)) ? (currency?.symbol === 'LDT' && externalPrice ? `~$${(parseFloat(value) * parseFloat(price) * externalPrice).toFixed(2)}` : `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}`) : ''
+          return externalPrice ? `~$${(parseFloat(value) * (ldtPrice / parseFloat(price)) * externalPrice).toFixed(2)}` : '';
+        }
+
+        return (externalPrice) ? `~$${(parseFloat(value) * parseFloat(price) * externalPrice)}` : '';
+      default:
+        return `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}`;
+    }
+
+    // return (price && value !== '' && isValidNumber(value)) ? (currency?.symbol === 'LDT' && externalPrice ? `~$${(parseFloat(value) * parseFloat(price) * externalPrice).toFixed(2)}` : `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}`) : '';
   }
 
   return (
