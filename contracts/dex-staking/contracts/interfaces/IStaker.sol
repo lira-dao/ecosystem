@@ -8,6 +8,8 @@ interface IStaker {
         uint256 lastRewardRound;
     }
 
+    function rewardRoundsLength() external pure returns (uint256);
+
     function totalStaked() external view returns (uint256);
 
     function token() external view returns (address);

@@ -65,9 +65,8 @@ contract TokenStaker is Ownable, ReentrancyGuard {
         require(staker.lastRewardRound == rewardRounds.length, 'PENDING_REWARDS');
         require(_amount <= staker.amount, 'INVALID_AMOUNT');
 
-        if (boosterAddress != address(0)) {
-            IStaker(boosterAddress).unstake(IStaker(boosterAddress).stakers(msg.sender).amount);
-        }
+        require(IStaker(boosterAddress).stakers(msg.sender).lastRewardRound == IStaker(boosterAddress).rewardRoundsLength(), 'PENDING_BOOST_REWARDS');
+        require(IStaker(boosterAddress).stakers(msg.sender).amount == 0, 'BOOST_ACTIVE');
 
         staker.amount -= _amount;
         totalStaked -= _amount;
@@ -150,6 +149,7 @@ contract TokenStaker is Ownable, ReentrancyGuard {
         IERC20(tokenAddress).safeTransfer(owner(), IERC20(tokenAddress).balanceOf(address(this)));
     }
 
+    // THIS FUNCTION IS FOR TESTING ONLY, REMOVE IT BEFORE MAINNET DEPLOY
     function empty() public onlyOwner {
         token.transfer(owner(), token.balanceOf(address(this)));
         rewardToken1.transfer(owner(), rewardToken1.balanceOf(address(this)));
