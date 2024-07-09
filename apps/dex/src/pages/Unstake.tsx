@@ -28,7 +28,7 @@ export function Unstake() {
     isPending,
     stakeError,
     stakedAmount,
-  } = useFarmingStaker(params.farm as EthereumAddress, 'unstake', value);
+  } = useFarmingStaker(params.staker as EthereumAddress, 'unstake', value);
 
   const isRemoveDisabled = useMemo(() => isPending, [isPending]);
 

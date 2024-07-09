@@ -39,6 +39,10 @@ export type RewardSplitterAddress = {
   [key: number]: EthereumAddress,
 }
 
+export type NetworkAddresses = {
+  [key: number]: EthereumAddress,
+}
+
 export type DexAddresses = {
   [key: number]: {
     factory: EthereumAddress,
@@ -66,12 +70,48 @@ export type FarmingStakersAddresses = {
   }
 }
 
+export type StakersAddresses = {
+  [key: number]: {
+    tbb: EthereumAddress,
+    tbs: EthereumAddress,
+    tbg: EthereumAddress,
+  }
+}
+
+export type BoosterAddresses = {
+  [key: number]: {
+    tbb: EthereumAddress,
+    tbs: EthereumAddress,
+    tbg: EthereumAddress,
+  }
+}
+
 export interface FarmingStaker {
   address: EthereumAddress,
   pool: EthereumAddress,
   tokens: [EthereumAddress, EthereumAddress],
 }
 
+export interface TokenStaker {
+  address: EthereumAddress,
+  token: EthereumAddress,
+  tokens: [EthereumAddress, EthereumAddress],
+}
+
+export interface BoostingStaker {
+  address: EthereumAddress,
+  token: EthereumAddress,
+  staker: EthereumAddress,
+}
+
 export interface FarmingStakers {
   [key: number]: FarmingStaker[],
+}
+
+export interface TokenStakers {
+  [key: number]: TokenStaker[],
+}
+
+export interface BoostingStakers {
+  [key: number]: BoostingStaker[],
 }

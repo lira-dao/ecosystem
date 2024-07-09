@@ -9,6 +9,7 @@ export const muiDarkTheme = createTheme({
   colors: {
     green: '#B6FE46',
     gray155: '#9B9B9B',
+    white: '#FFFFFF'
   },
   typography: {
     fontFamily: [
@@ -34,6 +35,15 @@ export const muiDarkTheme = createTheme({
       fontFamily: 'Avenir Next',
     }
   },
+  components: {
+    MuiDrawer: {
+      styleOverrides: {
+        paper: {
+          backgroundImage: 'none'
+        }
+      }
+    }
+  }
 });
 
 export const theme = {

@@ -1,11 +1,19 @@
-import styled from 'styled-components';
-import { height, HeightProps, margin, MarginProps, width, WidthProps } from 'styled-system';
+import React from 'react';
+import { Box } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import muiTheme from '../../../theme';
 
+interface StyledDividerProps {
+  width?: string | number;
+  height?: string | number;
+  margin?: string | number;
+}
 
-export const StyledDivider = styled.div<WidthProps & HeightProps & MarginProps>`
-  background-color: ${props => props.theme.colors.primary};
+const StyledDivider = styled(Box)<StyledDividerProps>(({ theme, width, height, margin }) => ({
+  backgroundColor: muiTheme.palette.primary.main,
+  width,
+  height,
+  margin
+}));
 
-  ${width}
-  ${height}
-  ${margin}
-`;
+export default StyledDivider;

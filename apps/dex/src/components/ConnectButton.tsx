@@ -10,7 +10,7 @@ export const ConnectButton = styled.buttonBox`
   
   font-size: 16px;
   font-weight: 500;
-  background-color: #0a0a0a;
+  background-color: transparent;
   background-image: url(${connect});
 
   transition: 200ms ease;

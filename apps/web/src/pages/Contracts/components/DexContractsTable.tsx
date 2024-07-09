@@ -10,8 +10,6 @@ import {
   Box,
   Typography
 } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
-import theme from '../../../theme_mui';
 
 import { dexAddress } from '@lira-dao/web3-utils';
 
@@ -43,58 +41,56 @@ const DexContractsTable: React.FC = () => {
   const handleCopyToClipboard = (address: string) => navigator.clipboard.writeText(address);
 
   return (
-    <ThemeProvider theme={theme}>
-      <TableContainer component={Paper}>
-        <Table aria-label="dex table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Contract</TableCell>
-              <TableCell>Address</TableCell>
-              <TableCell>Actions</TableCell>
+    <TableContainer component={Paper}>
+      <Table aria-label="dex table">
+        <TableHead>
+          <TableRow>
+            <TableCell style={{ width: '35%' }}>Contract</TableCell>
+            <TableCell style={{ width: '50%' }}>Address</TableCell>
+            <TableCell style={{ width: '15%' }}>Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {dexAddresses.map((dexAddress) => (
+            <TableRow key={dexAddress.address}>
+              <TableCell>
+                <Box sx={{ display: 'flex' }}>
+                  <Typography variant="body2">
+                    {dexAddress.name}
+                  </Typography>
+                </Box>
+              </TableCell>
+              <TableCell>
+                <Box sx={{ display: 'flex', width: '100%' }}>
+                  <Typography variant="body2" noWrap>
+                    {dexAddress.address}
+                  </Typography>
+                  <CopyButton onClick={() => handleCopyToClipboard(dexAddress.address)}>
+                    Copy
+                  </CopyButton>
+                </Box>
+              </TableCell>
+              <TableCell>
+                <Box>
+                  <a
+                    href={dexAddress.arbiscanLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ cursor: 'pointer', marginRight: 10 }}
+                  >
+                    <img
+                      src={arbitrumLogo}
+                      alt="arbitrum icon"
+                      width={30}
+                    />
+                  </a>
+                </Box>
+              </TableCell>
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {dexAddresses.map((dexAddress) => (
-              <TableRow key={dexAddress.address}>
-                <TableCell>
-                  <Box sx={{ display: 'flex' }}>
-                    <Typography variant="body2">
-                      {dexAddress.name}
-                    </Typography>
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box sx={{ display: 'flex' }}>
-                    <Typography variant="body2" noWrap>
-                      {dexAddress.address}
-                    </Typography>
-                    <CopyButton onClick={() => handleCopyToClipboard(dexAddress.address)}>
-                      Copy
-                    </CopyButton>
-                  </Box>
-                </TableCell>
-                <TableCell align="center">
-                  <Box>
-                    <a
-                      href={dexAddress.arbiscanLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ cursor: 'pointer', marginRight: 10 }}
-                    >
-                      <img
-                        src={arbitrumLogo}
-                        alt="arbitrum icon"
-                        width={30}
-                      />
-                    </a>
-                  </Box>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </ThemeProvider>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 

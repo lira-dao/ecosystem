@@ -1,26 +1,36 @@
 import React from 'react';
-import { Col } from '@lira-dao/ui';
-import { StyledText } from './StyledText';
-import { ColorWrap, Typography } from '../../../components/ui';
+import { Box, Container, Typography } from '@mui/material';
 import liraHands from '../../../img/lira-hands.png';
+import ColorWrap from '../../../components/ui/ColorWrap';
 
-
-export function LiraPower() {
+export const LiraPower: React.FC = () => {
   return (
-    <Col
-      background={`url(${liraHands}) no-repeat center top`}
-      backgroundSize="contain"
+    <Box
+      sx={{
+        backgroundImage: `url(${liraHands})`,
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center top',
+        backgroundSize: 'contain',
+      }}
     >
-      <Col
-        maxWidth={1024}
-        margin="0 auto"
-      >
-        <Col margin={['210px 40px 0', '210px 40px 0', '420px 40px 0', '420px 4% 0']}>
-          <StyledText as="h2" fontSize={['2xl', '5xl', '7xl', '8xl']} mt={0}>
-            Unleashing the Power <br />of <ColorWrap color="primary">Decentralization</ColorWrap>
-          </StyledText>
+      <Container maxWidth="lg">
+        <Box sx={{ mt: { xs: '210px', md: '420px', lg: '420px' }, px: { xs: 2, lg: 4 }, pb: 4 }}>  {/* , mb: 4 */}
+          <Typography sx={{
+            typography: { xs: '2xl', sm: '5xl', md: '7xl', lg: '8xl' },
+            textAlign: { xs: 'left', sm: 'left', md: 'left', lg: 'left' },
+            fontFamily: "Avenir Next",
+            fontWeight: 'bold',
+            lineHeight: { xs: '1.8rem', sm: '3.35rem', md: '5.5rem', lg: '6rem' },
+            marginBottom: ['0px', '75px'],
+          }}>
+            Unleashing the Power <br />of <ColorWrap>Decentralization</ColorWrap>
+          </Typography>
 
-          <Typography>
+          <Typography sx={{ 
+            marginY: 5, 
+            fontSize: '18px',
+            lineHeight: '26px'
+          }}>
             At LIRA, we are committed to revolutionizing decentralized finance and governance through cutting-edge
             blockchain technology and community-driven innovation. With this robust ecosystem of products and
             services,
@@ -28,17 +38,17 @@ export function LiraPower() {
             empower individuals worldwide to access the benefits of decentralized finance securely and efficiently.
           </Typography>
 
-          <Typography>
+          <Typography  sx={{ 
+            marginY: 5,
+            fontSize: '18px',
+            lineHeight: '26px'
+          }}>
             Join us in shaping the future of finance and governance, where transparency, inclusivity, and
             decentralization
             are at the forefront. Together, let's build a more equitable and decentralized world with LIRA.
           </Typography>
-
-          {/*<NavLink to="/presale">
-          <img src={button} height={64} alt="Buy LDT" style={{ opacity: 0.3 }} />
-        </NavLink>*/}
-        </Col>
-      </Col>
-    </Col>
+        </Box>
+      </Container>
+    </Box>
   );
-}
+};
