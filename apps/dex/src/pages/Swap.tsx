@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import Big from 'big.js';
-import { color, float, fontSize, height, left, marginLeft, paddingLeft, paddingRight, useTheme, width, x } from '@xstyled/styled-components';
+import { alignItems, color, float, fontSize, height, left, marginLeft, paddingLeft, paddingRight, useTheme, width, x } from '@xstyled/styled-components';
 import { NumericalInput } from '../components/StyledInput';
 import { CurrencySelector } from '../components/CurrencySelector';
 import { PrimaryButton } from '../components/PrimaryButton';
@@ -44,7 +44,7 @@ export function Swap() {
   const [selectingCurrencies, setSelectingCurrencies] = useState<Currency[]>([]);
 
   const [currencyA, setCurrencyA] = useState<Currency>(currency0 ? currency0 : getCurrencies(chainId)[0]);
-  const [currencyB, setCurrencyB] = useState<Currency | undefined>(currency1);
+  const [currencyB, setCurrencyB] = useState<Currency>(currency1 ? currency1 : getCurrencies(chainId)[1]);
   const [firstValue, setFirstValue] = useState<string>('');
   const [secondValue, setSecondValue] = useState<string>('');
 
@@ -191,7 +191,7 @@ export function Swap() {
   const onSelectCurrency = (c: any) => {
     if (selecting === 0) {
       setCurrencyA(c);
-      setCurrencyB(undefined);
+      setCurrencyB(c);
       setFirstValue('');
       setSecondValue('');
       setAmountOut(0n);
@@ -226,15 +226,18 @@ export function Swap() {
                     onClick={onCurrencySelectAClick}
                   />
                 </x.div>
+                <x.div w="100%" display="flex" justifyContent="space-between">
+                  <NumericalInput
+                    id="currencyA"
+                    disabled={amountsIn.isLoading || !currencyB}
+                    value={firstValue}
+                    onChange={(e) => onCurrencyAChange(e.target.value)}
+                  />
+                  <x.p style={{ color: "#717A8C", fontSize: "14px", width: "max-content" }}>Balance: {new Big(formatUnits(currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n, currencyA.decimals)).toFixed(6)} {currencyA.symbol} (Max)</x.p>
+                </x.div>
 
-                <NumericalInput
-                  id="currencyA"
-                  disabled={amountsIn.isLoading || !currencyB}
-                  value={firstValue}
-                  onChange={(e) => onCurrencyAChange(e.target.value)}
-                />
                 <x.div style={{ width: '100%', height: '2px', backgroundColor: '#40547D', border: 'none', marginTop: '10px' }}></x.div>
-                <x.div w="100%" display="flex" mt={2} justifyContent="space-between">
+                <x.div w="100%" display="flex" mt={2} justifyContent="space-between"  style={{alignItems: 'center'}}>
                   <x.p color="red-400">{insufficientBalanceA ? 'Insufficient Balance' : ''}</x.p>
                   <x.p color="gray155">${new Big(formatUnits(currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n, currencyA.decimals)).toFixed(6)}</x.p>
                 </x.div>
@@ -271,13 +274,15 @@ export function Swap() {
                     onClick={onCurrencySelectBClick}
                   />
                 </x.div>
-
-                <NumericalInput
-                  id="currencyB"
-                  disabled={amountsOut.isLoading || !currencyB}
-                  value={secondValue}
-                  onChange={(e) => onCurrencyBChange(e.target.value)}
-                />
+                <x.div w="100%" display="flex" justifyContent="space-between">
+                  <NumericalInput
+                    id="currencyB"
+                    disabled={amountsOut.isLoading || !currencyB}
+                    value={secondValue}
+                    onChange={(e) => onCurrencyBChange(e.target.value)}
+                  />
+                  <x.p style={{ color: "#717A8C", fontSize: "14px", width: "max-content" }}>Balance: {new Big(formatUnits(currencyA.isNative ? accountBalance.data?.value || 0n : balanceB.data ?? 0n, currencyA.decimals)).toFixed(6)} {currencyB.symbol} (Max)</x.p>
+                </x.div>                
                 <x.div style={{ width: '100%', height: '2px', backgroundColor: '#40547D', border: 'none', marginTop: '10px' }}></x.div>
                 <x.div w="100%" display="flex" justifyContent="flex-end" mt={2}>
                   <x.p color="gray155">${new Big(formatUnits(currencyB?.isNative ? accountBalance.data?.value || 0n : balanceB.data ?? 0n, currencyB?.decimals || 18)).toFixed(6)}</x.p>

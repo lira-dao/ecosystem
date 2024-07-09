@@ -29,7 +29,7 @@ export function NumericalInput({ disabled, id, onChange, readOnly = false, value
   };
 
   return (
-    <x.div w="100%" display="flex">
+    <x.div w="50%" display="flex">
       <x.input
         autoComplete="off"
         autoCorrect="off"
