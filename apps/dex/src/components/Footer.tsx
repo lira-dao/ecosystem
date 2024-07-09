@@ -14,14 +14,13 @@ export function Footer() {
     <ThemeProvider theme={muiDarkTheme}>
       <Box 
         sx={{
-          position: 'sticky',
+          position: 'absolute',
           bottom: 0,
           width: '100%',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-end',
           padding: '20px',
-          backgroundColor: 'background.paper',
         }}>
         <Grid container spacing={3} justifyContent="flex-end">
           <Grid item>
