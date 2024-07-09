@@ -14,7 +14,7 @@ export function Footer() {
     <ThemeProvider theme={muiDarkTheme}>
       <Box 
         sx={{
-          position: 'absolute',
+          position: 'fixed',
           bottom: 0,
           width: '100%',
           display: 'flex',
