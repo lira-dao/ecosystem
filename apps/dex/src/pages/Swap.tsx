@@ -27,7 +27,7 @@ import BigNumber from 'bignumber.js';
 import { useParams } from 'react-router-dom';
 import { useDexPairs } from '../hooks/useDexPairs';
 import { CurrencyInput } from '../components/swap/CurrencyInput';
-import { useFetchPrices } from '../hooks/usePrices';
+import { Price, useFetchPrices } from '../hooks/usePrices';
 
 
 export function Swap() {
@@ -91,6 +91,16 @@ export function Swap() {
 
   const { data: pricesData, error, isLoading } = useFetchPrices();
   console.log("🚀 ~ Swap ~ prices:", pricesData)
+
+  const ethPriceUSD = useMemo(() => {
+    const ethData = pricesData?.find(price => price.symbol === 'ETH');
+    return ethData ? parseFloat(ethData.price) : null;
+  }, [pricesData]);
+
+  const btcPriceUSD = useMemo(() => {
+    const btcData = pricesData?.find(price => price.symbol === 'BTC');
+    return btcData ? parseFloat(btcData.price) : null;
+  }, [pricesData]);
 
   useEffect(() => {
     if (amountsOut.data) {
@@ -218,6 +228,30 @@ export function Swap() {
     return symbol;
   }
 
+  const computePrice = (currency: Currency) => {
+
+    const directPrice = pricesData?.find(price => price.symbol === normalizeCurrencySymbol(currency.symbol))?.price;
+    if (directPrice) return directPrice;
+
+    const priceCurrencyA = pair.priceCurrencyA.toFixed(pair.priceCurrencyA.lt(1) ? 8 : 2, 1);
+    const priceCurrencyB = pair.priceCurrencyB.toFixed(pair.priceCurrencyB.lt(1) ? 8 : 2, 1);
+
+    if (currencyA && +priceCurrencyA > 0 && currencyB && +priceCurrencyB > 0) {
+
+      if (currencyA.symbol.includes('TB') || currencyB.symbol.includes('TB')) {
+        return;
+      }
+
+      if (currencyA.symbol === 'LIRA' || currencyB.symbol === 'LIRA') {
+        return;
+      }
+
+      if (currency.symbol === 'LDT') {
+        return (currencyA.symbol === 'LDT') ? priceCurrencyA : (currencyB.symbol === 'LDT') ? priceCurrencyB  : undefined;
+      }
+    }
+  }
+
   return (
     <x.div w="100%" maxWidth="480px" borderRadius="16px" padding={4}>
       <x.div display="flex" justifyContent="center" mt={2}>
@@ -238,7 +272,8 @@ export function Swap() {
         showPercentages
         title="You Pay"
         value={firstValue}
-        price={pricesData?.find(price => price.symbol === currencyA.symbol || price.symbol === normalizeCurrencySymbol(currencyA.symbol))?.price}
+        price={computePrice(currencyA)}
+        externalPrice={(currencyA?.symbol === 'WBTC' || currencyB?.symbol === 'WBTC') ? btcPriceUSD : ethPriceUSD}
       />
 
       <x.div mb="-46px">
@@ -269,7 +304,8 @@ export function Swap() {
         selected={false}
         title="You Receive"
         value={secondValue}
-        price={currencyB && pricesData?.find(price => price.symbol === currencyB.symbol || price.symbol === normalizeCurrencySymbol(currencyB.symbol))?.price}
+        price={currencyB && computePrice(currencyB)}
+        externalPrice={(currencyA?.symbol === 'WBTC' || currencyB?.symbol === 'WBTC') ? btcPriceUSD : ethPriceUSD}
       />
 
       {(currencyA && currencyB) && (
@@ -288,6 +324,11 @@ export function Swap() {
               {pricesData && pricesData.map(crypto => (
                 <x.p key={crypto.symbol}>1 {crypto.symbol} = {parseFloat(crypto.price).toFixed(parseFloat(crypto.price) < 1 ? 8 : 2)} USD</x.p>
               ))}
+              {/* {JSON.stringify({ 
+                ethPriceUSD,
+                asd1: pair.priceCurrencyA.toFixed(pair.priceCurrencyA.lt(1) ? 8 : 2, 1),
+                asd2: pair.priceCurrencyB.toFixed(pair.priceCurrencyB.lt(1) ? 8 : 2, 1)
+              })} */}
             </x.div>
           </x.div>
         </x.div>
