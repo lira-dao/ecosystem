@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import Big from 'big.js';
-import { useTheme, x } from '@xstyled/styled-components';
+import { alignItems, color, float, fontSize, height, left, marginLeft, paddingLeft, paddingRight, useTheme, width, x } from '@xstyled/styled-components';
 import { NumericalInput } from '../components/StyledInput';
 import { CurrencySelector } from '../components/CurrencySelector';
 import { PrimaryButton } from '../components/PrimaryButton';
@@ -46,7 +46,7 @@ export function Swap() {
   const [selectingCurrencies, setSelectingCurrencies] = useState<Currency[]>([]);
 
   const [currencyA, setCurrencyA] = useState<Currency>(currency0 ? currency0 : getCurrencies(chainId)[5]);
-  const [currencyB, setCurrencyB] = useState<Currency | undefined>(currency1 ? currency1 : getCurrencies(chainId)[0]);
+  const [currencyB, setCurrencyB] = useState<Currency>(currency1 ? currency1 : getCurrencies(chainId)[1]);
 
   const [firstValue, setFirstValue] = useState<string>('');
   const [secondValue, setSecondValue] = useState<string>('');
@@ -83,10 +83,10 @@ export function Swap() {
   }, [accountBalance.data?.value, balanceA.data, currencyA.decimals, currencyA.isNative, firstValue]);
 
   const needAllowance = useMemo(() =>
-      parseUnits(firstValue.toString(), currencyA.decimals) > 0 &&
-      !currencyA.isNative &&
-      allowance1.data !== undefined &&
-      allowance1.data < parseUnits(firstValue.toString(), currencyA.decimals),
+    parseUnits(firstValue.toString(), currencyA.decimals) > 0 &&
+    !currencyA.isNative &&
+    allowance1.data !== undefined &&
+    allowance1.data < parseUnits(firstValue.toString(), currencyA.decimals),
     [allowance1.data, currencyA.decimals, currencyA.isNative, firstValue]);
 
   const { data: pricesData, error, isLoading } = useFetchPrices();
@@ -225,7 +225,7 @@ export function Swap() {
   const onSelectCurrency = (c: any) => {
     if (selecting === 0) {
       setCurrencyA(c);
-      setCurrencyB(undefined);
+      setCurrencyB(c);
       setFirstValue('');
       setSecondValue('');
       setAmountOut(0n);
@@ -276,8 +276,8 @@ export function Swap() {
   }
 
   return (
-    <x.div w="100%" maxWidth="480px" borderRadius="16px" padding={4}>
-      <x.div display="flex" justifyContent="center" mt={2}>
+    <x.div w="100%" maxWidth="680px" borderRadius="16px" padding={4} mt={15}>
+      <x.div display="flex" justifyContent="center" mb={6}>
         <x.p fontSize="3xl">Swap</x.p>
       </x.div>
 
@@ -333,14 +333,16 @@ export function Swap() {
         ldtPrice={ldtPrice}
       />
 
-      {(currencyA && currencyB) && (
-        <x.div mt={4}>
-          <x.p>Prices</x.p>
+        {(currencyA && currencyB) && (
+          <x.div mt={2}>
+            {/* <x.p>Prices</x.p> */}
 
-          <x.div>
             <x.div>
-              <x.p>1 {currencyA.symbol} = {pair.priceCurrencyA.toFixed(pair.priceCurrencyA.lt(1) ? 8 : 2, 1)} {currencyB.symbol}</x.p>
-              <x.p>1 {currencyB.symbol} = {pair.priceCurrencyB.toFixed(pair.priceCurrencyB.lt(1) ? 8 : 2, 1)} {currencyA.symbol}</x.p>
+              <x.div>
+                <x.p style={{ color: "#717A8C", fontSize: "14px", textAlign: "right" }}>1 {currencyA.symbol} = {pair.priceCurrencyA.toFixed(pair.priceCurrencyA.lt(1) ? 8 : 2, 1)} {currencyB.symbol}</x.p>
+                {/* <x.p>1 {currencyB.symbol} = {pair.priceCurrencyB.toFixed(pair.priceCurrencyB.lt(1) ? 8 : 2, 1)} {currencyA.symbol}</x.p> */}
+              </x.div>
+              <x.div></x.div>
             </x.div>
             <x.br></x.br>
             <x.div>
@@ -358,32 +360,31 @@ export function Swap() {
               </x.div>
             )}
           </x.div>
-        </x.div>
-      )}
+        )}
 
-      {(needAllowance && !insufficientBalanceA) && (
-        <x.div display="flex" mt={4} mb={2} h="80px" alignItems="center" justifyContent="center">
-          {isAllowCurrencyADisabled ? (
-            <PacmanLoader color={th?.colors.gray155} />
-          ) : (
-            <PrimaryButton
-              disabled={isAllowCurrencyADisabled}
-              onClick={() => approve.write()}
-            >Approve {currencyA.symbol}</PrimaryButton>
-          )}
-        </x.div>
-      )}
+        {(needAllowance && !insufficientBalanceA) && (
+          <x.div display="flex" mt={4} mb={2} h="80px" alignItems="center" justifyContent="center">
+            {isAllowCurrencyADisabled ? (
+              <PacmanLoader color={th?.colors.gray155} />
+            ) : (
+              <PrimaryButton
+                disabled={isAllowCurrencyADisabled}
+                onClick={() => approve.write()}
+              >Approve {currencyA.symbol}</PrimaryButton>
+            )}
+          </x.div>
+        )}
 
-      {(!needAllowance && !insufficientBalanceA) && (
-        <x.div display="flex" mt={4} h="80px" alignItems="center" justifyContent="center">
-          {isSwapDisabled ? (
-            <PacmanLoader color={th?.colors.gray155} />
-          ) : (
-            <PrimaryButton disabled={!firstValue && !secondValue} onClick={() => swap.write()}>Swap</PrimaryButton>
-          )}
-        </x.div>
-      )}
-
+        {(!needAllowance && !insufficientBalanceA) && (
+          <x.div display="flex" mt={4} h="80px" alignItems="center" justifyContent="center">
+            {isSwapDisabled ? (
+              <PacmanLoader color={th?.colors.gray155} />
+            ) : (
+              <PrimaryButton disabled={!firstValue && !secondValue} onClick={() => swap.write()}>Swap</PrimaryButton>
+            )}
+          </x.div>
+        )}
+      </x.div>
       <SelectCurrencyModal
         open={open}
         onClose={() => setOpen(false)}

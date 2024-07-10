@@ -45,7 +45,7 @@ export const GlobalStyles = createGlobalStyle`
     min-height: 100vh;
     margin: 0;
     color: white;
-    background-color: #0A0A0A;
+    background-color: #0d0733;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
