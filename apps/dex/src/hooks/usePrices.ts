@@ -14,7 +14,7 @@ export interface Price {
 
 const fetchPrices = async (): Promise<Price[]> => {
   try {
-    const response = await fetch('http://localhost:9000/prices');
+    const response = await fetch(`${process.env.REACT_APP_PRICES_API}/prices` || '');
     if (!response.ok) {
       throw new Error(`Network response was not ok, received status ${response.status}`);
     }
