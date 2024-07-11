@@ -22,6 +22,7 @@
     "@xstyled/styled-components": "^3.8.0",
     "big.js": "^6.2.1",
     "bignumber.js": "^9.1.2",
+    "dotenv": "^16.4.5",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.4",
     "notistack": "^3.0.1",
