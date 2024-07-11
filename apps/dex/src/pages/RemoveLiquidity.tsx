@@ -47,7 +47,7 @@ export function RemoveLiquidity() {
         variant: 'success',
       });
       allowance.refetch();
-    }    
+    }
   }, [approve.confirmed]);
 
   useEffect(() => {
