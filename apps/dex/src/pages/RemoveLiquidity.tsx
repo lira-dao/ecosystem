@@ -46,7 +46,7 @@ export function RemoveLiquidity() {
         autoHideDuration: 3000,
         variant: 'success',
       });
-      allowance.refetch();      
+      allowance.refetch();
     }
     console.log("remove.amountA", remove.amountA);
     console.log("remove.amountB", remove.amountB);
