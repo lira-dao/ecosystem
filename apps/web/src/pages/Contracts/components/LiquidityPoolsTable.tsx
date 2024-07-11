@@ -13,7 +13,7 @@ import {
   Typography
 } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import theme from '../../../theme_mui';
+import theme from '../../../theme';
 
 import { EthereumAddress, tokens , dexPairs } from '@lira-dao/web3-utils';
 import {
@@ -55,9 +55,9 @@ const LiquidityPoolsTable: React.FC = () => {
         <Table aria-label="pools table">
           <TableHead>
             <TableRow>
-              <TableCell>Pair</TableCell>
-              <TableCell>Address</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell style={{ width: '35%' }}>Pair</TableCell>
+              <TableCell style={{ width: '50%' }}>Address</TableCell>
+              <TableCell style={{ width: '15%' }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

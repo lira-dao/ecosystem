@@ -1,7 +1,5 @@
 import React from 'react';
 import { Avatar, Box, Card, CardActions, CardContent, CardHeader, Container, Grid, IconButton, Typography } from '@mui/material';
-import { ThemeProvider, useTheme } from '@mui/material/styles';
-import muiTheme from '../../theme_mui';
 import avatarImage from '../../img/avatar_image.png';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 
@@ -107,27 +105,25 @@ export function DaoTeam() {
   );
 
   return (
-    <ThemeProvider theme={muiTheme}>
-      <Container maxWidth="lg" sx={{ p: 4, display: 'flex', flexDirection: 'column', width: '100%' }}>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 4 }}>
-          <Typography variant="h4" component="h1" color="white">Lira Dao Team</Typography>
-        </Box>
+    <Container maxWidth="lg" sx={{ p: 4, display: 'flex', flexDirection: 'column', width: '100%' }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 4 }}>
+        <Typography variant="h4" component="h1" color="white">Lira Dao Team</Typography>
+      </Box>
 
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 4 }}>
-          <Typography variant="xl" textAlign="justify" margin={0}>
-            Meet Our Team
-            We are proud to introduce the talented and diverse team behind our project. Our co-founders bring a wealth of experience and a shared passion for innovation and community impact. Each member of our team plays a critical role in driving our mission forward and ensuring the success of our initiatives. Get to know the individuals who are making it all happen:
-          </Typography>
-        </Box>
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 4 }}>
+        <Typography variant="xl" textAlign="justify" margin={0}>
+          Meet Our Team
+          We are proud to introduce the talented and diverse team behind our project. Our co-founders bring a wealth of experience and a shared passion for innovation and community impact. Each member of our team plays a critical role in driving our mission forward and ensuring the success of our initiatives. Get to know the individuals who are making it all happen:
+        </Typography>
+      </Box>
 
-        <Grid container spacing={3}>
-          {members.map((member, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
-              <DaoTeamCard member={member} />
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-    </ThemeProvider>
+      <Grid container spacing={3}>
+        {members.map((member, index) => (
+          <Grid item xs={12} sm={6} md={6} lg={4} key={index}>
+            <DaoTeamCard member={member} />
+          </Grid>
+        ))}
+      </Grid>
+    </Container>
   );
 }

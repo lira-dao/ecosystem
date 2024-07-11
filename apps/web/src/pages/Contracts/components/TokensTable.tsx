@@ -7,13 +7,9 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Button,
-  Link,
   Box,
   Typography
 } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
-import theme from '../../../theme_mui';
 
 import { tokens } from '@lira-dao/web3-utils';
 import {
@@ -81,78 +77,76 @@ const TokensTable: React.FC = () => {
   const handleCopyToClipboard = (address: string) => navigator.clipboard.writeText(address);
 
   return (
-    <ThemeProvider theme={theme}>
-      <TableContainer component={Paper}>
-        <Table aria-label="tokens table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Address</TableCell>
-              <TableCell>Actions</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {liraDaoTokens.map((token) => (
-              <TableRow key={token.address}>
-                <TableCell>
-                  <Box sx={{ display: 'flex' }}>
-                    <Typography variant="body2" noWrap>
-                      {token.name}
-                    </Typography>
-                  </Box>
-                </TableCell>
-                <TableCell>
-                  <Box sx={{ display: 'flex' }}>
-                    <Typography variant="body2" noWrap>
-                      {token.address}
-                    </Typography>
-                    <CopyButton onClick={() => handleCopyToClipboard(token.address)}>
-                      Copy
-                    </CopyButton>
-                  </Box>
-                </TableCell>
+    <TableContainer component={Paper}>
+      <Table aria-label="tokens table">
+        <TableHead>
+          <TableRow>
+            <TableCell style={{ width: '35%' }}>Name</TableCell>
+            <TableCell style={{ width: '50%' }}>Address</TableCell>
+            <TableCell style={{ width: '15%' }}>Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {liraDaoTokens.map((token) => (
+            <TableRow key={token.address}>
+              <TableCell>
+                <Box sx={{ display: 'flex' }}>
+                  <Typography variant="body2" noWrap>
+                    {token.name}
+                  </Typography>
+                </Box>
+              </TableCell>
+              <TableCell>
+                <Box sx={{ display: 'flex' }}>
+                  <Typography variant="body2" noWrap>
+                    {token.address}
+                  </Typography>
+                  <CopyButton onClick={() => handleCopyToClipboard(token.address)}>
+                    Copy
+                  </CopyButton>
+                </Box>
+              </TableCell>
 
-                <TableCell>
-                  <Box sx={{ display: 'flex', alignItems: 'baseline', whiteSpace: 'nowrap' }}>
-                    <a
-                      href={token.arbiscanLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ cursor: 'pointer', marginRight: 10 }}
-                    >
-                      <img
-                        src={arbitrumLogo}
-                        alt="arbitrum icon"
-                        width={30}
-                      />
-                    </a>
-                    <a
-                      href={token.dexScreenerLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      style={{ cursor: 'pointer', marginRight: 15 }}
-                    >
-                      <img
-                        src={dexScreenerLogo}
-                        alt="dexscreener icon"
-                        width={20}
-                      />
-                    </a>
+              <TableCell>
+                <Box sx={{ display: 'flex', alignItems: 'baseline', whiteSpace: 'nowrap' }}>
+                  <a
+                    href={token.arbiscanLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ cursor: 'pointer', marginRight: 10 }}
+                  >
                     <img
-                      src={metamaskFoxLogo}
-                      alt="metamask icon"
+                      src={arbitrumLogo}
+                      alt="arbitrum icon"
                       width={30}
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => token.addTokenToWallet()}
                     />
-                  </Box>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </ThemeProvider>
+                  </a>
+                  <a
+                    href={token.dexScreenerLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ cursor: 'pointer', marginRight: 15 }}
+                  >
+                    <img
+                      src={dexScreenerLogo}
+                      alt="dexscreener icon"
+                      width={20}
+                    />
+                  </a>
+                  <img
+                    src={metamaskFoxLogo}
+                    alt="metamask icon"
+                    width={30}
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => token.addTokenToWallet()}
+                  />
+                </Box>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 };
 
