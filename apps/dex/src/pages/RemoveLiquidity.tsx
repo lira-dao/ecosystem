@@ -161,10 +161,10 @@ export function RemoveLiquidity() {
         <x.div display="flex">
           <x.div w="50%" display="flex" flexDirection="column" alignItems="center">
             <x.p>{remove.token0?.symbol}</x.p>
-            <x.p>{new BigNumber(remove.amountA.toString()).div(new BigNumber(10).pow(remove.token0?.decimals ?? 18)).toFixed(2, 1)}</x.p>
+            <x.p>{new BigNumber(remove.amountA.toString()).div(new BigNumber(10).pow(remove.token0?.decimals ?? 18)).toFixed(6, 1)}</x.p>
             <x.div my={2} />
             <x.p>{remove.token0?.symbol} Min</x.p>
-            <x.p>{new BigNumber(remove.amountAMin.toString()).div(new BigNumber(10).pow(remove.token0?.decimals ?? 18)).toFixed(2, 1)}</x.p>
+            <x.p>{new BigNumber(remove.amountAMin.toString()).div(new BigNumber(10).pow(remove.token0?.decimals ?? 18)).toFixed(6, 1)}</x.p>
           </x.div>
 
           <x.div w="50%" display="flex" flexDirection="column" alignItems="center">
