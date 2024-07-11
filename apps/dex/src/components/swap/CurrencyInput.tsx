@@ -25,8 +25,6 @@ interface CurrencyInputProps {
   title: string;
   value: string;
   price?: string;
-  externalPrice?: number | null;  // price (ETH || BTC) in USD
-  ldtPrice?: number;
 }
 
 export function CurrencyInput({
@@ -44,9 +42,7 @@ export function CurrencyInput({
   showPercentages = false,
   title,
   value,
-  price,
-  externalPrice,
-  ldtPrice
+  price
 }: CurrencyInputProps) {
   const onSetPercentageInternal = (percentage: number) => {
     if (percentage === 100) {
@@ -62,35 +58,6 @@ export function CurrencyInput({
     const number = parseFloat(val);
     return !isNaN(number) && number > 0;
   };
-
-  const usdEquivalent = isValidNumber(value) && price ? `$${(parseFloat(value) * parseFloat(price[0])).toFixed(2)} USD` : '';
-
-  const currencyPrice = (): string => {
-    if (!price || value === '' || !isValidNumber(value)) {
-      return '';
-    }
-  
-    switch (true) {
-      case (currency?.symbol === 'LDT'):
-        if (ldtPrice !== undefined) {
-          return externalPrice ? `~$${(parseFloat(value) * ldtPrice * externalPrice).toFixed(2)}` : '';
-        }
-
-        return externalPrice ? `~$${(parseFloat(value) * parseFloat(price) * externalPrice).toFixed(2)}` : '';
-      case (currency?.symbol.includes('TB') || currency?.symbol === 'LIRA'):
-        if (ldtPrice !== undefined) {
-          // console.log(`Price in USD, 1 ${currency?.symbol}`, externalPrice ? `~$${((ldtPrice / parseFloat(price)) * externalPrice)}` : '');
-
-          return externalPrice ? `~$${(parseFloat(value) * (ldtPrice / parseFloat(price)) * externalPrice).toFixed(2)}` : '';
-        }
-
-        return (externalPrice) ? `~$${(parseFloat(value) * parseFloat(price) * externalPrice)}` : '';
-      default:
-        return `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}`;
-    }
-
-    // return (price && value !== '' && isValidNumber(value)) ? (currency?.symbol === 'LDT' && externalPrice ? `~$${(parseFloat(value) * parseFloat(price) * externalPrice).toFixed(2)}` : `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}`) : '';
-  }
 
   return (
     <SwapSection mt={6} mb={4}>
@@ -112,12 +79,12 @@ export function CurrencyInput({
               {insufficientBalance && (
                 <x.div w="100%" display="flex" justifyContent={insufficientBalance ? 'space-between' : 'flex-end'}>
                   <x.p color="red-400">Insufficient Balance</x.p>
-                  <x.p color="red-400">{currencyPrice()}</x.p>
+                  <x.p color="red-400">{(price && !isNaN(parseFloat(price)) && value !== '' && isValidNumber(value)) ? `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}`: ''}</x.p>
                 </x.div>
               )}
               {!insufficientBalance && (
                 <x.div w="100%" display="flex" justifyContent='flex-end'>
-                  <x.p color="gray155">{currencyPrice()}</x.p>
+                  <x.p color="gray155">{(price && !isNaN(parseFloat(price)) && value !== '' && isValidNumber(value)) ? `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}`: ''}</x.p>
                 </x.div>
               )}
             </x.div>
