@@ -90,7 +90,6 @@ export function Swap() {
     [allowance1.data, currencyA.decimals, currencyA.isNative, firstValue]);
 
   const { data: pricesData, error, isLoading } = useFetchPrices();
-  // console.log("🚀 ~ Swap ~ prices:", pricesData)
 
   const ethPriceUSD = useMemo(() => {
     const ethData = pricesData?.find(price => price.symbol === 'ETH');
@@ -117,9 +116,10 @@ export function Swap() {
   }, [amountsIn]);
 
   const isEthLdtPair = (currencyA.symbol.includes('ETH') || currencyB?.symbol.includes('ETH')) && (currencyA.symbol.includes('LDT') || currencyB?.symbol.includes('LDT'));
+  const isBtcLdtPair = (currencyA.symbol.includes('BTC') || currencyB?.symbol.includes('BTC')) && (currencyA.symbol.includes('LDT') || currencyB?.symbol.includes('LDT'));
 
   useEffect(() => {
-    if (isEthLdtPair) {
+    if (isEthLdtPair || isBtcLdtPair) {
       const priceCurrencyA = pair.priceCurrencyA.toFixed();
       const priceCurrencyB = pair.priceCurrencyB.toFixed();
 
@@ -248,8 +248,15 @@ export function Swap() {
 
   const computePrice = (currency: Currency) => {
 
-    const directPrice = pricesData?.find(price => price.symbol === normalizeCurrencySymbol(currency.symbol))?.price;
-    if (directPrice) return directPrice;
+    const externalPrice = (currencyA.symbol === 'WBTC' || currencyB?.symbol === 'WBTC') ? btcPriceUSD : ethPriceUSD;
+    if (!externalPrice) {
+      return '';
+    }
+
+    const directPrice = pricesData?.find(price => price.symbol === normalizeCurrencySymbol(currency.symbol));
+    if (directPrice) {
+      return `${externalPrice}`;
+    }
 
     const priceCurrencyA = pair.priceCurrencyA.toFixed();
     const priceCurrencyB = pair.priceCurrencyB.toFixed();
@@ -258,19 +265,45 @@ export function Swap() {
 
       if (currencyA.symbol.includes('TB') || currencyB.symbol.includes('TB')) {
         const currencyIsTb = currency.symbol.includes('TB');
-
-        const priceCurrency = !currencyIsTb ? ldtPrice?.toFixed() : currencyA.symbol.includes('TB') ? priceCurrencyB : currencyB.symbol.includes('TB') ? priceCurrencyA  : undefined;
-        if (priceCurrency !== '0') {
-          return priceCurrency;
+        if (currencyIsTb) {
+          const price = currencyA.symbol.includes('TB') ? priceCurrencyB : currencyB.symbol.includes('TB') ? priceCurrencyA : undefined;
+          if (price && price !== '0') {
+            if (ldtPrice !== undefined) {
+              return `${(ldtPrice / parseFloat(price)) * externalPrice}`;
+            }
+          }
         }
       }
 
       if (currency.symbol === 'LIRA') {
-        return (currencyA.symbol === 'LIRA') ? priceCurrencyB : (currencyB.symbol === 'LIRA') ? priceCurrencyA  : undefined;
+        const price = (currencyA.symbol === 'LIRA') ? priceCurrencyB : (currencyB.symbol === 'LIRA') ? priceCurrencyA  : undefined;
+        if (price) {
+          if (ldtPrice !== undefined) {
+            return `${(ldtPrice / parseFloat(price)) * externalPrice}`;
+          }
+        }
       }
 
       if (currency.symbol === 'LDT') {
-        return (currencyA.symbol === 'LDT') ? priceCurrencyA : (currencyB.symbol === 'LDT') ? priceCurrencyB  : undefined;
+        const price = (currencyA.symbol === 'LDT') ? priceCurrencyA : (currencyB.symbol === 'LDT') ? priceCurrencyB : undefined;
+        if (price) {
+
+          if (parseFloat(price) === ldtPrice) {
+            return `${parseFloat(price) * externalPrice}`;
+          }
+
+          if (ldtPrice === undefined) {
+            return `${parseFloat(price) * externalPrice}`
+          }
+
+          return `${ldtPrice * externalPrice}`;
+        }
+      }
+    } else {
+      if (!currency.isNative) {
+        if (currency.symbol === 'LDT') {
+          return (ldtPrice !== undefined) ? `${ldtPrice * externalPrice}` : '';
+        }
       }
     }
   }
@@ -296,8 +329,6 @@ export function Swap() {
         title="You Pay"
         value={firstValue}
         price={computePrice(currencyA)}
-        externalPrice={(currencyA?.symbol === 'WBTC' || currencyB?.symbol === 'WBTC') ? btcPriceUSD : ethPriceUSD}
-        ldtPrice={ldtPrice}
       />
 
       <x.div mb="-46px">
@@ -329,8 +360,6 @@ export function Swap() {
         title="You Receive"
         value={secondValue}
         price={currencyB && computePrice(currencyB)}
-        externalPrice={(currencyA?.symbol === 'WBTC' || currencyB?.symbol === 'WBTC') ? btcPriceUSD : ethPriceUSD}
-        ldtPrice={ldtPrice}
       />
 
       {(currencyA && currencyB) && (
@@ -343,20 +372,6 @@ export function Swap() {
               <x.p>1 {currencyB.symbol} = {pair.priceCurrencyB.toFixed(pair.priceCurrencyB.lt(1) ? 8 : 2, 1)} {currencyA.symbol}</x.p>
             </x.div>
             <x.br></x.br>
-            <x.div>
-              {ldtPrice && ethPriceUSD && 
-                <x.p>1 LDT = {ldtPrice.toFixed(18)} ETH = {(ldtPrice * ethPriceUSD).toFixed((ldtPrice * ethPriceUSD) > 1 ? 2 : 4)} USD</x.p>
-              }
-            </x.div>
-            <x.br></x.br>
-            {pricesData && (
-              <x.div>
-                <x.p>Recap CoinMarketCap Prices</x.p>
-                {pricesData.map(crypto => (
-                  <x.p key={crypto.symbol}>1 {crypto.symbol} = {parseFloat(crypto.price).toFixed(parseFloat(crypto.price) < 1 ? 8 : 2)} USD</x.p>
-                ))}
-              </x.div>
-            )}
           </x.div>
         </x.div>
       )}
