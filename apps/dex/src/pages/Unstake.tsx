@@ -57,6 +57,15 @@ export function Unstake() {
     }
   }, [isError]);
 
+  const title = useMemo(() => {
+    switch (params.stakers) {
+      case 'farming':
+        return 'Unstake LP';
+      default:
+        return 'Unstake';
+    }
+  }, [params.stakers]);
+
   const onSetPercentage = (percentage: bigint) => {
     switch (percentage) {
       case 25n:
@@ -73,7 +82,7 @@ export function Unstake() {
   return (
     <x.div w="100%" maxWidth="480px" padding={4}>
       <x.div display="flex" justifyContent="center" mt={2}>
-        <x.p fontSize="3xl">Unstake LP</x.p>
+        <x.p fontSize="3xl">{title}</x.p>
       </x.div>
 
       <SwapSection mt={6} mb={4}>

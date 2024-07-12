@@ -20,10 +20,10 @@ export function useTokenStaker(stakers: string, address: EthereumAddress, action
     args: [account.address as EthereumAddress],
   });
 
-  const lpAddress = useReadContract({
-    abi: stakers === 'staking' ? tokenStakerAbi : lpStakerAbi,
+  const token = useReadContract({
+    abi: stakers === 'farming' ? lpStakerAbi : tokenStakerAbi,
     address,
-    functionName: stakers === 'staking' ? 'token' : 'lpToken',
+    functionName: stakers === 'farming' ? 'lpToken' : 'token',
   });
 
   const write = () => writeContract({
@@ -52,11 +52,11 @@ export function useTokenStaker(stakers: string, address: EthereumAddress, action
     functionName: 'rewardToken2',
   });
 
-  const balance = useBalance(lpAddress.data);
+  const balance = useBalance(token.data);
 
-  const allowance = useAllowance(lpAddress.data as EthereumAddress, address);
+  const allowance = useAllowance(token.data as EthereumAddress, address);
 
-  const approve = useApprove(lpAddress.data as EthereumAddress, address, parseUnits(amount || '0', 18));
+  const approve = useApprove(token.data as EthereumAddress, address, parseUnits(amount || '0', 18));
 
   const confirmed = useWatchTransaction(data);
 

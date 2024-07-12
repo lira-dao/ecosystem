@@ -31,6 +31,7 @@ export function Stake() {
     stakeError,
     isError,
     error,
+    token,
   } = useTokenStaker(params.stakers || '', params.staker as EthereumAddress, 'stake', value);
 
   const isAllowDisabled = useMemo(() => approve.isPending || allowance.isPending, [approve, allowance]);
@@ -89,6 +90,15 @@ export function Stake() {
     }
   };
 
+  const title = useMemo(() => {
+    switch (params.stakers) {
+      case 'farming':
+        return 'Stake LP';
+      default:
+        return 'Stake';
+    }
+  }, [params.stakers]);
+
   const getError = (error?: string) => {
     switch (error) {
       case 'MINIMUM_STAKE_AMOUNT':
@@ -101,7 +111,7 @@ export function Stake() {
   return (
     <x.div w="100%" maxWidth="480px" padding={4}>
       <x.div display="flex" justifyContent="center" mt={2}>
-        <x.p fontSize="3xl">Stake LP</x.p>
+        <x.p fontSize="3xl">{title}</x.p>
       </x.div>
 
       <SwapSection mt={6} mb={4}>
