@@ -3,13 +3,13 @@ import {
   Currency,
   erc20Abi,
   EthereumAddress,
-  lpStakerAbi,
+  lpStakerAbi, tokens,
   tokenStakerAbi,
   tokenStakers,
 } from '@lira-dao/web3-utils';
 import BigNumber from 'bignumber.js';
 import { getCurrencyByAddress } from '../utils';
-import { useAccount, useChainId, useReadContracts } from 'wagmi';
+import { useAccount, useChainId, useReadContract, useReadContracts } from 'wagmi';
 
 
 export interface Staker {
@@ -23,6 +23,7 @@ export interface Staker {
   boostRewards: [string, string],
   totalStaked: string,
   boostAmount: string,
+  ldtBalance: string,
 }
 
 export function useTokenStakers(): Staker[] {
@@ -85,9 +86,6 @@ export function useTokenStakers(): Staker[] {
     })),
   });
 
-  console.log('boosters', boosters);
-  console.log('boostRewards', boostRewards);
-
   const rewards = useReadContracts({
     contracts: rewardsContracts,
   });
@@ -103,6 +101,13 @@ export function useTokenStakers(): Staker[] {
     contracts: balanceContracts,
   });
 
+  const ldtBalance = useReadContract({
+    abi: erc20Abi,
+    address: tokens[chainId].ldt,
+    functionName: 'balanceOf',
+    args: [account.address as EthereumAddress],
+  });
+
   return tokenStakers[chainId].map((staker, i) => {
     return {
       address: staker.address,
@@ -113,6 +118,7 @@ export function useTokenStakers(): Staker[] {
       // @ts-ignore
       boostAmount: new BigNumber(boostAmounts.data?.[i].result?.[0].toString()).div(new BigNumber(10).pow(18)).toFormat(2, 1) || '',
       balance: new BigNumber(balances.data?.[i].result?.toString() || '0').div(new BigNumber(10).pow(18)).toFormat(2, 1) || '',
+      ldtBalance: new BigNumber(ldtBalance.data?.toString() || '0').div(new BigNumber(10).pow(18)).toFormat(2, 1) || '',
       tokens: [
         getCurrencyByAddress(staker.tokens[0]),
         getCurrencyByAddress(staker.tokens[1]),
