@@ -21,7 +21,8 @@ export function Unstake() {
   const [value, setValue] = useState<string>('');
 
   const {
-    balance,
+    isError,
+    error,
     write,
     reset,
     confirmed,
@@ -45,6 +46,16 @@ export function Unstake() {
       setValue('');
     }
   }, [confirmed]);
+
+  useEffect(() => {
+    if (isError) {
+      // @ts-ignore
+      enqueueSnackbar(error?.shortMessage || 'Network error!', {
+        autoHideDuration: 3000,
+        variant: 'error',
+      });
+    }
+  }, [isError]);
 
   const onSetPercentage = (percentage: bigint) => {
     switch (percentage) {
