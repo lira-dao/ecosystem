@@ -31,7 +31,6 @@ export function Stake() {
     stakeError,
     isError,
     error,
-    token,
   } = useTokenStaker(params.stakers || '', params.staker as EthereumAddress, 'stake', value);
 
   const isAllowDisabled = useMemo(() => approve.isPending || allowance.isPending, [approve, allowance]);
