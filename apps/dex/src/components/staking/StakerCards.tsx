@@ -30,7 +30,7 @@ export function StakerCards({ stakers, isConnected }: Props) {
     <Grid container spacing={2}>
 
       {stakers.map(staker => (
-        <Grid item xs={12} md={6} lg={4}>
+        <Grid item xs={12} md={6} lg={4} key={staker.address}>
           <Card>
             <CardHeader
               avatar={
@@ -118,14 +118,14 @@ export function StakerCards({ stakers, isConnected }: Props) {
                 <Button
                   color="success"
                   variant="outlined"
-                  onClick={() => navigate(`/staking/${staker.boosterAddress}/stake`)}
+                  onClick={() => navigate(`/boosting/${staker.boosterAddress}/stake`)}
                   sx={{ width: '49%', marginRight: '1%' }}
                 >Stake</Button>
                 <Button
                   color="error"
                   variant="outlined"
                   sx={{ width: '49%', marginLeft: '1%' }}
-                  onClick={() => navigate(`/staking/${staker.boosterAddress}/unstake`)}
+                  onClick={() => navigate(`/boosting/${staker.boosterAddress}/unstake`)}
                 >Unstake</Button>
               </Box>
 
