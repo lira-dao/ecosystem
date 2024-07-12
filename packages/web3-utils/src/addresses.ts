@@ -39,25 +39,25 @@ export const farmingStakersAddresses: FarmingStakersAddresses = {
     tbg: '0xFA8c04138407756dDAe054287df603b3aed39662',
   },
   421614: {
-    tbb: '0xe9a072f85629D2bC5F0C0eD0ba591496A9a693C2',
-    tbs: '0x7c8D044f10f053cDb05783DB1d55B386238dD9De',
-    tbg: '0xcFeC968917c3633578c0bcE2Cac7A7C020CC92cC',
+    tbb: '0xbE9c1F33baBFaBf56799d95e98568fA2283ad0f8',
+    tbs: '0xDa00A425C576f0169A7Ed783eE8B401d1BCDE7b4',
+    tbg: '0x61BecEF1d790A6a7b22e3b8b03c416eB04AdE3b3',
   },
 };
 
 export const tokenStakerAddresses: StakersAddresses = {
   421614: {
-    tbb: '0x3b966493605F0E4830a494bbFE16359056F935BB',
-    tbs: '0xa91e98f955F7F6800fF3ae0eBb41cdE4f4343460',
-    tbg: '0x2c1903A7B091cde7Df3fc463918100AE9f5d7571',
+    tbb: '0x76C1309d4e2b233A2EBdfdcbe0E453A023CD0038',
+    tbs: '0x5804bccC006D3705449C076a4f1E7A7BEa7208c1',
+    tbg: '0x0Ad57a853496B391A01D8fd169F39f130E4a5E56',
   },
 };
 
 export const boosterAddresses: BoosterAddresses = {
   421614: {
-    tbb: '0x93D74215B2E48eFD09b679eF3c1615DEc1c5D3C4',
-    tbs: '0xF1B40B858B0C1448da1939bE344FBE6b1AE01745',
-    tbg: '0xf0F9B30864846e363A91929E65999815c484f8E9',
+    tbb: '0xc93cA41292f1D6fd81c419a65Ae53e896557de43',
+    tbs: '0x63C902BD207bcEdBC98a7E71Eb9f5fA490A3D961',
+    tbg: '0x287068e0bE3CC657726a664139Cfee9E6d1175B2',
   },
 };
 

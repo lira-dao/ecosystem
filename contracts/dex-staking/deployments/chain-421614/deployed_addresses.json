@@ -1,16 +1,11 @@
 {
-  "LPStakerTbb#LPStaker": "0xe9a072f85629D2bC5F0C0eD0ba591496A9a693C2",
-  "LPStakerTbs#LPStaker": "0x7c8D044f10f053cDb05783DB1d55B386238dD9De",
-  "LPStakerTbg#LPStaker": "0xcFeC968917c3633578c0bcE2Cac7A7C020CC92cC",
-  "TokenStakerTbb#TokenStaker": "0x3b966493605F0E4830a494bbFE16359056F935BB",
-  "TokenStakerTbs#TokenStaker": "0xa91e98f955F7F6800fF3ae0eBb41cdE4f4343460",
-  "TokenStakerTbg#TokenStaker": "0x2c1903A7B091cde7Df3fc463918100AE9f5d7571",
-  "BoostingStakerTbb#BoostingStaker": "0x93D74215B2E48eFD09b679eF3c1615DEc1c5D3C4",
-  "BoostingStakerTbs#BoostingStaker": "0xF1B40B858B0C1448da1939bE344FBE6b1AE01745",
-  "BoostingStakerTbg#BoostingStaker": "0xf0F9B30864846e363A91929E65999815c484f8E9",
-  "FarmingSplitter#FarmingSplitter": "0x38Bf30dB9a3Bf9544ec1A993a5a2305551810877",
-  "StakingSplitter#StakingSplitter": "0x6F10b8EbCf15237C5A94d2dA5B9fbd2E8A732b1F",
-  "BoostingSplitter#BoostingSplitter": "0x9fB065Acaa4a6f32d17D2F11Ff5ABf97bf9699Ce",
-  "TeamSplitter#TeamSplitter": "0x3e7BcaB8C33dAC7Ba8Ad65c95bee89b2Fc53C51c",
-  "RewardSplitterV2#RewardSplitterV2": "0xDE693879cEa7bfFE655d32CC573dD788dBb7Ebdb"
+  "LPStakerTbb#LPStaker": "0xbE9c1F33baBFaBf56799d95e98568fA2283ad0f8",
+  "LPStakerTbs#LPStaker": "0xDa00A425C576f0169A7Ed783eE8B401d1BCDE7b4",
+  "LPStakerTbg#LPStaker": "0x61BecEF1d790A6a7b22e3b8b03c416eB04AdE3b3",
+  "TokenStakerTbb#TokenStaker": "0x76C1309d4e2b233A2EBdfdcbe0E453A023CD0038",
+  "TokenStakerTbs#TokenStaker": "0x5804bccC006D3705449C076a4f1E7A7BEa7208c1",
+  "TokenStakerTbg#TokenStaker": "0x0Ad57a853496B391A01D8fd169F39f130E4a5E56",
+  "BoostingStakerTbb#BoostingStaker": "0xc93cA41292f1D6fd81c419a65Ae53e896557de43",
+  "BoostingStakerTbs#BoostingStaker": "0x63C902BD207bcEdBC98a7E71Eb9f5fA490A3D961",
+  "BoostingStakerTbg#BoostingStaker": "0x287068e0bE3CC657726a664139Cfee9E6d1175B2"
 }
