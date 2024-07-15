@@ -47,6 +47,7 @@ export function RemoveLiquidity() {
         variant: 'success',
       });
       allowance.refetch();
+      remove.refetch()
     }
   }, [approve.confirmed]);
 
@@ -66,6 +67,7 @@ export function RemoveLiquidity() {
       });
       remove.reset();
       balance.refetch();
+      allowance.refetch();
       setValue('');
     }
   }, [remove.confirmed]);
@@ -94,7 +96,7 @@ export function RemoveLiquidity() {
           <Container>
             <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
               <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
-                <x.p color="gray155" userSelect="none">Deposit</x.p>
+                <x.p color="gray155" userSelect="none">Withdraw</x.p>
               </x.div>
 
               <NumericalInput

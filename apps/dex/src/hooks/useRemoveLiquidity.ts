@@ -7,7 +7,9 @@ import { useDexAddresses } from './useDexAddresses';
 
 export function useRemoveLiquidity(address: EthereumAddress, amount: bigint) {
   const account = useAccount();
-  const block = useBlock();
+  const block = useBlock({ query: {
+    refetchOnWindowFocus: false
+  }});
   const dexAddresses = useDexAddresses();
   const deadline = (block.data?.timestamp ?? 0n) + 600n;
 
@@ -29,6 +31,9 @@ export function useRemoveLiquidity(address: EthereumAddress, amount: bigint) {
       abi: dexPairV2Abi,
       functionName: 'token1',
     }],
+    query:{
+      refetchOnWindowFocus: false
+    }
   });
 
   const token0 = info?.data?.[2].result;
@@ -49,6 +54,9 @@ export function useRemoveLiquidity(address: EthereumAddress, amount: bigint) {
       account.address as EthereumAddress,
       deadline,
     ],
+    query:{
+      refetchOnWindowFocus: false
+    }
   });
 
   const amountA = simulate?.data?.result?.[0] ?? 0n;
@@ -82,6 +90,7 @@ export function useRemoveLiquidity(address: EthereumAddress, amount: bigint) {
     ...rest,
     ...confirmed,
     write,
+    refetch: simulate.refetch,
     amountA,
     amountAMin,
     amountB,

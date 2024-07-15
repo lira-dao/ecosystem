@@ -159,6 +159,7 @@ export function Swap() {
       swap.reset();
       balanceA.refetch();
       balanceB.refetch();
+      accountBalance.refetch();
       pair.refetchReserves();
       setAmountOut(0n);
       setAmountIn(0n);
