@@ -12,6 +12,7 @@ export function useBalance(address?: EthereumAddress) {
     args: [account.address as EthereumAddress],
     query: {
       enabled: !!address && !!account.address,
+      refetchOnWindowFocus: false
     },
   });
 }
