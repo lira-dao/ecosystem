@@ -1,3 +1,4 @@
+import React, { useState, useEffect, useRef } from 'react';
 import { Outlet } from 'react-router-dom';
 import { x } from '@xstyled/styled-components';
 import { Header } from './Header';
@@ -5,13 +6,31 @@ import { Footer } from './Footer';
 
 
 export function Layout() {
+  const [isFooterFixed, setIsFooterFixed] = useState(true);
+  const contentRef = useRef(null);
+
+  useEffect(() => {
+    const checkContentHeight = () => {
+      if (contentRef.current) {
+        const contentHeight = (contentRef.current as any).clientHeight;
+        const viewportHeight = window.innerHeight;
+        setIsFooterFixed(contentHeight <= viewportHeight);
+      }
+    };
+
+    checkContentHeight();
+    window.addEventListener('resize', checkContentHeight);
+
+    return () => window.removeEventListener('resize', checkContentHeight);
+  }, []);
+
   return (
-    <x.div display="flex" flexDirection="column" alignItems="center">
+    <x.div display="flex" flexDirection="column" alignItems="center" minHeight="100vh">
       <Header />
-      <x.div w="100%" display="flex" alignItems="center" justifyContent="center">
+      <x.div ref={contentRef} w="100%" flexGrow={1} display="flex" alignItems="center" justifyContent="center" paddingBottom={isFooterFixed ? '24px' : '0px'}>
         <Outlet />
       </x.div>
-      <Footer />
+      <Footer isFixed={isFooterFixed} />
     </x.div>
   );
 }
