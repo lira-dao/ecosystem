@@ -40,7 +40,6 @@ export function RemoveLiquidity() {
 
   const isAllowDisabled = useMemo(() => approve.isPending || allowance.isPending, [approve, allowance]);
 
-  console.log("RENDERING...")
   useEffect(() => {
     if (approve.confirmed) {
       enqueueSnackbar('Approve confirmed!', {
