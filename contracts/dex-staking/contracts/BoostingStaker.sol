@@ -9,7 +9,7 @@ import '@lira-dao/treasury-tokens/contracts/interfaces/ITreasuryToken.sol';
 import './interfaces/IStaker.sol';
 
 /**
- * @title Boost Staker V1
+ * @title Boosting Staker V1
  * @author LIRA DAO Team
  * @custom:security-contact contact@liradao.org
  *
@@ -125,6 +125,13 @@ contract BoostingStaker is Ownable, ReentrancyGuard {
         return (pendingReward1, pendingReward2);
     }
 
+    function getMaxBoost(address _address) public view returns (uint256) {
+        uint currentBoost = stakers[_address].amount;
+        uint maxBoost = (IStaker(stakerAddress).stakers(msg.sender).amount * ITreasuryToken(rewardToken2).rate()) / 2;
+
+        return maxBoost - currentBoost;
+    }
+
     function distributeRewards(uint256 rewardAmount1, uint256 rewardAmount2) public onlyOwner nonReentrant {
         uint256 roundRewardPerShare1 = (rewardAmount1 * 1e36) / totalStaked;
         uint256 roundRewardPerShare2 = (rewardAmount2 * 1e36) / totalStaked;
@@ -145,12 +152,5 @@ contract BoostingStaker is Ownable, ReentrancyGuard {
         require(tokenAddress != rewardToken2, 'CANNOT_WITHDRAW_LOCKED_TOKEN');
 
         IERC20(tokenAddress).safeTransfer(owner(), IERC20(tokenAddress).balanceOf(address(this)));
-    }
-
-    // THIS FUNCTION IS FOR TESTING ONLY, REMOVE IT BEFORE MAINNET DEPLOY
-    function empty() public onlyOwner {
-        IERC20(token).transfer(owner(), IERC20(token).balanceOf(address(this)));
-        IERC20(rewardToken1).transfer(owner(), IERC20(rewardToken1).balanceOf(address(this)));
-        IERC20(rewardToken2).transfer(owner(), IERC20(rewardToken2).balanceOf(address(this)));
     }
 }
