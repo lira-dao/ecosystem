@@ -2,6 +2,7 @@ import { Staker } from '../../hooks/useTokenStakers';
 import { Box, Button, Card, CardContent, CardHeader, Divider, Grid, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
+import { useWeb3Modal } from '@web3modal/wagmi/react';
 
 
 const getApr = (symbol?: string) => {
@@ -25,6 +26,7 @@ interface Props {
 export function StakerCards({ stakers, isConnected }: Props) {
   const th = useTheme();
   const navigate = useNavigate();
+  const { open } = useWeb3Modal();
 
   return (
     <Grid container spacing={2}>
@@ -64,18 +66,29 @@ export function StakerCards({ stakers, isConnected }: Props) {
               <Box sx={{ my: 2 }} />
 
               <Box display="flex" justifyContent="space-around" alignItems="center">
-                <Button
-                  color="success"
-                  variant="outlined"
-                  onClick={() => navigate(`/staking/${staker.address}/stake`)}
-                  sx={{ width: '49%', marginRight: '1%' }}
-                >Stake</Button>
-                <Button
-                  color="error"
-                  variant="outlined"
-                  sx={{ width: '49%', marginLeft: '1%' }}
-                  onClick={() => navigate(`/staking/${staker.address}/unstake`)}
-                >Unstake</Button>
+                {isConnected ? (
+                  <>
+                    <Button
+                      color="success"
+                      variant="outlined"
+                      onClick={() => navigate(`/staking/${staker.address}/stake`)}
+                      sx={{ width: '49%', marginRight: '1%' }}
+                    >Stake</Button>
+                    <Button
+                      color="error"
+                      variant="outlined"
+                      sx={{ width: '49%', marginLeft: '1%' }}
+                      onClick={() => navigate(`/staking/${staker.address}/unstake`)}
+                    >Unstake</Button>
+                  </>
+                ) : (
+                  <Button
+                    color="success"
+                    variant="outlined"
+                    onClick={() => open()}
+                    sx={{ width: '100%' }}
+                  >Connect Wallet</Button>
+                )}
               </Box>
 
               <Box sx={{ my: 4 }} />
@@ -98,12 +111,21 @@ export function StakerCards({ stakers, isConnected }: Props) {
               <Box sx={{ my: 2 }} />
 
               <Box display="flex" justifyContent="space-around" alignItems="center">
-                <Button
-                  color="success"
-                  variant="outlined"
-                  onClick={() => navigate(`/staking/${staker.address}/harvest`)}
-                  sx={{ width: '100%', marginRight: '10px' }}
-                >Harvest</Button>
+                {isConnected ? (
+                  <Button
+                    color="success"
+                    variant="outlined"
+                    onClick={() => navigate(`/staking/${staker.address}/harvest`)}
+                    sx={{ width: '100%', marginRight: '10px' }}
+                  >Harvest</Button>
+                ) : (
+                  <Button
+                    color="success"
+                    variant="outlined"
+                    onClick={() => open()}
+                    sx={{ width: '100%' }}
+                  >Connect Wallet</Button>
+                )}
               </Box>
 
               <Divider textAlign="left" sx={{ mt: 4, mb: 2 }}>BOOST</Divider>
@@ -131,18 +153,29 @@ export function StakerCards({ stakers, isConnected }: Props) {
               <Box sx={{ my: 4 }} />
 
               <Box display="flex" justifyContent="space-around" alignItems="center">
-                <Button
-                  color="success"
-                  variant="outlined"
-                  onClick={() => navigate(`/boosting/${staker.boosterAddress}/stake`)}
-                  sx={{ width: '49%', marginRight: '1%' }}
-                >Stake</Button>
-                <Button
-                  color="error"
-                  variant="outlined"
-                  sx={{ width: '49%', marginLeft: '1%' }}
-                  onClick={() => navigate(`/boosting/${staker.boosterAddress}/unstake`)}
-                >Unstake</Button>
+                {isConnected ? (
+                  <>
+                    <Button
+                      color="success"
+                      variant="outlined"
+                      onClick={() => navigate(`/boosting/${staker.boosterAddress}/stake`)}
+                      sx={{ width: '49%', marginRight: '1%' }}
+                    >Stake</Button>
+                    <Button
+                      color="error"
+                      variant="outlined"
+                      sx={{ width: '49%', marginLeft: '1%' }}
+                      onClick={() => navigate(`/boosting/${staker.boosterAddress}/unstake`)}
+                    >Unstake</Button>
+                  </>
+                ) : (
+                  <Button
+                    color="success"
+                    variant="outlined"
+                    onClick={() => open()}
+                    sx={{ width: '100%' }}
+                  >Connect Wallet</Button>
+                )}
               </Box>
 
               <Box sx={{ my: 4 }} />
@@ -165,12 +198,21 @@ export function StakerCards({ stakers, isConnected }: Props) {
               <Box sx={{ my: 4 }} />
 
               <Box display="flex" justifyContent="space-around" alignItems="center">
-                <Button
-                  color="success"
-                  variant="outlined"
-                  onClick={() => navigate(`/staking/${staker.boosterAddress}/harvest`)}
-                  sx={{ width: '100%', marginRight: '10px' }}
-                >Harvest</Button>
+                {isConnected ? (
+                  <Button
+                    color="success"
+                    variant="outlined"
+                    onClick={() => navigate(`/staking/${staker.boosterAddress}/harvest`)}
+                    sx={{ width: '100%', marginRight: '10px' }}
+                  >Harvest</Button>
+                ) : (
+                  <Button
+                    color="success"
+                    variant="outlined"
+                    onClick={() => open()}
+                    sx={{ width: '100%' }}
+                  >Connect Wallet</Button>
+                )}
               </Box>
             </CardContent>
           </Card>

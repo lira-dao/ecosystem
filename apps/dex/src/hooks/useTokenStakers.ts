@@ -21,7 +21,7 @@ export interface Staker {
   balance: string;
   token: Currency | undefined
   tokens: (Currency | undefined)[],
-  rewards: [string, string],
+  rewards: string[],
   boostRewards: [string, string],
   totalStaked: string,
   boostAmount: string,
@@ -134,11 +134,11 @@ export function useTokenStakers(): Staker[] {
       boosterAddress: boostingStakers[chainId][i].address,
       token: getCurrencyByAddress(staker.token),
       // @ts-ignore
-      amount: new BigNumber(amounts.data?.[i].result?.[0].toString()).div(new BigNumber(10).pow(18)).toFormat(2, 1) || '',
+      amount: new BigNumber(amounts.data?.[i].result?.[0].toString() || '0').div(new BigNumber(10).pow(18)).toFormat(2, 1) || '',
       // @ts-ignore
-      boostAmount: new BigNumber(boostAmounts.data?.[i].result?.[0].toString()).div(new BigNumber(10).pow(18)).toFormat(2, 1) || '',
-      maxBoost: new BigNumber(maxBoostAmounts.data?.[i].result?.toString() ?? '').div(new BigNumber(10).pow(18)).toFormat(2, 1) || '',
-      remainingBoost: new BigNumber(remainingBoostAmounts.data?.[i].result?.toString() ?? '').div(new BigNumber(10).pow(18)).toFormat(2, 1) || '',
+      boostAmount: new BigNumber(boostAmounts.data?.[i].result?.[0].toString() || '0').div(new BigNumber(10).pow(18)).toFormat(2, 1) || '',
+      maxBoost: new BigNumber(maxBoostAmounts.data?.[i].result?.toString() ?? '0').div(new BigNumber(10).pow(18)).toFormat(2, 1) || '',
+      remainingBoost: new BigNumber(remainingBoostAmounts.data?.[i].result?.toString() ?? '0').div(new BigNumber(10).pow(18)).toFormat(2, 1) || '',
       balance: new BigNumber(balances.data?.[i].result?.toString() || '0').div(new BigNumber(10).pow(18)).toFormat(2, 1) || '',
       ldtBalance: new BigNumber(ldtBalance.data?.toString() || '0').div(new BigNumber(10).pow(18)).toFormat(2, 1) || '',
       tokens: [
@@ -147,15 +147,15 @@ export function useTokenStakers(): Staker[] {
       ],
       rewards: [
         // @ts-ignore
-        new BigNumber(rewards.data?.[i].result?.[0].toString()).div(new BigNumber(10).pow(18)).toFormat(4, 1) || '',
+        new BigNumber(rewards.data?.[i].result?.[0].toString() || '0').div(new BigNumber(10).pow(18)).toFormat(4, 1) || '',
         // @ts-ignore
-        new BigNumber(rewards.data?.[i].result?.[1].toString()).div(new BigNumber(10).pow(18)).toFormat(4, 1) || '',
+        new BigNumber(rewards.data?.[i].result?.[1].toString() || '0').div(new BigNumber(10).pow(18)).toFormat(4, 1) || '',
       ],
       boostRewards: [
         // @ts-ignore
-        new BigNumber(boostRewards.data?.[i].result?.[0].toString()).div(new BigNumber(10).pow(18)).toFormat(4, 1) || '',
+        new BigNumber(boostRewards.data?.[i].result?.[0].toString() || '0').div(new BigNumber(10).pow(18)).toFormat(4, 1) || '',
         // @ts-ignore
-        new BigNumber(boostRewards.data?.[i].result?.[1].toString()).div(new BigNumber(10).pow(18)).toFormat(4, 1) || '',
+        new BigNumber(boostRewards.data?.[i].result?.[1].toString() || '0').div(new BigNumber(10).pow(18)).toFormat(4, 1) || '',
       ],
       totalStaked: new BigNumber(totalStaked.data?.[i].result?.toString() ?? '0').div(new BigNumber(10).pow(18)).toFormat(2) || '',
     };
