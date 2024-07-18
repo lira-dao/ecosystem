@@ -9,6 +9,7 @@ import { PrimaryButton } from '../components/PrimaryButton';
 import { x } from '@xstyled/styled-components';
 import { useEffect } from 'react';
 import { useSnackbar } from 'notistack';
+import { SwapHeader } from '../components/swap/SwapHeader';
 
 
 export function Harvest() {
@@ -31,9 +32,8 @@ export function Harvest() {
   return (
     <ThemeProvider theme={muiDarkTheme}>
       <Box width="100%" maxWidth="480px" padding={4}>
-        <Box display="flex" justifyContent="center" mt={2}>
-          <Typography variant="h4">Harvest</Typography>
-        </Box>
+
+        <SwapHeader title="Harvest" />
 
         <Box display="flex" justifyContent="center" mt={4}>
           <List sx={{ width: '100%', maxWidth: 480, bgcolor: 'background.paper' }}>

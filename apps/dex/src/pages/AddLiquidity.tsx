@@ -19,6 +19,7 @@ import { useParams } from 'react-router-dom';
 import { useDexPairs } from '../hooks/useDexPairs';
 import { CurrencyInput } from '../components/swap/CurrencyInput';
 import { PacmanLoader } from 'react-spinners';
+import { SwapHeader } from '../components/swap/SwapHeader';
 
 
 export function AddLiquidity() {
@@ -234,9 +235,7 @@ export function AddLiquidity() {
 
   return (
     <x.div w="100%" maxWidth="480px" padding={4}>
-      <x.div display="flex" justifyContent="center" mt={2}>
-        <x.p fontSize="3xl">Add Liquidity</x.p>
-      </x.div>
+      <SwapHeader title="Add Liquidity" />
 
       <CurrencyInput
         balance={currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n}

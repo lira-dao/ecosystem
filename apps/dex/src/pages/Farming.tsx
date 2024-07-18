@@ -14,7 +14,7 @@ export function Farming() {
     <ThemeProvider theme={muiDarkTheme}>
       <Box sx={{width: {xs: '100%', xl: 'auto'}, display: 'flex', flexDirection: 'column', marginY: 4, paddingX: 2}}>
         <Box>
-          <Typography sx={{ typography: 'h3', mb: 4 }} fontWeight="bold" color="white">
+          <Typography variant="h3" mb={4} color="white">
             Farming Pools
           </Typography>
         </Box>

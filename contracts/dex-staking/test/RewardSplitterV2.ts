@@ -312,15 +312,17 @@ describe('RewardSplitterV2', () => {
       tbgBooster,
     } = await rewardSplitterV2Fixture();
 
-
     await tbb.mint(deployer, parseUnits('1', 18));
     await tbbStaker.stake(parseUnits('1', 18));
 
     expect(await tbbBooster.getMaxBoost(deployer)).eq(parseUnits('500'));
+    expect(await tbbBooster.getRemainingBoost(deployer)).eq(parseUnits('500'));
 
     await tbbBooster.stake(parseUnits('250', 18));
 
-    expect(await tbbBooster.getMaxBoost(deployer)).eq(parseUnits('250'));
+    await tbbBooster.getRemainingBoost(deployer);
+
+    expect(await tbbBooster.getRemainingBoost(deployer)).eq(parseUnits('250'));
 
     await expect(tbbStaker.unstake(parseUnits('0.5'))).not.reverted;
 

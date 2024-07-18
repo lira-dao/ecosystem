@@ -1,9 +1,11 @@
 import {
+  boostingStakerAbi,
   boostingStakers,
   Currency,
   erc20Abi,
   EthereumAddress,
-  lpStakerAbi, tokens,
+  lpStakerAbi,
+  tokens,
   tokenStakerAbi,
   tokenStakers,
 } from '@lira-dao/web3-utils';
@@ -23,6 +25,8 @@ export interface Staker {
   boostRewards: [string, string],
   totalStaked: string,
   boostAmount: string,
+  maxBoost: string,
+  remainingBoost: string,
   ldtBalance: string,
 }
 
@@ -71,8 +75,6 @@ export function useTokenStakers(): Staker[] {
     args: [account.address],
   }));
 
-  console.log('boosterRewardsContracts', boostRewardsContracts);
-
   const boostRewards = useReadContracts({
     contracts: boostRewardsContracts,
   });
@@ -85,6 +87,25 @@ export function useTokenStakers(): Staker[] {
       args: [account.address],
     })),
   });
+
+  const maxBoostAmounts = useReadContracts({
+    contracts: boosters.data?.map(staker => ({
+      abi: boostingStakerAbi,
+      address: staker.result as EthereumAddress,
+      functionName: 'getMaxBoost',
+      args: [account.address],
+    })),
+  });
+
+  const remainingBoostAmounts = useReadContracts({
+    contracts: boosters.data?.map(staker => ({
+      abi: boostingStakerAbi,
+      address: staker.result as EthereumAddress,
+      functionName: 'getRemainingBoost',
+      args: [account.address],
+    })),
+  });
+  console.log('maxBoostAmounts', boosters, maxBoostAmounts);
 
   const rewards = useReadContracts({
     contracts: rewardsContracts,
@@ -117,6 +138,8 @@ export function useTokenStakers(): Staker[] {
       amount: new BigNumber(amounts.data?.[i].result?.[0].toString()).div(new BigNumber(10).pow(18)).toFormat(2, 1) || '',
       // @ts-ignore
       boostAmount: new BigNumber(boostAmounts.data?.[i].result?.[0].toString()).div(new BigNumber(10).pow(18)).toFormat(2, 1) || '',
+      maxBoost: new BigNumber(maxBoostAmounts.data?.[i].result?.toString() ?? '').div(new BigNumber(10).pow(18)).toFormat(2, 1) || '',
+      remainingBoost: new BigNumber(remainingBoostAmounts.data?.[i].result?.toString() ?? '').div(new BigNumber(10).pow(18)).toFormat(2, 1) || '',
       balance: new BigNumber(balances.data?.[i].result?.toString() || '0').div(new BigNumber(10).pow(18)).toFormat(2, 1) || '',
       ldtBalance: new BigNumber(ldtBalance.data?.toString() || '0').div(new BigNumber(10).pow(18)).toFormat(2, 1) || '',
       tokens: [

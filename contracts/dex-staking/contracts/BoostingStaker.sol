@@ -126,8 +126,12 @@ contract BoostingStaker is Ownable, ReentrancyGuard {
     }
 
     function getMaxBoost(address _address) public view returns (uint256) {
+        return (IStaker(stakerAddress).stakers(_address).amount * ITreasuryToken(rewardToken2).rate()) / 2;
+    }
+
+    function getRemainingBoost(address _address) public view returns (uint256) {
         uint currentBoost = stakers[_address].amount;
-        uint maxBoost = (IStaker(stakerAddress).stakers(msg.sender).amount * ITreasuryToken(rewardToken2).rate()) / 2;
+        uint maxBoost = (IStaker(stakerAddress).stakers(_address).amount * ITreasuryToken(rewardToken2).rate()) / 2;
 
         return maxBoost - currentBoost;
     }

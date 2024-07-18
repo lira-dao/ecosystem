@@ -49,7 +49,7 @@ export function StakerCards({ stakers, isConnected }: Props) {
               </Box>
               <Typography>Total Staked: {staker.totalStaked}</Typography>
 
-              <Divider textAlign="left" sx={{mt: 4, mb: 2}}>STAKE</Divider>
+              <Divider textAlign="left" sx={{ mt: 4, mb: 2 }}>STAKE</Divider>
 
               <Box display="flex" justifyContent="space-between">
                 <Typography>My Balance</Typography>
@@ -61,7 +61,7 @@ export function StakerCards({ stakers, isConnected }: Props) {
                 <Typography>{staker.amount} {staker.tokens[0]?.symbol}</Typography>
               </Box>
 
-              <Box sx={{my: 2}} />
+              <Box sx={{ my: 2 }} />
 
               <Box display="flex" justifyContent="space-around" alignItems="center">
                 <Button
@@ -78,18 +78,24 @@ export function StakerCards({ stakers, isConnected }: Props) {
                 >Unstake</Button>
               </Box>
 
-              <Box sx={{my: 4}} />
+              <Box sx={{ my: 4 }} />
 
               <Box width="100%" display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant="h6">Rewards</Typography>
 
                 <Box>
-                  <Typography textAlign="right" sx={{ textWrap: 'nowrap' }}>{staker.rewards[1]} {staker.tokens[0]?.symbol}</Typography>
-                  <Typography textAlign="right" sx={{ textWrap: 'nowrap' }}>{staker.rewards[0]} {staker.tokens[1]?.symbol}</Typography>
+                  <Typography
+                    textAlign="right"
+                    sx={{ textWrap: 'nowrap' }}
+                  >{staker.rewards[1]} {staker.tokens[0]?.symbol}</Typography>
+                  <Typography
+                    textAlign="right"
+                    sx={{ textWrap: 'nowrap' }}
+                  >{staker.rewards[0]} {staker.tokens[1]?.symbol}</Typography>
                 </Box>
               </Box>
 
-              <Box sx={{my: 2}} />
+              <Box sx={{ my: 2 }} />
 
               <Box display="flex" justifyContent="space-around" alignItems="center">
                 <Button
@@ -100,7 +106,7 @@ export function StakerCards({ stakers, isConnected }: Props) {
                 >Harvest</Button>
               </Box>
 
-              <Divider textAlign="left" sx={{mt: 4, mb: 2}}>BOOST</Divider>
+              <Divider textAlign="left" sx={{ mt: 4, mb: 2 }}>BOOST</Divider>
 
               <Box display="flex" justifyContent="space-between">
                 <Typography>Balance</Typography>
@@ -108,11 +114,21 @@ export function StakerCards({ stakers, isConnected }: Props) {
               </Box>
 
               <Box display="flex" justifyContent="space-between">
+                <Typography>Max Boost</Typography>
+                <Typography>{staker.maxBoost} {staker.tokens[1]?.symbol}</Typography>
+              </Box>
+
+              <Box display="flex" justifyContent="space-between">
                 <Typography>My Boost</Typography>
                 <Typography>{staker.boostAmount} {staker.tokens[1]?.symbol}</Typography>
               </Box>
 
-              <Box sx={{my: 4}} />
+              <Box display="flex" justifyContent="space-between">
+                <Typography>Remaining Boost</Typography>
+                <Typography>{staker.remainingBoost} {staker.tokens[1]?.symbol}</Typography>
+              </Box>
+
+              <Box sx={{ my: 4 }} />
 
               <Box display="flex" justifyContent="space-around" alignItems="center">
                 <Button
@@ -129,18 +145,24 @@ export function StakerCards({ stakers, isConnected }: Props) {
                 >Unstake</Button>
               </Box>
 
-              <Box sx={{my: 4}} />
+              <Box sx={{ my: 4 }} />
 
               <Box width="100%" display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant="h6">Rewards</Typography>
 
                 <Box>
-                  <Typography textAlign="right" sx={{ textWrap: 'nowrap' }}>{staker.boostRewards[1]} {staker.tokens[0]?.symbol}</Typography>
-                  <Typography textAlign="right" sx={{ textWrap: 'nowrap' }}>{staker.boostRewards[0]} {staker.tokens[1]?.symbol}</Typography>
+                  <Typography
+                    textAlign="right"
+                    sx={{ textWrap: 'nowrap' }}
+                  >{staker.boostRewards[1]} {staker.tokens[0]?.symbol}</Typography>
+                  <Typography
+                    textAlign="right"
+                    sx={{ textWrap: 'nowrap' }}
+                  >{staker.boostRewards[0]} {staker.tokens[1]?.symbol}</Typography>
                 </Box>
               </Box>
 
-              <Box sx={{my: 4}} />
+              <Box sx={{ my: 4 }} />
 
               <Box display="flex" justifyContent="space-around" alignItems="center">
                 <Button

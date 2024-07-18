@@ -1,12 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import Big from 'big.js';
 import { useTheme, x } from '@xstyled/styled-components';
-import { NumericalInput } from '../components/StyledInput';
-import { CurrencySelector } from '../components/CurrencySelector';
 import { PrimaryButton } from '../components/PrimaryButton';
-import { SwapSection } from '../components/swap/SwapSection';
-import { InputPanel } from '../components/swap/InputPanel';
-import { Container } from '../components/swap/Container';
 import { getCurrencies, getCurrencyByAddress, getPairedCurrencies } from '../utils';
 import { useGetAmountsIn, useGetAmountsOut } from '../hooks/useGetAmountsOut';
 import { formatUnits, parseUnits } from 'viem';
@@ -20,15 +14,15 @@ import { useSnackbar } from 'notistack';
 import { useBalance } from '../hooks/useBalance';
 import { useDexAddresses } from '../hooks/useDexAddresses';
 import { useAccount, useBalance as useBalanceWagmi, useChainId } from 'wagmi';
-import { Currency, EthereumAddress, tokens } from '@lira-dao/web3-utils';
+import { Currency, EthereumAddress } from '@lira-dao/web3-utils';
 import { SelectCurrencyModal } from '../components/modal/SelectCurrencyModal';
 import { usePair } from '../hooks/usePair';
 import BigNumber from 'bignumber.js';
 import { useParams } from 'react-router-dom';
 import { useDexPairs } from '../hooks/useDexPairs';
 import { CurrencyInput } from '../components/swap/CurrencyInput';
-import { Price, useFetchPrices } from '../hooks/usePrices';
-import { Typography } from '@mui/material';
+import { useFetchPrices } from '../hooks/usePrices';
+import { SwapHeader } from '../components/swap/SwapHeader';
 
 
 export function Swap() {
@@ -312,9 +306,7 @@ export function Swap() {
 
   return (
     <x.div w="100%" maxWidth="480px" borderRadius="16px" padding={4}>
-      <Typography sx={{ typography: 'h3', mb: 4 }} fontWeight="bold" textAlign="center" color="white">
-        Swap
-      </Typography>
+      <SwapHeader title="Swap" showBack={!!params.pool} />
 
       <CurrencyInput
         balance={currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n}

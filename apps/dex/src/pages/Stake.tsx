@@ -12,6 +12,7 @@ import { SwapSection } from '../components/swap/SwapSection';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { useSnackbar } from 'notistack';
 import { useTokenStaker } from '../hooks/useTokenStaker';
+import { SwapHeader } from '../components/swap/SwapHeader';
 
 
 export function Stake() {
@@ -109,9 +110,7 @@ export function Stake() {
 
   return (
     <x.div w="100%" maxWidth="480px" padding={4}>
-      <x.div display="flex" justifyContent="center" mt={2}>
-        <x.p fontSize="3xl">{title}</x.p>
-      </x.div>
+      <SwapHeader title={title} />
 
       <SwapSection mt={6} mb={4}>
         <InputPanel>

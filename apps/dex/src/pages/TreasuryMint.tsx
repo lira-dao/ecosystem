@@ -20,6 +20,7 @@ import { useApprove } from '../hooks/useApprove';
 import { useAllowance } from '../hooks/useAllowance';
 import { useSnackbar } from 'notistack';
 import BigNumber from 'bignumber.js';
+import { SwapHeader } from '../components/swap/SwapHeader';
 
 
 enum TreasuryHeaderTab {
@@ -161,9 +162,7 @@ export function TreasuryMint() {
 
   return (
     <x.div w="100%" maxWidth="480px" borderRadius="16px" padding={4}>
-      <x.div display="flex" justifyContent="center" mt={2}>
-        <x.p fontSize="3xl">Treasury</x.p>
-      </x.div>
+      <SwapHeader title="Treasury" />
 
       <x.div display="flex" pt={8}>
         <StyledTabItem

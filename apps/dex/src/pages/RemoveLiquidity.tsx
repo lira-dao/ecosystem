@@ -16,6 +16,7 @@ import { useApprove } from '../hooks/useApprove';
 import { useRemoveLiquidity } from '../hooks/useRemoveLiquidity';
 import { useSnackbar } from 'notistack';
 import { useDexAddresses } from '../hooks/useDexAddresses';
+import { SwapHeader } from '../components/swap/SwapHeader';
 
 
 export function RemoveLiquidity() {
@@ -87,9 +88,7 @@ export function RemoveLiquidity() {
 
   return (
     <x.div w="100%" maxWidth="480px" padding={4}>
-      <x.div display="flex" justifyContent="center" mt={2}>
-        <x.p fontSize="3xl">Remove Liquidity</x.p>
-      </x.div>
+      <SwapHeader title="Remove Liquidity" />
 
       <SwapSection mt={6} mb={4}>
         <InputPanel>

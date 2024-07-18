@@ -22,7 +22,7 @@ export function Treasury() {
           paddingX: 2,
         }}
       >
-        <Typography sx={{ typography: 'h3', mb: 4 }} fontWeight="bold" color="white">
+        <Typography variant="h3" mb={4} color="white">
           Treasury Tokens
         </Typography>
 
