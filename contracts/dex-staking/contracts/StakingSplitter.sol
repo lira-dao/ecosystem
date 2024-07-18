@@ -56,7 +56,7 @@ contract StakingSplitter is Ownable2Step {
         rewards.tbs.liquidity = calculateReward(stakers[1], ITreasuryToken(tbs).rate(), tbsRewardRate);
         rewards.tbg.liquidity = calculateReward(stakers[2], ITreasuryToken(tbg).rate(), tbgRewardRate);
 
-        uint totalLdt = rewards.tbb.liquidity.ldtLiquidity + rewards.tbs.liquidity.ldtLiquidity + rewards.tbg.liquidity.ldtLiquidity;
+        uint totalLdt = rewards.tbb.liquidity.ldt + rewards.tbs.liquidity.ldt + rewards.tbg.liquidity.ldt;
 
         if (totalLdt > _ldt) {
             uint tbbLiquidity = rewards.tbb.liquidity.ldtLiquidity;

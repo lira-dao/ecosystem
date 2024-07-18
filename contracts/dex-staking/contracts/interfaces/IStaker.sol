@@ -8,15 +8,12 @@ interface IStaker {
         uint256 lastRewardRound;
     }
 
-    function rewardRoundsLength() external pure returns (uint256);
-
-    function totalStaked() external view returns (uint256);
-
-    function token() external view returns (address);
-
     function distributeRewards(uint256 rewardAmount1, uint256 rewardAmount2) external;
-
-    function stakers(address staker) external returns (Staker memory);
-
+    function getStakerAmount(address staker) external view returns (uint);
+    function pendingRewards(address user) external view returns (uint rewardAmount1, uint rewardAmount2);
+    function rewardRoundsLength() external pure returns (uint256);
+    function stakers(address staker) external view returns (Staker memory);
+    function token() external view returns (address);
+    function totalStaked() external view returns (uint256);
     function unstake(uint amount) external;
 }
