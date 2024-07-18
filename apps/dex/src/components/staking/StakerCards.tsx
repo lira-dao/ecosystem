@@ -109,8 +109,13 @@ export function StakerCards({ stakers, isConnected }: Props) {
               <Divider textAlign="left" sx={{ mt: 4, mb: 2 }}>BOOST</Divider>
 
               <Box display="flex" justifyContent="space-between">
-                <Typography>Balance</Typography>
-                <Typography>{staker.ldtBalance} LDT</Typography>
+                <Typography>My Boost</Typography>
+                <Typography>{staker.boostAmount} {staker.tokens[1]?.symbol}</Typography>
+              </Box>
+
+              <Box display="flex" justifyContent="space-between">
+                <Typography>Remaining Boost</Typography>
+                <Typography>{staker.remainingBoost} {staker.tokens[1]?.symbol}</Typography>
               </Box>
 
               <Box display="flex" justifyContent="space-between">
@@ -119,13 +124,8 @@ export function StakerCards({ stakers, isConnected }: Props) {
               </Box>
 
               <Box display="flex" justifyContent="space-between">
-                <Typography>My Boost</Typography>
-                <Typography>{staker.boostAmount} {staker.tokens[1]?.symbol}</Typography>
-              </Box>
-
-              <Box display="flex" justifyContent="space-between">
-                <Typography>Remaining Boost</Typography>
-                <Typography>{staker.remainingBoost} {staker.tokens[1]?.symbol}</Typography>
+                <Typography>Balance</Typography>
+                <Typography>{staker.ldtBalance} LDT</Typography>
               </Box>
 
               <Box sx={{ my: 4 }} />
