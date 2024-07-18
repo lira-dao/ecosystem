@@ -27,7 +27,7 @@ export function Layout() {
   return (
     <x.div display="flex" flexDirection="column" alignItems="center" minHeight="100vh">
       <Header />
-      <x.div ref={contentRef} w="100%" flexGrow={1} display="flex" alignItems="center" justifyContent="center" paddingBottom={isFooterFixed ? '24px' : '0px'}>
+      <x.div ref={contentRef} w="100%" flexGrow={1} display="flex" justifyContent="center" paddingBottom={isFooterFixed ? '24px' : '0px'}>
         <Outlet />
       </x.div>
       <Footer isFixed={isFooterFixed} />

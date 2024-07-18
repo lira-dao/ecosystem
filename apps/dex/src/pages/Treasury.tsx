@@ -1,8 +1,9 @@
 import { useAccount } from 'wagmi';
-import { Box } from '@mui/material';
-import { x } from '@xstyled/styled-components';
+import { Box, Typography } from '@mui/material';
 import { useTreasury } from '../hooks/useTreasury';
 import { TreasuryTable } from '../components/treasury/TreasuriesTable';
+import { muiDarkTheme } from '../theme/theme';
+import { ThemeProvider } from '@mui/material/styles';
 
 
 export function Treasury() {
@@ -10,14 +11,25 @@ export function Treasury() {
   const treasuries = useTreasury();
 
   return (
-    <x.div display="flex" w="100%" flexDirection="column" maxWidth="1024px" p={4}>
-      <x.div display="flex" alignItems="center" justifyContent="space-between">
-        <x.h1 fontSize="4xl">Treasury Tokens</x.h1>
-      </x.div>
+    <ThemeProvider theme={muiDarkTheme}>
+      <Box
+        sx={{
+          width: '100%',
+          maxWidth: '1200px',
+          display: 'flex',
+          flexDirection: 'column',
+          marginY: 4,
+          paddingX: 2,
+        }}
+      >
+        <Typography sx={{ typography: 'h3', mb: 4 }} fontWeight="bold" color="white">
+          Treasury Tokens
+        </Typography>
 
-      <Box mt={8}>
-        <TreasuryTable treasuries={treasuries} isConnected={isConnected} />
+        <Box>
+          <TreasuryTable treasuries={treasuries} isConnected={isConnected} />
+        </Box>
       </Box>
-    </x.div>
+    </ThemeProvider>
   );
 }

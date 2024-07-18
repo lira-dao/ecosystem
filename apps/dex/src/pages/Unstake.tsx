@@ -90,7 +90,7 @@ export function Unstake() {
           <Container>
             <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
               <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
-                <x.p color="gray155" userSelect="none">Deposit</x.p>
+                <x.p color="gray155" userSelect="none">Withdraw</x.p>
                 {insufficientBalance && <x.p color="red-400" userSelect="none">Insufficient balance</x.p>}
               </x.div>
 

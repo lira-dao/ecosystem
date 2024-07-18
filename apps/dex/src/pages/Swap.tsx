@@ -28,6 +28,7 @@ import { useParams } from 'react-router-dom';
 import { useDexPairs } from '../hooks/useDexPairs';
 import { CurrencyInput } from '../components/swap/CurrencyInput';
 import { Price, useFetchPrices } from '../hooks/usePrices';
+import { Typography } from '@mui/material';
 
 
 export function Swap() {
@@ -311,9 +312,9 @@ export function Swap() {
 
   return (
     <x.div w="100%" maxWidth="480px" borderRadius="16px" padding={4}>
-      <x.div display="flex" justifyContent="center" mt={2}>
-        <x.p fontSize="3xl">Swap</x.p>
-      </x.div>
+      <Typography sx={{ typography: 'h3', mb: 4 }} fontWeight="bold" textAlign="center" color="white">
+        Swap
+      </Typography>
 
       <CurrencyInput
         balance={currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n}
