@@ -5,10 +5,9 @@ import '@openzeppelin/contracts/access/Ownable2Step.sol';
 import '@lira-dao/treasury-tokens/contracts/interfaces/ITreasuryToken.sol';
 import './interfaces/IStaker.sol';
 import './libs/RewardsLibrary.sol';
-import 'hardhat/console.sol';
 
 /**
- * @title Staking Splitter V1
+ * @title Boosting Splitter V1
  * @author LIRA DAO Team
  * @custom:security-contact contact@liradao.org
  *
@@ -57,11 +56,7 @@ contract BoostingSplitter is Ownable2Step {
         rewards.tbs.liquidity = calculateReward(boosters[1], ITreasuryToken(tbs).rate(), tbsRewardRate);
         rewards.tbg.liquidity = calculateReward(boosters[2], ITreasuryToken(tbg).rate(), tbgRewardRate);
 
-        console.log('rewards.tbb', rewards.tbb.liquidity.ldtLiquidity, rewards.tbb.liquidity.tbLiquidity);
-        console.log('rewards.tbs', rewards.tbs.liquidity.ldtLiquidity, rewards.tbs.liquidity.tbLiquidity);
-        console.log('rewards.tbg', rewards.tbg.liquidity.ldtLiquidity, rewards.tbg.liquidity.tbLiquidity);
-
-        uint totalLdt = rewards.tbb.liquidity.ldtLiquidity + rewards.tbs.liquidity.ldtLiquidity + rewards.tbg.liquidity.ldtLiquidity;
+        uint totalLdt = rewards.tbb.liquidity.ldt + rewards.tbs.liquidity.ldt + rewards.tbg.liquidity.ldt;
 
         if (totalLdt > _ldt) {
             uint tbbLiquidity = rewards.tbb.liquidity.ldtLiquidity;
