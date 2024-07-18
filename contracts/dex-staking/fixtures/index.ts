@@ -209,7 +209,7 @@ export async function rewardSplitterV2Fixture() {
   await increaseTo(time + 86400);
 
   const farmSplitterFactory = await hre.ethers.getContractFactory('FarmingSplitter');
-  const farmSplitter = await farmSplitterFactory.deploy(
+  const farmingSplitter = await farmSplitterFactory.deploy(
     ldtAddress,
     tbbAddress,
     tbsAddress,
@@ -220,7 +220,7 @@ export async function rewardSplitterV2Fixture() {
       tbgFarmAddress,
     ],
   );
-  const farmSplitterAddress = await farmSplitter.getAddress();
+  const farmSplitterAddress = await farmingSplitter.getAddress();
 
   const stakingSplitterFactory = await hre.ethers.getContractFactory('StakingSplitter');
   const stakingSplitter = await stakingSplitterFactory.deploy(
@@ -316,7 +316,7 @@ export async function rewardSplitterV2Fixture() {
     deployer,
     distributor,
     distributorAddress,
-    farmSplitter,
+    farmingSplitter,
     farmSplitterAddress,
     ldt,
     ldtAddress,

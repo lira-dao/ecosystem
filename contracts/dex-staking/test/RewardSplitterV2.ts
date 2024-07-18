@@ -2,6 +2,7 @@ import { rewardSplitterV2Fixture } from '../fixtures';
 import { expect } from 'chai';
 import { parseUnits } from 'ethers';
 
+
 describe('RewardSplitterV2', () => {
   it('should have ldt address', async () => {
     const { rewardSplitter, ldtAddress } = await rewardSplitterV2Fixture();
@@ -67,9 +68,6 @@ describe('RewardSplitterV2', () => {
       tbg: await tbgPair.balanceOf(deployer),
     });
 
-    // @ts-ignore
-    await ldt.connect(ldtTeam).burn(await ldt.balanceOf(ldtTeam));
-
     console.log('team before', {
       ldt: await ldt.balanceOf(ldtTeam),
       tbb: await tbb.balanceOf(ldtTeam),
@@ -98,88 +96,86 @@ describe('RewardSplitterV2', () => {
     await tbgStaker.stake(parseUnits('1', 18));
     await tbgBooster.stake(parseUnits('50000', 18));
 
-    await expect(rewardSplitter.distributeRewards());
-    // .emit(rewardSplitter, 'DistributeRewards')
-    // .withArgs([
-    //   5_547_945_000_000_000_000_000_000n, // total
-    //   1_109_589_000_000_000_000_000_000n, // ldt 20%
-    //   4_438_356_000_000_000_000_000_000n, // tb 80%
-    //   [parseUnits('221917.8', 18), parseUnits('1775342.4', 18)], // farming
-    //   [parseUnits('221917.8', 18), parseUnits('554794.5', 18)], // staking
-    //   [parseUnits('221917.8', 18), parseUnits('554794.5', 18)], // booster
-    //   [parseUnits('110958.9', 18), parseUnits('443835.6', 18)], // team
-    // ])
-    // .emit(rewardSplitter, 'DistributeFarmingRewards')
-    // .withArgs(
-    //   [
-    //     [
-    //       [1999999999999999999936n, 1999999999999999999n, 999999999999999999968377n, 999999999999999999968n],
-    //       73_972_600_000_000_000_000_000n,
-    //       1999999999999999999n,
-    //     ],
-    //     [
-    //       [4999999999999999999500n, 499999999999999999n, 999999999999999999900000n, 99999999999999999990n],
-    //       73972600000000000000000n,
-    //       499999999999999999n,
-    //     ],
-    //     [
-    //       [9999999999999999996837n, 99999999999999999n, 999999999999999999683772n, 9999999999999999996n],
-    //       73972600000000000000000n,
-    //       99999999999999999n,
-    //     ],
-    //   ],
-    // )
-    // .emit(rewardSplitter, 'DistributeStakingRewards')
-    // .withArgs(
-    //   [
-    //     [
-    //       [parseUnits('1', 18), parseUnits('0.001', 18), parseUnits('500', 18), parseUnits('0.5', 18)],
-    //       parseUnits('1', 18),
-    //       parseUnits('0.001', 18),
-    //     ],
-    //     [
-    //       [parseUnits('25', 18), parseUnits('0.0025', 18), parseUnits('5000', 18), parseUnits('0.5', 18)],
-    //       parseUnits('25', 18),
-    //       parseUnits('0.0025', 18),
-    //     ],
-    //     [
-    //       [parseUnits('500', 18), parseUnits('0.005', 18), parseUnits('50000', 18), parseUnits('0.5', 18)],
-    //       parseUnits('500', 18),
-    //       parseUnits('0.005', 18),
-    //     ],
-    //   ],
-    // )
-    // .emit(rewardSplitter, 'DistributeBoostingRewards')
-    // .withArgs(
-    //   [
-    //     [
-    //       [parseUnits('1', 18), parseUnits('0.1', 18), parseUnits('50000', 18), parseUnits('50', 18)],
-    //       999,
-    //       888,
-    //     ],
-    //     [
-    //       [1, 2, 3, 4],
-    //       5,
-    //       6,
-    //     ],
-    //     [
-    //       [7, 8, 9, 10],
-    //       11,
-    //       12,
-    //     ],
-    //   ],
-    // )
-    // .emit(rewardSplitter, 'DistributeTeamRewards')
-    // .withArgs(
-    //   [
-    //     110958_900000000000000000n,
-    //     14_999999999999999999n,
-    //     5_999999999999999999n,
-    //     2219178000000000000n,
-    //   ],
-    // );
-
-    await ldt.burn(await ldt.balanceOf(deployer));
+    await expect(rewardSplitter.distributeRewards())
+      .emit(rewardSplitter, 'DistributeRewards')
+      .withArgs([
+        5_547_945_000_000_000_000_000_000n, // total
+        1_109_589_000_000_000_000_000_000n, // ldt 20%
+        4_438_356_000_000_000_000_000_000n, // tb 80%
+        [parseUnits('221917.8', 18), parseUnits('1775342.4', 18)], // farming
+        [parseUnits('221917.8', 18), parseUnits('554794.5', 18)], // staking
+        [parseUnits('221917.8', 18), parseUnits('554794.5', 18)], // booster
+        [parseUnits('110958.9', 18), parseUnits('443835.6', 18)], // team
+      ])
+      .emit(rewardSplitter, 'DistributeFarmingRewards')
+      .withArgs(
+        [
+          [
+            [1999999999999999999936n, 1999999999999999999n, 999999999999999999968377n, 999999999999999999968n],
+            73_972_600_000_000_000_000_000n,
+            1999999999999999999n,
+          ],
+          [
+            [4999999999999999999500n, 499999999999999999n, 999999999999999999900000n, 99999999999999999990n],
+            73972600000000000000000n,
+            499999999999999999n,
+          ],
+          [
+            [9999999999999999996837n, 99999999999999999n, 999999999999999999683772n, 9999999999999999996n],
+            73972600000000000000000n,
+            99999999999999999n,
+          ],
+        ],
+      )
+      .emit(rewardSplitter, 'DistributeStakingRewards')
+      .withArgs(
+        [
+          [
+            [parseUnits('1', 18), parseUnits('0.001', 18), parseUnits('500', 18), parseUnits('0.5', 18)],
+            parseUnits('1', 18),
+            parseUnits('0.001', 18),
+          ],
+          [
+            [parseUnits('25', 18), parseUnits('0.0025', 18), parseUnits('5000', 18), parseUnits('0.5', 18)],
+            parseUnits('25', 18),
+            parseUnits('0.0025', 18),
+          ],
+          [
+            [parseUnits('500', 18), parseUnits('0.005', 18), parseUnits('50000', 18), parseUnits('0.5', 18)],
+            parseUnits('500', 18),
+            parseUnits('0.005', 18),
+          ],
+        ],
+      )
+      .emit(rewardSplitter, 'DistributeBoostingRewards')
+      .withArgs(
+        [
+          [
+            [parseUnits('1'), parseUnits('0.001'), parseUnits('500', 18), parseUnits('0.5')],
+            parseUnits('1'),
+            parseUnits('0.001'),
+          ],
+          [
+            [parseUnits('25', 18), parseUnits('0.0025', 18), parseUnits('5000', 18), parseUnits('0.5', 18)],
+            parseUnits('25', 18),
+            parseUnits('0.0025', 18),
+          ],
+          [
+            [parseUnits('500', 18), parseUnits('0.005', 18), parseUnits('50000', 18), parseUnits('0.5', 18)],
+            parseUnits('500', 18),
+            parseUnits('0.005', 18),
+          ],
+        ],
+      )
+      .emit(rewardSplitter, 'DistributeTeamRewards')
+      .withArgs(
+        [
+          30554999999999999995521n,
+          10004999999999999999n,
+          1004999999999999999n,
+          104999999999999999n,
+        ],
+      );
 
     console.log('team after', {
       ldt: await ldt.balanceOf(ldtTeam),
@@ -195,23 +191,77 @@ describe('RewardSplitterV2', () => {
       tbg: await tbg.balanceOf(deployer),
     });
 
-    // await tbbFarm.harvest();
-    // await tbsFarm.harvest();
-    // await tbgFarm.harvest();
-
     await tbbStaker.harvest();
-    // await tbsStaker.harvest();
-    // await tbgStaker.harvest();
-
     await tbbBooster.harvest();
 
-    await ldt.burn(await ldt.balanceOf(deployer));
-    await tbb.transfer(ldtTeam, await tbb.balanceOf(deployer));
+    await tbsStaker.harvest();
+    await tbsBooster.harvest();
 
-    console.log('boost staker', await tbbBooster.stakers(deployer))
+    await tbgStaker.harvest();
+    await tbgBooster.harvest();
 
     await tbbBooster.unstake(parseUnits('500', 18));
     await tbbStaker.unstake(parseUnits('1', 18));
+
+    await tbsBooster.unstake(parseUnits('5000', 18));
+    await tbsStaker.unstake(parseUnits('1', 18));
+
+    await tbgBooster.unstake(parseUnits('50000', 18));
+    await tbgStaker.unstake(parseUnits('1', 18));
+
+    await tbb.transfer(ldtTeam, await tbb.balanceOf(deployer));
+    await tbs.transfer(ldtTeam, await tbs.balanceOf(deployer));
+    await tbg.transfer(ldtTeam, await tbg.balanceOf(deployer));
+
+    await tbb.mint(deployer, parseUnits('20', 18));
+    await tbbStaker.stake(parseUnits('20', 18));
+    await tbbBooster.stake(parseUnits('10000', 18));
+
+    await tbs.mint(deployer, parseUnits('20', 18));
+    await tbsStaker.stake(parseUnits('20', 18));
+    await tbsBooster.stake(parseUnits('100000', 18));
+
+    await tbg.mint(deployer, parseUnits('1', 18));
+    await tbgStaker.stake(parseUnits('1', 18));
+    await tbgBooster.stake(parseUnits('50000', 18));
+
+    // 160000
+    // 710000
+    // 221917
+
+    await expect(rewardSplitter.distributeRewards())
+      .emit(rewardSplitter, 'DistributeRewards')
+      .withArgs([
+        5_547_945_000_000_000_000_000_000n, // total
+        1_109_589_000_000_000_000_000_000n, // ldt 20%
+        4_438_356_000_000_000_000_000_000n, // tb 80%
+        [parseUnits('221917.8', 18), parseUnits('1775342.4', 18)], // farming
+        [parseUnits('221917.8', 18), parseUnits('554794.5', 18)], // staking
+        [parseUnits('221917.8', 18), parseUnits('554794.5', 18)], // booster
+        [parseUnits('110958.9', 18), parseUnits('443835.6', 18)], // team
+      ])
+      .emit(rewardSplitter, 'DistributeStakingRewards')
+      .withArgs(
+        [
+          [
+            [parseUnits('20'), parseUnits('0.02'), parseUnits('10000'), parseUnits('10')],
+            20000000000000000000n,
+            20000000000000000n,
+          ],
+          [
+            [500000000000000000000n, 50000000000000000n, 100000000000000000000000n, 10000000000000000000n],
+            500000000000000000000n,
+            50000000000000000n,
+          ],
+          [
+            [500000000000000000000n, 5000000000000000n, 50000000000000000000000n, 500000000000000000n],
+            500000000000000000000n,
+            5000000000000000n,
+          ],
+        ],
+      );
+
+    console.log('boost staker', await tbbBooster.stakers(deployer));
 
     // expect(await ldt.balanceOf(deployer)).eq(
     //   parseUnits('1', 18) + parseUnits('25', 18) + parseUnits('500', 18),
@@ -232,6 +282,49 @@ describe('RewardSplitterV2', () => {
 
     console.log('balance distributorAddress', await ldt.balanceOf(distributorAddress));
     console.log('balance rewardSplitterAddress', await ldt.balanceOf(rewardSplitterAddress));
+  });
+
+  it('should unstake', async () => {
+    const {
+      rewardSplitter,
+      rewardSplitterAddress,
+      ldt,
+      ldtTeam,
+      distributorAddress,
+      tbb,
+      tbbFarmAddress,
+      tbbFarm,
+      tbbPair,
+      tbs,
+      tbsFarmAddress,
+      tbsPair,
+      tbsFarm,
+      tbg,
+      tbgFarmAddress,
+      tbgPair,
+      tbgFarm,
+      deployer,
+      tbbStaker,
+      tbsStaker,
+      tbgStaker,
+      tbbBooster,
+      tbsBooster,
+      tbgBooster,
+    } = await rewardSplitterV2Fixture();
+
+
+    await tbb.mint(deployer, parseUnits('1', 18));
+    await tbbStaker.stake(parseUnits('1', 18));
+
+    expect(await tbbBooster.getMaxBoost(deployer)).eq(parseUnits('500'));
+
+    await tbbBooster.stake(parseUnits('250', 18));
+
+    expect(await tbbBooster.getMaxBoost(deployer)).eq(parseUnits('250'));
+
+    await expect(tbbStaker.unstake(parseUnits('0.5'))).not.reverted;
+
+    await expect(tbbStaker.unstake(parseUnits('0.5'))).revertedWith('INVALID_BOOST_AMOUNT');
   });
 
   it('owner should recover tbb ownership', async () => {
