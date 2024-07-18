@@ -1,50 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useAccount, useBalance as useBalanceWagmi, useChainId } from 'wagmi';
-import { erc20Abi, EthereumAddress } from '@lira-dao/web3-utils';
 import { Box, Card, CardContent, Typography, Grid, ToggleButton, ToggleButtonGroup, useMediaQuery, useTheme } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { PieChart } from '@mui/x-charts';
-import { SparkLineChart } from '@mui/x-charts/SparkLineChart';
+// import { SparkLineChart } from '@mui/x-charts/SparkLineChart';
 import { getCurrencies, getCurrencyByAddress, getPairedCurrencies } from '../utils';
 import { useFarmingStakers } from '../hooks/useFarmingStakers';
+import { useTokenBalances } from '../hooks/useTokenBalances';
 import { usePools } from '../hooks/usePools';
 import { useFetchPrices } from '../hooks/usePrices';
-// import { useTokenBalances } from '../hooks/useTokenBalances';
 import { MyFarmingTable } from '../components/portfolio/MyFarmingTable';
 import { MyPoolsTable } from '../components/portfolio/MyPoolsTable';
 import { muiDarkTheme, theme } from '../theme/theme';
-import { useBalance } from '../hooks/useBalance';
-import { useTokenBalances } from '../hooks/useTokenBalances';
-// import { useTokenBalance } from '../hooks/useTokenBalances';
 
-
-// const useTokenBalances = (account: string | null | undefined, tokens: Token[]) => {
-//   const provider = useProvider();
-//   const [balances, setBalances] = useState<Balance[]>([]);
-
-//   useEffect(() => {
-//     const loadBalances = async () => {
-//       const balancesData = await Promise.all(tokens.map(async token => {
-//         if (token.address === 'eth') {
-//           const balance = await provider?.getBalance(account!);
-//           return { name: token.name, value: parseFloat(BigNumber.from(balance).toString()) / 1e18 }; // Convert from wei to ETH
-//         } else {
-//           const contract = new Contract(token.address, erc20Abi, provider);
-//           const balance = await contract.balanceOf(account);
-//           const decimals = await contract.decimals();
-//           return { name: token.name, value: parseFloat(balance.toString()) / Math.pow(10, decimals) };
-//         }
-//       }));
-//       setBalances(balancesData);
-//     };
-
-//     if (account && provider) {
-//       loadBalances();
-//     }
-//   }, [account, tokens, provider]);
-
-//   return balances;
-// };
 
 // export type AnchorX = 'left' | 'right' | 'middle';
 // export type AnchorY = 'top' | 'bottom' | 'middle';
@@ -75,8 +43,6 @@ export function MyPortfolio() {
   const { data: accountBalance } = useBalanceWagmi({ 
     address: account.address
   });
-
-  const [balances, setBalances] = useState([]);
   
   // balance in eth
   console.log('🚀 ~ accountBalance', accountBalance);
@@ -90,16 +56,11 @@ export function MyPortfolio() {
   //   }
   // }, [accountBalance.data?.value, balanceA.data, currencyA.decimals, currencyA.isNative, firstValue]);
   const tokens = getCurrencies(chainId)
-  const {
-    balances: tokensBalance,
-    isLoading: isLoadingTokensBalance,
-    error: isErrorTokensBalance
-  } = useTokenBalances();
+  const { balances: tokensBalance, isLoading: isLoadingTokensBalance, error: errorTokensBalance } = useTokenBalances();
   console.log("🚀 ~ MyPortfolio ~ tokenBalances:", tokensBalance)
 
   useEffect(() => {
     console.log("tokens", tokens, tokensBalance);
-
   }, [tokens, tokensBalance]);
 
   // console.log("🚀 ~ MyPortfolio ~ balances:", tokenBalances.queryKey)
@@ -161,13 +122,6 @@ export function MyPortfolio() {
             MY Portfolio
           </Typography>
         </Box>
-
-        <div>
-          <h3>Token Balances:</h3>
-          {tokensBalance.map((token: any, index) => (
-            <p key={index}>{token.symbol}: {token.balance.toString()}</p>
-          ))}
-        </div>
 
         <Grid container spacing={2}>
           <Grid item xs={12} md={4}>
@@ -265,80 +219,116 @@ export function MyPortfolio() {
                   <Grid container spacing={2}>
                     <Grid item xs={12} sx={{ mt: 1 }}>
                       {selectedView === 'liquidity' && (
-                        <Box sx={{
-                          display: 'flex',
-                          alignContent: 'center',
-                          alignItems: 'last baseline',
-                          justifyContent: 'space-between',
-                        }}>
-                          <Typography variant="body2">ETH Value of Your LPs.</Typography>
-                          <ToggleButtonGroup
-                            color="primary"
-                            value={liquidityTimeFrame}
-                            onChange={handleLiquidityTimeFrameChange}
-                            size='small'
-                            exclusive
-                          >
-                            <ToggleButton value="7days">7 Days</ToggleButton>
-                            <ToggleButton value="1month">1 Month</ToggleButton>
-                            <ToggleButton value="3months">3 Months</ToggleButton>
-                            <ToggleButton value="6months">6 Months</ToggleButton>
-                            <ToggleButton value="1year">1 Year</ToggleButton>
-                            <ToggleButton value="all">All Time</ToggleButton>
-                          </ToggleButtonGroup>
+                        <>
+                          <Box sx={{
+                            display: 'flex',
+                            alignContent: 'center',
+                            alignItems: 'last baseline',
+                            justifyContent: 'space-between',
+                          }}>
+                            <Typography variant="body2">ETH Value of Your LPs.</Typography>
+                            <ToggleButtonGroup
+                              color="primary"
+                              value={liquidityTimeFrame}
+                              onChange={handleLiquidityTimeFrameChange}
+                              size='small'
+                              exclusive
+                            >
+                              <ToggleButton value="7days">7 Days</ToggleButton>
+                              <ToggleButton value="1month">1 Month</ToggleButton>
+                              <ToggleButton value="3months">3 Months</ToggleButton>
+                              <ToggleButton value="6months">6 Months</ToggleButton>
+                              <ToggleButton value="1year">1 Year</ToggleButton>
+                              <ToggleButton value="all">All Time</ToggleButton>
+                            </ToggleButtonGroup>
 
-                          {/* <Box sx={{ flexGrow: 1 }}>
-                            <SparkLineChart data={[2, 8, 1, 3, 7, 5, 8, 6, 7, 2, 1]} height={100} />
-                          </Box> */}
-                        </Box>
+                            {/* <Box sx={{ flexGrow: 1 }}>
+                              <SparkLineChart data={[1, 4, 2, 5, 7, 4, 6]} height={100} />
+                            </Box> */}
+                          </Box>
+                          {isConnected && (
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                height: 450,
+                                width: '100%'
+                              }}
+                            >
+                              <Typography variant="body2" color="white">No data to show</Typography>
+                            </Box>
+                          )}
+                        </>
                       )}
                       {selectedView === 'farming' && (
-                        <Typography variant="body2">ADA value of your total earned farming rewards for all time per epoch.</Typography>
+                        <>
+                          <Typography variant="body2"  marginY={1}>ADA value of your total earned farming rewards for all time per epoch.</Typography>
+                          {isConnected && (
+                            <Box
+                              sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                height: 450,
+                                width: '100%'
+                              }}
+                            >
+                              <Typography variant="body2" color="white">No data to show</Typography>
+                            </Box>
+                          )}
+                        </>
                       )}
                       {selectedView === 'holdings' && (
-                        <Box sx={{
-                          display: 'flex',
-                          alignContent: 'center',
-                          alignItems: 'last baseline',
-                          justifyContent: 'space-between',
-                        }}>
-                          {/* <Typography variant="h6">Top Holdings Prices Graphs</Typography> */}
-                          <Typography variant="body2">Your top tokens price development over time.</Typography>
-                          <ToggleButtonGroup
-                            color="primary"
-                            value={holdingsTimeFrame}
-                            onChange={handleHoldingsTimeFrameChange}
-                            size='small'
-                            exclusive
-                          >
-                            <ToggleButton value="7days">7 Days</ToggleButton>
-                            <ToggleButton value="1month">1 Month</ToggleButton>
-                            <ToggleButton value="3months">3 Months</ToggleButton>
-                            <ToggleButton value="6months">6 Months</ToggleButton>
-                            <ToggleButton value="1year">1 Year</ToggleButton>
-                            <ToggleButton value="all">All Time</ToggleButton>
-                          </ToggleButtonGroup>
+                        <>
+                          <Box sx={{
+                            display: 'flex',
+                            alignContent: 'center',
+                            alignItems: 'last baseline',
+                            justifyContent: 'space-between',
+                          }}>
+                            {/* <Typography variant="h6">Top Holdings Prices Graphs</Typography> */}
+                            <Typography variant="body2">Your top tokens price development over time.</Typography>
+                            <ToggleButtonGroup
+                              color="primary"
+                              value={holdingsTimeFrame}
+                              onChange={handleHoldingsTimeFrameChange}
+                              size='small'
+                              exclusive
+                            >
+                              <ToggleButton value="7days">7 Days</ToggleButton>
+                              <ToggleButton value="1month">1 Month</ToggleButton>
+                              <ToggleButton value="3months">3 Months</ToggleButton>
+                              <ToggleButton value="6months">6 Months</ToggleButton>
+                              <ToggleButton value="1year">1 Year</ToggleButton>
+                              <ToggleButton value="all">All Time</ToggleButton>
+                            </ToggleButtonGroup>
 
-                          {/* <Box sx={{ flexGrow: 1 }}>
-                            <SparkLineChart data={[1, 4, 2, 5, 7, 4, 6]} height={100} />
-                          </Box> */}
-                        </Box>
+                            {/* <Box sx={{ flexGrow: 1 }}>
+                              <SparkLineChart data={[1, 4, 2, 5, 7, 4, 6]} height={100} />
+                            </Box> */}
+                          </Box>
+                          {/* TODO: move in wallet overview page */}
+                          {isConnected && (
+                            <Box
+                              sx={{
+                                height: 450,
+                                width: '100%'
+                              }}
+                            >
+                              <Typography variant="h6" mt={1} mb={1}>Tokens Balance</Typography>
+
+                              {tokensBalance && tokensBalance.map((crypto, index) => (
+                                // ${parseFloat(crypto.price).toFixed(2)} USD
+                                <Typography key={index} variant="body2">{crypto.symbol} {crypto?.balance?.toString()}</Typography>
+                              ))}
+                            </Box>
+                          )}
+                        </>
                       )}
                     </Grid>
                   </Grid>
                 )}
-
-                {/* {!isConnected && (
-                  <Box sx={{
-                    display: 'flex',
-                    // alignContent: 'center',
-                    alignItems: 'last baseline',
-                    justifyContent: 'space-between',
-                    width: '100%'
-                  }}>
-                    <Typography variant="body2">No data to show</Typography>
-                  </Box>
-                )} */}
 
                 {!isConnected && (
                   <Box
@@ -364,8 +354,10 @@ export function MyPortfolio() {
           <Grid item xs={12} sm={4} md={3}>
             <Card>
               <CardContent>
-                <Typography variant="h4">Your Farms</Typography>
-                <MyFarmingTable farms={farms} isConnected={isConnected} />
+                <Typography variant="h5" gutterBottom>CoinMarketCap Prices</Typography>
+                {pricesData && pricesData.map((crypto, index) => (
+                  <Typography key={index} variant="body2">{`1 ${crypto.symbol} = ${parseFloat(crypto.price).toFixed(2)} USD`}</Typography>
+                ))}
               </CardContent>
             </Card>
           </Grid>
@@ -373,12 +365,8 @@ export function MyPortfolio() {
           <Grid item xs={12} sm={8} md={9}>
             <Card>
               <CardContent>
-                {/* <Typography variant="h4">Your Farms</Typography> */}
-
-                <Typography variant="h4">Wallet Overview</Typography>
-                {pricesData && pricesData.map((crypto, index) => (
-                  <Typography key={index} variant="body2">{`1 ${crypto.symbol} = ${parseFloat(crypto.price).toFixed(2)} USD`}</Typography>
-                ))}
+                <Typography variant="h4">Your Farms</Typography>
+                <MyFarmingTable farms={farms} isConnected={isConnected} />
               </CardContent>
             </Card>
           </Grid>
@@ -393,10 +381,10 @@ export function MyPortfolio() {
           </Grid>
 
           {/* {tokenBalances.map((balance) => (
-                    <Typography key={balance.symbol}>
-                      {balance.symbol}: {balance.amount}
-                    </Typography>
-                  ))} */}
+            <Typography key={balance.symbol}>
+              {balance.symbol}: {balance.amount}
+            </Typography>
+          ))} */}
 
           <Grid item xs={12}>
             <Box>
@@ -405,44 +393,39 @@ export function MyPortfolio() {
               </Typography>
             </Box>
             
-            {/* <Grid item xs={12}>
-              <Typography variant="h4" color="white" gutterBottom>
-                Your Liquidity
-              </Typography>
-            </Grid> */}
             <Grid container spacing={4}>
               <Grid item xs={12} sm={4} md={3}>
-                <Card style={{ backgroundColor: 'blue', marginBottom: '8px' }}>
+                <Card style={{ marginBottom: '8px' }}>
                   <CardContent>
                     <Typography variant="body1" gutterBottom>
-                      TOTAL LIQUIDITY (not in farms, not in staking)
+                      TOTAL LIQUIDITY (info: not in farms, not in staking)
                     </Typography>
                     <Typography variant="body1" fontWeight="bold" gutterBottom>
                       ~$0.00 - No data available
                     </Typography>
                   </CardContent>
                 </Card>
-                <Card style={{ backgroundColor: 'rebeccapurple', marginBottom: '8px' }}>
+                <Card style={{ marginBottom: '8px' }}>
                   <CardContent>
                     <Typography variant="body1" gutterBottom>
-                      TOTAL LIQUIDITY NOT IN FARMS: (liquidity + LP)
+                      TOTAL LIQUIDITY NOT IN FARMS: (info: liquidity + LP)
                     </Typography>
                     <Typography variant="body1" fontWeight="bold" gutterBottom>
                       -
                     </Typography>
                   </CardContent>
                 </Card>
-                <Card >
+                <Card style={{ marginBottom: '8px' }}>
                   <CardContent>
                     <Typography variant="body1" gutterBottom>
-                      TOTAL LP NOT IN FARMS: (LP)
+                      TOTAL LP NOT IN FARMS: (info: LP)
                     </Typography>
                     <Typography variant="body1" fontWeight="bold" gutterBottom>
                       -
                     </Typography>
                   </CardContent>
                 </Card>
-                <Card style={{ backgroundColor: 'rebeccapurple' }}>
+                <Card style={{ marginBottom: '8px' }}>
                   <CardContent>
                     <Typography variant="body1" gutterBottom>
                       ACTIVE LIQUIDITY POSITIONS:

@@ -25,16 +25,21 @@ export function useTokenBalances() {
 
   console.log(tokens);
 
-  const proofbalances = data ? tokens.map((token, index) => ({
-    symbol: token.symbol,
-    balance: data[index] ? data[index].result : 0n,
-  })) : [];
-  console.log("🚀 ~ proofbalances ~ proofbalances:", proofbalances)
+  const _balances = data ? tokens.map((token, index) => {
+    if (token.symbol !== 'ETH') {
+      return {
+        symbol: token.symbol,
+        balance: data[index] ? data[index].result : 0n,
+      }
+    }
+  }) : [];
+  console.log("🚀 ~ _balances:", _balances)
 
   const balances = data ? tokens.map((token, index) => ({
     symbol: token.symbol,
     balance: data[index] ? data[index].result : 0n,
   })) : [];
+  console.log("🚀 ~ balances ~ balances:", balances)
 
   return {
     balances,
