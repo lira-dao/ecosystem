@@ -5,6 +5,7 @@ import '@openzeppelin/contracts/access/Ownable.sol';
 import '@openzeppelin/contracts/utils/ReentrancyGuard.sol';
 import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
+import '@lira-dao/treasury-tokens/contracts/interfaces/ITreasuryToken.sol';
 import './interfaces/IStaker.sol';
 
 /**
@@ -22,7 +23,7 @@ contract TokenStaker is Ownable, ReentrancyGuard {
         uint256 lastRewardRound;
     }
 
-    IERC20 public token;
+    address public token;
     IERC20 public rewardToken1;
     IERC20 public rewardToken2;
 
@@ -38,7 +39,7 @@ contract TokenStaker is Ownable, ReentrancyGuard {
     event Unstake(address wallet, uint256 amount);
     event Harvest(address wallet, uint256 amountToken1, uint256 amountToken2);
 
-    constructor(IERC20 _token, IERC20 _rewardToken1, IERC20 _rewardToken2) Ownable(msg.sender) {
+    constructor(address _token, IERC20 _rewardToken1, IERC20 _rewardToken2) Ownable(msg.sender) {
         token = _token;
         rewardToken1 = _rewardToken1;
         rewardToken2 = _rewardToken2;
@@ -55,23 +56,27 @@ contract TokenStaker is Ownable, ReentrancyGuard {
 
         totalStaked += _amount;
 
-        token.safeTransferFrom(msg.sender, address(this), _amount);
+        IERC20(token).safeTransferFrom(msg.sender, address(this), _amount);
 
         emit Stake(msg.sender, _amount);
     }
 
     function unstake(uint _amount) external nonReentrant {
         Staker storage staker = stakers[msg.sender];
+
         require(staker.lastRewardRound == rewardRounds.length, 'PENDING_REWARDS');
         require(_amount <= staker.amount, 'INVALID_AMOUNT');
 
-        require(IStaker(boosterAddress).stakers(msg.sender).lastRewardRound == IStaker(boosterAddress).rewardRoundsLength(), 'PENDING_BOOST_REWARDS');
-        require(IStaker(boosterAddress).stakers(msg.sender).amount == 0, 'BOOST_ACTIVE');
+        (uint reward0, uint reward1) = IStaker(boosterAddress).pendingRewards(msg.sender);
+
+        require(reward0 + reward1 == 0, 'PENDING_BOOST_REWARDS');
+
+        require(IStaker(boosterAddress).stakers(msg.sender).amount <= (staker.amount - _amount) * (ITreasuryToken(token).rate() / 2), 'INVALID_BOOST_AMOUNT');
 
         staker.amount -= _amount;
         totalStaked -= _amount;
 
-        token.safeTransfer(msg.sender, _amount);
+        IERC20(token).safeTransfer(msg.sender, _amount);
 
         emit Unstake(msg.sender, _amount);
     }
@@ -147,12 +152,5 @@ contract TokenStaker is Ownable, ReentrancyGuard {
         require(tokenAddress != rewardToken2, 'CANNOT_WITHDRAW_LOCKED_TOKEN');
 
         IERC20(tokenAddress).safeTransfer(owner(), IERC20(tokenAddress).balanceOf(address(this)));
-    }
-
-    // THIS FUNCTION IS FOR TESTING ONLY, REMOVE IT BEFORE MAINNET DEPLOY
-    function empty() public onlyOwner {
-        token.transfer(owner(), token.balanceOf(address(this)));
-        rewardToken1.transfer(owner(), rewardToken1.balanceOf(address(this)));
-        rewardToken2.transfer(owner(), rewardToken2.balanceOf(address(this)));
     }
 }
