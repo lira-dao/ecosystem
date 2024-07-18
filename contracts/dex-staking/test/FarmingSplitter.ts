@@ -101,6 +101,5 @@ describe('FarmingSplitter', () => {
     const { farmingSplitter } = await rewardSplitterV2Fixture();
 
     const rewards = await farmingSplitter.calculate(parseUnits('221917.8'), parseUnits('1775342.4'));
-    console.log('rewards', rewards);
   });
 });

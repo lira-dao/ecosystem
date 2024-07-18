@@ -105,7 +105,6 @@ export function useTokenStakers(): Staker[] {
       args: [account.address],
     })),
   });
-  console.log('maxBoostAmounts', boosters, maxBoostAmounts);
 
   const rewards = useReadContracts({
     contracts: rewardsContracts,
