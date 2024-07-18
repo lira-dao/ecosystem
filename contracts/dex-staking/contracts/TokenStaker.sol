@@ -147,7 +147,7 @@ contract TokenStaker is Ownable, ReentrancyGuard {
      * @param tokenAddress ERC20 address, cannot be the staked token address
      */
     function emergencyWithdraw(IERC20 tokenAddress) public onlyOwner {
-        require(tokenAddress != token, 'CANNOT_WITHDRAW_LOCKED_TOKEN');
+        require(tokenAddress != IERC20(token), 'CANNOT_WITHDRAW_LOCKED_TOKEN');
         require(tokenAddress != rewardToken1, 'CANNOT_WITHDRAW_LOCKED_TOKEN');
         require(tokenAddress != rewardToken2, 'CANNOT_WITHDRAW_LOCKED_TOKEN');
 
