@@ -46,7 +46,10 @@ contract TokenStaker is Ownable, ReentrancyGuard {
     }
 
     function stake(uint _amount) external nonReentrant {
+        require(_amount > 0, 'INVALID_AMOUNT');
+
         Staker storage staker = stakers[msg.sender];
+
         require(staker.amount == 0 || staker.lastRewardRound == rewardRounds.length, 'PENDING_REWARDS');
 
         staker.amount += _amount;
@@ -60,6 +63,8 @@ contract TokenStaker is Ownable, ReentrancyGuard {
     }
 
     function unstake(uint _amount) external nonReentrant {
+        require(_amount > 0, 'INVALID_AMOUNT');
+
         Staker storage staker = stakers[msg.sender];
 
         require(staker.lastRewardRound == rewardRounds.length, 'PENDING_REWARDS');

@@ -46,6 +46,7 @@ contract BoostingStaker is Ownable, ReentrancyGuard {
     }
 
     function stake(uint _amount) external nonReentrant {
+        require(_amount > 0, 'INVALID_AMOUNT');
         require(IStaker(stakerAddress).stakers(msg.sender).amount > 0, 'MINIMUM_BOOST_AMOUNT');
 
         IStaker.Staker storage staker = stakers[msg.sender];
@@ -65,6 +66,8 @@ contract BoostingStaker is Ownable, ReentrancyGuard {
     }
 
     function unstake(uint _amount) external nonReentrant {
+        require(_amount > 0, 'INVALID_AMOUNT');
+
         IStaker.Staker storage staker = stakers[msg.sender];
 
         require(staker.lastRewardRound == rewardRounds.length, 'PENDING_BOOST_REWARDS');
