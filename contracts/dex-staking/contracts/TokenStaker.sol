@@ -46,15 +46,13 @@ contract TokenStaker is Ownable, ReentrancyGuard {
     }
 
     function stake(uint _amount) external nonReentrant {
-        require(_amount >= 10 ** 18, 'MINIMUM_STAKE_AMOUNT');
-
         Staker storage staker = stakers[msg.sender];
         require(staker.amount == 0 || staker.lastRewardRound == rewardRounds.length, 'PENDING_REWARDS');
 
         staker.amount += _amount;
-        staker.lastRewardRound = rewardRounds.length;
-
         totalStaked += _amount;
+
+        require(staker.amount >= 10 ** 18, 'MINIMUM_STAKE_AMOUNT');
 
         IERC20(token).safeTransferFrom(msg.sender, address(this), _amount);
 
