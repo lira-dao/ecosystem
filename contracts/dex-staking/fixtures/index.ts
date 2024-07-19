@@ -2,6 +2,7 @@ import hre from 'hardhat';
 import { dexRouterFixture } from '@lira-dao/dex-periphery/fixtures';
 import { tokenDistributorFactory } from '@lira-dao/token-distributor/fixtures';
 import { increaseTo } from '@nomicfoundation/hardhat-network-helpers/dist/src/helpers/time';
+import { parseUnits } from 'ethers';
 
 
 export async function lpStakerFixture() {
@@ -352,5 +353,74 @@ export async function rewardSplitterV2Fixture() {
     tbsStakerAddress,
     teamSplitter,
     teamSplitterAddress,
+  };
+}
+
+export async function rewardSplitterV2FixtureWithStake() {
+  const {
+    deployer,
+    tbb,
+    tbbBooster,
+    tbbFarm,
+    tbbFarmAddress,
+    tbbPair,
+    tbbStaker,
+    tbg,
+    tbgBooster,
+    tbgFarm,
+    tbgFarmAddress,
+    tbgPair,
+    tbgStaker,
+    tbs,
+    tbsBooster,
+    tbsFarm,
+    tbsFarmAddress,
+    tbsPair,
+    tbsStaker,
+    ...splitter
+  } = await rewardSplitterV2Fixture();
+
+  await tbbPair.approve(tbbFarmAddress, await tbbPair.balanceOf(deployer));
+  await tbbFarm.stake(await tbbPair.balanceOf(deployer));
+
+  await tbsPair.approve(tbsFarmAddress, await tbsPair.balanceOf(deployer));
+  await tbsFarm.stake(await tbsPair.balanceOf(deployer));
+
+  await tbgPair.approve(tbgFarmAddress, await tbgPair.balanceOf(deployer));
+  await tbgFarm.stake(await tbgPair.balanceOf(deployer));
+
+  await tbb.mint(deployer, parseUnits('1', 18));
+  await tbbStaker.stake(parseUnits('1', 18));
+  await tbbBooster.stake(parseUnits('500', 18));
+
+  await tbs.mint(deployer, parseUnits('1', 18));
+  await tbsStaker.stake(parseUnits('1', 18));
+  await tbsBooster.stake(parseUnits('5000', 18));
+
+  await tbg.mint(deployer, parseUnits('1', 18));
+  await tbgStaker.stake(parseUnits('1', 18));
+  await tbgBooster.stake(parseUnits('50000', 18));
+
+  return {
+    ...splitter,
+    deployer,
+    tbb,
+    tbbBooster,
+    tbbFarm,
+    tbbFarmAddress,
+    tbbPair,
+    tbbStaker,
+    tbg,
+    tbgBooster,
+    tbgFarm,
+    tbgFarmAddress,
+    tbgPair,
+    tbgStaker,
+    tbs,
+    tbsBooster,
+    tbsFarm,
+    tbsFarmAddress,
+    tbsPair,
+    tbsStaker,
   };
 }

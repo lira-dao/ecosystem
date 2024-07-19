@@ -1,4 +1,4 @@
-import { rewardSplitterV2Fixture } from '../fixtures';
+import { rewardSplitterV2Fixture, rewardSplitterV2FixtureWithStake } from '../fixtures';
 import { expect } from 'chai';
 import { parseUnits } from 'ethers';
 
@@ -98,8 +98,32 @@ describe('FarmingSplitter', () => {
   });
 
   it('should calculate', async () => {
-    const { farmingSplitter } = await rewardSplitterV2Fixture();
+    const { farmingSplitter } = await rewardSplitterV2FixtureWithStake();
 
     const rewards = await farmingSplitter.calculate(parseUnits('221917.8'), parseUnits('1775342.4'));
+
+    expect(rewards.tbb.ldt).eq(73972600000000000000000n);
+    expect(rewards.tbb.tb).eq(1999999999999999999n);
+
+    expect(rewards.tbb.liquidity.ldt).eq(1999999999999999999936n);
+    expect(rewards.tbb.liquidity.tb).eq(1999999999999999999n);
+    expect(rewards.tbb.liquidity.ldtLiquidity).eq(999999999999999999968377n);
+    expect(rewards.tbb.liquidity.tbLiquidity).eq(999999999999999999968n);
+
+    expect(rewards.tbs.ldt).eq(73972600000000000000000n);
+    expect(rewards.tbs.tb).eq(499999999999999999n);
+
+    expect(rewards.tbs.liquidity.ldt).eq(4999999999999999999500n);
+    expect(rewards.tbs.liquidity.tb).eq(499999999999999999n);
+    expect(rewards.tbs.liquidity.ldtLiquidity).eq(999999999999999999900000n);
+    expect(rewards.tbs.liquidity.tbLiquidity).eq(99999999999999999990n);
+
+    expect(rewards.tbg.ldt).eq(73972600000000000000000n);
+    expect(rewards.tbg.tb).eq(99999999999999999n);
+
+    expect(rewards.tbg.liquidity.ldt).eq(9999999999999999996837n);
+    expect(rewards.tbg.liquidity.tb).eq(99999999999999999n);
+    expect(rewards.tbg.liquidity.ldtLiquidity).eq(999999999999999999683772n);
+    expect(rewards.tbg.liquidity.tbLiquidity).eq(9999999999999999996n);
   });
 });

@@ -1,4 +1,4 @@
-import { rewardSplitterV2Fixture } from '../fixtures';
+import { rewardSplitterV2Fixture, rewardSplitterV2FixtureWithStake } from '../fixtures';
 import { expect } from 'chai';
 import { parseUnits } from 'ethers';
 
@@ -42,17 +42,11 @@ describe('RewardSplitterV2', () => {
       ldtTeam,
       distributorAddress,
       tbb,
-      tbbFarmAddress,
-      tbbFarm,
       tbbPair,
       tbs,
-      tbsFarmAddress,
       tbsPair,
-      tbsFarm,
       tbg,
-      tbgFarmAddress,
       tbgPair,
-      tbgFarm,
       deployer,
       tbbStaker,
       tbsStaker,
@@ -60,41 +54,7 @@ describe('RewardSplitterV2', () => {
       tbbBooster,
       tbsBooster,
       tbgBooster,
-    } = await rewardSplitterV2Fixture();
-
-    console.log('LP', {
-      tbb: await tbbPair.balanceOf(deployer),
-      tbs: await tbsPair.balanceOf(deployer),
-      tbg: await tbgPair.balanceOf(deployer),
-    });
-
-    console.log('team before', {
-      ldt: await ldt.balanceOf(ldtTeam),
-      tbb: await tbb.balanceOf(ldtTeam),
-      tbs: await tbs.balanceOf(ldtTeam),
-      tbg: await tbg.balanceOf(ldtTeam),
-    });
-
-    await tbbPair.approve(tbbFarmAddress, await tbbPair.balanceOf(deployer));
-    await tbbFarm.stake(await tbbPair.balanceOf(deployer));
-
-    await tbsPair.approve(tbsFarmAddress, await tbsPair.balanceOf(deployer));
-    await tbsFarm.stake(await tbsPair.balanceOf(deployer));
-
-    await tbgPair.approve(tbgFarmAddress, await tbgPair.balanceOf(deployer));
-    await tbgFarm.stake(await tbgPair.balanceOf(deployer));
-
-    await tbb.mint(deployer, parseUnits('1', 18));
-    await tbbStaker.stake(parseUnits('1', 18));
-    await tbbBooster.stake(parseUnits('500', 18));
-
-    await tbs.mint(deployer, parseUnits('1', 18));
-    await tbsStaker.stake(parseUnits('1', 18));
-    await tbsBooster.stake(parseUnits('5000', 18));
-
-    await tbg.mint(deployer, parseUnits('1', 18));
-    await tbgStaker.stake(parseUnits('1', 18));
-    await tbgBooster.stake(parseUnits('50000', 18));
+    } = await rewardSplitterV2FixtureWithStake();
 
     await expect(rewardSplitter.distributeRewards())
       .emit(rewardSplitter, 'DistributeRewards')
@@ -177,20 +137,6 @@ describe('RewardSplitterV2', () => {
         ],
       );
 
-    console.log('team after', {
-      ldt: await ldt.balanceOf(ldtTeam),
-      tbb: await tbb.balanceOf(ldtTeam),
-      tbs: await tbs.balanceOf(ldtTeam),
-      tbg: await tbg.balanceOf(ldtTeam),
-    });
-
-    console.log('deployer balances', {
-      ldt: await ldt.balanceOf(deployer),
-      tbb: await tbb.balanceOf(deployer),
-      tbs: await tbs.balanceOf(deployer),
-      tbg: await tbg.balanceOf(deployer),
-    });
-
     await tbbStaker.harvest();
     await tbbBooster.harvest();
 
@@ -224,10 +170,6 @@ describe('RewardSplitterV2', () => {
     await tbg.mint(deployer, parseUnits('1', 18));
     await tbgStaker.stake(parseUnits('1', 18));
     await tbgBooster.stake(parseUnits('50000', 18));
-
-    // 160000
-    // 710000
-    // 221917
 
     await expect(rewardSplitter.distributeRewards())
       .emit(rewardSplitter, 'DistributeRewards')
@@ -271,45 +213,15 @@ describe('RewardSplitterV2', () => {
     // expect(await tbs.balanceOf(deployer)).eq(parseUnits('0.0025', 18));
     // expect(await tbg.balanceOf(deployer)).eq(parseUnits('0.005', 18));
 
-    console.log('deployer balances', {
-      ldt: await ldt.balanceOf(deployer),
-      tbb: await tbb.balanceOf(deployer),
-      tbs: await tbs.balanceOf(deployer),
-      tbg: await tbg.balanceOf(deployer),
-    });
-
     expect(await ldt.balanceOf(rewardSplitterAddress)).eq(0n);
-
-    console.log('balance distributorAddress', await ldt.balanceOf(distributorAddress));
-    console.log('balance rewardSplitterAddress', await ldt.balanceOf(rewardSplitterAddress));
   });
 
-  it('should unstake', async () => {
+  it('should not unstake if boost is active', async () => {
     const {
-      rewardSplitter,
-      rewardSplitterAddress,
-      ldt,
-      ldtTeam,
-      distributorAddress,
       tbb,
-      tbbFarmAddress,
-      tbbFarm,
-      tbbPair,
-      tbs,
-      tbsFarmAddress,
-      tbsPair,
-      tbsFarm,
-      tbg,
-      tbgFarmAddress,
-      tbgPair,
-      tbgFarm,
       deployer,
       tbbStaker,
-      tbsStaker,
-      tbgStaker,
       tbbBooster,
-      tbsBooster,
-      tbgBooster,
     } = await rewardSplitterV2Fixture();
 
     await tbb.mint(deployer, parseUnits('1', 18));
