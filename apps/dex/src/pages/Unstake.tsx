@@ -9,11 +9,12 @@ import { InputPanel } from '../components/swap/InputPanel';
 import { Container } from '../components/swap/Container';
 import { NumericalInput } from '../components/StyledInput';
 import { SwapSection } from '../components/swap/SwapSection';
-import { useFarmingStaker } from '../hooks/useFarmingStaker';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { useSnackbar } from 'notistack';
 import { SwapHeader } from '../components/swap/SwapHeader';
-import { Box } from '@mui/material';
+import { Box, Card, CardContent, Typography } from '@mui/material';
+import { useTokenStaker } from '../hooks/useTokenStaker';
+import { PrimaryButtonWithLoader } from '../components/PrimaryButtonWithLoader';
 
 
 export function Unstake() {
@@ -31,11 +32,13 @@ export function Unstake() {
     isPending,
     stakeError,
     stakedAmount,
-  } = useFarmingStaker(params.staker as EthereumAddress, 'unstake', value);
+    token,
+    staked,
+  } = useTokenStaker(params.stakers || '', params.staker as EthereumAddress, 'unstake', value);
 
   const isRemoveDisabled = useMemo(() => isPending, [isPending]);
 
-  const insufficientBalance = useMemo(() => new BigNumber(parseUnits(value, 18).toString()).gt(new BigNumber(stakedAmount.data?.[0].toString() || '0')), [stakedAmount, value]);
+  const insufficientBalance = useMemo(() => new BigNumber(parseUnits(value, 18).toString()).gt(new BigNumber(staked.data?.[0].toString() || '0')), [stakedAmount, value]);
 
   useEffect(() => {
     if (confirmed) {
@@ -44,7 +47,7 @@ export function Unstake() {
         variant: 'success',
       });
       reset();
-      stakedAmount.refetch();
+      staked.refetch();
       setValue('');
     }
   }, [confirmed]);
@@ -73,10 +76,10 @@ export function Unstake() {
       case 25n:
       case 50n:
       case 75n:
-        setValue(formatUnits(((stakedAmount.data?.[0] || 0n) * percentage) / 100n, 18));
+        setValue(formatUnits(((staked.data?.[0] || 0n) * percentage) / 100n, 18));
         break;
       case 100n:
-        setValue(formatUnits(stakedAmount.data?.[0] || 0n, 18));
+        setValue(formatUnits(staked.data?.[0] || 0n, 18));
         break;
     }
   };
@@ -133,13 +136,22 @@ export function Unstake() {
                   </x.p>
                 </x.div>
                 <x.div>
-                  <x.p color="gray155">{new BigNumber(formatUnits(stakedAmount.data?.[0] ?? 0n, 18)).toFixed(6, 1)}</x.p>
+                  <x.p color="gray155">{new BigNumber(formatUnits(staked.data?.[0] ?? 0n, 18)).toFixed(6, 1)}</x.p>
                 </x.div>
               </x.div>
             </x.div>
           </Container>
         </InputPanel>
       </SwapSection>
+
+      <Card>
+        <CardContent sx={{ '&:last-child': { p: 2 } }}>
+          <Box display="flex" justifyContent="space-between">
+            <Typography>My Stake</Typography>
+            <Typography>{stakedAmount} {token?.symbol}</Typography>
+          </Box>
+        </CardContent>
+      </Card>
 
       {stakeError && stakeError === 'PENDING_REWARDS' && (
         <x.div>
@@ -150,11 +162,12 @@ export function Unstake() {
       )}
 
       <x.div display="flex" mt={4} h="80px" alignItems="center" justifyContent="center">
-        {isRemoveDisabled ? (
-          <PacmanLoader color={th?.colors.gray155} />
-        ) : (
-          <PrimaryButton disabled={!value || !new BigNumber(parseUnits(value, 18).toString()).gt(0) || insufficientBalance} onClick={() => write()}>Unstake</PrimaryButton>
-        )}
+        <PrimaryButtonWithLoader
+          isLoading={isRemoveDisabled}
+          isDisabled={!value || !new BigNumber(parseUnits(value, 18).toString()).gt(0) || insufficientBalance}
+          text="Unstake"
+          onClick={() => write()}
+        />
       </x.div>
     </Box>
   );

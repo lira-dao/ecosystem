@@ -1,7 +1,6 @@
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useTheme, x } from '@xstyled/styled-components';
 import { formatUnits, parseUnits } from 'viem';
-import { PrimaryButton } from '../components/PrimaryButton';
 import { getCurrencies, getCurrencyByAddress, getPairedCurrencies } from '../utils';
 import { usePair } from '../hooks/usePair';
 import { useBalance } from '../hooks/useBalance';
@@ -18,8 +17,8 @@ import { useDebounce } from 'use-debounce';
 import { useParams } from 'react-router-dom';
 import { useDexPairs } from '../hooks/useDexPairs';
 import { CurrencyInput } from '../components/swap/CurrencyInput';
-import { PacmanLoader } from 'react-spinners';
 import { SwapHeader } from '../components/swap/SwapHeader';
+import { PrimaryButtonWithLoader } from '../components/PrimaryButtonWithLoader';
 
 
 export function AddLiquidity() {
@@ -202,6 +201,9 @@ export function AddLiquidity() {
         variant: 'success',
       });
 
+      allowanceA.refetch();
+      allowanceB.refetch();
+
       setFirstValue('');
       setSecondValue('');
     }
@@ -285,40 +287,34 @@ export function AddLiquidity() {
 
       {(needAllowanceA && !insufficientBalanceA) && (
         <x.div display="flex" mt={4} h="80px" alignItems="center" justifyContent="center">
-          {isAllowCurrencyADisabled ? (
-            <PacmanLoader color={th?.colors.gray155} />
-          ) : (
-            <PrimaryButton
-              disabled={isAllowCurrencyADisabled}
-              onClick={() => approveA.write()}
-            >Approve {currencyA.symbol}</PrimaryButton>
-          )}
+          <PrimaryButtonWithLoader
+            isLoading={isAllowCurrencyADisabled}
+            isDisabled={isAllowCurrencyADisabled}
+            text={`Approve ${currencyA.symbol}`}
+            onClick={() => approveA.write()}
+          />
         </x.div>
       )}
 
       {(needAllowanceB && !insufficientBalanceB && !needAllowanceA) && (
         <x.div display="flex" h="80px" alignItems="center" justifyContent="center">
-          {isAllowCurrencyBDisabled ? (
-            <PacmanLoader color={th?.colors.gray155} />
-          ) : (
-            <PrimaryButton
-              disabled={isAllowCurrencyBDisabled}
-              onClick={() => approveB.write()}
-            >Approve {currencyB?.symbol}</PrimaryButton>
-          )}
+          <PrimaryButtonWithLoader
+            isLoading={isAllowCurrencyBDisabled}
+            isDisabled={isAllowCurrencyBDisabled}
+            text={`Approve ${currencyB?.symbol}`}
+            onClick={() => approveB.write()}
+          />
         </x.div>
       )}
 
       {(!needAllowanceA && !insufficientBalanceA && !needAllowanceB && !insufficientBalanceB) && (
         <x.div display="flex" mt={4} h="80px" alignItems="center" justifyContent="center">
-          {addLiquidity.isPending ? (
-            <PacmanLoader color={th?.colors.gray155} />
-          ) : (
-            <PrimaryButton
-              disabled={!firstValue && !secondValue}
-              onClick={() => addLiquidity.write()}
-            >Supply</PrimaryButton>
-          )}
+          <PrimaryButtonWithLoader
+            isLoading={addLiquidity.isPending}
+            isDisabled={!firstValue && !secondValue}
+            text="Supply"
+            onClick={() => addLiquidity.write()}
+          />
         </x.div>
       )}
 

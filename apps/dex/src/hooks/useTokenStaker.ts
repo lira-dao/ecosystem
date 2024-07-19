@@ -110,6 +110,7 @@ export function useTokenStaker(stakers: string, address: EthereumAddress, action
     // @ts-ignore
     stakeError: failureReason?.cause?.reason,
     stakedAmount: new BigNumber(stakedAmount.data?.[0].toString() || '0').div(new BigNumber(10).pow(18)).toFormat(2, 1),
+    staked: stakedAmount,
     token: getCurrencyByAddress(token.data || '0x0'),
     tokens: [getCurrencyByAddress(rewardToken1.data || '0x0'), getCurrencyByAddress(rewardToken2.data || '0x0')],
     write,

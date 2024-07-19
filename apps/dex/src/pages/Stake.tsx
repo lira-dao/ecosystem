@@ -181,7 +181,7 @@ export function Stake() {
       </SwapSection>
 
       {params.stakers === 'boosting' && (
-        <Card sx={{ borderRadius: '16px' }}>
+        <Card>
           <CardContent sx={{ '&:last-child': { p: 2 } }}>
             <Box display="flex" justifyContent="space-between">
               <Typography>My Boost</Typography>
@@ -202,7 +202,7 @@ export function Stake() {
       )}
 
       {params.stakers !== 'boosting' && (
-        <Card sx={{ borderRadius: '16px' }}>
+        <Card>
           <CardContent sx={{ '&:last-child': { p: 2 } }}>
             <Box display="flex" justifyContent="space-between">
               <Typography>My Stake</Typography>
@@ -228,7 +228,6 @@ export function Stake() {
               size="large"
               disabled={isAllowDisabled && (!new BigNumber(value).isPositive() || !new BigNumber(value).gt(0))}
               onClick={() => approve.write()}
-              sx={{ width: '100%' }}
             >Approve</PrimaryButton>
           )}
         </x.div>
@@ -244,7 +243,6 @@ export function Stake() {
               size="large"
               disabled={!new BigNumber(value).isPositive() || !new BigNumber(value).gt(0)}
               onClick={() => write()}
-              sx={{ width: '100%' }}
             >Stake</PrimaryButton>
           )}
         </x.div>

@@ -1,22 +1,30 @@
-import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText, Typography } from '@mui/material';
-import { ThemeProvider, useTheme } from '@mui/material/styles';
+import { Avatar, Box, List, ListItem, ListItemAvatar, ListItemText } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
 import { muiDarkTheme } from '../theme/theme';
 import { useParams } from 'react-router-dom';
 import { useFarmingStaker } from '../hooks/useFarmingStaker';
 import { EthereumAddress } from '@lira-dao/web3-utils';
-import { PacmanLoader } from 'react-spinners';
-import { PrimaryButton } from '../components/PrimaryButton';
 import { x } from '@xstyled/styled-components';
 import { useEffect } from 'react';
 import { useSnackbar } from 'notistack';
 import { SwapHeader } from '../components/swap/SwapHeader';
+import { PrimaryButtonWithLoader } from '../components/PrimaryButtonWithLoader';
 
 
 export function Harvest() {
   const { enqueueSnackbar } = useSnackbar();
   const params = useParams();
 
-  const { pendingRewards, tokens, write, isPending, havePendingRewards, confirmed, reset, pendingRewardsAmounts } = useFarmingStaker(params.staker as EthereumAddress, 'harvest');
+  const {
+    pendingRewards,
+    tokens,
+    write,
+    isPending,
+    havePendingRewards,
+    confirmed,
+    reset,
+    pendingRewardsAmounts,
+  } = useFarmingStaker(params.staker as EthereumAddress, 'harvest');
 
   useEffect(() => {
     if (confirmed) {
@@ -57,14 +65,12 @@ export function Harvest() {
         </Box>
 
         <x.div display="flex" mt={4} h="80px" alignItems="center" justifyContent="center">
-          {isPending ? (
-            <PacmanLoader color="#9B9B9B" />
-          ) : (
-            <PrimaryButton
-              disabled={!havePendingRewards}
-              onClick={() => write()}
-            >Harvest</PrimaryButton>
-          )}
+          <PrimaryButtonWithLoader
+            isLoading={isPending}
+            isDisabled={!havePendingRewards}
+            text="Harvest"
+            onClick={() => write()}
+          />
         </x.div>
       </Box>
     </ThemeProvider>

@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useTheme, x } from '@xstyled/styled-components';
-import { PrimaryButton } from '../components/PrimaryButton';
 import { getCurrencies, getCurrencyByAddress, getPairedCurrencies } from '../utils';
 import { useGetAmountsIn, useGetAmountsOut } from '../hooks/useGetAmountsOut';
 import { formatUnits, parseUnits } from 'viem';
@@ -8,7 +7,6 @@ import { useApprove } from '../hooks/useApprove';
 import { useSwap } from '../hooks/useSwap';
 import repeatIcon from '../img/fa-repeat.svg';
 import { BaseButton } from '../components/BaseButton';
-import { PacmanLoader } from 'react-spinners';
 import { useAllowance } from '../hooks/useAllowance';
 import { useSnackbar } from 'notistack';
 import { useBalance } from '../hooks/useBalance';
@@ -23,6 +21,7 @@ import { useDexPairs } from '../hooks/useDexPairs';
 import { CurrencyInput } from '../components/swap/CurrencyInput';
 import { useFetchPrices } from '../hooks/usePrices';
 import { SwapHeader } from '../components/swap/SwapHeader';
+import { PrimaryButtonWithLoader } from '../components/PrimaryButtonWithLoader';
 
 
 export function Swap() {
@@ -119,7 +118,7 @@ export function Swap() {
       const priceCurrencyB = pair.priceCurrencyB.toFixed();
 
       if (parseFloat(priceCurrencyA) > 0, parseFloat(priceCurrencyB) > 0) {
-        const priceCurrency = (currencyA.symbol === 'LDT') ? priceCurrencyA : (currencyB?.symbol === 'LDT') ? priceCurrencyB  : undefined;
+        const priceCurrency = (currencyA.symbol === 'LDT') ? priceCurrencyA : (currencyB?.symbol === 'LDT') ? priceCurrencyB : undefined;
         if (priceCurrency) {
           setLdtPrice(parseFloat(priceCurrency));
         }
@@ -155,6 +154,7 @@ export function Swap() {
       balanceA.refetch();
       balanceB.refetch();
       accountBalance.refetch();
+      allowance1.refetch();
       pair.refetchReserves();
       setAmountOut(0n);
       setAmountIn(0n);
@@ -240,7 +240,7 @@ export function Swap() {
       return symbol.substring(1);
     }
     return symbol;
-  }
+  };
 
   const computePrice = (currency: Currency) => {
 
@@ -272,7 +272,7 @@ export function Swap() {
       }
 
       if (currency.symbol === 'LIRA') {
-        const price = (currencyA.symbol === 'LIRA') ? priceCurrencyB : (currencyB.symbol === 'LIRA') ? priceCurrencyA  : undefined;
+        const price = (currencyA.symbol === 'LIRA') ? priceCurrencyB : (currencyB.symbol === 'LIRA') ? priceCurrencyA : undefined;
         if (price) {
           if (ldtPrice !== undefined) {
             return `${(ldtPrice / parseFloat(price)) * externalPrice}`;
@@ -289,7 +289,7 @@ export function Swap() {
           }
 
           if (ldtPrice === undefined) {
-            return `${parseFloat(price) * externalPrice}`
+            return `${parseFloat(price) * externalPrice}`;
           }
 
           return `${ldtPrice * externalPrice}`;
@@ -302,7 +302,7 @@ export function Swap() {
         }
       }
     }
-  }
+  };
 
   return (
     <x.div w="100%" maxWidth="480px" borderRadius="16px" padding={4}>
@@ -372,24 +372,23 @@ export function Swap() {
 
       {(needAllowance && !insufficientBalanceA) && (
         <x.div display="flex" mt={4} mb={2} h="80px" alignItems="center" justifyContent="center">
-          {isAllowCurrencyADisabled ? (
-            <PacmanLoader color={th?.colors.gray155} />
-          ) : (
-            <PrimaryButton
-              disabled={isAllowCurrencyADisabled}
-              onClick={() => approve.write()}
-            >Approve {currencyA.symbol}</PrimaryButton>
-          )}
+          <PrimaryButtonWithLoader
+            isLoading={isAllowCurrencyADisabled}
+            isDisabled={isAllowCurrencyADisabled}
+            text="Approve"
+            onClick={() => approve.write()}
+          />
         </x.div>
       )}
 
       {(!needAllowance && !insufficientBalanceA) && (
         <x.div display="flex" mt={4} h="80px" alignItems="center" justifyContent="center">
-          {isSwapDisabled ? (
-            <PacmanLoader color={th?.colors.gray155} />
-          ) : (
-            <PrimaryButton disabled={!firstValue && !secondValue} onClick={() => swap.write()}>Swap</PrimaryButton>
-          )}
+          <PrimaryButtonWithLoader
+            isLoading={isSwapDisabled}
+            isDisabled={!firstValue && !secondValue}
+            text="Swap"
+            onClick={() => swap.write()}
+          />
         </x.div>
       )}
 

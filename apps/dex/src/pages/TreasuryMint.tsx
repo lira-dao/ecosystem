@@ -14,13 +14,12 @@ import { SelectCurrencyModal } from '../components/modal/SelectCurrencyModal';
 import { useBalance } from '../hooks/useBalance';
 import { useParams } from 'react-router-dom';
 import { useTreasuryToken } from '../hooks/useTreasuryToken';
-import { PacmanLoader } from 'react-spinners';
-import { PrimaryButton } from '../components/PrimaryButton';
 import { useApprove } from '../hooks/useApprove';
 import { useAllowance } from '../hooks/useAllowance';
 import { useSnackbar } from 'notistack';
 import BigNumber from 'bignumber.js';
 import { SwapHeader } from '../components/swap/SwapHeader';
+import { PrimaryButtonWithLoader } from '../components/PrimaryButtonWithLoader';
 
 
 enum TreasuryHeaderTab {
@@ -138,7 +137,7 @@ export function TreasuryMint() {
       case 25n:
       case 50n:
       case 75n:
-        setFirstValue(((new BigNumber(balanceA.data?.toString() || '0').times(percentage.toString()).div(100)).div(new BigNumber(10).pow(18))).toString())
+        setFirstValue(((new BigNumber(balanceA.data?.toString() || '0').times(percentage.toString()).div(100)).div(new BigNumber(10).pow(18))).toString());
 
         setFirstValue(formatUnits(((balanceA.data || 0n) * percentage) / 100n, 18));
         break;
@@ -149,16 +148,16 @@ export function TreasuryMint() {
   };
 
   const onMintClick = () => {
-    setActive(TreasuryHeaderTab.Mint)
-    setFirstValue('')
-    setSecondValue('')
-  }
+    setActive(TreasuryHeaderTab.Mint);
+    setFirstValue('');
+    setSecondValue('');
+  };
 
   const onBurnClick = () => {
-    setActive(TreasuryHeaderTab.Burn)
-    setFirstValue('')
-    setSecondValue('')
-  }
+    setActive(TreasuryHeaderTab.Burn);
+    setFirstValue('');
+    setSecondValue('');
+  };
 
   return (
     <x.div w="100%" maxWidth="480px" borderRadius="16px" padding={4}>
@@ -286,27 +285,23 @@ export function TreasuryMint() {
 
       {(active === TreasuryHeaderTab.Mint && needAllowance) && (
         <x.div display="flex" mt={4} mb={2} h="80px" alignItems="center" justifyContent="center">
-          {isAllowCurrencyDisabled ? (
-            <PacmanLoader color={th?.colors.gray155} />
-          ) : (
-            <PrimaryButton
-              disabled={isAllowCurrencyDisabled}
-              onClick={() => approve.write()}
-            >Approve {currencyB.symbol}</PrimaryButton>
-          )}
+          <PrimaryButtonWithLoader
+            isLoading={isAllowCurrencyDisabled}
+            isDisabled={isAllowCurrencyDisabled}
+            text={`Approve ${currencyB.symbol}`}
+            onClick={() => approve.write()}
+          />
         </x.div>
       )}
 
       {(active === TreasuryHeaderTab.Burn || !needAllowance) && (
         <x.div display="flex" mt={4} h="80px" alignItems="center" justifyContent="center">
-          {isActionDisabled ? (
-            <PacmanLoader color={th?.colors.gray155} />
-          ) : (
-            <PrimaryButton
-              disabled={firstValue === '' || !firstValue}
-              onClick={() => active === TreasuryHeaderTab.Mint ? treasuryToken.mint.write() : treasuryToken.burn.write()}
-            >{active === TreasuryHeaderTab.Mint ? 'MINT' : 'BURN'}</PrimaryButton>
-          )}
+          <PrimaryButtonWithLoader
+            isLoading={isActionDisabled}
+            isDisabled={firstValue === '' || !firstValue}
+            text={active === TreasuryHeaderTab.Mint ? 'MINT' : 'BURN'}
+            onClick={() => active === TreasuryHeaderTab.Mint ? treasuryToken.mint.write() : treasuryToken.burn.write()}
+          />
         </x.div>
       )}
 

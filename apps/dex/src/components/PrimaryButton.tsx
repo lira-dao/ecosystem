@@ -4,6 +4,7 @@ import { green } from '../theme/theme';
 
 
 export const PrimaryButton = styled(Button)<ButtonProps>(({ theme }) => ({
+  width: '100%',
   color: theme.palette.getContrastText(green[600]),
   fontSize: theme.typography.h6.fontSize,
   backgroundColor: green[600],

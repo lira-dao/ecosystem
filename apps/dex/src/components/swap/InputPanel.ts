@@ -5,7 +5,7 @@ export const InputPanel = styled.box<{ hideInput?: boolean }>`
   display: flex;
   flex-flow: column nowrap;
   position: relative;
-  border-radius: 16px;
+  border-radius: 4px;
   z-index: 1;
   width: 100%;
   height: 100%;

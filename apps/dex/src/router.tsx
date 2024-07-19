@@ -17,28 +17,31 @@ import { ThemeProvider } from '@mui/material/styles';
 
 
 const routes = [
-  { index: true, element: <Swap /> },
+  { index: true, element: <ThemeProvider theme={muiDarkTheme}><Swap /></ThemeProvider> },
 
   // swap
-  { path: 'swap', element: <Swap /> },
-  { path: 'swap/:pool', element: <Swap /> },
+  { path: 'swap', element: <ThemeProvider theme={muiDarkTheme}><Swap /></ThemeProvider> },
+  { path: 'swap/:pool', element: <ThemeProvider theme={muiDarkTheme}><Swap /></ThemeProvider> },
 
   // pools
   { path: 'pools', element: <Pools /> },
-  { path: 'add-liquidity', element: <AddLiquidity /> },
-  { path: 'add-liquidity/:pool', element: <AddLiquidity /> },
-  { path: '/remove-liquidity/:address', element: <RemoveLiquidity /> },
+  { path: 'add-liquidity', element: <ThemeProvider theme={muiDarkTheme}><AddLiquidity /></ThemeProvider> },
+  { path: 'add-liquidity/:pool', element: <ThemeProvider theme={muiDarkTheme}><AddLiquidity /></ThemeProvider> },
+  {
+    path: '/remove-liquidity/:address',
+    element: <ThemeProvider theme={muiDarkTheme}><RemoveLiquidity /></ThemeProvider>,
+  },
 
   // staking
   { path: 'farming', element: <Farming /> },
   { path: 'staking', element: <Staking /> },
   { path: ':stakers/:staker/stake', element: <ThemeProvider theme={muiDarkTheme}><Stake /></ThemeProvider> },
-  { path: ':stakers/:staker/unstake', element: <Unstake /> },
-  { path: ':stakers/:staker/harvest', element: <Harvest /> },
+  { path: ':stakers/:staker/unstake', element: <ThemeProvider theme={muiDarkTheme}><Unstake /></ThemeProvider> },
+  { path: ':stakers/:staker/harvest', element: <ThemeProvider theme={muiDarkTheme}><Harvest /></ThemeProvider> },
 
   // treasury
   { path: 'treasury', element: <Treasury /> },
-  { path: 'treasury/:address/:action', element: <TreasuryMint /> },
+  { path: 'treasury/:address/:action', element: <ThemeProvider theme={muiDarkTheme}><TreasuryMint /></ThemeProvider> },
 ];
 
 if (process.env.REACT_APP_TESTNET === 'true') {

@@ -10,13 +10,12 @@ import { useBalance } from '../hooks/useBalance';
 import { useEffect, useMemo, useState } from 'react';
 import { useAllowance } from '../hooks/useAllowance';
 import BigNumber from 'bignumber.js';
-import { PacmanLoader } from 'react-spinners';
-import { PrimaryButton } from '../components/PrimaryButton';
 import { useApprove } from '../hooks/useApprove';
 import { useRemoveLiquidity } from '../hooks/useRemoveLiquidity';
 import { useSnackbar } from 'notistack';
 import { useDexAddresses } from '../hooks/useDexAddresses';
 import { SwapHeader } from '../components/swap/SwapHeader';
+import { PrimaryButtonWithLoader } from '../components/PrimaryButtonWithLoader';
 
 
 export function RemoveLiquidity() {
@@ -48,7 +47,7 @@ export function RemoveLiquidity() {
         variant: 'success',
       });
       allowance.refetch();
-      remove.refetch()
+      remove.refetch();
     }
   }, [approve.confirmed]);
 
@@ -145,19 +144,6 @@ export function RemoveLiquidity() {
         </InputPanel>
       </SwapSection>
 
-      {needAllowance && (
-        <x.div display="flex" mt={4} mb={2} h="80px" alignItems="center" justifyContent="center">
-          {isAllowDisabled ? (
-            <PacmanLoader color={th?.colors.gray155} />
-          ) : (
-            <PrimaryButton
-              disabled={isAllowDisabled}
-              onClick={() => approve.write()}
-            >Approve</PrimaryButton>
-          )}
-        </x.div>
-      )}
-
       {(!!value && !needAllowance) && (
         <x.div display="flex">
           <x.div w="50%" display="flex" flexDirection="column" alignItems="center">
@@ -178,13 +164,25 @@ export function RemoveLiquidity() {
         </x.div>
       )}
 
+      {needAllowance && (
+        <x.div display="flex" mt={4} mb={2} h="80px" alignItems="center" justifyContent="center">
+          <PrimaryButtonWithLoader
+            isLoading={isAllowDisabled}
+            isDisabled={isAllowDisabled}
+            text="Approve"
+            onClick={() => approve.write()}
+          />
+        </x.div>
+      )}
+
       {!needAllowance && (
         <x.div display="flex" mt={needAllowance ? 2 : 4} h="80px" alignItems="center" justifyContent="center">
-          {isRemoveDisabled ? (
-            <PacmanLoader color={th?.colors.gray155} />
-          ) : (
-            <PrimaryButton disabled={!value} onClick={() => remove.write()}>Remove</PrimaryButton>
-          )}
+          <PrimaryButtonWithLoader
+            isLoading={isRemoveDisabled}
+            isDisabled={!value}
+            text="Remove"
+            onClick={() => remove.write()}
+          />
         </x.div>
       )}
 
