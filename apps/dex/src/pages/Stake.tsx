@@ -22,16 +22,18 @@ export function Stake() {
   const [value, setValue] = useState<string>('');
 
   const {
-    balance,
     allowance,
     approve,
-    write,
-    reset,
+    balance,
     confirmed,
-    isPending,
-    stakeError,
-    isError,
     error,
+    isError,
+    isPending,
+    reset,
+    stakeError,
+    stakedAmount,
+    token,
+    write,
   } = useTokenStaker(params.stakers || '', params.staker as EthereumAddress, 'stake', value);
 
   const isAllowDisabled = useMemo(() => approve.isPending || allowance.isPending, [approve, allowance]);
@@ -102,7 +104,7 @@ export function Stake() {
   const getError = (error?: string) => {
     switch (error) {
       case 'MINIMUM_STAKE_AMOUNT':
-        return 'The minimum stake amount in 1 treasury token';
+        return `The minimum stake amount is 1 treasury token, you have staked ${stakedAmount} ${token?.symbol}`;
       case 'PENDING_REWARDS':
         return 'You have pending rewards. Please harvest your current rewards before staking additional tokens.';
     }
