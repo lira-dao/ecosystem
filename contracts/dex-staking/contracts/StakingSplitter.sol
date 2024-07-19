@@ -47,7 +47,7 @@ contract StakingSplitter is Ownable2Step {
         tbgRewardRate = _tbgRewardRate;
     }
 
-    function calculate(uint _ldt, uint _tb) external returns (RewardsLibrary.RewardsAmounts memory rewards) {
+    function calculate(uint _ldt, uint _tb) external view returns (RewardsLibrary.RewardsAmounts memory rewards) {
         uint tbbReward = (_tb * 20) / 100;
         uint tbsReward = (_tb * 30) / 100;
         uint tbgReward = _tb - tbbReward - tbsReward;
