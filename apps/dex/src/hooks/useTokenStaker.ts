@@ -69,7 +69,8 @@ export function useTokenStaker(stakers: string, address: EthereumAddress, action
     confirmed: confirmed.confirmed,
     isPending: isPending || confirmed.isLoading,
 
-    stakedAmount,
+    stakedAmount: new BigNumber(stakedAmount.data?.[0].toString() || '0').div(new BigNumber(10).pow(18)).toFormat(2, 1),
+    token: getCurrencyByAddress(token.data || '0x0'),
 
     tokens: [
       getCurrencyByAddress(rewardToken1.data || '0x0'),
