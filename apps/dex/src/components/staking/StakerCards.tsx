@@ -54,13 +54,13 @@ export function StakerCards({ stakers, isConnected }: Props) {
               <Divider textAlign="left" sx={{ mt: 4, mb: 2 }}>STAKE</Divider>
 
               <Box display="flex" justifyContent="space-between">
-                <Typography>My Balance</Typography>
-                <Typography>{staker.balance} {staker.tokens[0]?.symbol}</Typography>
+                <Typography>My Deposit</Typography>
+                <Typography>{staker.amount} {staker.tokens[0]?.symbol}</Typography>
               </Box>
 
               <Box display="flex" justifyContent="space-between">
-                <Typography>My Deposit</Typography>
-                <Typography>{staker.amount} {staker.tokens[0]?.symbol}</Typography>
+                <Typography>My Balance</Typography>
+                <Typography>{staker.balance} {staker.tokens[0]?.symbol}</Typography>
               </Box>
 
               <Box sx={{ my: 2 }} />
