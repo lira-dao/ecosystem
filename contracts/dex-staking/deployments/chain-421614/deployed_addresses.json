@@ -1,16 +1,13 @@
 {
-  "FarmingSplitter#FarmingSplitter": "0x575dE4C35F6CCC8253B5DdD48207cA931a40f199",
-  "StakingSplitter#StakingSplitter": "0x0BF542f631e0DA3bb7aE493C5135cfa9518bb955",
-  "BoostingSplitter#BoostingSplitter": "0xBf5358e16e420D9b7B6e392D5BF057357B0E3a7C",
-  "TeamSplitter#TeamSplitter": "0x45Ff6C4D195C5c41b201b66F93576656137322ce",
-  "RewardSplitterV2#RewardSplitterV2": "0xB1AE2085f1F07dA9A69dF27d0cE4152a5973C7B8",
-  "TokenStakerTbb#TokenStaker": "0xB006e69f10E13Af2D45d4c5BB1B3755178ab4A14",
-  "TokenStakerTbg#TokenStaker": "0xf8d46d574f8Fb25E75690d7E61f619Ce5Ee39959",
-  "TokenStakerTbs#TokenStaker": "0x2BDdeaa828d4E105Ee397Ba5bC3400967921194a",
-  "BoostingStakerTBb#BoostingStaker": "0x85C2E42700B45406f2CE7C612446174f7a616722",
-  "BoostingStakerTbg#BoostingStaker": "0x02dF9C2F3ba38954d65aA1f7c3b17805983718Ec",
-  "BoostingStakerTbs#BoostingStaker": "0x76fBCdc3ad7B17f225B584dF05Ec670A57743797",
-  "LPStakerTbb#LPStaker": "0xb3a11E22Ee96637E76B89D62Ed8947C30ab7aF32",
-  "LPStakerTbg#LPStaker": "0x2059fDaB658Ccae9dc60912bf01f151f338665a9",
-  "LPStakerTbs#LPStaker": "0x32b52DE65417154B47b914A62AAd28f176a5427d"
+  "TokenStakerTbb#TokenStaker": "0x7B4Cf5543B3d01a5123a269b7839FFAeAaBdf986",
+  "TokenStakerTbs#TokenStaker": "0x16bbd997ed34459c7781f2ec33372bD4D6c74C17",
+  "TokenStakerTbg#TokenStaker": "0x48b75D4B3a663F682d3Fd60c2AB75fF3698875a1",
+  "BoostingStakerTBb#BoostingStaker": "0x8C2A9F1e2f46b8e33D14025d4561f6D8B56DD236",
+  "BoostingStakerTbs#BoostingStaker": "0x248C0609f1dAFacc5F583d8690FacdF45F5f07dC",
+  "BoostingStakerTbg#BoostingStaker": "0x4F0B28393274afA760A33D1B0A75E96E2BBeAd84",
+  "FarmingSplitter#FarmingSplitter": "0xf99b6954379bBa58cA783C89FB16354a96A0881a",
+  "StakingSplitter#StakingSplitter": "0xc542C50Ad4e89b16b37305dba1e8e0a2c8414b6B",
+  "BoostingSplitter#BoostingSplitter": "0xCd00F7F111fDcca06058A1191ACc989c93243973",
+  "TeamSplitter#TeamSplitter": "0xa0E6C06573c5f1cD55D9DC1C87d9E64620D1776D",
+  "RewardSplitterV2#RewardSplitterV2": "0x456D24a5E603b2aC383a52585aa6428419D46a4E"
 }
