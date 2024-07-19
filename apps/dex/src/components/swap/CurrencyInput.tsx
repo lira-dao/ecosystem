@@ -42,7 +42,7 @@ export function CurrencyInput({
   showPercentages = false,
   title,
   value,
-  price
+  price,
 }: CurrencyInputProps) {
   const onSetPercentageInternal = (percentage: number) => {
     if (percentage === 100) {
@@ -79,12 +79,12 @@ export function CurrencyInput({
               {insufficientBalance && (
                 <x.div w="100%" display="flex" justifyContent={insufficientBalance ? 'space-between' : 'flex-end'}>
                   <x.p color="red-400">Insufficient Balance</x.p>
-                  <x.p color="red-400">{(price && !isNaN(parseFloat(price)) && value !== '' && isValidNumber(value)) ? `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}`: ''}</x.p>
+                  <x.p color="red-400">{(price && !isNaN(parseFloat(price)) && value !== '' && isValidNumber(value)) ? `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}` : ''}</x.p>
                 </x.div>
               )}
               {!insufficientBalance && (
-                <x.div w="100%" display="flex" justifyContent='flex-end'>
-                  <x.p color="gray155">{(price && !isNaN(parseFloat(price)) && value !== '' && isValidNumber(value)) ? `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}`: ''}</x.p>
+                <x.div w="100%" display="flex" justifyContent="flex-end">
+                  <x.p color="gray155">{(price && !isNaN(parseFloat(price)) && value !== '' && isValidNumber(value)) ? `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}` : ''}</x.p>
                 </x.div>
               )}
             </x.div>

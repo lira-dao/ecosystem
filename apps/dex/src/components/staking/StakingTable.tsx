@@ -46,7 +46,7 @@ export function StakingTable({ stakers, isConnected }: Props) {
             <TableCell align="right">Total Staked</TableCell>
             {isConnected && <TableCell align="right">Balance</TableCell>}
             {isConnected && <TableCell align="right">My Deposit</TableCell>}
-            <TableCell align="right"><Typography><span style={{ color: th.colors.green }}>Promo</span> APR</Typography></TableCell>
+            <TableCell align="right"><Typography><span style={{ color: th.colors.green[400] }}>Promo</span> APR</Typography></TableCell>
             {isConnected && <TableCell align="right">Rewards</TableCell>}
             {isConnected && <TableCell align="right">Boost Rewards</TableCell>}
             {isConnected && <TableCell align="right">Actions</TableCell>}

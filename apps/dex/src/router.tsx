@@ -12,6 +12,8 @@ import { Stake } from './pages/Stake';
 import { Harvest } from './pages/Harvest';
 import { Unstake } from './pages/Unstake';
 import { Staking } from './pages/Staking';
+import { muiDarkTheme } from './theme/theme';
+import { ThemeProvider } from '@mui/material/styles';
 
 
 const routes = [
@@ -27,15 +29,10 @@ const routes = [
   { path: 'add-liquidity/:pool', element: <AddLiquidity /> },
   { path: '/remove-liquidity/:address', element: <RemoveLiquidity /> },
 
-  // farming
-  { path: 'farming', element: <Farming /> },
-  { path: ':stakers/:staker/stake', element: <Stake /> },
-  { path: ':stakers/:staker/unstake', element: <Unstake /> },
-  { path: ':stakers/:staker/harvest', element: <Harvest /> },
-
   // staking
+  { path: 'farming', element: <Farming /> },
   { path: 'staking', element: <Staking /> },
-  { path: ':stakers/:staker/stake', element: <Stake /> },
+  { path: ':stakers/:staker/stake', element: <ThemeProvider theme={muiDarkTheme}><Stake /></ThemeProvider> },
   { path: ':stakers/:staker/unstake', element: <Unstake /> },
   { path: ':stakers/:staker/harvest', element: <Harvest /> },
 

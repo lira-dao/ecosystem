@@ -2,14 +2,43 @@ import { defaultTheme } from '@xstyled/styled-components';
 import { createTheme } from '@mui/material';
 
 
+export const green = {
+  50: '#f7ffe5',
+  100: '#ecffc7',
+  200: '#d8ff95',
+  300: '#b6fe46',
+  400: '#a2f526',
+  500: '#82dc06',
+  600: '#63b000',
+  700: '#4b8506',
+  800: '#3e690b',
+  900: '#34580f',
+  950: '#193102',
+};
+
+export const cyan = {
+  50: '#edfffe',
+  100: '#c0fffe',
+  200: '#82fffd',
+  300: '#3bfffd',
+  400: '#09fef5',
+  500: '#00e1da',
+  600: '#00b6b4',
+  700: '#008f90',
+  800: '#006e71',
+  900: '#045b5d',
+  950: '#00373a',
+};
+
 export const muiDarkTheme = createTheme({
   palette: {
     mode: 'dark',
   },
   colors: {
-    green: '#B6FE46',
     gray155: '#9B9B9B',
-    white: '#FFFFFF'
+    white: '#FFFFFF',
+    cyan,
+    green,
   },
   typography: {
     fontFamily: [
@@ -33,17 +62,17 @@ export const muiDarkTheme = createTheme({
     },
     h3: {
       fontFamily: 'Avenir Next',
-    }
+    },
   },
   components: {
     MuiDrawer: {
       styleOverrides: {
         paper: {
-          backgroundImage: 'none'
-        }
-      }
-    }
-  }
+          backgroundImage: 'none',
+        },
+      },
+    },
+  },
 });
 
 export const theme = {

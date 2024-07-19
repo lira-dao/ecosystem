@@ -1,6 +1,7 @@
 import 'styled-components';
 import '@xstyled/system';
 import { DefaultTheme as XStyledDefaultTheme, ITheme } from '@xstyled/styled-components';
+import { cyan, green } from './theme/theme';
 
 interface AppTheme extends ITheme, XStyledDefaultTheme {
   colors: {
@@ -43,14 +44,16 @@ declare module 'styled-components' {
 declare module '@mui/material/styles' {
   interface Theme {
     colors: {
-      green: string;
+      green: typeof green,
+      cyan: typeof cyan,
       gray155: string;
       white: string;
     };
   }
   interface ThemeOptions {
     colors?: {
-      green: string;
+      green: typeof green,
+      cyan: typeof cyan,
       gray155?: string;
       white: string;
     };

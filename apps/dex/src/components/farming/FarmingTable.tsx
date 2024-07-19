@@ -46,7 +46,7 @@ export function FarmingTable({ farms, isConnected }: Props) {
             <TableCell align="right">Total Staked</TableCell>
             {isConnected && <TableCell align="right">LP Balance</TableCell>}
             {isConnected && <TableCell align="right">My Deposit</TableCell>}
-            <TableCell align="right"><Typography><span style={{ color: th.colors.green }}>Promo</span> APR</Typography></TableCell>
+            <TableCell align="right"><Typography><span style={{ color: th.colors.green[400] }}>Promo</span> APR</Typography></TableCell>
             {isConnected && <TableCell align="right">Rewards</TableCell>}
             {isConnected && <TableCell align="right">Actions</TableCell>}
           </TableRow>
@@ -72,7 +72,7 @@ export function FarmingTable({ farms, isConnected }: Props) {
               <TableCell
                 align="right"
                 sx={{ textWrap: 'nowrap' }}
-              ><Typography color={th.colors.green}>{getApr(farm.tokens[0]?.symbol)}</Typography></TableCell>
+              ><Typography color={th.colors.green[400]}>{getApr(farm.tokens[0]?.symbol)}</Typography></TableCell>
               {isConnected && (
                 <TableCell align="right" sx={{ textWrap: 'nowrap' }}>
                   {farm.rewards[0]} {farm.tokens[1]?.symbol}<br />{farm.rewards[1]} {farm.tokens[0]?.symbol}

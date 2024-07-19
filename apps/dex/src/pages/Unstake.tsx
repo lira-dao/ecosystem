@@ -13,6 +13,7 @@ import { useFarmingStaker } from '../hooks/useFarmingStaker';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { useSnackbar } from 'notistack';
 import { SwapHeader } from '../components/swap/SwapHeader';
+import { Box } from '@mui/material';
 
 
 export function Unstake() {
@@ -81,7 +82,7 @@ export function Unstake() {
   };
 
   return (
-    <x.div w="100%" maxWidth="480px" padding={4}>
+    <Box width="100%" maxWidth="480px" padding={2}>
       <SwapHeader title={title} />
 
       <SwapSection mt={6} mb={4}>
@@ -155,6 +156,6 @@ export function Unstake() {
           <PrimaryButton disabled={!value || !new BigNumber(parseUnits(value, 18).toString()).gt(0) || insufficientBalance} onClick={() => write()}>Unstake</PrimaryButton>
         )}
       </x.div>
-    </x.div>
+    </Box>
   );
 }

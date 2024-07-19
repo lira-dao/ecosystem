@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { formatUnits, parseUnits } from 'viem';
 import { PacmanLoader } from 'react-spinners';
 import BigNumber from 'bignumber.js';
-import { useTheme, x } from '@xstyled/styled-components';
+import { x } from '@xstyled/styled-components';
 import { EthereumAddress } from '@lira-dao/web3-utils';
 import { InputPanel } from '../components/swap/InputPanel';
 import { Container } from '../components/swap/Container';
@@ -13,6 +13,8 @@ import { PrimaryButton } from '../components/PrimaryButton';
 import { useSnackbar } from 'notistack';
 import { useTokenStaker } from '../hooks/useTokenStaker';
 import { SwapHeader } from '../components/swap/SwapHeader';
+import { Box, Card, CardContent, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 
 export function Stake() {
@@ -29,6 +31,10 @@ export function Stake() {
     error,
     isError,
     isPending,
+    maxBoost,
+    refetch,
+    remainingBoost,
+    remainingBoostValue,
     reset,
     stakeError,
     stakedAmount,
@@ -62,7 +68,7 @@ export function Stake() {
         variant: 'success',
       });
       reset();
-      balance.refetch();
+      refetch();
       setValue('');
     }
   }, [confirmed]);
@@ -82,13 +88,18 @@ export function Stake() {
       case 25n:
       case 50n:
       case 75n:
-        setValue(((new BigNumber(balance.data?.toString() || '0').times(percentage.toString()).div(100)).div(new BigNumber(10).pow(18))).toString());
-
-        setValue(formatUnits(((balance.data || 0n) * percentage) / 100n, 18));
+        if (params.stakers === 'boosting') {
+          setValue(formatUnits(((remainingBoostValue) * percentage) / 100n, 18));
+        } else {
+          setValue(formatUnits(((balance.data || 0n) * percentage) / 100n, 18));
+        }
         break;
       case 100n:
-        setValue(new BigNumber(balance.data?.toString() || '0').div(new BigNumber(10).pow(18)).toString());
-        break;
+        if (params.stakers === 'boosting') {
+          setValue(formatUnits(remainingBoostValue, 18));
+        } else {
+          setValue(formatUnits(balance.data || 0n, 18));
+        }
     }
   };
 
@@ -109,9 +120,9 @@ export function Stake() {
         return 'You have pending rewards. Please harvest your current rewards before staking additional tokens.';
     }
   };
-
+  console.log('th.colors.', th.colors);
   return (
-    <x.div w="100%" maxWidth="480px" padding={4}>
+    <Box width="100%" maxWidth="480px" padding={2}>
       <SwapHeader title={title} />
 
       <SwapSection mt={6} mb={4}>
@@ -124,7 +135,7 @@ export function Stake() {
 
               <NumericalInput
                 id="currencyA"
-                disabled={false}
+                disabled={isAllowDisabled || isRemoveDisabled}
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
               />
@@ -169,6 +180,38 @@ export function Stake() {
         </InputPanel>
       </SwapSection>
 
+      {params.stakers === 'boosting' && (
+        <Card sx={{ borderRadius: '16px' }}>
+          <CardContent sx={{ '&:last-child': { p: 2 } }}>
+            <Box display="flex" justifyContent="space-between">
+              <Typography>My Boost</Typography>
+              <Typography>{stakedAmount} {token?.symbol}</Typography>
+            </Box>
+
+            <Box display="flex" justifyContent="space-between">
+              <Typography>Remaining Boost</Typography>
+              <Typography>{remainingBoost} {token?.symbol}</Typography>
+            </Box>
+
+            <Box display="flex" justifyContent="space-between">
+              <Typography>Max Boost</Typography>
+              <Typography>{maxBoost} {token?.symbol}</Typography>
+            </Box>
+          </CardContent>
+        </Card>
+      )}
+
+      {params.stakers !== 'boosting' && (
+        <Card sx={{ borderRadius: '16px' }}>
+          <CardContent sx={{ '&:last-child': { p: 2 } }}>
+            <Box display="flex" justifyContent="space-between">
+              <Typography>My Stake</Typography>
+              <Typography>{stakedAmount} {token?.symbol}</Typography>
+            </Box>
+          </CardContent>
+        </Card>
+      )}
+
       {stakeError && (
         <x.div>
           <x.p color="red-400">{getError(stakeError)}</x.p>
@@ -178,11 +221,14 @@ export function Stake() {
       {needAllowance && (
         <x.div display="flex" mt={4} mb={2} h="80px" alignItems="center" justifyContent="center">
           {isAllowDisabled ? (
-            <PacmanLoader color={th?.colors.gray155} />
+            <PacmanLoader color={th.colors.green[100]} />
           ) : (
             <PrimaryButton
-              disabled={isAllowDisabled}
+              variant="contained"
+              size="large"
+              disabled={isAllowDisabled && (!new BigNumber(value).isPositive() || !new BigNumber(value).gt(0))}
               onClick={() => approve.write()}
+              sx={{ width: '100%' }}
             >Approve</PrimaryButton>
           )}
         </x.div>
@@ -191,12 +237,18 @@ export function Stake() {
       {!needAllowance && (
         <x.div display="flex" mt={needAllowance ? 2 : 4} h="80px" alignItems="center" justifyContent="center">
           {isRemoveDisabled ? (
-            <PacmanLoader color={th?.colors.gray155} />
+            <PacmanLoader color={th.colors.green[100]} />
           ) : (
-            <PrimaryButton disabled={!value} onClick={() => write()}>Stake</PrimaryButton>
+            <PrimaryButton
+              variant="contained"
+              size="large"
+              disabled={!new BigNumber(value).isPositive() || !new BigNumber(value).gt(0)}
+              onClick={() => write()}
+              sx={{ width: '100%' }}
+            >Stake</PrimaryButton>
           )}
         </x.div>
       )}
-    </x.div>
+    </Box>
   );
 }
