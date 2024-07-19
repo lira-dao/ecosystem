@@ -7,7 +7,7 @@ export const ConnectButton = styled.buttonBox`
   height: 44px;
   cursor: pointer;
   display: inline-block;
-  
+
   font-size: 16px;
   font-weight: 500;
   background-color: transparent;
@@ -22,7 +22,7 @@ export const ConnectButton = styled.buttonBox`
   &:active {
     border: none;
   }
-  
+
   &:focus {
     border: none;
     outline: none;
