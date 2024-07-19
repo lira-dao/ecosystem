@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { formatUnits, parseUnits } from 'viem';
-import { PacmanLoader } from 'react-spinners';
 import BigNumber from 'bignumber.js';
 import { useTheme, x } from '@xstyled/styled-components';
 import { EthereumAddress } from '@lira-dao/web3-utils';
@@ -9,7 +8,6 @@ import { InputPanel } from '../components/swap/InputPanel';
 import { Container } from '../components/swap/Container';
 import { NumericalInput } from '../components/StyledInput';
 import { SwapSection } from '../components/swap/SwapSection';
-import { PrimaryButton } from '../components/PrimaryButton';
 import { useSnackbar } from 'notistack';
 import { SwapHeader } from '../components/swap/SwapHeader';
 import { Box, Card, CardContent, Typography } from '@mui/material';

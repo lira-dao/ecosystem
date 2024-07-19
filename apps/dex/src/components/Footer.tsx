@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Container, Grid, Link } from '@mui/material';
 import { useTheme } from '@xstyled/styled-components';
-import Typography from "@mui/material/Typography";
+import Typography from '@mui/material/Typography';
 import { ThemeProvider } from '@mui/material/styles';
 import { muiDarkTheme } from '../theme/theme';
 
