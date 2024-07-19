@@ -203,8 +203,6 @@ describe('RewardSplitterV2', () => {
         ],
       );
 
-    console.log('boost staker', await tbbBooster.stakers(deployer));
-
     // expect(await ldt.balanceOf(deployer)).eq(
     //   parseUnits('1', 18) + parseUnits('25', 18) + parseUnits('500', 18),
     // );

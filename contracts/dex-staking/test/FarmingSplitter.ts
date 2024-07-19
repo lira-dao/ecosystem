@@ -35,7 +35,6 @@ describe('FarmingSplitter', () => {
     expect(await farmingSplitter.farms(2)).eq(tbgFarmAddress);
   });
 
-
   it('should have tbb reward rate', async () => {
     const { farmingSplitter } = await rewardSplitterV2Fixture();
 

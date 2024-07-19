@@ -237,8 +237,8 @@ export async function rewardSplitterV2Fixture() {
   );
   const stakingSplitterAddress = await stakingSplitter.getAddress();
 
-  const boosterSplitterFactory = await hre.ethers.getContractFactory('BoostingSplitter');
-  const boosterSplitter = await boosterSplitterFactory.deploy(
+  const boostingSplitterFactory = await hre.ethers.getContractFactory('BoostingSplitter');
+  const boostingSplitter = await boostingSplitterFactory.deploy(
     ldtAddress,
     tbbAddress,
     tbsAddress,
@@ -249,7 +249,7 @@ export async function rewardSplitterV2Fixture() {
       tbgBoosterAddress,
     ],
   );
-  const boosterSplitterAddress = await boosterSplitter.getAddress();
+  const boostingSplitterAddress = await boostingSplitter.getAddress();
 
   const teamSplitterFactory = await hre.ethers.getContractFactory('TeamSplitter');
   const teamSplitter = await teamSplitterFactory.deploy(
@@ -268,7 +268,7 @@ export async function rewardSplitterV2Fixture() {
     distributorAddress,
     farmSplitterAddress,
     stakingSplitterAddress,
-    boosterSplitter,
+    boostingSplitter,
     teamSplitterAddress,
     ldtTeam,
     {
@@ -314,16 +314,19 @@ export async function rewardSplitterV2Fixture() {
 
   return {
     ...dex,
+    boostingSplitter,
+    boostingSplitterAddress,
     deployer,
     distributor,
     distributorAddress,
-    farmingSplitter,
     farmSplitterAddress,
+    farmingSplitter,
     ldt,
     ldtAddress,
     ldtTeam,
     rewardSplitter,
     rewardSplitterAddress,
+    stakingSplitter,
     tbb,
     tbbAddress,
     tbbBooster,

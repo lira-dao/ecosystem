@@ -2,82 +2,82 @@ import { rewardSplitterV2Fixture, rewardSplitterV2FixtureWithStake } from '../fi
 import { expect } from 'chai';
 import { parseUnits } from 'ethers';
 
-describe('StakingSplitter', () => {
+describe('BoostingSplitter', () => {
   it('should have ldt address', async () => {
-    const { stakingSplitter, ldtAddress } = await rewardSplitterV2Fixture();
+    const { boostingSplitter, ldtAddress } = await rewardSplitterV2Fixture();
 
-    expect(await stakingSplitter.ldt()).eq(ldtAddress);
+    expect(await boostingSplitter.ldt()).eq(ldtAddress);
   });
 
   it('should have tbb address', async () => {
-    const { stakingSplitter, tbbAddress } = await rewardSplitterV2Fixture();
+    const { boostingSplitter, tbbAddress } = await rewardSplitterV2Fixture();
 
-    expect(await stakingSplitter.tbb()).eq(tbbAddress);
+    expect(await boostingSplitter.tbb()).eq(tbbAddress);
   });
 
   it('should have tbs address', async () => {
-    const { stakingSplitter, tbsAddress } = await rewardSplitterV2Fixture();
+    const { boostingSplitter, tbsAddress } = await rewardSplitterV2Fixture();
 
-    expect(await stakingSplitter.tbs()).eq(tbsAddress);
+    expect(await boostingSplitter.tbs()).eq(tbsAddress);
   });
 
   it('should have tbg address', async () => {
-    const { stakingSplitter, tbgAddress } = await rewardSplitterV2Fixture();
+    const { boostingSplitter, tbgAddress } = await rewardSplitterV2Fixture();
 
-    expect(await stakingSplitter.tbg()).eq(tbgAddress);
+    expect(await boostingSplitter.tbg()).eq(tbgAddress);
   });
 
   it('should have farms address', async () => {
-    const { stakingSplitter, tbbStakerAddress, tbsStakerAddress, tbgStakerAddress } = await rewardSplitterV2Fixture();
+    const { boostingSplitter, tbbBoosterAddress, tbsBoosterAddress, tbgBoosterAddress } = await rewardSplitterV2Fixture();
 
-    expect(await stakingSplitter.stakers(0)).eq(tbbStakerAddress);
-    expect(await stakingSplitter.stakers(1)).eq(tbsStakerAddress);
-    expect(await stakingSplitter.stakers(2)).eq(tbgStakerAddress);
+    expect(await boostingSplitter.boosters(0)).eq(tbbBoosterAddress);
+    expect(await boostingSplitter.boosters(1)).eq(tbsBoosterAddress);
+    expect(await boostingSplitter.boosters(2)).eq(tbgBoosterAddress);
   });
 
   it('should have tbb reward rate', async () => {
-    const { stakingSplitter } = await rewardSplitterV2Fixture();
+    const { boostingSplitter } = await rewardSplitterV2Fixture();
 
-    let rewardRate = await stakingSplitter.tbbRewardRate();
+    let rewardRate = await boostingSplitter.tbbRewardRate();
 
     expect(rewardRate[0]).eq(200);
     expect(rewardRate[1]).eq(200);
 
-    await expect(stakingSplitter.setTbbRewardRate({ ldt: 300, tb: 400 })).not.reverted;
+    await expect(boostingSplitter.setTbbRewardRate({ ldt: 300, tb: 400 })).not.reverted;
 
-    rewardRate = await stakingSplitter.tbbRewardRate();
+    rewardRate = await boostingSplitter.tbbRewardRate();
 
     expect(rewardRate[0]).eq(300);
     expect(rewardRate[1]).eq(400);
   });
 
   it('should have tbs reward rate', async () => {
-    const { stakingSplitter } = await rewardSplitterV2Fixture();
+    const { boostingSplitter } = await rewardSplitterV2Fixture();
 
-    let rewardRate = await stakingSplitter.tbsRewardRate();
+    let rewardRate = await boostingSplitter.tbsRewardRate();
 
     expect(rewardRate[0]).eq(500);
     expect(rewardRate[1]).eq(500);
 
-    await expect(stakingSplitter.setTbsRewardRate({ ldt: 600, tb: 700 })).not.reverted;
+    await expect(boostingSplitter.setTbsRewardRate({ ldt: 600, tb: 700 })).not.reverted;
 
-    rewardRate = await stakingSplitter.tbsRewardRate();
+    rewardRate = await boostingSplitter.tbsRewardRate();
 
     expect(rewardRate[0]).eq(600);
     expect(rewardRate[1]).eq(700);
   });
 
   it('should have tbg reward rate', async () => {
-    const { stakingSplitter } = await rewardSplitterV2Fixture();
+    const { boostingSplitter } = await rewardSplitterV2Fixture();
 
-    let rewardRate = await stakingSplitter.tbgRewardRate();
+    let rewardRate = await boostingSplitter.tbgRewardRate();
 
     expect(rewardRate[0]).eq(1000);
     expect(rewardRate[1]).eq(1000);
 
-    await expect(stakingSplitter.setTbgRewardRate({ ldt: 2000, tb: 3000 })).not.reverted;
+    await expect(boostingSplitter.setTbgRewardRate({ ldt: 2000, tb: 3000 })).not.reverted;
 
-    rewardRate = await stakingSplitter.tbgRewardRate();
+    rewardRate = await boostingSplitter.tbgRewardRate();
 
     expect(rewardRate[0]).eq(2000);
     expect(rewardRate[1]).eq(3000);
@@ -85,21 +85,21 @@ describe('StakingSplitter', () => {
 
 
   it('should have min rate', async () => {
-    const { stakingSplitter } = await rewardSplitterV2Fixture();
+    const { boostingSplitter } = await rewardSplitterV2Fixture();
 
-    expect(await stakingSplitter.MIN_RATE()).eq(1);
+    expect(await boostingSplitter.MIN_RATE()).eq(1);
   });
 
   it('should have max rate', async () => {
-    const { stakingSplitter } = await rewardSplitterV2Fixture();
+    const { boostingSplitter } = await rewardSplitterV2Fixture();
 
-    expect(await stakingSplitter.MAX_RATE()).eq(100_000);
+    expect(await boostingSplitter.MAX_RATE()).eq(100_000);
   });
 
   it('should calculate', async () => {
-    const { stakingSplitter } = await rewardSplitterV2FixtureWithStake();
+    const { boostingSplitter } = await rewardSplitterV2FixtureWithStake();
 
-    const rewards = await stakingSplitter.calculate(parseUnits('221917.8'), parseUnits('1775342.4'));
+    const rewards = await boostingSplitter.calculate(parseUnits('221917.8'), parseUnits('1775342.4'));
 
     expect(rewards.tbb.liquidity.ldt).eq(1000000000000000000n);
     expect(rewards.tbb.liquidity.tb).eq(1000000000000000n);
