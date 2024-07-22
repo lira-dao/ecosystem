@@ -120,7 +120,7 @@ export function Stake() {
         return 'You have pending rewards. Please harvest your current rewards before staking additional tokens.';
     }
   };
-  console.log('th.colors.', th.colors);
+
   return (
     <Box width="100%" maxWidth="480px" padding={2}>
       <SwapHeader title={title} />
