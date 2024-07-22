@@ -1,6 +1,6 @@
 {
   "name": "@lira-dao/dex",
-  "version": "1.9.0-18",
+  "version": "1.9.0-19",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.4",

@@ -22,16 +22,17 @@ export function Unstake() {
   const [value, setValue] = useState<string>('');
 
   const {
-    isError,
-    write,
-    error,
-    reset,
     confirmed,
+    error,
+    isError,
     isPending,
+    reset,
     stakeError,
+    staked,
     stakedAmount,
     token,
-    staked,
+    unstakeAmount,
+    write,
   } = useTokenStaker(params.stakers || '', params.staker as EthereumAddress, 'unstake', value);
 
   const isRemoveDisabled = useMemo(() => isPending, [isPending]);
@@ -53,7 +54,7 @@ export function Unstake() {
   const errorText = useMemo(() => {
     switch (stakeError) {
       case 'INVALID_BOOST_AMOUNT':
-        return `Your boost is too high! You need to remove x LDT from the boost to unstake ${new BigNumber(value)} ${token?.symbol}`;
+        return `Your boost is too high! You need to remove ${unstakeAmount} LDT from the boost to unstake ${new BigNumber(value)} ${token?.symbol}`;
       case 'PENDING_REWARDS':
         return 'You have pending rewards. Please harvest your current rewards before staking additional tokens.';
       default:

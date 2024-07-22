@@ -55,9 +55,9 @@ export const tokenStakerAddresses: StakersAddresses = {
 
 export const boosterAddresses: BoosterAddresses = {
   421614: {
-    tbb: '0x4AB5Ed506fFE2Ae9Dfa12720A8d959FAd8E1770C',
-    tbs: '0x75CEB066718d40F87d27b0B581F4C14E2c6F4e64',
-    tbg: '0x6513882CDE350a71e458Cc5e58281ccA55B7cB60',
+    tbb: '0xdBC93d19b699B4f0FaB3aF7bfb56Af6C4BF9fE81',
+    tbs: '0x33D784cA9d5ECb9011397ae67544Aa3948D5F679',
+    tbg: '0x9786823b18a6E57e76960621bfe0DCA0f0d02508',
   },
 };
 
@@ -68,21 +68,21 @@ export const tokenDistributor: TokenDistributorAddress = {
 
 export const rewardSplitter: RewardSplitterAddress = {
   42161: '0xbBBbE9b62Cab1852461D4137b10E959F5577e5BE',
-  421614: '0xd5ff24dEE84C7AB7359AD26A48c64F93640dEd0b',
+  421614: '0x806992260d33cc1673861D55f2259bA33f1Cb0B3',
 };
 
 export const farmingSplitter: NetworkAddresses = {
-  421614: '0x15b8ad7979Ab55c88CA691357661Cd5EA900A4cc',
+  421614: '0xFfAdA101b22203d22054cD7bb68E2E8170d9cD37',
 };
 
 export const stakingSplitter: NetworkAddresses = {
-  421614: '0xce0B9FC627897A13757b38a4d2c3174C6e57Be6a',
+  421614: '0x83F00777Ca33F51691eaD68943E9D84A4a946C23',
 };
 
 export const boostingSplitter: NetworkAddresses = {
-  421614: '0xCc788444876eb1800a58B9f4a7A3E46E4860EB52',
+  421614: '0xF143aaD99Be66B80C5359CD0F1D815De29Ec3A0A',
 };
 
 export const teamSplitter: NetworkAddresses = {
-  421614: '0x3533795C5570d1dF15554d10895E7F57Ec8a5A43',
+  421614: '0x600Bb4586510632aC0351f3a2B980C8cF60b8B9E',
 };

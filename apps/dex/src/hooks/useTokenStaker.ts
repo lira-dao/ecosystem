@@ -62,6 +62,25 @@ export function useTokenStaker(stakers: string, address: EthereumAddress, action
     },
   });
 
+  const boosterAddress = useReadContract({
+    abi: tokenStakerAbi,
+    address,
+    functionName: 'boosterAddress',
+    query: {
+      enabled: action === 'unstake' && stakers === 'staking',
+    },
+  });
+
+  const unstakeAmount = useReadContract({
+    abi: boostingStakerAbi,
+    address: boosterAddress.data,
+    functionName: 'getUnstakeAmount',
+    args: [account.address as EthereumAddress, parseUnits(new BigNumber(stakedAmount.data?.[0].toString() || '0').minus(parseUnits(amount || '0', 18).toString()).toString(), 0)],
+    query: {
+      enabled: action === 'unstake' && stakers === 'staking' && new BigNumber(amount || '0').gt(0),
+    },
+  });
+
   const remainingBoost = useReadContract({
     abi: boostingStakerAbi,
     address: address,
@@ -109,10 +128,11 @@ export function useTokenStaker(stakers: string, address: EthereumAddress, action
     reset,
     // @ts-ignore
     stakeError: failureReason?.cause?.reason,
-    stakedAmount: new BigNumber(stakedAmount.data?.[0].toString() || '0').div(new BigNumber(10).pow(18)).toFormat(2, 1),
     staked: stakedAmount,
+    stakedAmount: new BigNumber(stakedAmount.data?.[0].toString() || '0').div(new BigNumber(10).pow(18)).toFormat(2, 1),
     token: getCurrencyByAddress(token.data || '0x0'),
     tokens: [getCurrencyByAddress(rewardToken1.data || '0x0'), getCurrencyByAddress(rewardToken2.data || '0x0')],
+    unstakeAmount: new BigNumber(unstakeAmount.data?.toString() || '0').div(new BigNumber(10).pow(18)).toFormat(2, 1),
     write,
   };
 }
