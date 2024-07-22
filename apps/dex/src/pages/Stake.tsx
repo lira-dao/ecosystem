@@ -115,7 +115,7 @@ export function Stake() {
   const getError = (error?: string) => {
     switch (error) {
       case 'MINIMUM_STAKE_AMOUNT':
-        return `The minimum stake amount is 1 treasury token, you have staked ${stakedAmount} ${token?.symbol}`;
+        return `The minimum stake amount is 1 ${token?.symbol}`;
       case 'PENDING_REWARDS':
         return 'You have pending rewards. Please harvest your current rewards before staking additional tokens.';
     }

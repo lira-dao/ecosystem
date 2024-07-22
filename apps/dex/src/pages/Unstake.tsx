@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { formatUnits, parseUnits } from 'viem';
 import BigNumber from 'bignumber.js';
-import { useTheme, x } from '@xstyled/styled-components';
+import { x } from '@xstyled/styled-components';
 import { EthereumAddress } from '@lira-dao/web3-utils';
 import { InputPanel } from '../components/swap/InputPanel';
 import { Container } from '../components/swap/Container';
@@ -13,18 +13,18 @@ import { SwapHeader } from '../components/swap/SwapHeader';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 import { useTokenStaker } from '../hooks/useTokenStaker';
 import { PrimaryButtonWithLoader } from '../components/PrimaryButtonWithLoader';
+import { ErrorMessage } from '../components/swap/ErrorMessage';
 
 
 export function Unstake() {
-  const th = useTheme();
   const { enqueueSnackbar } = useSnackbar();
   const params = useParams();
   const [value, setValue] = useState<string>('');
 
   const {
     isError,
-    error,
     write,
+    error,
     reset,
     confirmed,
     isPending,
@@ -50,15 +50,26 @@ export function Unstake() {
     }
   }, [confirmed]);
 
+  const errorText = useMemo(() => {
+    switch (stakeError) {
+      case 'INVALID_BOOST_AMOUNT':
+        return `You are boosting too much, you need to lower your boost level to unstake`;
+      case 'PENDING_REWARDS':
+        return 'You have pending rewards. Please harvest your current rewards before staking additional tokens.';
+      default:
+        return '';
+    }
+  }, [stakeError]);
+
   useEffect(() => {
     if (isError) {
       // @ts-ignore
-      enqueueSnackbar(error?.shortMessage || 'Network error!', {
+      enqueueSnackbar(errorText || error?.shortMessage || 'Network error!', {
         autoHideDuration: 3000,
         variant: 'error',
       });
     }
-  }, [isError]);
+  }, [error, errorText, isError]);
 
   const title = useMemo(() => {
     switch (params.stakers) {
@@ -151,13 +162,7 @@ export function Unstake() {
         </CardContent>
       </Card>
 
-      {stakeError && stakeError === 'PENDING_REWARDS' && (
-        <x.div>
-          <x.p color="red-400">You have pending rewards. Please harvest your current rewards before reducing your staked
-            tokens.
-          </x.p>
-        </x.div>
-      )}
+      {errorText && <ErrorMessage text={errorText} />}
 
       <x.div display="flex" mt={4} h="80px" alignItems="center" justifyContent="center">
         <PrimaryButtonWithLoader
