@@ -1,4 +1,4 @@
-import { useContractReads, useReadContract } from 'wagmi';
+import { useContractReads, useReadContract, useReadContracts } from 'wagmi';
 import { Currency, dexFactoryV2Abi, dexPairV2Abi, EthereumAddress } from '@lira-dao/web3-utils';
 import { useMemo } from 'react';
 import BigNumber from 'bignumber.js';
@@ -27,7 +27,7 @@ export function usePair(currencyA: Currency, currencyB?: Currency) {
     },
   });
 
-  const tokens = useContractReads({
+  const tokens = useReadContracts({
     contracts: [{
       abi: dexPairV2Abi,
       address: pair.data,

@@ -14,6 +14,7 @@ import { Unstake } from './pages/Unstake';
 import { Staking } from './pages/Staking';
 import { muiDarkTheme } from './theme/theme';
 import { ThemeProvider } from '@mui/material/styles';
+import { MyPortfolio } from './pages/MyPortfolio';
 
 
 const routes = [
@@ -42,6 +43,9 @@ const routes = [
   // treasury
   { path: 'treasury', element: <Treasury /> },
   { path: 'treasury/:address/:action', element: <ThemeProvider theme={muiDarkTheme}><TreasuryMint /></ThemeProvider> },
+
+  // my portfolio
+  { path: 'my-portfolio', element: <MyPortfolio /> },
 ];
 
 if (process.env.REACT_APP_TESTNET === 'true') {

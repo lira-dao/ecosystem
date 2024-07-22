@@ -10,6 +10,7 @@ interface AppTheme extends ITheme, XStyledDefaultTheme {
     gray34: string,
     gray94: string,
     gray155: string,
+    red400: string;
     'eerie-black': string,
     'aqua-900': string
     'green-yellow-300': string,
@@ -48,6 +49,7 @@ declare module '@mui/material/styles' {
       cyan: typeof cyan,
       gray155: string;
       white: string;
+      red400: string;
     };
   }
   interface ThemeOptions {
@@ -56,6 +58,7 @@ declare module '@mui/material/styles' {
       cyan: typeof cyan,
       gray155?: string;
       white: string;
+      red400: string;
     };
   }
 }

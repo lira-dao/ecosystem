@@ -39,6 +39,7 @@ export const muiDarkTheme = createTheme({
     white: '#FFFFFF',
     cyan,
     green,
+    red400: '#fe092e'
   },
   typography: {
     fontFamily: [
@@ -84,6 +85,7 @@ export const theme = {
     gray34: '#222222',
     gray94: '#5E5E5E',
     gray155: '#9B9B9B',
+    red400: '#fe092e',
     'eerie-black': '#1b1b1b',
 
     surface1: '#131313',
