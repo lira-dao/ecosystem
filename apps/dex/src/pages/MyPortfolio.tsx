@@ -8,10 +8,12 @@ import { getCurrencies, getCurrencyByAddress, getPairedCurrencies } from '../uti
 import { useFarmingStakers } from '../hooks/useFarmingStakers';
 import { useTokenBalances } from '../hooks/useTokenBalances';
 import { usePools } from '../hooks/usePools';
+import { usePricedPools } from '../hooks/usePricesPools';
 import { useFetchPrices } from '../hooks/usePrices';
 import { MyFarmingTable } from '../components/portfolio/MyFarmingTable';
 import { MyPoolsTable } from '../components/portfolio/MyPoolsTable';
 import { muiDarkTheme, theme } from '../theme/theme';
+import BigNumber from 'bignumber.js';
 
 
 // export type AnchorX = 'left' | 'right' | 'middle';
@@ -44,9 +46,7 @@ export function MyPortfolio() {
     address: account.address
   });
   
-  // balance in eth
-  console.log('🚀 ~ accountBalance', accountBalance);
-  // console.log("🚀 ~ MyPortfolio ~ accountBalance:", accountBalance?.value.toString() || '0')
+  console.log('🚀 ~ accountBalance', accountBalance?.value.toString() || '0');
 
   // const insufficientBalanceA = useMemo(() => {
   //   if (currencyA.isNative) {
@@ -56,14 +56,36 @@ export function MyPortfolio() {
   //   }
   // }, [accountBalance.data?.value, balanceA.data, currencyA.decimals, currencyA.isNative, firstValue]);
   const tokens = getCurrencies(chainId)
-  const { balances: tokensBalance, isLoading: isLoadingTokensBalance, error: errorTokensBalance } = useTokenBalances();
-  console.log("🚀 ~ MyPortfolio ~ tokenBalances:", tokensBalance)
+  const { balances: tokensBalance } = useTokenBalances();
+  const pricedPools = usePricedPools();
+  console.log("🚀 ~ MyPortfolio ~ pricedPools:", pricedPools)
+
+  const [assetsChartData, setAssetChartData] = useState([]);
 
   useEffect(() => {
-    console.log("tokens", tokens, tokensBalance);
-  }, [tokens, tokensBalance]);
+    if (accountBalance && tokensBalance.length > 0) {
+      const mergedData = tokens.map(token => {
+        let priceInUSD;
+        const balanceObj = tokensBalance.find(balance => balance?.symbol === token.symbol);
+        const tokenPriced = pricedPools.find(pool => pool?.symbol === token.symbol);
+        if (tokenPriced ) {
+          const balance = balanceObj ? balanceObj.balance : (accountBalance ? accountBalance.value : 0n)
+          
+          priceInUSD = (new BigNumber(balance?.toString() || 0).dividedBy(new BigNumber(10).pow(token.decimals))).multipliedBy(tokenPriced.price).toString();
+        } 
 
-  // console.log("🚀 ~ MyPortfolio ~ balances:", tokenBalances.queryKey)
+        return {
+          name: token.name,
+          value: priceInUSD,
+          label: token.symbol
+          // balance: balanceObj ? balanceObj.balance : (accountBalance ? accountBalance.value : 0n),
+        }
+      });
+      console.log("🚀 ~ mergedData ~ mergedData:", mergedData, pricesData)
+
+      setAssetChartData(mergedData as any)
+    }
+  }, [tokens, accountBalance, tokensBalance, pricedPools]);
 
   const [selectedView, setSelectedView] = useState('liquidity');
   const [liquidityTimeFrame, setLiquidityTimeFrame] = useState<TimeFrame>('7days');
@@ -87,9 +109,9 @@ export function MyPortfolio() {
     }
   };
 
-  useEffect(() => {
-    console.log("Component rendered");
-  });
+  // useEffect(() => {
+  //   console.log("Component rendered");
+  // });
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -102,17 +124,17 @@ export function MyPortfolio() {
   // const portfolioValue = '0 ETH ~$0.00 - No data available';
   // const liquidityData = { ethValue: 'No data', periods: ['7 Days', '1 Month', '3 Months', '6 Months', '1 Year', 'All Time'] };
 
-  const assetsChartData = [
-    { name: 'Apple', value: 10, label: 'Series A' },
-    { name: 'Banana', value: 15, label: 'Series B' },
-    { name: 'Cherry', value: 20, label: 'Series C' },
-    { name: 'Apple', value: 10, label: 'Series A' },
-    { name: 'Banana', value: 15, label: 'Series B' },
-    { name: 'Cherry', value: 20, label: 'Series C' },
-    { name: 'Apple', value: 10, label: 'Series A' },
-    { name: 'Banana', value: 15, label: 'Series B' },
-    { name: 'Cherry', value: 20, label: 'Series C' }
-  ];
+  // const assetsChartData = [
+  //   { name: 'Apple', value: 10, label: 'Series A' },
+  //   { name: 'Banana', value: 15, label: 'Series B' },
+  //   { name: 'Cherry', value: 20, label: 'Series C' },
+  //   { name: 'Apple', value: 10, label: 'Series A' },
+  //   { name: 'Banana', value: 15, label: 'Series B' },
+  //   { name: 'Cherry', value: 20, label: 'Series C' },
+  //   { name: 'Apple', value: 10, label: 'Series A' },
+  //   { name: 'Banana', value: 15, label: 'Series B' },
+  //   { name: 'Cherry', value: 20, label: 'Series C' }
+  // ];
 
   return (
     <ThemeProvider theme={muiDarkTheme}>
@@ -320,7 +342,7 @@ export function MyPortfolio() {
 
                               {tokensBalance && tokensBalance.map((crypto, index) => (
                                 // ${parseFloat(crypto.price).toFixed(2)} USD
-                                <Typography key={index} variant="body2">{crypto.symbol} {crypto?.balance?.toString()}</Typography>
+                                <Typography key={index} variant="body2">{crypto?.symbol} {crypto?.balance?.toString()}</Typography>
                               ))}
                             </Box>
                           )}
@@ -350,7 +372,7 @@ export function MyPortfolio() {
           </Grid>
         </Grid>
 
-        <Grid container spacing={2} marginTop={4}>
+        {/* <Grid container spacing={2} marginTop={4}>
           <Grid item xs={12} sm={4} md={3}>
             <Card>
               <CardContent>
@@ -379,12 +401,6 @@ export function MyPortfolio() {
               </CardContent>
             </Card>
           </Grid>
-
-          {/* {tokenBalances.map((balance) => (
-            <Typography key={balance.symbol}>
-              {balance.symbol}: {balance.amount}
-            </Typography>
-          ))} */}
 
           <Grid item xs={12}>
             <Box>
@@ -438,7 +454,7 @@ export function MyPortfolio() {
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
+        </Grid> */}
 
       </Box>
     </ThemeProvider>
