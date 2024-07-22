@@ -223,21 +223,35 @@ contract RewardSplitterV2 is Ownable2Step {
 
         RewardsLibrary.TeamRewardsAmounts memory teamRewards = ITeamSplitter(teamSplitter).calculate(rewards.team.ldt, ldtLiquidity, rewards.team.tb, tbbLiquidity, tbsLiquidity, tbgLiquidity);
 
-        ITreasuryToken(tbb).mint(address(this), farmingRewards.tbb.tb);
-        ITreasuryToken(tbs).mint(address(this), farmingRewards.tbs.tb);
-        ITreasuryToken(tbg).mint(address(this), farmingRewards.tbg.tb);
+        if (farmingRewards.tbb.ldt > 0 && farmingRewards.tbb.tb > 0) {
+            ITreasuryToken(tbb).mint(address(this), farmingRewards.tbb.tb);
+            IStaker(farms[0]).distributeRewards(farmingRewards.tbb.ldt, farmingRewards.tbb.tb);
+        }
 
-        IStaker(farms[0]).distributeRewards(farmingRewards.tbb.ldt, farmingRewards.tbb.tb);
-        IStaker(farms[1]).distributeRewards(farmingRewards.tbs.ldt, farmingRewards.tbs.tb);
-        IStaker(farms[2]).distributeRewards(farmingRewards.tbg.ldt, farmingRewards.tbg.tb);
+        if (farmingRewards.tbs.ldt > 0 && farmingRewards.tbs.tb > 0) {
+            ITreasuryToken(tbs).mint(address(this), farmingRewards.tbs.tb);
+            IStaker(farms[1]).distributeRewards(farmingRewards.tbs.ldt, farmingRewards.tbs.tb);
+        }
 
-        ITreasuryToken(tbb).mint(address(this), stakingRewards.tbb.tb);
-        ITreasuryToken(tbs).mint(address(this), stakingRewards.tbs.tb);
-        ITreasuryToken(tbg).mint(address(this), stakingRewards.tbg.tb);
+        if (farmingRewards.tbg.ldt > 0 && farmingRewards.tbg.tb > 0) {
+            ITreasuryToken(tbg).mint(address(this), farmingRewards.tbg.tb);
+            IStaker(farms[2]).distributeRewards(farmingRewards.tbg.ldt, farmingRewards.tbg.tb);
+        }
 
-        IStaker(stakers[0]).distributeRewards(stakingRewards.tbb.ldt, stakingRewards.tbb.tb);
-        IStaker(stakers[1]).distributeRewards(stakingRewards.tbs.ldt, stakingRewards.tbs.tb);
-        IStaker(stakers[2]).distributeRewards(stakingRewards.tbg.ldt, stakingRewards.tbg.tb);
+        if (stakingRewards.tbb.ldt > 0 && stakingRewards.tbb.tb > 0) {
+            ITreasuryToken(tbb).mint(address(this), stakingRewards.tbb.tb);
+            IStaker(stakers[0]).distributeRewards(stakingRewards.tbb.ldt, stakingRewards.tbb.tb);
+        }
+
+        if (stakingRewards.tbs.ldt > 0 && stakingRewards.tbs.tb > 0) {
+            ITreasuryToken(tbs).mint(address(this), stakingRewards.tbs.tb);
+            IStaker(stakers[1]).distributeRewards(stakingRewards.tbs.ldt, stakingRewards.tbs.tb);
+        }
+
+        if (stakingRewards.tbg.ldt > 0 && stakingRewards.tbg.tb > 0) {
+            ITreasuryToken(tbg).mint(address(this), stakingRewards.tbg.tb);
+            IStaker(stakers[2]).distributeRewards(stakingRewards.tbg.ldt, stakingRewards.tbg.tb);
+        }
 
         if (boostingRewards.tbb.ldt > 0 && boostingRewards.tbb.tb > 0) {
             ITreasuryToken(tbb).mint(address(this), boostingRewards.tbb.tb);
@@ -263,11 +277,11 @@ contract RewardSplitterV2 is Ownable2Step {
             IERC20(ldt).transfer(distributor, IERC20(ldt).balanceOf(address(this)));
         }
 
-        emit DistributeFarmingRewards(farmingRewards);
-        emit DistributeStakingRewards(stakingRewards);
-        emit DistributeBoostingRewards(boostingRewards);
-        emit DistributeTeamRewards(teamRewards);
-        emit DistributeRewards(rewards);
+         emit DistributeFarmingRewards(farmingRewards);
+         emit DistributeStakingRewards(stakingRewards);
+         emit DistributeBoostingRewards(boostingRewards);
+         emit DistributeTeamRewards(teamRewards);
+         emit DistributeRewards(rewards);
     }
 
     function recoverOwnership(address _address) external onlyOwner {
