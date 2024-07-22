@@ -45,12 +45,14 @@ export function CurrencyInput({
   price,
 }: CurrencyInputProps) {
   const onSetPercentageInternal = (percentage: number) => {
-    if (percentage === 100) {
-      onSetPercentage(new BigNumber(balance.toString()).div(new BigNumber(10).pow(currency?.decimals || 18)).toString());
-    } else {
-      onSetPercentage(
-        new BigNumber((new BigNumber(balance.toString()).times(percentage)).div(100)).div(new BigNumber(10).pow(currency?.decimals || 18)).toString(),
-      );
+    if (new BigNumber(value).gt(0)) {
+      if (percentage === 100) {
+        onSetPercentage(new BigNumber(balance.toString()).div(new BigNumber(10).pow(currency?.decimals || 18)).toString());
+      } else {
+        onSetPercentage(
+          new BigNumber((new BigNumber(balance.toString()).times(percentage)).div(100)).div(new BigNumber(10).pow(currency?.decimals || 18)).toString(),
+        );
+      }
     }
   };
 
