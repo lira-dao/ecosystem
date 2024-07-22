@@ -203,14 +203,6 @@ describe('RewardSplitterV2', () => {
         ],
       );
 
-    // expect(await ldt.balanceOf(deployer)).eq(
-    //   parseUnits('1', 18) + parseUnits('25', 18) + parseUnits('500', 18),
-    // );
-
-    // expect(await tbb.balanceOf(deployer)).eq(parseUnits('0.001', 18));
-    // expect(await tbs.balanceOf(deployer)).eq(parseUnits('0.0025', 18));
-    // expect(await tbg.balanceOf(deployer)).eq(parseUnits('0.005', 18));
-
     expect(await ldt.balanceOf(rewardSplitterAddress)).eq(0n);
   });
 
