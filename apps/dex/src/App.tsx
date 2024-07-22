@@ -20,6 +20,7 @@ export function App() {
       isEnabled={isProduction}
       isVerboseMode={false}
       loadingComponent={null}
+      onCacheClear={() => {}}
     >
       <>
         <GlobalStyles />
