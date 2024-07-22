@@ -57,7 +57,7 @@ export function Header() {
         <MenuItem text="POOLS" to="/pools" />
         <MenuItem text="FARMING" to="/farming" />
         <MenuItem text="STAKING" to="/staking" />
-        <MenuItem text="MY PORTFOLIO" to="/my-portfolio" />
+        {/*<MenuItem text="MY PORTFOLIO" to="/my-portfolio" />*/}
         {process.env.REACT_APP_TESTNET === 'true' && <MenuItem text="FAUCETS" to="/faucets" />}
       </Box>
       <Box sx={{
@@ -124,7 +124,7 @@ export function Header() {
             <MenuItem text="POOLS" to="/pools" />
             <MenuItem text="FARMING" to="/farming" />
             <MenuItem text="STAKING" to="/staking" />
-            <MenuItem text="PORTFOLIO" to="/my-portfolio" />
+            {/*<MenuItem text="PORTFOLIO" to="/my-portfolio" />*/}
             {process.env.REACT_APP_TESTNET === 'true' && <MenuItem text="FAUCETS" to="/faucets" />}
           </Box>
         )}
