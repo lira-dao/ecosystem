@@ -75,7 +75,7 @@ export function useTokenStaker(stakers: string, address: EthereumAddress, action
     abi: boostingStakerAbi,
     address: boosterAddress.data,
     functionName: 'getUnstakeAmount',
-    args: [account.address as EthereumAddress, parseUnits(new BigNumber(stakedAmount.data?.[0].toString() || '0').minus(parseUnits(amount || '0', 18).toString()).toString(), 0)],
+    args: [account.address as EthereumAddress, parseUnits(new BigNumber(stakedAmount.data?.[0].toString() || '0').minus(new BigNumber(amount || '0').times(new BigNumber(10).times(18))).toString(), 0)],
     query: {
       enabled: action === 'unstake' && stakers === 'staking' && new BigNumber(amount || '0').gt(0),
     },
