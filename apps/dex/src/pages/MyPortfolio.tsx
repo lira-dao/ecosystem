@@ -1,23 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useAccount, useBalance as useBalanceWagmi, useChainId } from 'wagmi';
 import { Box, Card, CardContent, Typography, Grid, ToggleButton, ToggleButtonGroup, useMediaQuery, useTheme } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { PieChart } from '@mui/x-charts';
-// import { SparkLineChart } from '@mui/x-charts/SparkLineChart';
-import { getCurrencies, getCurrencyByAddress, getPairedCurrencies } from '../utils';
+import { getCurrencies } from '../utils';
 import { useFarmingStakers } from '../hooks/useFarmingStakers';
 import { useTokenBalances } from '../hooks/useTokenBalances';
 import { usePools } from '../hooks/usePools';
 import { usePricedPools } from '../hooks/usePricesPools';
 import { useFetchPrices } from '../hooks/usePrices';
-import { MyFarmingTable } from '../components/portfolio/MyFarmingTable';
-import { MyPoolsTable } from '../components/portfolio/MyPoolsTable';
 import { muiDarkTheme, theme } from '../theme/theme';
-import BigNumber from 'bignumber.js';
-
-
-// export type AnchorX = 'left' | 'right' | 'middle';
-// export type AnchorY = 'top' | 'bottom' | 'middle';
 
 type View = 'liquidity' | 'farming' | 'holdings';
 type TimeFrame = '7days' | '1month' | '3months' | '6months' | '1year' | 'all';
@@ -25,12 +17,7 @@ type TimeFrame = '7days' | '1month' | '3months' | '6months' | '1year' | 'all';
 export function MyPortfolio() {
   const th = useTheme();
 
-  // 'xs' | 'sm' | 'md' | 'lg' | 'xl',
-  // const isExtraSmall = useMediaQuery(th.breakpoints.down('xs'));
   const between900And1150 = useMediaQuery(th.breakpoints.between(900, 1150));
-
-  // const balance = useBalance(params.address as EthereumAddress);
-  // console.log("🚀 ~ MyPortfolio ~ params");
 
   const chainId = useChainId();
 
@@ -48,44 +35,10 @@ export function MyPortfolio() {
   
   console.log('🚀 ~ accountBalance', accountBalance?.value.toString() || '0');
 
-  // const insufficientBalanceA = useMemo(() => {
-  //   if (currencyA.isNative) {
-  //     return new BigNumber(parseUnits(firstValue, currencyA.decimals).toString()).gt(new BigNumber(accountBalance.data?.value.toString() || '0'));
-  //   } else {
-  //     return new BigNumber(parseUnits(firstValue, currencyA.decimals).toString()).gt(new BigNumber(balanceA.data?.toString() || '0'));
-  //   }
-  // }, [accountBalance.data?.value, balanceA.data, currencyA.decimals, currencyA.isNative, firstValue]);
   const tokens = getCurrencies(chainId)
   const { balances: tokensBalance } = useTokenBalances();
-  const pricedPools = usePricedPools();
-  console.log("🚀 ~ MyPortfolio ~ pricedPools:", pricedPools)
-
-  const [assetsChartData, setAssetChartData] = useState([]);
-
-  useEffect(() => {
-    if (accountBalance && tokensBalance.length > 0) {
-      const mergedData = tokens.map(token => {
-        let priceInUSD;
-        const balanceObj = tokensBalance.find(balance => balance?.symbol === token.symbol);
-        const tokenPriced = pricedPools.find(pool => pool?.symbol === token.symbol);
-        if (tokenPriced ) {
-          const balance = balanceObj ? balanceObj.balance : (accountBalance ? accountBalance.value : 0n)
-          
-          priceInUSD = (new BigNumber(balance?.toString() || 0).dividedBy(new BigNumber(10).pow(token.decimals))).multipliedBy(tokenPriced.price).toString();
-        } 
-
-        return {
-          name: token.name,
-          value: priceInUSD,
-          label: token.symbol
-          // balance: balanceObj ? balanceObj.balance : (accountBalance ? accountBalance.value : 0n),
-        }
-      });
-      console.log("🚀 ~ mergedData ~ mergedData:", mergedData, pricesData)
-
-      setAssetChartData(mergedData as any)
-    }
-  }, [tokens, accountBalance, tokensBalance, pricedPools]);
+  const assetsChartData = usePricedPools();
+  console.log("🚀 ~ MyPortfolio ~ pricedPools:", assetsChartData)
 
   const [selectedView, setSelectedView] = useState('liquidity');
   const [liquidityTimeFrame, setLiquidityTimeFrame] = useState<TimeFrame>('7days');
@@ -109,9 +62,6 @@ export function MyPortfolio() {
     }
   };
 
-  // useEffect(() => {
-  //   console.log("Component rendered");
-  // });
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -120,21 +70,6 @@ export function MyPortfolio() {
   if (errorPricesData) {
     return <div>Error Loading Prices</div>;
   }
-
-  // const portfolioValue = '0 ETH ~$0.00 - No data available';
-  // const liquidityData = { ethValue: 'No data', periods: ['7 Days', '1 Month', '3 Months', '6 Months', '1 Year', 'All Time'] };
-
-  // const assetsChartData = [
-  //   { name: 'Apple', value: 10, label: 'Series A' },
-  //   { name: 'Banana', value: 15, label: 'Series B' },
-  //   { name: 'Cherry', value: 20, label: 'Series C' },
-  //   { name: 'Apple', value: 10, label: 'Series A' },
-  //   { name: 'Banana', value: 15, label: 'Series B' },
-  //   { name: 'Cherry', value: 20, label: 'Series C' },
-  //   { name: 'Apple', value: 10, label: 'Series A' },
-  //   { name: 'Banana', value: 15, label: 'Series B' },
-  //   { name: 'Cherry', value: 20, label: 'Series C' }
-  // ];
 
   return (
     <ThemeProvider theme={muiDarkTheme}>
@@ -158,7 +93,6 @@ export function MyPortfolio() {
             </Card>
 
             <Card sx={{ color: 'white' }}>
-              {/*  sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }} */}
               <CardContent>
                 <Typography variant="h6">Wallet Overview</Typography>
                 <Box sx={{ 
@@ -216,7 +150,6 @@ export function MyPortfolio() {
                     </Box>
                   )}
                 </Box>
-                {/* { JSON.stringify({ asd: tokensBalance }) } */}
               </CardContent>
             </Card>
           </Grid>
@@ -309,7 +242,6 @@ export function MyPortfolio() {
                             alignItems: 'last baseline',
                             justifyContent: 'space-between',
                           }}>
-                            {/* <Typography variant="h6">Top Holdings Prices Graphs</Typography> */}
                             <Typography variant="body2">Your top tokens price development over time.</Typography>
                             <ToggleButtonGroup
                               color="primary"
@@ -326,9 +258,6 @@ export function MyPortfolio() {
                               <ToggleButton value="all">All Time</ToggleButton>
                             </ToggleButtonGroup>
 
-                            {/* <Box sx={{ flexGrow: 1 }}>
-                              <SparkLineChart data={[1, 4, 2, 5, 7, 4, 6]} height={100} />
-                            </Box> */}
                           </Box>
                           {/* TODO: move in wallet overview page */}
                           {isConnected && (
@@ -341,7 +270,6 @@ export function MyPortfolio() {
                               <Typography variant="h6" mt={1} mb={1}>Tokens Balance</Typography>
 
                               {tokensBalance && tokensBalance.map((crypto, index) => (
-                                // ${parseFloat(crypto.price).toFixed(2)} USD
                                 <Typography key={index} variant="body2">{crypto?.symbol} {crypto?.balance?.toString()}</Typography>
                               ))}
                             </Box>

@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { useAccount, useBalance as useBalanceWagmi, useChainId, useReadContracts } from 'wagmi';
-import { Currency, dexPairV2Abi, erc20Abi, DexPairs, EthereumAddress, Pair } from '@lira-dao/web3-utils';
-import { formatUnits } from 'viem';
+import { dexPairV2Abi, erc20Abi, EthereumAddress } from '@lira-dao/web3-utils';
 import BigNumber from 'bignumber.js';
 import { useDexPairs } from './useDexPairs';
 import { useFetchPrices } from './usePrices';
@@ -39,7 +38,12 @@ interface Pool {
   price: number;
 }
 
-export function usePricedPools(): Pool[] {
+export interface Asset {
+  value: number;
+  label: string;
+}
+
+export function usePricedPools(): Asset[] {
   const { data: externalPrices, error: errorExternalPrices, isLoading: isLoadingExternalPrices } = useFetchPrices();
 
   const ethPriceUSD = useMemo(() => {
@@ -57,29 +61,11 @@ export function usePricedPools(): Pool[] {
     address: account.address
   });
   
-  // console.log('🚀 ~ accountBalance', accountBalance);
   const dexPairs = useDexPairs();
   const chainId = useChainId();
   const currencies = getCurrencies(chainId);
   const tokens = getCurrencies(chainId);
   const tokenBalances = useTokenBalances();
-
-  // const tokensContracts = tokens.map(token => ({
-  //   abi: erc20Abi,
-  //   address: token.address as EthereumAddress,
-  //   functionName: 'balanceOf',
-  //   args: [account.address as EthereumAddress]
-  // }));
-
-  // const { data, error, isLoading } = useReadContracts({
-  //   contracts: tokensContracts,
-  //   query: {
-  //     enabled: !!account.address,
-  //     refetchOnWindowFocus: false
-  //   },
-  // });
-  // console.log("🚀 ~ usePricedPools ~ data:", data)
-  // console.log("🚀 ~ useTokenBalances ~ data:", data)
 
   const contracts = Object.entries(dexPairs).map(pair => ({
     ...poolBalanceOf,
@@ -93,7 +79,6 @@ export function usePricedPools(): Pool[] {
       enabled: !!account.address,
     },
   });
-  // console.log("🚀 ~ usePools ~ LP balances:", balances.data)
 
   const tokensContracts = tokens.map(token => ({
     abi: erc20Abi,
@@ -109,13 +94,6 @@ export function usePricedPools(): Pool[] {
       refetchOnWindowFocus: false
     },
   });
-
-  const _balances = tokensBalance ? tokens.map((token, index) => ({
-    symbol: token.symbol,
-    balance: tokensBalance[index] ? tokensBalance[index].result : 0n,
-  })) : [];
-
-  // console.log("🚀 ~ usePricedPools ~ tokensBalance:", _balances)
 
   const feeContracts = Object.entries(dexPairs).map(pair => ({
     ...poolFees,
@@ -135,33 +113,6 @@ export function usePricedPools(): Pool[] {
     contracts: reservesContracts,
     query: { enabled: !!account.address },
   });
-  console.log("🚀 ~ usePricedPools ~ reserves:", reserves.data)
-
-  // const pools = useMemo(() => {
-  //   return Object.entries(dexPairs).map(([key, pair], i) => {
-  //     // const token0 = currencies.find(t => t.address === pair.token0);
-  //     // const token1 = currencies.find(t => t.address === pair.token1);
-  //     // const [reserve0, reserve1] = reserves.data?.[i]?.result ?? [0n, 0n];
-
-  //     // const scaleFactor0 = new BigNumber(10).pow(token0.decimals - token1.decimals);
-  //     // const scaleFactor1 = new BigNumber(10).pow(token1.decimals - token0.decimals);
-
-  //     // const priceToken0toToken1 = reserve0 > 0n ? new BigNumber(reserve1).dividedBy(new BigNumber(reserve0)).multipliedBy(scaleFactor0) : new BigNumber(0);
-  //     // const priceToken1toToken0 = reserve1 > 0n ? new BigNumber(reserve0).dividedBy(new BigNumber(reserve1)).multipliedBy(scaleFactor1) : new BigNumber(0);
-
-  //     // return {
-  //     //   ...pair,
-  //     //   token0,
-  //     //   token1,
-  //     //   reserve0: reserve0.toString(),
-  //     //   reserve1: reserve1.toString(),
-  //     //   fee: (reserves.data?.[i]?.fee || '0').toString(),
-  //     //   formattedBalance: 'N/A', // This should be calculated if you have balance information
-  //     //   priceToken0toToken1: priceToken0toToken1.toFixed(), // or use .toString() if you prefer
-  //     //   priceToken1toToken0: priceToken1toToken0.toFixed(),
-  //     // };
-  //   });
-  // }, [dexPairs, reserves.data, currencies]);
 
   const tokens0Contract = Object.entries(dexPairs).map(pair => ({
     ...poolToken0,
@@ -172,8 +123,6 @@ export function usePricedPools(): Pool[] {
     contracts: tokens0Contract,
   });
 
-  // console.log("🚀 ~ usePricedPools ~ tokens0:", tokens0)
-
   const tokens1Contract = Object.entries(dexPairs).map(pair => ({
     ...poolToken1,
     address: pair[0] as EthereumAddress,
@@ -183,30 +132,9 @@ export function usePricedPools(): Pool[] {
     contracts: tokens1Contract,
   });
 
-  // console.log("🚀 ~ usePricedPools ~ tokens1:", tokens1)
+  let ldtPriceInEth: number;
 
-  // Improve with: Calculate price LDT in ETH
-
-  const ldtEthPairKey = Object.keys(dexPairs).find(key => {
-    return ((dexPairs as any)[key]?.symbol.includes('LDT') && (dexPairs as any)[key]?.symbol.includes('ETH'));
-  });
-  // console.log("🚀 ~ ldtEthPairKey ~ ldtEthPairKey:", ldtEthPairKey)
-
-  const ldtEthPair: Pair | undefined = ldtEthPairKey ? dexPairs[ldtEthPairKey as keyof typeof dexPairs] : undefined;
-  // console.log("🚀 ~ useTokenBalances ~ ldtEthPair:", ldtEthPair)
-
-  const ldtWbtcPairKey = Object.keys(dexPairs).find(key => {
-    return ((dexPairs as any)[key]?.symbol.includes('LDT') && (dexPairs as any)[key]?.symbol.includes('BTC'));
-  });
-  // console.log("🚀 ~ ldtWbtcPairKey ~ ldtWbtcPairKey:", ldtWbtcPairKey)
-
-  const ldtWbtcPair: Pair | undefined = ldtWbtcPairKey ? dexPairs[ldtWbtcPairKey as keyof typeof dexPairs] : undefined;
-  // console.log("🚀 ~ useTokenBalances ~ ldtWbtcPair:", ldtWbtcPair)
-
-
-  let ldtPriceInEth: number, ldtPriceInWbtc;
-
-  return Object.entries(dexPairs).map((pair, i) => {
+  const pricedPools = Object.entries(dexPairs).map((pair, i) => {
 
     const { address: pairAddress, symbol: pairSymbol, tokens: pairTokens } = pair[1] as any;
 
@@ -243,14 +171,11 @@ export function usePricedPools(): Pool[] {
     }
 
     const priceToken0toToken1 = token0Decimals && token1Decimals ? (new BigNumber(balance1?.toString() || 0).times(new BigNumber(10).pow(token0Decimals - (token1Decimals || 10))).div(balance0?.toString() || 0)).toNumber() : 0;
-    // console.log(token0Decimals && token1Decimals ? (new BigNumber(balance1?.toString() || 0).times(new BigNumber(10).pow(token0Decimals - (token1Decimals || 10))).div(balance0?.toString() || 0)).toString() : 0)
-    console.log("🚀 ~ priceToken0toToken1:", priceToken0toToken1.toString())
 
     const isEthPair = (tokens[1] && tokens[1].symbol === 'ETH') ? true : false;
     const isWbtcPair = (tokens[1] && tokens[1].symbol === 'WBTC') ? true : false;
 
     const externalPrice = isWbtcPair ? btcPriceUSD : ethPriceUSD;
-    console.log(externalPrice);
 
     let price = 0;
 
@@ -270,6 +195,25 @@ export function usePricedPools(): Pool[] {
     return {
       symbol: (isEthPair) ? tokens[0]?.symbol : tokens[1]?.symbol,
       price,
+      decimals: (isEthPair && token0Decimals && token1Decimals) ? token0Decimals : token1Decimals
     };
+  });
+
+  return tokenBalances.balances.map(token => {
+    let priceInUSD;
+
+    const balanceObj = tokenBalances.balances.find(balance => balance?.symbol === token?.symbol);
+    const tokenPriced = pricedPools.find(pool => pool?.symbol === token?.symbol);
+    if (tokenPriced ) {
+      const balance = balanceObj ? balanceObj.balance : (accountBalance ? accountBalance.value : 0n)
+      
+      priceInUSD = (new BigNumber(balance?.toString() || 0).dividedBy(new BigNumber(10).pow(tokenPriced.decimals || 18))).multipliedBy(tokenPriced.price).toNumber();
+    } 
+
+    return {
+      value: priceInUSD || 0,
+      label: token?.symbol || 'ETH',
+      // balance: balanceObj ? balanceObj.balance : (accountBalance ? accountBalance.value : 0n),
+    }
   });
 }
