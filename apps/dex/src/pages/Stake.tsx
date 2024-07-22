@@ -15,6 +15,7 @@ import { useTokenStaker } from '../hooks/useTokenStaker';
 import { SwapHeader } from '../components/swap/SwapHeader';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { ErrorMessage } from '../components/swap/ErrorMessage';
 
 
 export function Stake() {
@@ -22,7 +23,7 @@ export function Stake() {
   const { enqueueSnackbar } = useSnackbar();
   const params = useParams();
   const [value, setValue] = useState<string>('');
-
+  console.log();
   const {
     allowance,
     approve,
@@ -40,6 +41,7 @@ export function Stake() {
     stakedAmount,
     token,
     write,
+    staked,
   } = useTokenStaker(params.stakers || '', params.staker as EthereumAddress, 'stake', value);
 
   const isAllowDisabled = useMemo(() => approve.isPending || allowance.isPending, [approve, allowance]);
@@ -112,14 +114,16 @@ export function Stake() {
     }
   }, [params.stakers]);
 
-  const getError = (error?: string) => {
-    switch (error) {
+  const errorText = useMemo(() => {
+    switch (stakeError) {
       case 'MINIMUM_STAKE_AMOUNT':
-        return `The minimum stake amount is 1 ${token?.symbol}`;
+        return `The minimum stake amount is 1 treasury token, you have staked ${stakedAmount} ${token?.symbol}. You must stake at least ${new BigNumber(10).pow(18).minus(staked?.data?.[0].toString() ?? 0).div(new BigNumber(10).pow(18)).toFormat(2, 1)} ${token?.symbol}`;
       case 'PENDING_REWARDS':
         return 'You have pending rewards. Please harvest your current rewards before staking additional tokens.';
+      default:
+        return '';
     }
-  };
+  }, [stakeError]);
 
   return (
     <Box width="100%" maxWidth="480px" padding={2}>
@@ -212,11 +216,7 @@ export function Stake() {
         </Card>
       )}
 
-      {stakeError && (
-        <x.div>
-          <x.p color="red-400">{getError(stakeError)}</x.p>
-        </x.div>
-      )}
+      {stakeError && <ErrorMessage text={errorText} />}
 
       {needAllowance && (
         <x.div display="flex" mt={4} mb={2} h="80px" alignItems="center" justifyContent="center">

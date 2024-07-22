@@ -53,7 +53,7 @@ export function Unstake() {
   const errorText = useMemo(() => {
     switch (stakeError) {
       case 'INVALID_BOOST_AMOUNT':
-        return `You are boosting too much, you need to lower your boost level to unstake`;
+        return `Your boost is too high! You need to remove x LDT from the boost to unstake ${new BigNumber(value)} ${token?.symbol}`;
       case 'PENDING_REWARDS':
         return 'You have pending rewards. Please harvest your current rewards before staking additional tokens.';
       default:
