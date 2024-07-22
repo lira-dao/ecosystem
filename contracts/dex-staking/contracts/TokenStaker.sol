@@ -52,6 +52,7 @@ contract TokenStaker is Ownable, ReentrancyGuard {
 
         require(staker.amount == 0 || staker.lastRewardRound == rewardRounds.length, 'PENDING_REWARDS');
 
+        staker.lastRewardRound = rewardRounds.length;
         staker.amount += _amount;
         totalStaked += _amount;
 
