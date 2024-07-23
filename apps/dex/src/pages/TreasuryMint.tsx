@@ -20,6 +20,7 @@ import { useSnackbar } from 'notistack';
 import BigNumber from 'bignumber.js';
 import { SwapHeader } from '../components/swap/SwapHeader';
 import { PrimaryButtonWithLoader } from '../components/PrimaryButtonWithLoader';
+import { Box, Card, CardContent, Typography } from '@mui/material';
 
 
 enum TreasuryHeaderTab {
@@ -273,15 +274,19 @@ export function TreasuryMint() {
         </InputPanel>
       </SwapSection>
 
-      <x.div mt={4}>
-        <x.div>
-          <x.div>
-            <x.p>{active === TreasuryHeaderTab.Mint ? 'Lock' : 'Unlock'}: {formatUnits(active === TreasuryHeaderTab.Mint ? treasuryToken.quoteMint.data?.[1] || 0n : treasuryToken.quoteBurn.data?.[0] || 0n, currencyB.decimals)} {currencyB.symbol}</x.p>
-            <x.p>Fee: {formatUnits(active === TreasuryHeaderTab.Mint ? treasuryToken.quoteMint.data?.[2] || 0n : treasuryToken.quoteBurn.data?.[1] || 0n, currencyB.decimals)} {currencyB.symbol}</x.p>
-          </x.div>
-          <x.div></x.div>
-        </x.div>
-      </x.div>
+      <Card sx={{mt: 2}}>
+        <CardContent sx={{ '&:last-child': { p: 2 } }}>
+          <Box display="flex" justifyContent="space-between">
+            <Typography>{active === TreasuryHeaderTab.Mint ? 'Lock' : 'Unlock'}</Typography>
+            <Typography>{formatUnits(active === TreasuryHeaderTab.Mint ? treasuryToken.quoteMint.data?.[1] || 0n : treasuryToken.quoteBurn.data?.[0] || 0n, currencyB.decimals)} {currencyB.symbol}</Typography>
+          </Box>
+
+          <Box display="flex" justifyContent="space-between">
+            <Typography>Fee</Typography>
+            <Typography>{formatUnits(active === TreasuryHeaderTab.Mint ? treasuryToken.quoteMint.data?.[2] || 0n : treasuryToken.quoteBurn.data?.[1] || 0n, currencyB.decimals)} {currencyB.symbol}</Typography>
+          </Box>
+        </CardContent>
+      </Card>
 
       {(active === TreasuryHeaderTab.Mint && needAllowance) && (
         <x.div display="flex" mt={4} mb={2} h="80px" alignItems="center" justifyContent="center">
