@@ -39,25 +39,25 @@ export const farmingStakersAddresses: FarmingStakersAddresses = {
     tbg: '0xFA8c04138407756dDAe054287df603b3aed39662',
   },
   421614: {
-    tbb: '0xB3C9f63540fbE8b15b06D74fC01AB9224E9C49A2',
-    tbs: '0xf5794a6122D15055E346831Ca36a9f01c566549C',
-    tbg: '0xa7559c3724fE924E55F4b9177bB0c6baF4cf5D70',
+    tbb: '0x24edD02ce869Db38C126B2bc4e9b9C273476e47A',
+    tbs: '0x38a41092FB61c3535fF93cf38ffBfdEb23D3f481',
+    tbg: '0x9115D49a15BB0Fb0363e9d913252ff606BDee877',
   },
 };
 
 export const tokenStakerAddresses: StakersAddresses = {
   421614: {
-    tbb: '0xf929dA1CA446190256743C5643440A0aA06A8409',
-    tbs: '0xBFc87C48c58F296086ADEA0a02A3b2fa7e67f49A',
-    tbg: '0x92feB2324A309e7D0291bE947ba8D0B7903c902C',
+    tbb: '0x6D32D83943D8bFC906de6cf7a8BAEdA4Fecb1133',
+    tbs: '0x0191bfD1f254Da13eb9328DF7Faf7878b0364AA9',
+    tbg: '0xC7F6572dacc910957Fe78BA76B125620cDe680f0',
   },
 };
 
 export const boosterAddresses: BoosterAddresses = {
   421614: {
-    tbb: '0xdBC93d19b699B4f0FaB3aF7bfb56Af6C4BF9fE81',
-    tbs: '0x33D784cA9d5ECb9011397ae67544Aa3948D5F679',
-    tbg: '0x9786823b18a6E57e76960621bfe0DCA0f0d02508',
+    tbb: '0xb3F0a4631f0d7b6197285D4bb9dd42ca2281b918',
+    tbs: '0xa2B79258278F8ff324030a31B497D5595d65Aa08',
+    tbg: '0xF465b5A42DF1cE60a152E0062E72eBDDa36b36E0',
   },
 };
 
@@ -68,21 +68,21 @@ export const tokenDistributor: TokenDistributorAddress = {
 
 export const rewardSplitter: RewardSplitterAddress = {
   42161: '0xbBBbE9b62Cab1852461D4137b10E959F5577e5BE',
-  421614: '0x806992260d33cc1673861D55f2259bA33f1Cb0B3',
+  421614: '0x2cA93153115CFD4C514589C916c8B29f6F6c4c13',
 };
 
 export const farmingSplitter: NetworkAddresses = {
-  421614: '0xFfAdA101b22203d22054cD7bb68E2E8170d9cD37',
+  421614: '0x2054985389740a61B221dDd14b53c6D2E1d1401a',
 };
 
 export const stakingSplitter: NetworkAddresses = {
-  421614: '0x83F00777Ca33F51691eaD68943E9D84A4a946C23',
+  421614: '0x65AfBbdb9dd41DCd29a361F3B1C389415013bB81',
 };
 
 export const boostingSplitter: NetworkAddresses = {
-  421614: '0xF143aaD99Be66B80C5359CD0F1D815De29Ec3A0A',
+  421614: '0xdBbdb0c0D61c67177fBdE0e42B9d9646E0A0f82D',
 };
 
 export const teamSplitter: NetworkAddresses = {
-  421614: '0x600Bb4586510632aC0351f3a2B980C8cF60b8B9E',
+  421614: '0xE139ff42d83b1a9fd9F9e1eFA74eFE3d78457c2e',
 };
