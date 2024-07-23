@@ -1,6 +1,6 @@
 {
   "name": "@lira-dao/dex-staking",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "devDependencies": {
     "@lira-dao/dex-periphery": "workspace:*",
     "@lira-dao/hardhat-config": "workspace:*",
