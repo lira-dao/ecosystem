@@ -22,9 +22,9 @@ contract FarmingSplitter is Ownable2Step {
     address public tbg;
     address[] public farms;
 
-    RewardsLibrary.RewardRate public tbbRewardRate = RewardsLibrary.RewardRate(200, 200);
-    RewardsLibrary.RewardRate public tbsRewardRate = RewardsLibrary.RewardRate(500, 500);
-    RewardsLibrary.RewardRate public tbgRewardRate = RewardsLibrary.RewardRate(1000, 1000);
+    RewardsLibrary.RewardRate public tbbRewardRate = RewardsLibrary.RewardRate(100, 100);
+    RewardsLibrary.RewardRate public tbsRewardRate = RewardsLibrary.RewardRate(250, 250);
+    RewardsLibrary.RewardRate public tbgRewardRate = RewardsLibrary.RewardRate(500, 500);
 
     uint public constant MIN_RATE = 1;
     uint public constant MAX_RATE = 100_000;
