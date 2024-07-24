@@ -9,3 +9,5 @@ export * from './treasury-token';
 export * from './lp-staker';
 export * from './token-staker';
 export * from './boosting-staker';
+export * from './farming-splitter';
+export * from './staking-splitter';

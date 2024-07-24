@@ -5,6 +5,8 @@ import {
   erc20Abi,
   EthereumAddress,
   lpStakerAbi,
+  stakingSplitter,
+  stakingSplitterAbi,
   tokens,
   tokenStakerAbi,
   tokenStakers,
@@ -12,6 +14,7 @@ import {
 import BigNumber from 'bignumber.js';
 import { getCurrencyByAddress } from '../utils';
 import { useAccount, useChainId, useReadContract, useReadContracts } from 'wagmi';
+import { useMemo } from 'react';
 
 
 export interface Staker {
@@ -28,6 +31,7 @@ export interface Staker {
   maxBoost: string,
   remainingBoost: string,
   ldtBalance: string,
+  apr: string,
 }
 
 export function useTokenStakers(): Staker[] {
@@ -128,6 +132,34 @@ export function useTokenStakers(): Staker[] {
     args: [account.address as EthereumAddress],
   });
 
+  const rewardRateTbb = useReadContract({
+    abi: stakingSplitterAbi,
+    address: stakingSplitter[chainId],
+    functionName: 'tbbRewardRate',
+  });
+
+  const rewardRateTbs = useReadContract({
+    abi: stakingSplitterAbi,
+    address: stakingSplitter[chainId],
+    functionName: 'tbsRewardRate',
+  });
+
+  const rewardRateTbg = useReadContract({
+    abi: stakingSplitterAbi,
+    address: stakingSplitter[chainId],
+    functionName: 'tbgRewardRate',
+  });
+
+  const aprs = useMemo(() => {
+    return [
+      new BigNumber(100).times(new BigNumber(rewardRateTbb.data?.[0].toString() ?? '0').plus(rewardRateTbb.data?.[1].toString() ?? '0')).div(100000).div(2).times(365).toFormat(2, 1),
+      new BigNumber(100).times(new BigNumber(rewardRateTbs.data?.[0].toString() ?? '0').plus(rewardRateTbs.data?.[1].toString() ?? '0')).div(100000).div(2).times(365).toFormat(2, 1),
+      new BigNumber(100).times(new BigNumber(rewardRateTbg.data?.[0].toString() ?? '0').plus(rewardRateTbg.data?.[1].toString() ?? '0')).div(100000).div(2).times(365).toFormat(2, 1),
+    ];
+  }, [rewardRateTbb, rewardRateTbs, rewardRateTbg]);
+
+  console.log('rewardRateTbb', rewardRateTbb, rewardRateTbs, rewardRateTbg);
+
   return tokenStakers[chainId].map((staker, i) => {
     return {
       address: staker.address,
@@ -145,6 +177,7 @@ export function useTokenStakers(): Staker[] {
         getCurrencyByAddress(staker.tokens[0]),
         getCurrencyByAddress(staker.tokens[1]),
       ],
+      apr: aprs[i],
       rewards: [
         // @ts-ignore
         new BigNumber(rewards.data?.[i].result?.[0].toString() || '0').div(new BigNumber(10).pow(18)).toFormat(4, 1) || '',

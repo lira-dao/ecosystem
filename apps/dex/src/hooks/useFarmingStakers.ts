@@ -1,8 +1,18 @@
-import { Currency, erc20Abi, EthereumAddress, farmingStakers, lpStakerAbi, Pair } from '@lira-dao/web3-utils';
+import {
+  Currency,
+  erc20Abi,
+  EthereumAddress,
+  farmingSplitter,
+  farmingSplitterAbi,
+  farmingStakers,
+  lpStakerAbi,
+  Pair,
+} from '@lira-dao/web3-utils';
 import { useDexPairs } from './useDexPairs';
-import { useAccount, useChainId, useReadContracts } from 'wagmi';
+import { useAccount, useChainId, useReadContract, useReadContracts } from 'wagmi';
 import { getCurrencyByAddress } from '../utils';
 import BigNumber from 'bignumber.js';
+import { useMemo } from 'react';
 
 
 export interface Farm {
@@ -13,6 +23,7 @@ export interface Farm {
   tokens: (Currency | undefined)[],
   rewards: [string, string],
   totalStaked: string,
+  apr: string,
 }
 
 export function useFarmingStakers(): Farm[] {
@@ -27,6 +38,32 @@ export function useFarmingStakers(): Farm[] {
       functionName: 'totalStaked',
     })),
   });
+
+  const rewardRateTbb = useReadContract({
+    abi: farmingSplitterAbi,
+    address: farmingSplitter[chainId],
+    functionName: 'tbbRewardRate',
+  });
+
+  const rewardRateTbs = useReadContract({
+    abi: farmingSplitterAbi,
+    address: farmingSplitter[chainId],
+    functionName: 'tbsRewardRate',
+  });
+
+  const rewardRateTbg = useReadContract({
+    abi: farmingSplitterAbi,
+    address: farmingSplitter[chainId],
+    functionName: 'tbgRewardRate',
+  });
+
+  const aprs = useMemo(() => {
+    return [
+      new BigNumber(100).times(new BigNumber(rewardRateTbb.data?.[0].toString() ?? '0').plus(rewardRateTbb.data?.[1].toString() ?? '0')).div(100000).times(365).toFormat(2, 1),
+      new BigNumber(100).times(new BigNumber(rewardRateTbs.data?.[0].toString() ?? '0').plus(rewardRateTbs.data?.[1].toString() ?? '0')).div(100000).times(365).toFormat(2, 1),
+      new BigNumber(100).times(new BigNumber(rewardRateTbg.data?.[0].toString() ?? '0').plus(rewardRateTbg.data?.[1].toString() ?? '0')).div(100000).times(365).toFormat(2, 1),
+    ];
+  }, [rewardRateTbb, rewardRateTbs, rewardRateTbg]);
 
   const amounts = useReadContracts({
     contracts: farmingStakers[chainId].map(fs => ({
@@ -70,6 +107,7 @@ export function useFarmingStakers(): Farm[] {
         getCurrencyByAddress(staker.tokens[0]),
         getCurrencyByAddress(staker.tokens[1]),
       ],
+      apr: aprs[i],
       rewards: [
         // @ts-ignore
         new BigNumber(rewards.data?.[i].result?.[0].toString()).div(new BigNumber(10).pow(18)).toFormat(4, 1) || '',

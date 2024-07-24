@@ -47,7 +47,7 @@ export function StakerCards({ stakers, isConnected }: Props) {
             </CardHeader>
             <CardContent>
               <Box>
-                <Typography><span style={{ color: th.colors.green[400] }}>Promo</span> APR: <span style={{ color: th.colors.green[400] }}>{getApr(staker.tokens[0]?.symbol)}</span></Typography>
+                <Typography><span style={{ color: th.colors.green[400] }}>Promo</span> APR: <span style={{ color: th.colors.green[400] }}>{staker.apr} %</span></Typography>
               </Box>
               <Typography>Total Staked: {staker.totalStaked}</Typography>
 

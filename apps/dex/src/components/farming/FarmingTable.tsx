@@ -20,19 +20,6 @@ interface Props {
   isConnected: boolean;
 }
 
-const getApr = (symbol?: string) => {
-  switch (symbol) {
-    case 'TBb':
-      return '73.0 %';
-    case 'TBs':
-      return '182.5 %';
-    case 'TBg':
-      return '365.0 %';
-    default:
-      return '365%';
-  }
-};
-
 export function FarmingTable({ farms, isConnected }: Props) {
   const navigate = useNavigate();
   const th = useTheme();
@@ -72,7 +59,7 @@ export function FarmingTable({ farms, isConnected }: Props) {
               <TableCell
                 align="right"
                 sx={{ textWrap: 'nowrap' }}
-              ><Typography color={th.colors.green[400]}>{getApr(farm.tokens[0]?.symbol)}</Typography></TableCell>
+              ><Typography color={th.colors.green[400]}>{farm.apr} %</Typography></TableCell>
               {isConnected && (
                 <TableCell align="right" sx={{ textWrap: 'nowrap' }}>
                   {farm.rewards[0]} {farm.tokens[1]?.symbol}<br />{farm.rewards[1]} {farm.tokens[0]?.symbol}

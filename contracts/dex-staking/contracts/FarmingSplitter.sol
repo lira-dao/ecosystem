@@ -58,7 +58,7 @@ contract FarmingSplitter is Ownable2Step {
         rewards.tbs.liquidity = calculateReward(farms[1], tbsRewardRate);
         rewards.tbg.liquidity = calculateReward(farms[2], tbgRewardRate);
 
-        uint totalLdt = rewards.tbb.liquidity.ldtLiquidity + rewards.tbs.liquidity.ldtLiquidity + rewards.tbg.liquidity.ldtLiquidity;
+        uint totalLdt = rewards.tbb.liquidity.ldt + rewards.tbs.liquidity.ldt + rewards.tbg.liquidity.ldt;
 
         if (totalLdt > _ldt) {
             uint tbbLiquidity = getLdtLiquidity(farms[0]);
@@ -71,8 +71,8 @@ contract FarmingSplitter is Ownable2Step {
             rewards.tbg.ldt = (tbgLiquidity * _ldt) / totalLiquidity;
         } else {
             rewards.tbb.ldt = rewards.tbb.liquidity.ldt;
-            rewards.tbs.ldt = rewards.tbb.liquidity.ldt;
-            rewards.tbg.ldt = rewards.tbb.liquidity.ldt;
+            rewards.tbs.ldt = rewards.tbs.liquidity.ldt;
+            rewards.tbg.ldt = rewards.tbg.liquidity.ldt;
         }
 
         if (rewards.tbb.liquidity.tb > tbbReward / ITreasuryToken(tbb).rate()) {
