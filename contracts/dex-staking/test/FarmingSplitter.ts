@@ -40,8 +40,8 @@ describe('FarmingSplitter', () => {
 
     let rewardRate = await farmingSplitter.tbbRewardRate();
 
-    expect(rewardRate[0]).eq(200);
-    expect(rewardRate[1]).eq(200);
+    expect(rewardRate[0]).eq(100);
+    expect(rewardRate[1]).eq(100);
 
     await expect(farmingSplitter.setTbbRewardRate({ ldt: 300, tb: 400 })).not.reverted;
 
@@ -56,8 +56,8 @@ describe('FarmingSplitter', () => {
 
     let rewardRate = await farmingSplitter.tbsRewardRate();
 
-    expect(rewardRate[0]).eq(500);
-    expect(rewardRate[1]).eq(500);
+    expect(rewardRate[0]).eq(250);
+    expect(rewardRate[1]).eq(250);
 
     await expect(farmingSplitter.setTbsRewardRate({ ldt: 600, tb: 700 })).not.reverted;
 
@@ -72,8 +72,8 @@ describe('FarmingSplitter', () => {
 
     let rewardRate = await farmingSplitter.tbgRewardRate();
 
-    expect(rewardRate[0]).eq(1000);
-    expect(rewardRate[1]).eq(1000);
+    expect(rewardRate[0]).eq(500);
+    expect(rewardRate[1]).eq(500);
 
     await expect(farmingSplitter.setTbgRewardRate({ ldt: 2000, tb: 3000 })).not.reverted;
 

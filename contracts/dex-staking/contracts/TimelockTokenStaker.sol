@@ -21,6 +21,7 @@ contract TimelockTokenStaker is Ownable, ReentrancyGuard {
     struct Staker {
         uint256 amount;
         uint256 lastRewardRound;
+        uint256 unlockTime;
     }
 
     address public token;
@@ -34,15 +35,22 @@ contract TimelockTokenStaker is Ownable, ReentrancyGuard {
     uint256 public totalStaked;
 
     address public boosterAddress;
+    address public feeVault;
+
+    uint public lockInterval = 24 weeks;
+    uint public earlyUnstakeFee = 10;
 
     event Stake(address wallet, uint256 amount);
     event Unstake(address wallet, uint256 amount);
     event Harvest(address wallet, uint256 amountToken1, uint256 amountToken2);
 
-    constructor(address _token, IERC20 _rewardToken1, IERC20 _rewardToken2) Ownable(msg.sender) {
+    constructor(address _token, IERC20 _rewardToken1, IERC20 _rewardToken2, uint _lockInterval, uint _earlyUnstakeFee, address _feeVault) Ownable(msg.sender) {
         token = _token;
         rewardToken1 = _rewardToken1;
         rewardToken2 = _rewardToken2;
+        lockInterval = _lockInterval;
+        earlyUnstakeFee = _earlyUnstakeFee;
+        feeVault = _feeVault;
     }
 
     function stake(uint _amount) external nonReentrant {
@@ -54,6 +62,7 @@ contract TimelockTokenStaker is Ownable, ReentrancyGuard {
 
         staker.lastRewardRound = rewardRounds.length;
         staker.amount += _amount;
+        staker.unlockTime = block.timestamp + lockInterval;
         totalStaked += _amount;
 
         require(staker.amount >= 10 ** 18, 'MINIMUM_STAKE_AMOUNT');
@@ -64,6 +73,30 @@ contract TimelockTokenStaker is Ownable, ReentrancyGuard {
     }
 
     function unstake(uint _amount) external nonReentrant {
+        require(_amount > 0, 'INVALID_AMOUNT');
+
+        Staker storage staker = stakers[msg.sender];
+
+        require(block.timestamp >= staker.unlockTime, 'LOCKED');
+
+        require(staker.lastRewardRound == rewardRounds.length, 'PENDING_REWARDS');
+        require(_amount <= staker.amount, 'INVALID_AMOUNT');
+
+        (uint reward0, uint reward1) = IStaker(boosterAddress).pendingRewards(msg.sender);
+
+        require(reward0 + reward1 == 0, 'PENDING_BOOST_REWARDS');
+
+        require(IStaker(boosterAddress).stakers(msg.sender).amount <= (staker.amount - _amount) * (ITreasuryToken(token).rate() / 2), 'INVALID_BOOST_AMOUNT');
+
+        staker.amount -= _amount;
+        totalStaked -= _amount;
+
+        IERC20(token).safeTransfer(msg.sender, _amount);
+
+        emit Unstake(msg.sender, _amount);
+    }
+
+    function unstakeEarly(uint _amount) external nonReentrant {
         require(_amount > 0, 'INVALID_AMOUNT');
 
         Staker storage staker = stakers[msg.sender];
@@ -80,7 +113,10 @@ contract TimelockTokenStaker is Ownable, ReentrancyGuard {
         staker.amount -= _amount;
         totalStaked -= _amount;
 
-        IERC20(token).safeTransfer(msg.sender, _amount);
+        uint fee = (_amount * earlyUnstakeFee) / 100;
+
+        IERC20(token).safeTransfer(msg.sender, _amount - fee);
+        IERC20(token).safeTransfer(feeVault, fee);
 
         emit Unstake(msg.sender, _amount);
     }

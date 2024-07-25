@@ -165,6 +165,7 @@ export async function rewardSplitterV2Fixture() {
   const lpStakerContract = await hre.ethers.getContractFactory('LPStaker');
   const tokenStakerContract = await hre.ethers.getContractFactory('TokenStaker');
   const boosterStakerContract = await hre.ethers.getContractFactory('BoostingStaker');
+  const timelockTokenContract = await hre.ethers.getContractFactory('TimelockTokenStaker');
 
   const tbbFarm = await lpStakerContract.deploy(tbbPairAddress, ldtAddress, tbbAddress);
   const tbbFarmAddress = await tbbFarm.getAddress();
@@ -192,6 +193,21 @@ export async function rewardSplitterV2Fixture() {
 
   const tbgBooster = await boosterStakerContract.deploy(ldtAddress, ldtAddress, tbgAddress, tbgStakerAddress);
   const tbgBoosterAddress = await tbgBooster.getAddress();
+
+  const tbbTimelockStaker = await timelockTokenContract.deploy(tbbAddress, ldtAddress, tbbAddress, 14515200, 10, ldtTeam);
+  const tbbTimelockStakerAddress = await tbbTimelockStaker.getAddress();
+  const tbbTimelockStakerBooster = await boosterStakerContract.deploy(ldtAddress, ldtAddress, tbbAddress, tbbTimelockStakerAddress);
+  const tbbTimelockStakerBoosterAddress = await tbbTimelockStakerBooster.getAddress();
+
+  const tbsTimelockStaker = await timelockTokenContract.deploy(tbsAddress, ldtAddress, tbsAddress, 14515200, 10, ldtTeam);
+  const tbsTimelockStakerAddress = await tbsTimelockStaker.getAddress();
+  const tbsTimelockStakerBooster = await boosterStakerContract.deploy(ldtAddress, ldtAddress, tbsAddress, tbsTimelockStakerAddress);
+  const tbsTimelockStakerBoosterAddress = await tbsTimelockStakerBooster.getAddress();
+
+  const tbgTimelockStaker = await timelockTokenContract.deploy(tbgAddress, ldtAddress, tbgAddress, 14515200, 10, ldtTeam);
+  const tbgTimelockStakerAddress = await tbgTimelockStaker.getAddress();
+  const tbgTimelockStakerBooster = await boosterStakerContract.deploy(ldtAddress, ldtAddress, tbgAddress, tbgTimelockStakerAddress);
+  const tbgTimelockStakerBoosterAddress = await tbgTimelockStakerBooster.getAddress();
 
   const distributor = await tokenDistributorFactory.connect(deployer).deploy(ldtAddress);
   const distributorAddress = await distributor.getAddress();
@@ -286,6 +302,10 @@ export async function rewardSplitterV2Fixture() {
   await tbsStaker.setBoosterAddress(tbsBoosterAddress);
   await tbgStaker.setBoosterAddress(tbgBoosterAddress);
 
+  await tbbTimelockStaker.setBoosterAddress(tbbTimelockStakerBoosterAddress);
+  await tbsTimelockStaker.setBoosterAddress(tbsTimelockStakerBoosterAddress);
+  await tbgTimelockStaker.setBoosterAddress(tbgTimelockStakerBoosterAddress);
+
   await tbb.transferOwnership(rewardSplitterAddress);
   await tbs.transferOwnership(rewardSplitterAddress);
   await tbg.transferOwnership(rewardSplitterAddress);
@@ -336,6 +356,10 @@ export async function rewardSplitterV2Fixture() {
     tbbPairAddress,
     tbbStaker,
     tbbStakerAddress,
+    tbbTimelockStaker,
+    tbbTimelockStakerAddress,
+    tbbTimelockStakerBooster,
+    tbbTimelockStakerBoosterAddress,
     tbg,
     tbgAddress,
     tbgBooster,
@@ -345,6 +369,10 @@ export async function rewardSplitterV2Fixture() {
     tbgPairAddress,
     tbgStaker,
     tbgStakerAddress,
+    tbgTimelockStaker,
+    tbgTimelockStakerAddress,
+    tbgTimelockStakerBooster,
+    tbgTimelockStakerBoosterAddress,
     tbs,
     tbsAddress,
     tbsBooster,
@@ -354,6 +382,10 @@ export async function rewardSplitterV2Fixture() {
     tbsPairAddress,
     tbsStaker,
     tbsStakerAddress,
+    tbsTimelockStaker,
+    tbsTimelockStakerAddress,
+    tbsTimelockStakerBooster,
+    tbsTimelockStakerBoosterAddress,
     teamSplitter,
     teamSplitterAddress,
   };

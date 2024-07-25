@@ -32,6 +32,8 @@
   },
   "scripts": {
     "compile": "hardhat compile --show-stack-traces",
-    "test": "REPORT_GAS=true npx hardhat test --show-stack-traces"
+    "test": "REPORT_GAS=true npx hardhat test --show-stack-traces",
+    "test:reward-splitter-v2": "REPORT_GAS=true npx hardhat test --show-stack-traces test/RewardSplitterV2.ts",
+    "test:timelock-token-staker": "REPORT_GAS=true npx hardhat test --show-stack-traces test/TimelockTokenStaker.ts"
   }
 }
