@@ -14,19 +14,26 @@ import '@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol';
 contract Referrals is Ownable2Step {
     using SafeERC20 for IERC20;
 
+    struct Reward {
+        uint ldt;
+        uint tbb;
+        uint tbs;
+        uint tbg;
+    }
+
     address public token;
 
-    uint public maxWithdraw = 1e18;
+    uint public maxWithdraw = 1e20;
     uint public withdrawInterval = 1 weeks;
 
-    mapping(address => address) public referrerOf; // user -> referrer
-    mapping(address => uint256) public rewards; // referrer -> rewards
+    mapping(address => address) public referrers; // user -> referrer
+    mapping(address => Reward) public rewards; // referrer -> rewards
     mapping(address => uint256) public lastWithdraw;
 
     event ReferralRegistered(address indexed referrer, address indexed referee);
-    event RewardClaimed(address indexed user, uint256 amount);
+    event RewardClaimed(address indexed user, Reward amount);
 
-    constructor(address _token) {
+    constructor(address _token) Ownable(msg.sender) {
         token = _token;
     }
 
@@ -43,9 +50,9 @@ contract Referrals is Ownable2Step {
 
     function registerReferral(address referrer) public {
         require(referrer != msg.sender, 'INVALID_REFERRER');
-        require(referrerOf[msg.sender] == address(0), 'ALREADY_REFERRED');
+        require(referrers[msg.sender] == address(0), 'ALREADY_REFERRED');
 
-        referrerOf[msg.sender] = referrer;
+        referrers[msg.sender] = referrer;
 
         emit ReferralRegistered(referrer, msg.sender);
     }
@@ -53,26 +60,29 @@ contract Referrals is Ownable2Step {
     function claimReward() public {
         require(block.timestamp >= lastWithdraw[msg.sender] + withdrawInterval);
 
-        uint256 reward = rewards[msg.sender];
-        require(reward > 0, 'ZERO_REWARDS');
+        Reward memory reward = rewards[msg.sender];
+        require(reward.ldt + reward.tbb + reward.tbs + reward.tbg > 0, 'ZERO_REWARDS');
 
-        rewards[msg.sender] = 0;
+        rewards[msg.sender].ldt = 0;
+        rewards[msg.sender].tbb = 0;
+        rewards[msg.sender].tbs = 0;
+        rewards[msg.sender].tbg = 0;
 
         // TODO: send rewards
 
         emit RewardClaimed(msg.sender, reward);
     }
 
-    function deposit() public payable onlyOwner {
+    function deposit(Reward memory _rewards) external onlyOwner {
         // TODO: write rewards
     }
 
-    function getRewards(address user) public view returns (uint256) {
+    function getRewards(address user) public view returns (Reward memory) {
         return rewards[user];
     }
 
     function getReferrer(address user) public view returns (address) {
-        return referrerOf[user];
+        return referrers[user];
     }
 
     receive() external payable {
