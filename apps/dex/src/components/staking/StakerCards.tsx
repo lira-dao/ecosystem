@@ -62,6 +62,10 @@ export function StakerCards({ stakers, isConnected }: Props) {
                 <Typography>My Balance</Typography>
                 <Typography>{staker.balance} {staker.tokens[0]?.symbol}</Typography>
               </Box>
+              <Box display="flex" justifyContent="space-between">
+                <Typography>Min Stake</Typography>
+                <Typography>1 {staker.tokens[0]?.symbol}</Typography>
+              </Box>
 
               <Box sx={{ my: 2 }} />
 
