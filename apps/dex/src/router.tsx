@@ -15,6 +15,7 @@ import { Staking } from './pages/Staking';
 import { muiDarkTheme } from './theme/theme';
 import { ThemeProvider } from '@mui/material/styles';
 import { MyPortfolio } from './pages/MyPortfolio';
+import { Referral } from './pages/Referral';
 
 
 const routes = [
@@ -43,6 +44,9 @@ const routes = [
   // treasury
   { path: 'treasury', element: <Treasury /> },
   { path: 'treasury/:address/:action', element: <ThemeProvider theme={muiDarkTheme}><TreasuryMint /></ThemeProvider> },
+
+  // referral
+  { path: 'referral/:address', element: <ThemeProvider theme={muiDarkTheme}><Referral /></ThemeProvider> },
 
   // my portfolio
   { path: 'my-portfolio', element: <MyPortfolio /> },

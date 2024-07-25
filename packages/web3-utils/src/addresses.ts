@@ -100,3 +100,7 @@ export const teamSplitter: NetworkAddresses = {
   42161: '0xF0076e130C077DAEE73EF2244260f4051A986671',
   421614: '0x47e626D66F19F8DC3E5376de5b17398fcCdfca8E',
 };
+
+export const referrals: NetworkAddresses = {
+  421614: '0xCb8ea077FD2511DCF41eA9e7ca108c1f64f682a4',
+}

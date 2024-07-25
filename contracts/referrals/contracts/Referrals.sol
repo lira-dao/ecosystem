@@ -21,7 +21,18 @@ contract Referrals is Ownable2Step {
         uint tbg;
     }
 
-    address public token;
+    struct RewardItem {
+        address wallet;
+        uint ldt;
+        uint tbb;
+        uint tbs;
+        uint tbg;
+    }
+
+    address public ldt;
+    address public tbb;
+    address public tbs;
+    address public tbg;
 
     uint public maxWithdraw = 1e20;
     uint public withdrawInterval = 1 weeks;
@@ -31,10 +42,14 @@ contract Referrals is Ownable2Step {
     mapping(address => uint256) public lastWithdraw;
 
     event ReferralRegistered(address indexed referrer, address indexed referee);
-    event RewardClaimed(address indexed user, Reward amount);
+    event DistributeRewards(uint ldt, uint tbb, uint tbs, uint tbg);
+    event Harvest(address indexed wallet, Reward amount);
 
-    constructor(address _token) Ownable(msg.sender) {
-        token = _token;
+    constructor(address _ldt, address _tbb, address _tbs, address _tbg) Ownable(msg.sender) {
+        ldt = _ldt;
+        tbb = _tbb;
+        tbs = _tbs;
+        tbg = _tbg;
     }
 
     function setMaxWithdraw(uint _maxWithdraw) external onlyOwner {
@@ -57,32 +72,64 @@ contract Referrals is Ownable2Step {
         emit ReferralRegistered(referrer, msg.sender);
     }
 
-    function claimReward() public {
-        require(block.timestamp >= lastWithdraw[msg.sender] + withdrawInterval);
+    function harvest() public {
+        require(block.timestamp >= lastWithdraw[msg.sender] + withdrawInterval, 'TIME_LOCK');
 
         Reward memory reward = rewards[msg.sender];
         require(reward.ldt + reward.tbb + reward.tbs + reward.tbg > 0, 'ZERO_REWARDS');
+
+        if (reward.ldt > 0) {
+            IERC20(ldt).safeTransfer(msg.sender, reward.ldt);
+        }
+
+        if (reward.tbb > 0) {
+            IERC20(tbb).safeTransfer(msg.sender, reward.tbb);
+        }
+
+        if (reward.tbs > 0) {
+            IERC20(tbs).safeTransfer(msg.sender, reward.tbs);
+        }
+
+        if (reward.tbg > 0) {
+            IERC20(tbg).safeTransfer(msg.sender, reward.tbg);
+        }
 
         rewards[msg.sender].ldt = 0;
         rewards[msg.sender].tbb = 0;
         rewards[msg.sender].tbs = 0;
         rewards[msg.sender].tbg = 0;
 
-        // TODO: send rewards
+        lastWithdraw[msg.sender] = block.timestamp;
 
-        emit RewardClaimed(msg.sender, reward);
+        emit Harvest(msg.sender, reward);
     }
 
-    function deposit(Reward memory _rewards) external onlyOwner {
-        // TODO: write rewards
-    }
+    function distributeRewards(RewardItem[] memory _rewards) external onlyOwner {
+        uint totalLdt = 0;
+        uint totalTbb = 0;
+        uint totalTbs = 0;
+        uint totalTbg = 0;
 
-    function getRewards(address user) public view returns (Reward memory) {
-        return rewards[user];
-    }
+        for (uint i = 0; i < _rewards.length; i++) {
+            require(_rewards[i].wallet != address(0), 'INVALID_ADDRESS');
 
-    function getReferrer(address user) public view returns (address) {
-        return referrers[user];
+            totalLdt += _rewards[i].ldt;
+            totalTbb += _rewards[i].tbb;
+            totalTbs += _rewards[i].tbs;
+            totalTbg += _rewards[i].tbg;
+
+            rewards[_rewards[i].wallet].ldt += _rewards[i].ldt;
+            rewards[_rewards[i].wallet].tbb += _rewards[i].tbb;
+            rewards[_rewards[i].wallet].tbs += _rewards[i].tbs;
+            rewards[_rewards[i].wallet].tbg += _rewards[i].tbg;
+        }
+
+        IERC20(ldt).safeTransferFrom(owner(), address(this), totalLdt);
+        IERC20(tbb).safeTransferFrom(owner(), address(this), totalTbb);
+        IERC20(tbs).safeTransferFrom(owner(), address(this), totalTbs);
+        IERC20(tbg).safeTransferFrom(owner(), address(this), totalTbg);
+
+        emit DistributeRewards(totalLdt, totalTbb, totalTbs, totalTbg);
     }
 
     receive() external payable {

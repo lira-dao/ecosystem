@@ -821,11 +821,17 @@ importers:
         specifier: ^8.3.0
         version: 8.3.2(typescript@5.4.5)
 
-  contracts/referral:
+  contracts/referrals:
     devDependencies:
+      '@lira-dao/hardhat-config':
+        specifier: workspace:*
+        version: link:../../packages/hardhat-config
       '@lira-dao/ldt':
         specifier: workspace:*
         version: link:../lira-dao-token
+      '@lira-dao/treasury-tokens':
+        specifier: workspace:*
+        version: link:../treasury-tokens
       '@lira-dao/web3-utils':
         specifier: workspace:^
         version: link:../../packages/web3-utils
