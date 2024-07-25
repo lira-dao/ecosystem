@@ -212,10 +212,12 @@ export function Stake() {
               <Typography>My Stake</Typography>
               <Typography>{stakedAmount} {token?.symbol}</Typography>
             </Box>
-            <Box display="flex" justifyContent="space-between">
-              <Typography>Min Stake</Typography>
-              <Typography>1 {token?.symbol}</Typography>
-            </Box>
+            {params.stakers === 'staking' && (
+              <Box display="flex" justifyContent="space-between">
+                <Typography>Min Stake</Typography>
+                <Typography>1 {token?.symbol}</Typography>
+              </Box>
+            )}
           </CardContent>
         </Card>
       )}
