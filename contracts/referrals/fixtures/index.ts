@@ -12,6 +12,21 @@ import {
 
 export async function referralsFixture() {
   const [deployer, user1, user2] = await hre.ethers.getSigners();
+  const referralsFactory = await hre.ethers.getContractFactory('Referrals');
+  const referrals = await referralsFactory.deploy();
+  const referralsAddress = await referralsFactory.deploy();
+
+  return {
+    deployer,
+    referrals,
+    referralsAddress,
+    user1,
+    user2,
+  };
+}
+
+export async function referralsRewardsFixture() {
+  const [deployer, user1, user2] = await hre.ethers.getSigners();
   const { ldt, ldtAddress } = await liraDaoTokenFixture();
 
   // @ts-ignore
@@ -26,7 +41,7 @@ export async function referralsFixture() {
   const tbg = await treasuryBondGoldFactory.connect(deployer).deploy(ldtAddress, treasuryBondGoldRate);
   const tbgAddress = await tbg.getAddress();
 
-  const referralsFactory = await hre.ethers.getContractFactory('Referrals');
+  const referralsFactory = await hre.ethers.getContractFactory('ReferralsRewards');
 
   const referrals = await referralsFactory.deploy(ldtAddress, tbbAddress, tbsAddress, tbgAddress);
   const referralsAddress = await referrals.getAddress();
