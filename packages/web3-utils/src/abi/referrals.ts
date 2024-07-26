@@ -120,6 +120,25 @@ export const referralsAbi = [
     inputs: [
       {
         internalType: "address",
+        name: "_referee",
+        type: "address",
+      },
+    ],
+    name: "referred",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
         name: "",
         type: "address",
       },

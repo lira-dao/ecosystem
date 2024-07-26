@@ -17,13 +17,17 @@ contract Referrals is Ownable2Step {
 
     constructor() Ownable(msg.sender) {}
 
-    function register(address referrer) public {
+    function register(address referrer) external {
         require(referrer != msg.sender, 'INVALID_REFERRER');
         require(referrers[msg.sender] == address(0), 'ALREADY_REFERRED');
 
         referrers[msg.sender] = referrer;
 
         emit ReferralRegistered(referrer, msg.sender);
+    }
+
+    function referred(address _referee) external view returns (bool) {
+        return referrers[_referee] != address(0);
     }
 
     receive() external payable {
