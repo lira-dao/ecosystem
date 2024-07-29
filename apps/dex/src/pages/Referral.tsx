@@ -23,11 +23,6 @@ export function Referral() {
   const { write, error, isPending, confirmed } = useRegisterReferral(referrer);
   const { referred, currentReferrer, refetch } = useReferrer();
 
-  console.log('referred', referred);
-  console.log('currentReferrer', currentReferrer);
-  console.log('registerReferral', error);
-  console.log('is valid', isAddress(referrer));
-
   useEffect(() => {
     switch (error) {
       case 'INVALID_REFERRER':

@@ -23,7 +23,7 @@ export function Stake() {
   const { enqueueSnackbar } = useSnackbar();
   const params = useParams();
   const [value, setValue] = useState<string>('');
-  console.log();
+
   const {
     allowance,
     approve,

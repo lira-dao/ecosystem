@@ -12,8 +12,6 @@ export function useReferrer() {
     args: [account.address as EthereumAddress],
   });
 
-  console.log();
-
   const currentReferrer = useReadContract({
     abi: referralsAbi,
     address: referrals[chainId],

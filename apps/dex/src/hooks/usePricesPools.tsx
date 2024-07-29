@@ -57,10 +57,10 @@ export function usePricedPools(): Asset[] {
   }, [externalPrices]);
 
   const account = useAccount();
-  const { data: accountBalance } = useBalanceWagmi({ 
-    address: account.address
+  const { data: accountBalance } = useBalanceWagmi({
+    address: account.address,
   });
-  
+
   const dexPairs = useDexPairs();
   const chainId = useChainId();
   const currencies = getCurrencies(chainId);
@@ -84,14 +84,14 @@ export function usePricedPools(): Asset[] {
     abi: erc20Abi,
     address: token.address as EthereumAddress,
     functionName: 'balanceOf',
-    args: [account.address as EthereumAddress]
+    args: [account.address as EthereumAddress],
   }));
 
   const { data: tokensBalance, error, isLoading } = useReadContracts({
     contracts: tokensContracts,
     query: {
       enabled: !!account.address,
-      refetchOnWindowFocus: false
+      refetchOnWindowFocus: false,
     },
   });
 
@@ -138,8 +138,6 @@ export function usePricedPools(): Asset[] {
 
     const { address: pairAddress, symbol: pairSymbol, tokens: pairTokens } = pair[1] as any;
 
-    console.log('pairAddress', pairAddress, pairSymbol, pairTokens, (reserves as any).data?.[i].result)
-
     const tokens = [
       getCurrencyByAddress(tokens0.data?.[i].result as EthereumAddress),
       getCurrencyByAddress(tokens1.data?.[i].result as EthereumAddress),
@@ -153,8 +151,6 @@ export function usePricedPools(): Asset[] {
           return t0?.name.localeCompare(t1?.name || '') || 0;
         }
       });
-
-    console.log("🚀 ~ returnObject.entries ~ tokens:", tokens)
 
     const token0Decimals = tokens[0]?.decimals;
     const token1Decimals = tokens[1]?.decimals;
@@ -184,7 +180,7 @@ export function usePricedPools(): Asset[] {
         ldtPriceInEth = priceToken0toToken1;
         price = ldtPriceInEth * externalPrice;
       } else if (isWbtcPair) {
-        price = externalPrice
+        price = externalPrice;
       } else {
         if (typeof ldtPriceInEth === 'number') {
           price = (ldtPriceInEth / priceToken0toToken1) * externalPrice;
@@ -192,10 +188,14 @@ export function usePricedPools(): Asset[] {
       }
     }
 
+    if (tokens[1]?.isNative) {
+      price = ethPriceUSD ?? 0;
+    }
+
     return {
       symbol: (isEthPair) ? tokens[0]?.symbol : tokens[1]?.symbol,
       price,
-      decimals: (isEthPair && token0Decimals && token1Decimals) ? token0Decimals : token1Decimals
+      decimals: (isEthPair && token0Decimals && token1Decimals) ? token0Decimals : token1Decimals,
     };
   });
 
@@ -204,16 +204,23 @@ export function usePricedPools(): Asset[] {
 
     const balanceObj = tokenBalances.balances.find(balance => balance?.symbol === token?.symbol);
     const tokenPriced = pricedPools.find(pool => pool?.symbol === token?.symbol);
-    if (tokenPriced ) {
-      const balance = balanceObj ? balanceObj.balance : (accountBalance ? accountBalance.value : 0n)
-      
+
+    pricedPools.push({
+      decimals: 18,
+      price: ethPriceUSD || 0,
+      symbol: 'ETH',
+    });
+
+    if (tokenPriced) {
+      const balance = balanceObj ? balanceObj.balance : (accountBalance ? accountBalance.value : 0n);
+
       priceInUSD = (new BigNumber(balance?.toString() || 0).dividedBy(new BigNumber(10).pow(tokenPriced.decimals || 18))).multipliedBy(tokenPriced.price).toNumber();
-    } 
+    }
 
     return {
       value: priceInUSD || 0,
       label: token?.symbol || 'ETH',
       // balance: balanceObj ? balanceObj.balance : (accountBalance ? accountBalance.value : 0n),
-    }
+    };
   });
 }

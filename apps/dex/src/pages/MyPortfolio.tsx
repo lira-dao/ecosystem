@@ -1,17 +1,29 @@
 import React, { useState } from 'react';
-import { useAccount, useBalance as useBalanceWagmi, useChainId } from 'wagmi';
-import { Box, Card, CardContent, Typography, Grid, ToggleButton, ToggleButtonGroup, useMediaQuery, useTheme } from '@mui/material';
+import { useAccount, useBalance as useBalanceWagmi } from 'wagmi';
+import {
+  Box,
+  Card,
+  CardContent,
+  Grid,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import { PieChart } from '@mui/x-charts';
-import { getCurrencies } from '../utils';
-import { useFarmingStakers } from '../hooks/useFarmingStakers';
+import { PiePlot, ResponsiveChartContainer } from '@mui/x-charts';
 import { useTokenBalances } from '../hooks/useTokenBalances';
 import { usePools } from '../hooks/usePools';
 import { usePricedPools } from '../hooks/usePricesPools';
 import { useFetchPrices } from '../hooks/usePrices';
 import { muiDarkTheme, theme } from '../theme/theme';
+import { useGetAmountsOut } from '../hooks/useGetAmountsOut';
+import { AssetsCard } from '../components/portfolio/AssetsCard';
+import { ReferralCard } from '../components/portfolio/ReferralCard';
 
-type View = 'liquidity' | 'farming' | 'holdings';
+// type View = 'liquidity' | 'farming' | 'holdings';
+type View = 'assets' | 'liquidity';
 type TimeFrame = '7days' | '1month' | '3months' | '6months' | '1year' | 'all';
 
 export function MyPortfolio() {
@@ -19,28 +31,24 @@ export function MyPortfolio() {
 
   const between900And1150 = useMediaQuery(th.breakpoints.between(900, 1150));
 
-  const chainId = useChainId();
+  const { balances: tokensBalance } = useTokenBalances();
 
-  const farms = useFarmingStakers();
   const pools = usePools();
+
+  const amountsOut = useGetAmountsOut([pools[0].token0?.address || '0x0', pools[0].token1?.address || '0x0'], 0n);
 
   const { isConnected } = useAccount();
 
   const { data: pricesData, error: errorPricesData, isLoading } = useFetchPrices();
 
   const account = useAccount();
-  const { data: accountBalance } = useBalanceWagmi({ 
-    address: account.address
+  const { data: accountBalance } = useBalanceWagmi({
+    address: account.address,
   });
-  
-  console.log('🚀 ~ accountBalance', accountBalance?.value.toString() || '0');
 
-  const tokens = getCurrencies(chainId)
-  const { balances: tokensBalance } = useTokenBalances();
   const assetsChartData = usePricedPools();
-  console.log("🚀 ~ MyPortfolio ~ pricedPools:", assetsChartData)
 
-  const [selectedView, setSelectedView] = useState('liquidity');
+  const [selectedView, setSelectedView] = useState('assets');
   const [liquidityTimeFrame, setLiquidityTimeFrame] = useState<TimeFrame>('7days');
   const [holdingsTimeFrame, setHoldingsTimeFrame] = useState<TimeFrame>('7days');
 
@@ -62,7 +70,6 @@ export function MyPortfolio() {
     }
   };
 
-
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -75,7 +82,7 @@ export function MyPortfolio() {
     <ThemeProvider theme={muiDarkTheme}>
       <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', marginY: 4, paddingX: 2 }}>
         <Box>
-          <Typography sx={{typography: 'h3'}} fontWeight="bold" color="white" gutterBottom>
+          <Typography sx={{ typography: 'h3' }} fontWeight="bold" color="white" gutterBottom>
             MY Portfolio
           </Typography>
         </Box>
@@ -85,56 +92,69 @@ export function MyPortfolio() {
             <Card sx={{ color: 'white', flexGrow: 1, marginBottom: '8px' }}>
               <CardContent>
                 <Typography variant="h6" mb={1}>Portfolio Value</Typography>
-                <Typography variant="h3">0.00 ETH</Typography>
-                <Typography variant="h5" color={theme?.colors.gray155}>~$0.00</Typography>
+                <Typography variant="h3">≃$ 0.00</Typography>
+                {/*<Typography variant="h5" color={theme?.colors.gray155}>~$0.00</Typography>*/}
 
-                {!isConnected && (<Typography variant="body2" color={theme?.colors.red400} textAlign="center" mt={2}>No wallet connected. Please connect your MetaMask.</Typography>)}
+                {!isConnected && (
+                  <Typography variant="body2" color={theme?.colors.red400} textAlign="center" mt={2}>No wallet
+                    connected. Please connect your MetaMask.</Typography>)}
               </CardContent>
             </Card>
 
             <Card sx={{ color: 'white' }}>
-              <CardContent>
+              <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
                 <Typography variant="h6">Wallet Overview</Typography>
-                <Box sx={{ 
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  height: 400,
-                  width: '100%',
-                  m: 0,
-                  p: 0,
-                }}>
+                <Box>
                   {isConnected && (
-                    <PieChart
-                      margin={ between900And1150 ? { top: 65, bottom: 220, left: 125, right: 150 } : { top: 100, bottom: 100, left: 10, right: 150 } }
+                    <ResponsiveChartContainer
+                      height={400}
                       series={[
                         {
                           data: assetsChartData,
-                          innerRadius: 30,
-                          outerRadius: 90,
-                        }
-                      ]}
-                      slotProps={{
-                        legend: {
-                          direction: between900And1150 ? 'row' : 'column',
-                          position: {
-                            vertical: between900And1150 ? 'bottom' : 'middle',
-                            horizontal: between900And1150 ? 'middle' : 'right',
-                          },
-                          padding: 0,
+                          innerRadius: 100,
+                          outerRadius: 200,
+                          type: 'pie',
                         },
-                      }}
-                      style={{ 
-                        top: 0,
-                        left: 0,
-                        width: '100%',
-                        height: '100%',
-                        m: 0,
-                        p: 0
-                      }}
-                    />
+                      ]}
+                    >
+                      <PiePlot />
+                    </ResponsiveChartContainer>
                   )}
+                  {/*{isConnected && (*/}
+                  {/*  <PieChart*/}
+                  {/*    margin={between900And1150 ? { top: 65, bottom: 220, left: 125, right: 150 } : {*/}
+                  {/*      top: 100,*/}
+                  {/*      bottom: 100,*/}
+                  {/*      left: 10,*/}
+                  {/*      right: 150,*/}
+                  {/*    }}*/}
+                  {/*    series={[*/}
+                  {/*      {*/}
+                  {/*        data: assetsChartData,*/}
+                  {/*        innerRadius: 30,*/}
+                  {/*        outerRadius: 90,*/}
+                  {/*      },*/}
+                  {/*    ]}*/}
+                  {/*    slotProps={{*/}
+                  {/*      legend: {*/}
+                  {/*        direction: between900And1150 ? 'row' : 'column',*/}
+                  {/*        position: {*/}
+                  {/*          vertical: between900And1150 ? 'bottom' : 'middle',*/}
+                  {/*          horizontal: between900And1150 ? 'middle' : 'right',*/}
+                  {/*        },*/}
+                  {/*        padding: 0,*/}
+                  {/*      },*/}
+                  {/*    }}*/}
+                  {/*    style={{*/}
+                  {/*      top: 0,*/}
+                  {/*      left: 0,*/}
+                  {/*      width: '100%',*/}
+                  {/*      height: '100%',*/}
+                  {/*      m: 0,*/}
+                  {/*      p: 0,*/}
+                  {/*    }}*/}
+                  {/*  />*/}
+                  {/*)}*/}
 
                   {!isConnected && (
                     <Box
@@ -143,7 +163,7 @@ export function MyPortfolio() {
                         justifyContent: 'center',
                         alignItems: 'center',
                         height: 350,
-                        width: '100%'
+                        width: '100%',
                       }}
                     >
                       <Typography variant="body2" color="white">No tokens in your wallet</Typography>
@@ -153,129 +173,28 @@ export function MyPortfolio() {
               </CardContent>
             </Card>
           </Grid>
+
           <Grid item xs={12} md={8}>
             <Card sx={{ color: 'white', height: '100%' }}>
               <CardContent>
                 <ToggleButtonGroup
-                  color='primary'
+                  color="primary"
                   value={selectedView}
                   onChange={handleViewChange}
                   sx={{ mt: 1, marginBottom: 2 }}
-                  size='large'
+                  size="large"
                   exclusive
                   fullWidth
                 >
-                  <ToggleButton value="liquidity">Liquidity Value</ToggleButton>
-                  <ToggleButton value="farming">Earned Farming Rewards</ToggleButton>
-                  <ToggleButton value="holdings">Top Holdings Prices</ToggleButton>
+                  <ToggleButton value="assets">Assets</ToggleButton>
+                  <ToggleButton value="referral">Referral</ToggleButton>
                 </ToggleButtonGroup>
 
                 {isConnected && (
                   <Grid container spacing={2}>
                     <Grid item xs={12} sx={{ mt: 1 }}>
-                      {selectedView === 'liquidity' && (
-                        <>
-                          <Box sx={{
-                            display: 'flex',
-                            alignContent: 'center',
-                            alignItems: 'last baseline',
-                            justifyContent: 'space-between',
-                          }}>
-                            <Typography variant="body2">ETH Value of Your LPs.</Typography>
-                            <ToggleButtonGroup
-                              color="primary"
-                              value={liquidityTimeFrame}
-                              onChange={handleLiquidityTimeFrameChange}
-                              size='small'
-                              exclusive
-                            >
-                              <ToggleButton value="7days">7 Days</ToggleButton>
-                              <ToggleButton value="1month">1 Month</ToggleButton>
-                              <ToggleButton value="3months">3 Months</ToggleButton>
-                              <ToggleButton value="6months">6 Months</ToggleButton>
-                              <ToggleButton value="1year">1 Year</ToggleButton>
-                              <ToggleButton value="all">All Time</ToggleButton>
-                            </ToggleButtonGroup>
-
-                            {/* <Box sx={{ flexGrow: 1 }}>
-                              <SparkLineChart data={[1, 4, 2, 5, 7, 4, 6]} height={100} />
-                            </Box> */}
-                          </Box>
-                          {isConnected && (
-                            <Box
-                              sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                height: 450,
-                                width: '100%'
-                              }}
-                            >
-                              <Typography variant="body2" color="white">No data to show</Typography>
-                            </Box>
-                          )}
-                        </>
-                      )}
-                      {selectedView === 'farming' && (
-                        <>
-                          <Typography variant="body2"  marginY={1}>ADA value of your total earned farming rewards for all time per epoch.</Typography>
-                          {isConnected && (
-                            <Box
-                              sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                height: 450,
-                                width: '100%'
-                              }}
-                            >
-                              <Typography variant="body2" color="white">No data to show</Typography>
-                            </Box>
-                          )}
-                        </>
-                      )}
-                      {selectedView === 'holdings' && (
-                        <>
-                          <Box sx={{
-                            display: 'flex',
-                            alignContent: 'center',
-                            alignItems: 'last baseline',
-                            justifyContent: 'space-between',
-                          }}>
-                            <Typography variant="body2">Your top tokens price development over time.</Typography>
-                            <ToggleButtonGroup
-                              color="primary"
-                              value={holdingsTimeFrame}
-                              onChange={handleHoldingsTimeFrameChange}
-                              size='small'
-                              exclusive
-                            >
-                              <ToggleButton value="7days">7 Days</ToggleButton>
-                              <ToggleButton value="1month">1 Month</ToggleButton>
-                              <ToggleButton value="3months">3 Months</ToggleButton>
-                              <ToggleButton value="6months">6 Months</ToggleButton>
-                              <ToggleButton value="1year">1 Year</ToggleButton>
-                              <ToggleButton value="all">All Time</ToggleButton>
-                            </ToggleButtonGroup>
-
-                          </Box>
-                          {/* TODO: move in wallet overview page */}
-                          {isConnected && (
-                            <Box
-                              sx={{
-                                height: 450,
-                                width: '100%'
-                              }}
-                            >
-                              <Typography variant="h6" mt={1} mb={1}>Tokens Balance</Typography>
-
-                              {tokensBalance && tokensBalance.map((crypto, index) => (
-                                <Typography key={index} variant="body2">{crypto?.symbol} {crypto?.balance?.toString()}</Typography>
-                              ))}
-                            </Box>
-                          )}
-                        </>
-                      )}
+                      {selectedView === 'assets' && <AssetsCard assets={assetsChartData} />}
+                      {selectedView === 'referral' && <ReferralCard />}
                     </Grid>
                   </Grid>
                 )}
@@ -287,14 +206,12 @@ export function MyPortfolio() {
                       alignItems: 'center',
                       justifyContent: 'center',
                       height: 450,
-                      width: '100%'
+                      width: '100%',
                     }}
                   >
                     <Typography variant="body2" color="white">No data to show</Typography>
                   </Box>
                 )}
-
-                {/* <Typography variant="body2">No data to show</Typography> */}
               </CardContent>
             </Card>
           </Grid>

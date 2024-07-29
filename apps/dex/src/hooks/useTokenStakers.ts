@@ -158,8 +158,6 @@ export function useTokenStakers(): Staker[] {
     ];
   }, [rewardRateTbb, rewardRateTbs, rewardRateTbg]);
 
-  console.log('rewardRateTbb', rewardRateTbb, rewardRateTbs, rewardRateTbg);
-
   return tokenStakers[chainId].map((staker, i) => {
     return {
       address: staker.address,
