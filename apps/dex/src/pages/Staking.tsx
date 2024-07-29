@@ -43,7 +43,7 @@ export function Staking() {
                 <Typography variant="subtitle2">Boost your passive rewards by up to 100% by staking LDT for up
                   to 50% of the value of your TB tokens</Typography>
                 <Typography variant="subtitle2">For more details, please refer to the <a
-                  href="https://docs.liradao.org/category/basic-guides"
+                  href="https://whitepaper.liradao.org/LIRA-DEX.md/008.1-Staking-rewards-boosting"
                   target="_blank"
                   rel="noopener noreferrer"
                 >white paper</a></Typography>
