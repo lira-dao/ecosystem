@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Grid, Link } from '@mui/material';
+import { Box, Link } from '@mui/material';
 import { useTheme } from '@xstyled/styled-components';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider } from '@mui/material/styles';
@@ -16,26 +16,28 @@ export function Footer() {
         sx={{
           width: '100%',
           height: '70px',
-          bgcolor: 'background.paper',
+          display: 'flex',
+          justifyContent: 'end',
+          alignItems: 'center',
+          backgroundColor: 'background.paper',
+          px: 4,
         }}
       >
-        <Grid container display="flex" justifyContent="end" alignItems="center">
-          <Typography variant="body2" color="text.secondary" noWrap>
-            Prices by
-            <Link
-              href="https://coinmarketcap.com" target="_blank" rel="noopener noreferrer"
-              onMouseEnter={() => setHover(true)}
-              onMouseLeave={() => setHover(false)}
-              sx={{
-                color: hover ? th?.colors.white + '!important' : th?.colors.gray155 + '!important',
-                textDecoration: 'none',
-                ml: 1,
-              }}
-            >
-              CoinMarketCap
-            </Link>
-          </Typography>
-        </Grid>
+        <Typography variant="body2" color="text.secondary" noWrap>
+          Prices by
+          <Link
+            href="https://coinmarketcap.com" target="_blank" rel="noopener noreferrer"
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+            sx={{
+              color: hover ? th?.colors.white + '!important' : th?.colors.gray155 + '!important',
+              textDecoration: 'none',
+              ml: 1,
+            }}
+          >
+            CoinMarketCap
+          </Link>
+        </Typography>
       </Box>
     </ThemeProvider>
   );
