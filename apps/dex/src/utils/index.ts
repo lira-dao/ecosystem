@@ -441,6 +441,10 @@ export function getCurrencyByAddress(address: EthereumAddress) {
   return [...currenciesArbitrumSepolia, ...currenciesArbitrumOne].find(c => c.address === address);
 }
 
+export function getCurrencyBySymbol(symbol: string) {
+  return [...currenciesArbitrumSepolia, ...currenciesArbitrumOne].find(c => c.symbol === symbol);
+}
+
 export function getPairedCurrencies(chainId: number, currencies: string[]) {
   return getCurrencies(chainId).filter(c => currencies.includes(c.symbol));
 }

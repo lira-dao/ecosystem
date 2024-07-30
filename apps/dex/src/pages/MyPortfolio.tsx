@@ -12,7 +12,7 @@ import {
   useTheme,
 } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import { PiePlot, ResponsiveChartContainer } from '@mui/x-charts';
+import { PieChart } from '@mui/x-charts';
 import { useTokenBalances } from '../hooks/useTokenBalances';
 import { usePools } from '../hooks/usePools';
 import { usePricedPools } from '../hooks/usePricesPools';
@@ -21,6 +21,7 @@ import { muiDarkTheme, theme } from '../theme/theme';
 import { useGetAmountsOut } from '../hooks/useGetAmountsOut';
 import { AssetsCard } from '../components/portfolio/AssetsCard';
 import { ReferralCard } from '../components/portfolio/ReferralCard';
+import BigNumber from 'bignumber.js';
 
 // type View = 'liquidity' | 'farming' | 'holdings';
 type View = 'assets' | 'liquidity';
@@ -78,6 +79,12 @@ export function MyPortfolio() {
     return <div>Error Loading Prices</div>;
   }
 
+  console.log('assetsChartData', assetsChartData)
+
+  console.log('assets', assetsChartData.map((d) => ({ value: Number(d.balance), label: d.symbol })))
+
+  const totalValue = assetsChartData.reduce((prev, curr) => prev.plus(curr.value), new BigNumber(0)).toFormat(2, 1)
+
   return (
     <ThemeProvider theme={muiDarkTheme}>
       <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', marginY: 4, paddingX: 2 }}>
@@ -92,7 +99,7 @@ export function MyPortfolio() {
             <Card sx={{ color: 'white', flexGrow: 1, marginBottom: '8px' }}>
               <CardContent>
                 <Typography variant="h6" mb={1}>Portfolio Value</Typography>
-                <Typography variant="h3">≃$ 0.00</Typography>
+                <Typography variant="h3">≃$ {totalValue}</Typography>
                 {/*<Typography variant="h5" color={theme?.colors.gray155}>~$0.00</Typography>*/}
 
                 {!isConnected && (
@@ -106,19 +113,26 @@ export function MyPortfolio() {
                 <Typography variant="h6">Wallet Overview</Typography>
                 <Box>
                   {isConnected && (
-                    <ResponsiveChartContainer
+                    <PieChart
                       height={400}
+                      slotProps={{
+                        legend: { hidden: true },
+                      }}
+                      margin={{
+                        left: 0,
+                        right: 0,
+                        top: 0,
+                        bottom: 0,
+                      }}
                       series={[
                         {
-                          data: assetsChartData,
-                          innerRadius: 100,
+                          data: assetsChartData.map((d) => ({ value: d.value, label: d.symbol })),
+                          innerRadius: 50,
                           outerRadius: 200,
                           type: 'pie',
                         },
                       ]}
-                    >
-                      <PiePlot />
-                    </ResponsiveChartContainer>
+                    />
                   )}
                   {/*{isConnected && (*/}
                   {/*  <PieChart*/}

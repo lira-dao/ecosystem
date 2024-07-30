@@ -1,8 +1,5 @@
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import { useTokenBalances } from '../../hooks/useTokenBalances';
 import { Asset } from '../../hooks/usePricesPools';
-import BigNumber from 'bignumber.js';
-import { useBalances } from '../../hooks/useBalances';
 
 
 function getTokenColor(symbol: string | undefined) {
@@ -22,7 +19,7 @@ function getTokenColor(symbol: string | undefined) {
     case 'WBTC':
       return '#72CCFF';
     default:
-      return 'white'
+      return 'white';
   }
 }
 
@@ -31,12 +28,6 @@ interface AssetsCardProps {
 }
 
 export function AssetsCard({ assets }: AssetsCardProps) {
-  const { balances } = useTokenBalances();
-
-  const newBalances = useBalances();
-
-  console.log('newBalances', newBalances);
-
   return (
     <Box>
       <TableContainer component={Paper}>
@@ -49,16 +40,24 @@ export function AssetsCard({ assets }: AssetsCardProps) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {balances.map((row, i) => (
+            {assets.map((row, i) => (
               <TableRow
                 key={row.symbol}
                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
               >
-                <TableCell component="th" scope="row" sx={{display: 'flex', alignItems: 'center'}}>
-                  <span style={{display: 'block', width: 18, height: 18, backgroundColor: getTokenColor(row.symbol), marginRight: 10}} />{row.symbol}
+                <TableCell component="th" scope="row" sx={{ display: 'flex', alignItems: 'center' }}>
+                  <span
+                    style={{
+                      display: 'block',
+                      width: 18,
+                      height: 18,
+                      backgroundColor: getTokenColor(row.symbol),
+                      marginRight: 10,
+                    }}
+                  />{row.symbol}
                 </TableCell>
                 <TableCell align="right">{row.formattedBalance}</TableCell>
-                <TableCell align="right">≃$ {new BigNumber(assets[i].value).toFormat(2, 1)}</TableCell>
+                <TableCell align="right">≃$ {row.formattedValue}</TableCell>
               </TableRow>
             ))}
           </TableBody>
