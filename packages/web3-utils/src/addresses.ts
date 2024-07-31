@@ -77,8 +77,8 @@ export const tokenDistributor: TokenDistributorAddress = {
 };
 
 export const rewardSplitter: RewardSplitterAddress = {
-  42161: '0x457C8820c238aD2aa9e8632479947964b058E4dF',
-  421614: '0x248DAFB044173721FbecdC218D676b614467C618',
+  42161: '0x4953B478214Bb4F4691765e6FD6dEE6690b2E7B6',
+  421614: '0xe1Fb360EfED2c5B3FB0b1Fb345E1149113f2033e',
 };
 
 export const farmingSplitter: NetworkAddresses = {

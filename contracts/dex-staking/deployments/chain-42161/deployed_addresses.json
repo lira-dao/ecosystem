@@ -13,5 +13,6 @@
   "StakingSplitter#StakingSplitter": "0xD3C6e8895bCCF20875a93D05187c249968d717Ee",
   "BoostingSplitter#BoostingSplitter": "0x23C51664EAe50A7594c31790b1562494FA6a6E54",
   "TeamSplitter#TeamSplitter": "0xF0076e130C077DAEE73EF2244260f4051A986671",
-  "RewardSplitterV2#RewardSplitterV2": "0x457C8820c238aD2aa9e8632479947964b058E4dF"
+  "RewardSplitterV2#RewardSplitterV2": "0x457C8820c238aD2aa9e8632479947964b058E4dF",
+  "RewardSplitterV3#RewardSplitterV3": "0x4953B478214Bb4F4691765e6FD6dEE6690b2E7B6"
 }

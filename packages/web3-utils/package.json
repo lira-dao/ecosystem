@@ -1,6 +1,6 @@
 {
   "name": "@lira-dao/web3-utils",
-  "version": "1.16.3",
+  "version": "1.16.4",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
