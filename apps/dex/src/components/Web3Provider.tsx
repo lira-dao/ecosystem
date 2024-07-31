@@ -25,8 +25,8 @@ import { ReactNode } from 'react';
 
 const queryClient = new QueryClient();
 
-const projectId = process.env.REACT_APP_WALLECT_CONNECT_PROJECT_ID ?? '';
-
+const projectId = process.env.REACT_APP_WALLECT_CONNECT_PROJECT_ID ?? '0842a2f847c54573919c3099a7628477';
+console.log(projectId, "projectID")
 const metadata = {
   name: 'LIRA DEX',
   description: 'Decentralized Exchange',
