@@ -1,9 +1,3 @@
-import React, { useState } from 'react';
-import { Box, Link } from '@mui/material';
-import { useTheme } from '@xstyled/styled-components';
-import Typography from '@mui/material/Typography';
-import { ThemeProvider } from '@mui/material/styles';
-import { muiDarkTheme } from '../theme/theme';
 
 
 export function Footer() {
@@ -14,30 +8,7 @@ export function Footer() {
     <ThemeProvider theme={muiDarkTheme}>
       <Box
         sx={{
-          width: '100%',
-          height: '70px',
-          display: 'flex',
-          justifyContent: 'end',
-          alignItems: 'center',
-          backgroundColor: 'background.paper',
-          px: 4,
-        }}
-      >
-        <Typography variant="body2" color="text.secondary" noWrap>
-          Prices by
-          <Link
-            href="https://coinmarketcap.com" target="_blank" rel="noopener noreferrer"
-            onMouseEnter={() => setHover(true)}
-            onMouseLeave={() => setHover(false)}
-            sx={{
-              color: hover ? th?.colors.white + '!important' : th?.colors.gray155 + '!important',
-              textDecoration: 'none',
-              ml: 1,
-            }}
-          >
-            CoinMarketCap
-          </Link>
-        </Typography>
+
       </Box>
     </ThemeProvider>
   );
