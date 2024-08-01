@@ -79,10 +79,6 @@ export function MyPortfolio() {
     return <div>Error Loading Prices</div>;
   }
 
-  console.log('assetsChartData', assetsChartData)
-
-  console.log('assets', assetsChartData.map((d) => ({ value: Number(d.balance), label: d.symbol })))
-
   const totalValue = assetsChartData.reduce((prev, curr) => prev.plus(curr.value), new BigNumber(0)).toFormat(2, 1)
 
   return (
