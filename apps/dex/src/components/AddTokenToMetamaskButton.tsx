@@ -1,6 +1,6 @@
-import React from "react";
-import { Button, Tooltip } from "@mui/material";
-import metamask from "../img/metamask.png";
+import React from 'react';
+import { Button, Tooltip } from '@mui/material';
+import metamask from '../img/metamask.png';
 
 interface AddToMetaMaskButtonProps {
   token:
