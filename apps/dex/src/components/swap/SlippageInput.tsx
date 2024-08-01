@@ -36,7 +36,7 @@ const SlippageInput: React.FC<SlippageInputProps> = ({
       setSlippage(Math.round(parsedValue * 10) / 10);
     }
   };
-console.log(expectedOutput)
+
   const calculateMinimumOutput = () => {
     const minOutput = parseFloat(expectedOutput) * (1 - slippage / 100);
     return isNaN(minOutput) ? '0' : minOutput.toFixed(6);
