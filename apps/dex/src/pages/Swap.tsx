@@ -61,6 +61,8 @@ export function Swap() {
   const [amountOut, setAmountOut] = useState<bigint>(0n);
   const [amountIn, setAmountIn] = useState<bigint>(0n);
 
+  const [slippage, setSlippage] = useState<number>(0.5);
+
   const amountsOut = useGetAmountsOut(
     [currencyA.address, currencyB?.address || '0x0'],
     amountOut,
@@ -82,6 +84,7 @@ export function Swap() {
     parseUnits(firstValue.toString(), currencyA.decimals),
     currencyA.isNative,
     currencyB?.isNative,
+    slippage
   );
 
   const isAllowCurrencyADisabled = useMemo(
@@ -91,8 +94,6 @@ export function Swap() {
 
   const account = useAccount();
   const accountBalance = useBalanceWagmi({ address: account.address });
-
-  const [slippage, setSlippage] = useState<number>(0.5);
 
   const insufficientBalanceA = useMemo(() => {
     if (currencyA.isNative) {

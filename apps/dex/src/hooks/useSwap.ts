@@ -5,7 +5,7 @@ import { useWatchTransaction } from './useWatchTransaction';
 import { useDexAddresses } from './useDexAddresses';
 
 
-export function useSwap(pair: [EthereumAddress, EthereumAddress], amountIn: bigint, isNativeA: boolean, isNativeB?: boolean) {
+export function useSwap(pair: [EthereumAddress, EthereumAddress], amountIn: bigint, isNativeA: boolean, isNativeB?: boolean, slippagePercentage: number = 0.5) {
   const account = useAccount();
   const block = useBlock();
   const dexAddresses = useDexAddresses();
@@ -13,6 +13,11 @@ export function useSwap(pair: [EthereumAddress, EthereumAddress], amountIn: bigi
   const deadline = (block.data?.timestamp ?? 0n) + 600n;
 
   const amountsOut = useGetAmountsOut(pair, amountIn);
+console.log(slippagePercentage, typeof slippagePercentage)
+  const calculateMinimumAmountOut = (amountOut: bigint): bigint => {
+    const slippageFactor = 10000n - BigInt(slippagePercentage * 100);
+    return (amountOut * slippageFactor) / 10000n;
+  };
 
   const getFunctionName = () => {
     if (isNativeA) {
@@ -26,13 +31,14 @@ export function useSwap(pair: [EthereumAddress, EthereumAddress], amountIn: bigi
 
   const write = () => {
     if (amountsOut.data && pair[1] !== '0x0') {
+      const minimumAmountOut = calculateMinimumAmountOut(amountsOut.data[1]);
       if (getFunctionName() === 'swapExactETHForTokens') {
         writeContract({
           abi: dexRouterV2Abi,
           address: dexAddresses.router,
           functionName: 'swapExactETHForTokens',
           args: [
-            amountsOut.data[1],
+            minimumAmountOut,
             pair,
             account.address as EthereumAddress,
             deadline,
@@ -46,7 +52,7 @@ export function useSwap(pair: [EthereumAddress, EthereumAddress], amountIn: bigi
           functionName: getFunctionName(),
           args: [
             amountIn,
-            amountsOut.data[1],
+            minimumAmountOut,
             pair,
             account.address as EthereumAddress,
             deadline,

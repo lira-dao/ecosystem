@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
   TextField,
   InputAdornment,
   Tooltip,
-} from "@mui/material";
-import InfoIcon from "@mui/icons-material/Info";
+} from '@mui/material';
+import InfoIcon from '@mui/icons-material/Info';
 
 type SlippageInputProps = {
   slippage: number;
@@ -36,10 +36,10 @@ const SlippageInput: React.FC<SlippageInputProps> = ({
       setSlippage(Math.round(parsedValue * 10) / 10);
     }
   };
-
+console.log(expectedOutput)
   const calculateMinimumOutput = () => {
     const minOutput = parseFloat(expectedOutput) * (1 - slippage / 100);
-    return minOutput.toFixed(6);
+    return isNaN(minOutput) ? '0' : minOutput.toFixed(6);
   };
 
   return (
