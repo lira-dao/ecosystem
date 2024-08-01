@@ -1,21 +1,10 @@
 import React from 'react';
 import { Button, Tooltip } from '@mui/material';
 import metamask from '../img/metamask.png';
+import { Currency } from '@lira-dao/web3-utils';
 
 interface AddToMetaMaskButtonProps {
-  token:
-    | {
-        address: string;
-        chainId: number;
-        icon: string;
-        name: string;
-        paired: string[];
-        symbol: string;
-        decimals: number;
-        image?: string;
-        isNative?: boolean;
-      }
-    | undefined;
+  token: Currency | undefined;
 }
 
 const AddToMetaMaskButton: React.FC<AddToMetaMaskButtonProps> = ({ token }) => {
@@ -34,7 +23,7 @@ const AddToMetaMaskButton: React.FC<AddToMetaMaskButtonProps> = ({ token }) => {
             address: token.address,
             symbol: token.symbol,
             decimals: token.decimals,
-            image: token.image,
+            image: token.icon,
           },
         },
       });
