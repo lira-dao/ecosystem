@@ -7,6 +7,7 @@ import { CurrencySelector } from '../CurrencySelector';
 import { NumericalInput } from '../StyledInput';
 import { Container } from './Container';
 import BigNumber from 'bignumber.js';
+import AddToMetaMaskButton from '../AddTokenToMetamaskButton';
 
 
 interface CurrencyInputProps {
@@ -67,12 +68,15 @@ export function CurrencyInput({
           <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
             <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
               <x.p color="gray155" userSelect="none">{title}</x.p>
-              <CurrencySelector
-                disabled={isDisabledCurrencySelector}
-                selected={selected}
-                currency={currency}
-                onClick={onCurrencySelectClick}
-              />
+              <x.div display="flex" alignItems="center" justifyContent="space-between">
+                <AddToMetaMaskButton token={currency} />
+                <CurrencySelector
+                  disabled={isDisabledCurrencySelector}
+                  selected={selected}
+                  currency={currency}
+                  onClick={onCurrencySelectClick}
+                />
+              </x.div>
             </x.div>
 
             <x.div w="100%" h="54px" display="flex" flexDirection="column">
