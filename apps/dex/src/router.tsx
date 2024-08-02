@@ -14,7 +14,7 @@ import { Unstake } from './pages/Unstake';
 import { Staking } from './pages/Staking';
 import { muiDarkTheme } from './theme/theme';
 import { ThemeProvider } from '@mui/material/styles';
-import { MyPortfolio } from './pages/MyPortfolio';
+import { Portfolio } from './pages/Portfolio';
 import { Referral } from './pages/Referral';
 
 
@@ -49,7 +49,7 @@ const routes = [
   { path: 'referral/:address', element: <ThemeProvider theme={muiDarkTheme}><Referral /></ThemeProvider> },
 
   // portfolio
-  { path: 'portfolio', element: <MyPortfolio /> },
+  { path: 'portfolio', element: <Portfolio /> },
 ];
 
 if (process.env.REACT_APP_TESTNET === 'true') {

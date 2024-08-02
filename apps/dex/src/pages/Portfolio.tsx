@@ -27,7 +27,7 @@ import BigNumber from 'bignumber.js';
 type View = 'assets' | 'liquidity';
 type TimeFrame = '7days' | '1month' | '3months' | '6months' | '1year' | 'all';
 
-export function MyPortfolio() {
+export function Portfolio() {
   const th = useTheme();
 
   const between900And1150 = useMediaQuery(th.breakpoints.between(900, 1150));
