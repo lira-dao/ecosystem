@@ -1,11 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Box,
-  Typography,
-  TextField,
-  InputAdornment,
-  Tooltip,
-} from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Box, InputAdornment, TextField, Tooltip, Typography } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 
 type SlippageInputProps = {
@@ -46,9 +40,9 @@ const SlippageInput: React.FC<SlippageInputProps> = ({
     <Box sx={{ mt: 2, mb: 2 }}>
       <Box
         sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
           gap: 2,
           mb: 1,
         }}
@@ -58,7 +52,7 @@ const SlippageInput: React.FC<SlippageInputProps> = ({
           <Tooltip title="Your transaction will revert if the price changes unfavorably by more than this percentage.">
             <InfoIcon
               fontSize="small"
-              sx={{ ml: 1, verticalAlign: "middle" }}
+              sx={{ ml: 1, verticalAlign: 'middle' }}
             />
           </Tooltip>
         </Typography>
@@ -76,7 +70,7 @@ const SlippageInput: React.FC<SlippageInputProps> = ({
           InputProps={{
             endAdornment: <InputAdornment position="end">%</InputAdornment>,
           }}
-          sx={{ width: "100px" }}
+          sx={{ width: '100px' }}
         />
       </Box>
       <Typography variant="body2" color="text.secondary">

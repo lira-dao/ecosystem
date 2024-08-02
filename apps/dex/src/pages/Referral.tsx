@@ -1,5 +1,5 @@
 import { Box, Button, Card, CardContent, Divider, TextField, Typography } from '@mui/material';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { PrimaryButtonWithLoader } from '../components/PrimaryButtonWithLoader';
 import { useAccount } from 'wagmi';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
@@ -46,7 +46,7 @@ export function Referral() {
     if (confirmed) {
       refetch();
     }
-  }, [confirmed])
+  }, [confirmed]);
 
   const onRegisterClick = () => {
     if (isAddress(referrer)) {

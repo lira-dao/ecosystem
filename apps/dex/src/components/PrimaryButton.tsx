@@ -13,5 +13,5 @@ export const PrimaryButton = styled(Button)<ButtonProps>(({ theme }) => ({
   },
   '&:focus': {
     outline: 'none',
-  }
+  },
 }));

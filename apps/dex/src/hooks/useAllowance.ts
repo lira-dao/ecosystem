@@ -12,7 +12,7 @@ export function useAllowance(address: EthereumAddress, spender: EthereumAddress)
     args: [account.address as EthereumAddress, spender],
     query: {
       enabled: !!address && !!account.address && !!spender,
-      refetchOnWindowFocus: false
+      refetchOnWindowFocus: false,
     },
   });
 

@@ -52,6 +52,7 @@ declare module '@mui/material/styles' {
       red400: string;
     };
   }
+
   interface ThemeOptions {
     colors?: {
       green: typeof green,

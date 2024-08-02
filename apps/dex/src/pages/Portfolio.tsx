@@ -79,7 +79,7 @@ export function Portfolio() {
     return <div>Error Loading Prices</div>;
   }
 
-  const totalValue = assetsChartData.reduce((prev, curr) => prev.plus(curr.value), new BigNumber(0)).toFormat(2, 1)
+  const totalValue = assetsChartData.reduce((prev, curr) => prev.plus(curr.value), new BigNumber(0)).toFormat(2, 1);
 
   return (
     <ThemeProvider theme={muiDarkTheme}>

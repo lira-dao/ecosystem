@@ -24,7 +24,7 @@ function getTokenColor(symbol: string | undefined) {
 }
 
 interface AssetsCardProps {
-  assets: Asset[]
+  assets: Asset[];
 }
 
 export function AssetsCard({ assets }: AssetsCardProps) {

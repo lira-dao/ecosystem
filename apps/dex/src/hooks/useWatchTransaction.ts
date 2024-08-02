@@ -13,7 +13,7 @@ export function useWatchTransaction(hash?: EthereumAddress) {
       refetchOnReconnect: false,
       refetchOnMount: false,
       refetchInterval: 1000,
-      refetchOnWindowFocus: false
+      refetchOnWindowFocus: false,
     },
   });
 

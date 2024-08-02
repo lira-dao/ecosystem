@@ -10,15 +10,15 @@ interface AddToMetaMaskButtonProps {
 const AddToMetaMaskButton: React.FC<AddToMetaMaskButtonProps> = ({ token }) => {
   const addTokenToMetaMask = async () => {
     if (!window.ethereum || !token) {
-      alert("MetaMask is not installed!");
+      alert('MetaMask is not installed!');
       return;
     }
 
     try {
       await window.ethereum.request({
-        method: "wallet_watchAsset",
+        method: 'wallet_watchAsset',
         params: {
-          type: "ERC20",
+          type: 'ERC20',
           options: {
             address: token.address,
             symbol: token.symbol,
@@ -28,7 +28,7 @@ const AddToMetaMaskButton: React.FC<AddToMetaMaskButtonProps> = ({ token }) => {
         },
       });
     } catch (error) {
-      console.error("Failed to add token to MetaMask", error);
+      console.error('Failed to add token to MetaMask', error);
     }
   };
 
@@ -42,7 +42,7 @@ const AddToMetaMaskButton: React.FC<AddToMetaMaskButtonProps> = ({ token }) => {
         onClick={addTokenToMetaMask}
         variant="outlined"
         style={{
-          color: "white",
+          color: 'white',
           marginRight: 7,
           border: 0,
         }}
@@ -50,7 +50,7 @@ const AddToMetaMaskButton: React.FC<AddToMetaMaskButtonProps> = ({ token }) => {
         <img
           src={metamask}
           alt="metamask"
-          style={{ width: "25px", height: "25px" }}
+          style={{ width: '25px', height: '25px' }}
         />
       </Button>
     </Tooltip>

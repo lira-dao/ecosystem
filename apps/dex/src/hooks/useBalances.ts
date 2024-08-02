@@ -1,5 +1,5 @@
 import { useAccount, useBalance, useChainId, useReadContracts } from 'wagmi';
-import { Currency, erc20Abi } from '@lira-dao/web3-utils';
+import { erc20Abi } from '@lira-dao/web3-utils';
 import { getCurrencies } from '../utils';
 import BigNumber from 'bignumber.js';
 

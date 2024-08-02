@@ -84,7 +84,7 @@ export function Swap() {
     parseUnits(firstValue.toString(), currencyA.decimals),
     currencyA.isNative,
     currencyB?.isNative,
-    slippage
+    slippage,
   );
 
   const isAllowCurrencyADisabled = useMemo(

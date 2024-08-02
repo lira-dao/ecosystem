@@ -274,7 +274,7 @@ export function TreasuryMint() {
         </InputPanel>
       </SwapSection>
 
-      <Card sx={{mt: 2}}>
+      <Card sx={{ mt: 2 }}>
         <CardContent sx={{ '&:last-child': { p: 2 } }}>
           <Box display="flex" justifyContent="space-between">
             <Typography>{active === TreasuryHeaderTab.Mint ? 'Lock' : 'Unlock'}</Typography>

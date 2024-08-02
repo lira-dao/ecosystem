@@ -23,7 +23,7 @@ const StyledMenuItem = styled(NavLink)(({ theme }) => ({
   },
   '&:hover': {
     color: theme.colors.white + '!important',
-  }
+  },
 }));
 
 interface MenuItemProps {
@@ -62,13 +62,15 @@ export function Header() {
         {/*<MenuItem text="MY PORTFOLIO" to="/my-portfolio" />*/}
         {process.env.REACT_APP_TESTNET === 'true' && <MenuItem text="FAUCETS" to="/faucets" />}
       </Box>
-      <Box sx={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        mt: 'auto',
-        p: 2
-      }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          mt: 'auto',
+          p: 2,
+        }}
+      >
         {isConnected ? (
           <Box component="span" sx={{ p: 2 }}>
             <w3m-account-button balance="hide" />

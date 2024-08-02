@@ -3,7 +3,7 @@ import { EthereumAddress } from '@lira-dao/web3-utils';
 
 
 const fetchReferralUrl = async (address?: EthereumAddress): Promise<string> => {
-  if(!address) {
+  if (!address) {
     return '';
   }
 

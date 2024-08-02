@@ -29,8 +29,8 @@ export function Staking() {
           </Typography>
 
           <Card>
-            <CardContent sx={{display: 'flex', alignItems: 'center'}}>
-              <Box sx={{mr: '16px'}}>
+            <CardContent sx={{ display: 'flex', alignItems: 'center' }}>
+              <Box sx={{ mr: '16px' }}>
                 <LockOpen sx={{ fontSize: '100px' }} />
               </Box>
 
