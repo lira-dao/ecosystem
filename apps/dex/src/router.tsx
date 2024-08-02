@@ -48,8 +48,8 @@ const routes = [
   // referral
   { path: 'referral/:address', element: <ThemeProvider theme={muiDarkTheme}><Referral /></ThemeProvider> },
 
-  // my portfolio
-  { path: 'my-portfolio', element: <MyPortfolio /> },
+  // portfolio
+  { path: 'portfolio', element: <MyPortfolio /> },
 ];
 
 if (process.env.REACT_APP_TESTNET === 'true') {
