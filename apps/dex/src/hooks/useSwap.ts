@@ -13,6 +13,10 @@ export function useSwap(pair: [EthereumAddress, EthereumAddress], amountIn: bigi
   const deadline = (block.data?.timestamp ?? 0n) + 600n;
 
   const amountsOut = useGetAmountsOut(pair, amountIn);
+  const calculateMinimumAmountOut = (amountOut: bigint): bigint => {
+    const slippageFactor = 10000n - BigInt(slippagePercentage * 100);
+    return (amountOut * slippageFactor) / 10000n;
+  };
 
   const calculateMinimumAmountOut = (amountOut: bigint): bigint => {
     const slippageFactor = 10000n - BigInt(slippagePercentage * 100);
