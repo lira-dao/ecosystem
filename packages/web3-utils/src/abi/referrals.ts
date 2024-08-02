@@ -76,7 +76,7 @@ export const referralsAbi = [
       {
         indexed: true,
         internalType: "address",
-        name: "referee",
+        name: "referral",
         type: "address",
       },
     ],
@@ -120,7 +120,7 @@ export const referralsAbi = [
     inputs: [
       {
         internalType: "address",
-        name: "_referee",
+        name: "_referral",
         type: "address",
       },
     ],

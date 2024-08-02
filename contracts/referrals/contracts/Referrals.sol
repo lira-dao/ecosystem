@@ -13,7 +13,7 @@ import '@openzeppelin/contracts/access/Ownable2Step.sol';
 contract Referrals is Ownable2Step {
     mapping(address => address) public referrers;
 
-    event ReferralRegistered(address indexed referrer, address indexed referee);
+    event ReferralRegistered(address indexed referrer, address indexed referral);
 
     constructor() Ownable(msg.sender) {}
 
@@ -26,8 +26,8 @@ contract Referrals is Ownable2Step {
         emit ReferralRegistered(referrer, msg.sender);
     }
 
-    function referred(address _referee) external view returns (bool) {
-        return referrers[_referee] != address(0);
+    function referred(address _referral) external view returns (bool) {
+        return referrers[_referral] != address(0);
     }
 
     receive() external payable {
