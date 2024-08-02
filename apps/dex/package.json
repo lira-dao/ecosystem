@@ -67,7 +67,6 @@
     ]
   },
   "devDependencies": {
-    "@types/big.js": "^6.2.2",
-    "dotenv-cli": "^7.4.2"
+    "@types/big.js": "^6.2.2"
   }
 }
