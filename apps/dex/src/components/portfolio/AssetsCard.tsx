@@ -4,20 +4,22 @@ import { Asset } from '../../hooks/usePricesPools';
 
 function getTokenColor(symbol: string | undefined) {
   switch (symbol) {
-    case 'LDT':
-      return '#02B2AF';
-    case 'LIRA':
-      return '#72CCFF';
-    case 'TBb':
-      return '#DA00FF';
-    case 'TBs':
-      return '#9001CB';
-    case 'TBg':
-      return '#2E96FF';
     case 'ETH':
-      return '#3B48E0';
+      return '#3559fa';
+    case 'LDT':
+      return '#00b6b4';
+    case 'LIRA':
+      return '#63b000';
+    case 'TBb':
+      return '#ef9036';
+    case 'TBs':
+      return '#dedede';
+    case 'TBg':
+      return '#ffd926';
+    case 'WETH':
+      return '#607AE3';
     case 'WBTC':
-      return '#72CCFF';
+      return '#f76f1a';
     default:
       return 'white';
   }

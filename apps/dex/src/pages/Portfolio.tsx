@@ -111,6 +111,16 @@ export function Portfolio() {
                   {isConnected && (
                     <PieChart
                       height={400}
+                      colors={[
+                        '#3559fa',
+                        th.colors.cyan[600],
+                        th.colors.green[600],
+                        '#ef9036',
+                        '#dedede',
+                        '#ffd926',
+                        '#607AE3',
+                        '#f76f1a'
+                      ]}
                       slotProps={{
                         legend: { hidden: true },
                       }}
