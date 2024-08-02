@@ -10,6 +10,7 @@ import { useAccount } from 'wagmi';
 import { ThemeProvider } from '@mui/material/styles';
 import { muiDarkTheme } from '../theme/theme';
 
+
 const StyledMenuItem = styled(NavLink)(({ theme }) => ({
   color: theme.colors.gray155 + ' !important',
   cursor: 'pointer',
@@ -52,6 +53,7 @@ export function Header() {
   const drawerContent = (
     <>
       <Box onClick={handleDrawerToggle} sx={{ width: 250 }} marginTop={2}>
+        <MenuItem text="PORTFOLIO" to="/my-portfolio" />
         <MenuItem text="SWAP" to="/swap" />
         <MenuItem text="TREASURY" to="/treasury" />
         <MenuItem text="POOLS" to="/pools" />
@@ -119,6 +121,7 @@ export function Header() {
 
         {!isMobile && (
           <Box sx={{ display: 'flex', flexGrow: 1 }}>
+            <MenuItem text="PORTFOLIO" to="/my-portfolio" />
             <MenuItem text="SWAP" to="/swap" />
             <MenuItem text="TREASURY" to="/treasury" />
             <MenuItem text="POOLS" to="/pools" />
