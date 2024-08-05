@@ -102,5 +102,6 @@ export const teamSplitter: NetworkAddresses = {
 };
 
 export const referrals: NetworkAddresses = {
+  42161: '0x3F8Bad43E9f5e922E4c15d303665917A161Bd92F',
   421614: '0xa0baC5eA3fe7189f57707A05a6010c004B27A5dc',
 }
