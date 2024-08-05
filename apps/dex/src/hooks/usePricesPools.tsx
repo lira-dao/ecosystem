@@ -37,7 +37,7 @@ interface Pool {
   price: number;
 }
 
-export interface Asset extends Balance {
+export type Asset = Balance & {
   decimals: number;
   value: number;
   formattedValue: string;
