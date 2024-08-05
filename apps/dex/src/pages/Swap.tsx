@@ -31,7 +31,6 @@ export function Swap() {
   const currency0 = pool ? getCurrencyByAddress(pool.tokens[1]) : undefined;
   const currency1 = pool ? getCurrencyByAddress(pool.tokens[0]) : undefined;
 
-  // const th = useTheme();
   const chainId = useChainId();
   const dexAddresses = useDexAddresses();
   const { enqueueSnackbar } = useSnackbar();
@@ -122,20 +121,7 @@ export function Swap() {
     [allowance1.data, currencyA.decimals, currencyA.isNative, firstValue],
   );
 
-  // const { data: pricesData, error, isLoading } = useFetchPrices();
   const { data: pricesData } = useFetchPrices();
-
-  const ethPriceUSD = useMemo(() => {
-    const ethData = pricesData?.find((price) => price.symbol === 'ETH');
-    return ethData ? parseFloat(ethData.price) : null;
-  }, [pricesData]);
-
-  const btcPriceUSD = useMemo(() => {
-    const btcData = pricesData?.find((price) => price.symbol === 'BTC');
-    return btcData ? parseFloat(btcData.price) : null;
-  }, [pricesData]);
-
-  const [ldtPrice, setLdtPrice] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     if (amountsOut.data) {
@@ -150,32 +136,6 @@ export function Swap() {
       setFirstValue(formatUnits(amountsIn.data[0], currencyA.decimals));
     }
   }, [amountsIn, currencyA.decimals]);
-
-  const isEthLdtPair =
-    (currencyA.symbol.includes('ETH') || currencyB?.symbol.includes('ETH')) &&
-    (currencyA.symbol.includes('LDT') || currencyB?.symbol.includes('LDT'));
-  const isBtcLdtPair =
-    (currencyA.symbol.includes('BTC') || currencyB?.symbol.includes('BTC')) &&
-    (currencyA.symbol.includes('LDT') || currencyB?.symbol.includes('LDT'));
-
-  useEffect(() => {
-    if (isEthLdtPair || isBtcLdtPair) {
-      const priceCurrencyA = pair.priceCurrencyA.toFixed();
-      const priceCurrencyB = pair.priceCurrencyB.toFixed();
-
-      if ((parseFloat(priceCurrencyA) > 0, parseFloat(priceCurrencyB) > 0)) {
-        const priceCurrency =
-          currencyA.symbol === 'LDT'
-            ? priceCurrencyA
-            : currencyB?.symbol === 'LDT'
-              ? priceCurrencyB
-              : undefined;
-        if (priceCurrency) {
-          setLdtPrice(parseFloat(priceCurrency));
-        }
-      }
-    }
-  }, [pair, currencyA.symbol, currencyB?.symbol, isBtcLdtPair, isEthLdtPair]);
 
   useEffect(() => {
     if (swap.isPending) {
@@ -295,93 +255,9 @@ export function Swap() {
     setOpen(false);
   };
 
-  const normalizeCurrencySymbol = (symbol: string) => {
-    if (
-      symbol.startsWith('W') &&
-      (symbol.includes('ETH') || symbol.includes('BTC'))
-    ) {
-      return symbol.substring(1);
-    }
-    return symbol;
-  };
-
-  const computePrice = (currency: Currency) => {
-    const externalPrice =
-      currencyA.symbol === 'WBTC' || currencyB?.symbol === 'WBTC'
-        ? btcPriceUSD
-        : ethPriceUSD;
-    if (!externalPrice) {
-      return '';
-    }
-
-    const directPrice = pricesData?.find(
-      (price) => price.symbol === normalizeCurrencySymbol(currency.symbol),
-    );
-    if (directPrice) {
-      return `${externalPrice}`;
-    }
-
-    const priceCurrencyA = pair.priceCurrencyA.toFixed();
-    const priceCurrencyB = pair.priceCurrencyB.toFixed();
-
-    if (currencyA && +priceCurrencyA > 0 && currencyB && +priceCurrencyB > 0) {
-      if (currencyA.symbol.includes('TB') || currencyB.symbol.includes('TB')) {
-        const currencyIsTb = currency.symbol.includes('TB');
-        if (currencyIsTb) {
-          const price = currencyA.symbol.includes('TB')
-            ? priceCurrencyB
-            : currencyB.symbol.includes('TB')
-              ? priceCurrencyA
-              : undefined;
-          if (price && price !== '0') {
-            if (ldtPrice !== undefined) {
-              return `${(ldtPrice / parseFloat(price)) * externalPrice}`;
-            }
-          }
-        }
-      }
-
-      if (currency.symbol === 'LIRA') {
-        const price =
-          currencyA.symbol === 'LIRA'
-            ? priceCurrencyB
-            : currencyB.symbol === 'LIRA'
-              ? priceCurrencyA
-              : undefined;
-        if (price) {
-          if (ldtPrice !== undefined) {
-            return `${(ldtPrice / parseFloat(price)) * externalPrice}`;
-          }
-        }
-      }
-
-      if (currency.symbol === 'LDT') {
-        const price =
-          currencyA.symbol === 'LDT'
-            ? priceCurrencyA
-            : currencyB.symbol === 'LDT'
-              ? priceCurrencyB
-              : undefined;
-        if (price) {
-          if (parseFloat(price) === ldtPrice) {
-            return `${parseFloat(price) * externalPrice}`;
-          }
-
-          if (ldtPrice === undefined) {
-            return `${parseFloat(price) * externalPrice}`;
-          }
-
-          return `${ldtPrice * externalPrice}`;
-        }
-      }
-    } else {
-      if (!currency.isNative) {
-        if (currency.symbol === 'LDT') {
-          return ldtPrice !== undefined ? `${ldtPrice * externalPrice}` : '';
-        }
-      }
-    }
-  };
+  const computePrice = (currency: Currency) => pricesData?.find(
+    (price) => price.symbol === currency.symbol,
+  )?.price ?? '0';
 
   return (
     <x.div w="100%" maxWidth="480px" borderRadius="16px" padding={4}>
