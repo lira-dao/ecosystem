@@ -23,6 +23,7 @@ import { useFetchPrices } from '../hooks/usePrices';
 import { SwapHeader } from '../components/swap/SwapHeader';
 import { PrimaryButtonWithLoader } from '../components/PrimaryButtonWithLoader';
 import SlippageInput from '../components/swap/SlippageInput';
+import TradePriceImpact from '../components/swap/PriceImpact';
 
 export function Swap() {
   const params = useParams<{ pool: EthereumAddress }>();
@@ -259,6 +260,33 @@ export function Swap() {
     (price) => price.symbol === currency.symbol,
   )?.price ?? '0';
 
+  const computePriceImpact = (): string => {
+    if (!pair?.reserveA || !pair.reserveB || !firstValue || !amountsOut.data) return '0';
+  
+    const amountInBN = new BigNumber(parseUnits(firstValue, currencyA.decimals).toString());
+      
+    const reserveA = new BigNumber(pair.reserveA.toString());
+    const reserveB = new BigNumber(pair.reserveB.toString());
+      
+    let newReserveA = reserveA.plus(amountInBN);
+    let newReserveB = reserveB.minus(new BigNumber(amountsOut.data[1].toString()));
+  
+    newReserveA = BigNumber.maximum(newReserveA, 0);
+    newReserveB = BigNumber.maximum(newReserveB, 0);
+  
+    const newPriceA = newReserveB.div(newReserveA);
+    const oldPriceA = reserveB.div(reserveA);
+  
+    const priceImpact = newPriceA.minus(oldPriceA).div(oldPriceA).times(100);
+  
+    return priceImpact.toFixed();
+  };
+
+  const priceImpact = useMemo(
+    computePriceImpact,
+    [pair?.reserveA, pair?.reserveB, firstValue, amountsOut.data]
+  );
+
   return (
     <x.div w="100%" maxWidth="480px" borderRadius="16px" padding={4}>
       <SwapHeader title="Swap" showBack={!!params.pool} />
@@ -340,6 +368,10 @@ export function Swap() {
           expectedOutput={secondValue}
           outputToken={currencyB.symbol}
         />
+      )}
+
+      {currencyA && currencyB && firstValue && (
+        <TradePriceImpact priceImpact={priceImpact}></TradePriceImpact>
       )}
 
       {currencyA && currencyB && (
