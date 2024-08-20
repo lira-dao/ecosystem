@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, InputAdornment, TextField, Tooltip, Typography } from '@mui/material';
+import { Box, InputAdornment, TextField, Tooltip, Typography, useTheme } from '@mui/material';
 import InfoIcon from '@mui/icons-material/Info';
 
 type SlippageInputProps = {
@@ -16,6 +16,8 @@ const SlippageInput: React.FC<SlippageInputProps> = ({
   outputToken,
 }) => {
   const [inputValue, setInputValue] = useState(slippage.toString());
+
+  const theme = useTheme();
 
   useEffect(() => {
     setInputValue(slippage.toString());
@@ -70,7 +72,28 @@ const SlippageInput: React.FC<SlippageInputProps> = ({
           InputProps={{
             endAdornment: <InputAdornment position="end">%</InputAdornment>,
           }}
-          sx={{ width: '100px' }}
+          sx={{
+            width: '100px',
+            backgroundColor: theme.colors.eerieBlack,
+            '& .MuiOutlinedInput-root': {
+              '& fieldset': {
+                borderColor: theme.colors.eerieBlack,
+                borderWidth: '1px',
+              },
+              '&:hover fieldset': {
+                borderColor: theme.colors.greenYellow950,
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: theme.colors.greenYellow900,
+                borderWidth: '1px',
+              },
+            },
+            '& .MuiOutlinedInput-notchedOutline': {
+              borderColor: 'transparent',
+            },
+            borderRadius: '4px',
+            fontSize: '14px',
+          }}
         />
       </Box>
       <Typography variant="body2" color="text.secondary">
