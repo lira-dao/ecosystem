@@ -64,7 +64,7 @@ export function usePair(currencyA: Currency, currencyB?: Currency) {
     refetchReserves: () => reserves.refetch(),
     priceCurrencyA,
     priceCurrencyB,
-    reserveA: reserves.data?.[0] ?? 0n,
-    reserveB: reserves.data?.[1] ?? 0n,
+    reserveA: reserveA ?? 0n,   // reserves.data?.[0] ?? 0n,
+    reserveB: reserveB ?? 0n,   // reserves.data?.[1] ?? 0n,
   };
 }
