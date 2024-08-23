@@ -115,11 +115,6 @@ contract ReferralsRewards is Ownable2Step {
             rewards[_rewards[i].wallet].tbg += _rewards[i].tbg;
         }
 
-        IERC20(ldt).safeTransferFrom(owner(), address(this), totalLdt);
-        IERC20(tbb).safeTransferFrom(owner(), address(this), totalTbb);
-        IERC20(tbs).safeTransferFrom(owner(), address(this), totalTbs);
-        IERC20(tbg).safeTransferFrom(owner(), address(this), totalTbg);
-
         emit DistributeRewards(totalLdt, totalTbb, totalTbs, totalTbg);
     }
 

@@ -105,3 +105,7 @@ export const referrals: NetworkAddresses = {
   42161: '0x3F8Bad43E9f5e922E4c15d303665917A161Bd92F',
   421614: '0xa0baC5eA3fe7189f57707A05a6010c004B27A5dc',
 }
+
+export const referralsRewards: NetworkAddresses = {
+  421614: '0xE62CC836d3eF0B5F31A8934CC9929b124CdC21F4',
+}

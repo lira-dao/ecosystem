@@ -43,8 +43,6 @@ describe('ReferralsRewards', () => {
       user1,
     } = await referralsRewardsFixture();
 
-    await ldt.approve(referralsAddress, await ldt.balanceOf(deployer));
-
     await ldt.approve(tbbAddress, await ldt.balanceOf(deployer));
     await tbb.mint(deployer, parseUnits('1'));
 
@@ -54,9 +52,10 @@ describe('ReferralsRewards', () => {
     await ldt.approve(tbgAddress, await ldt.balanceOf(deployer));
     await tbg.mint(deployer, parseUnits('0.01'));
 
-    await tbb.approve(referralsAddress, await tbb.balanceOf(deployer));
-    await tbs.approve(referralsAddress, await tbs.balanceOf(deployer));
-    await tbg.approve(referralsAddress, await tbg.balanceOf(deployer));
+    await ldt.transfer(referralsAddress, parseUnits('100'));
+    await tbb.transfer(referralsAddress, parseUnits('1'));
+    await tbs.transfer(referralsAddress, parseUnits('0.1'));
+    await tbg.transfer(referralsAddress, parseUnits('0.01'));
 
     await referrals.distributeRewards([{
       wallet: user1,
