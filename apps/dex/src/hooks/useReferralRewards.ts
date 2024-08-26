@@ -28,7 +28,6 @@ export function useReferralRewards(address: EthereumAddress | undefined) {
 
   useEffect(() => {
     if (data && data.length > 0) {
-      console.log("🚀 ~ useEffect ~ data:", data)
       const mappedRewards = tokens.map((token, index) => {
         if (token.symbol === 'LDT' || token.symbol.includes('TB')) {
           return {

@@ -46,6 +46,7 @@ export function Portfolio() {
     pendingRewards,
     refetchPendingRewards,
     writeHarvest,
+    confirmed,
     isPending,
   } = useReferralRewards(address as EthereumAddress);
 
@@ -79,6 +80,12 @@ export function Portfolio() {
       setHoldingsTimeFrame(newTimeFrame);
     }
   };
+
+  useEffect(() => {
+    if (confirmed) {
+      refetchPendingRewards();
+    }
+  }, [confirmed, refetchPendingRewards]);
 
   if (isLoading) {
     return <div>Loading...</div>;
