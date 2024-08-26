@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useChainId, useReadContract, useWriteContract } from 'wagmi';
-import { referralsRewards, referralsRewardsAbi, EthereumAddress } from '@lira-dao/web3-utils';
+import { referralsRewards, referralsRewardsAbi, EthereumAddress, Currency } from '@lira-dao/web3-utils';
 import { useWatchTransaction } from './useWatchTransaction';
 import { getCurrencies } from '../utils';
-
 
 export interface TokenReward {
   address: EthereumAddress;
@@ -14,32 +13,31 @@ export interface TokenReward {
 
 export function useReferralRewards(address: EthereumAddress | undefined) {
   const [pendingRewards, setPendingRewards] = useState<TokenReward[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-	const chainId = useChainId();
+  const chainId = useChainId();
   const tokens = getCurrencies(chainId);
-	const referralRewardAddress = referralsRewards[chainId];
+  const referralRewardAddress = referralsRewards[chainId];
 
   const { data, refetch } = useReadContract({
-		abi: referralsRewardsAbi,
-		address: referralRewardAddress as EthereumAddress,
-		functionName: 'rewards',
-		args: [address as EthereumAddress],
-	});
+    abi: referralsRewardsAbi,
+    address: referralRewardAddress as EthereumAddress,
+    functionName: 'rewards',
+    args: [address as EthereumAddress],
+  });
 
   useEffect(() => {
     if (data && data.length > 0) {
-      const mappedRewards = tokens.map((token, index) => {
-        if (token.symbol === 'LDT' || token.symbol.includes('TB')) {
-          return {
-            address: token.address as EthereumAddress,
-            icon: token.icon,
-            symbol: token.symbol,
-            reward: data[index] > 0 ? data[index] : BigInt(0),
-          }
-        }
-      });
+      const filteredTokens = tokens.filter(token => token.symbol === 'LDT' || token.symbol.includes('TB'));
 
-      setPendingRewards(mappedRewards.filter((reward): reward is TokenReward => reward !== undefined));
+      const mappedRewards = filteredTokens.map((token: Currency, index: number) => ({
+        address: token.address as EthereumAddress,
+        icon: token.icon,
+        symbol: token.symbol,
+        reward: data[index] > 0 ? data[index] : BigInt(0),
+      }));
+
+      setPendingRewards(mappedRewards);
     }
   }, [data, tokens]);
 
@@ -47,29 +45,29 @@ export function useReferralRewards(address: EthereumAddress | undefined) {
 
   const writeHarvest = () => {
     if (address) {
-      writeContract({
-        abi: referralsRewardsAbi,
-        address: referralRewardAddress as EthereumAddress,
-        functionName: 'harvest',
-        args: [],
-      });
+
+      try {
+        writeContract({
+          abi: referralsRewardsAbi,
+          address: referralRewardAddress as EthereumAddress,
+          functionName: 'harvest',
+          args: [],
+        });
+      } catch (error) {
+        setError((error as Error).message);
+      }
     }
   };
 
   const confirmed = useWatchTransaction(writeData);
 
-  const refetchRewardsAndHarvest = async () => {
-    await refetch();
-    writeHarvest();
-  };
-
   return {
     pendingRewards,
     refetchPendingRewards: refetch,
     writeHarvest,
-    refetchRewardsAndHarvest,
     ...rest,
     ...confirmed,
     isPending: isPending || confirmed.isLoading,
+    error
   };
 }

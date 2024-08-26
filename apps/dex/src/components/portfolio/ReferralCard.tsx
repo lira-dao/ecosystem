@@ -5,6 +5,7 @@ import { useAccount } from 'wagmi';
 import { useReferralUrl } from '../../hooks/referrals/useReferralUrl';
 import { useReferralsUrl } from '../../hooks/referrals/useReferralsUrl';
 import { TokenReward } from '../../hooks/useReferralRewards';
+import BigNumber from 'bignumber.js';
 
 
 interface ReferralCardProps {
@@ -14,12 +15,12 @@ interface ReferralCardProps {
   writeHarvest: () => void;
 }
 
-export const ReferralCard: React.FC<ReferralCardProps> = ({
+export function ReferralCard({
   pendingRewards,
   isPending,
   refetchPendingRewards,
   writeHarvest,
-}) => {
+}: ReferralCardProps) {
   const account = useAccount();
 
   const { data } = useReferralUrl(account.address);
@@ -80,7 +81,7 @@ export const ReferralCard: React.FC<ReferralCardProps> = ({
               <Box display="flex" alignItems="center">
                 <Avatar src={token.icon} sx={{ mr: 2 }} />
                 <Typography>
-                  {`${Intl.NumberFormat('en-US', { maximumFractionDigits: 4 }).format(Number(token.reward) / 10 ** 18)} ${token.symbol}`}
+                  {`${new BigNumber(token.reward.toString()).dividedBy(new BigNumber(10).pow(18)).toFormat(4, BigNumber.ROUND_DOWN)} ${token.symbol}`}
                 </Typography>
               </Box>
             </Grid>
