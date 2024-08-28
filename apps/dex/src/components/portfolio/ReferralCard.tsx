@@ -1,10 +1,26 @@
-import { Box, Button, Typography } from '@mui/material';
+import React from 'react';
+import { Avatar, Box, Button, Grid, Typography } from '@mui/material';
+import { QueryObserverResult } from '@tanstack/react-query';
+import { useAccount } from 'wagmi';
 import { useReferralUrl } from '../../hooks/referrals/useReferralUrl';
 import { useReferralsUrl } from '../../hooks/referrals/useReferralsUrl';
-import { useAccount } from 'wagmi';
+import { TokenReward } from '../../hooks/useReferralRewards';
+import BigNumber from 'bignumber.js';
 
 
-export function ReferralCard() {
+interface ReferralCardProps {
+  pendingRewards: TokenReward[];
+  isPending: boolean;
+  refetchPendingRewards: () => Promise<QueryObserverResult<readonly [bigint, bigint, bigint, bigint], unknown>>;
+  writeHarvest: () => void;
+}
+
+export function ReferralCard({
+  pendingRewards,
+  isPending,
+  refetchPendingRewards,
+  writeHarvest,
+}: ReferralCardProps) {
   const account = useAccount();
 
   const { data } = useReferralUrl(account.address);
@@ -36,14 +52,60 @@ export function ReferralCard() {
         <Typography>Loading referral counts...</Typography>
       ) : (
         referralCounts && (
-          <Box>
-            <Typography variant="h6">Your Referral Counts:</Typography>
-            <Typography>First Level: {referralCounts.firstLevelCount}</Typography>
-            <Typography>Second Level: {referralCounts.secondLevelCount}</Typography>
-            <Typography>Third Level: {referralCounts.thirdLevelCount}</Typography>
+          <Box display="flex" flexDirection="row" alignItems="center" width="100%" sx={{ mb: 2 }}>
+            <Typography variant="h6" sx={{ mb: 0, mr: 2 }}>
+              Your Referral Counts:
+            </Typography>
+            <Box display="flex" justifyContent="space-evenly" alignItems='center' width="100%">
+              <Typography variant="body1">
+                First Level: {referralCounts.firstLevelCount}
+              </Typography>
+              <Typography variant="body1">
+                Second Level: {referralCounts.secondLevelCount}
+              </Typography>
+              <Typography variant="body1">
+                Third Level: {referralCounts.thirdLevelCount}
+              </Typography>
+            </Box>
           </Box>
         )
       )}
+
+      <Box display="flex" flexDirection="row" alignItems="flex-start" width="100%">
+        <Typography variant="h6" sx={{ mt: 2, mr: 2 }} gutterBottom>
+          Pending Rewards:
+        </Typography>
+        <Grid container spacing={2} sx={{ mt: 1 }}>
+          {pendingRewards.map((token) => (
+            <Grid item xs={12} sm={6} lg={3} key={token.address}>
+              <Box display="flex" alignItems="center">
+                <Avatar src={token.icon} sx={{ mr: 2 }} />
+                <Typography>
+                  {`${new BigNumber(token.reward.toString()).dividedBy(new BigNumber(10).pow(18)).toFormat(4, BigNumber.ROUND_DOWN)} ${token.symbol}`}
+                </Typography>
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+
+      <Box display="flex" justifyContent="space-between" sx={{ mt: 4 }}>
+        <Button
+          variant="outlined"
+          onClick={refetchPendingRewards}
+          disabled={isPending}
+        >
+          Refresh Rewards
+        </Button>
+        <Button
+          variant="outlined"
+          color="success"
+          onClick={writeHarvest}
+          disabled={isPending || pendingRewards.every(token => token.reward === BigInt(0))}
+        >
+          Harvest Rewards
+        </Button>
+      </Box>
     </Box>
   );
 }
