@@ -132,7 +132,14 @@ export function Portfolio() {
                       }}
                       series={[
                         {
-                          data: assetsChartData.map((d) => ({ value: d.value, label: d.symbol })),
+                          data: assetsChartData.map((d) => ({
+                            value: d.value,
+                            label: d.symbol,
+                          })),
+                          valueFormatter: (v, { dataIndex }) => {
+                            const { value } = assetsChartData[dataIndex];
+                            return `~$ ${value.toFixed(2)}`;
+                          },
                           innerRadius: 50,
                           outerRadius: 200,
                           type: 'pie',
