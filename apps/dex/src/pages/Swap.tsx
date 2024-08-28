@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { x } from '@xstyled/styled-components';
 import { getCurrencies, getCurrencyByAddress, getPairedCurrencies } from '../utils';
 import { useGetAmountsIn, useGetAmountsOut } from '../hooks/useGetAmountsOut';
@@ -20,21 +20,27 @@ import { useParams } from 'react-router-dom';
 import { useDexPairs } from '../hooks/useDexPairs';
 import { CurrencyInput } from '../components/swap/CurrencyInput';
 import { useFetchPrices } from '../hooks/usePrices';
+import { usePools } from '../hooks/usePools';
 import { SwapHeader } from '../components/swap/SwapHeader';
 import { PrimaryButtonWithLoader } from '../components/PrimaryButtonWithLoader';
 import SlippageInput from '../components/swap/SlippageInput';
 import TradePriceImpact from '../components/swap/PriceImpact';
+import Fee from '../components/swap/Fee';
 
 export function Swap() {
   const params = useParams<{ pool: EthereumAddress }>();
   const pairs = useDexPairs();
   const pool = params.pool ? pairs[params.pool] : undefined;
+
+  const pools = usePools();
+
   const currency0 = pool ? getCurrencyByAddress(pool.tokens[1]) : undefined;
   const currency1 = pool ? getCurrencyByAddress(pool.tokens[0]) : undefined;
 
   const chainId = useChainId();
   const dexAddresses = useDexAddresses();
   const { enqueueSnackbar } = useSnackbar();
+  const [feePercentage, setFeePercentage] = useState<number>(0);
   const [open, setOpen] = useState(false);
   const [selecting, setSelecting] = useState<number | null>(null);
   const [selectingCurrencies, setSelectingCurrencies] = useState<Currency[]>(
@@ -94,6 +100,8 @@ export function Swap() {
 
   const account = useAccount();
   const accountBalance = useBalanceWagmi({ address: account.address });
+
+  const notificationRef = useRef(false);
 
   const insufficientBalanceA = useMemo(() => {
     if (currencyA.isNative) {
@@ -261,31 +269,68 @@ export function Swap() {
   )?.price ?? '0';
 
   const computePriceImpact = (): string => {
-    if (!pair?.reserveA || !pair.reserveB || !firstValue || !amountsOut.data) return '0';
+    if (!pair?.reserveA || !pair.reserveB || (!firstValue && !secondValue)) return '0';
   
-    const amountInBN = new BigNumber(parseUnits(firstValue, currencyA.decimals).toString());
-      
     const reserveA = new BigNumber(pair.reserveA.toString());
     const reserveB = new BigNumber(pair.reserveB.toString());
-      
-    let newReserveA = reserveA.plus(amountInBN);
-    let newReserveB = reserveB.minus(new BigNumber(amountsOut.data[1].toString()));
+
+    let newReserveA, newReserveB, oldPriceA, newPriceA;
+
+    if (firstValue) {
+      const amountInBN = new BigNumber(parseUnits(firstValue, currencyA.decimals).toString());
   
-    newReserveA = BigNumber.maximum(newReserveA, 0);
-    newReserveB = BigNumber.maximum(newReserveB, 0);
+      newReserveA = reserveA.plus(amountInBN);
+      newReserveB = reserveB.minus(new BigNumber(amountsOut?.data?.[1]?.toString() || '0'));
   
-    const newPriceA = newReserveB.div(newReserveA);
-    const oldPriceA = reserveB.div(reserveA);
+      oldPriceA = reserveB.div(reserveA);
+      newPriceA = newReserveB.div(newReserveA);
+    } else if (secondValue) {
+      const amountOutBN = new BigNumber(parseUnits(secondValue, currencyB?.decimals || 18).toString());
   
-    const priceImpact = newPriceA.minus(oldPriceA).div(oldPriceA).times(100);
+      newReserveA = reserveA.minus(new BigNumber(amountsIn?.data?.[0]?.toString() || '0'));
+      newReserveB = reserveB.plus(amountOutBN);
   
-    return priceImpact.toFixed();
+      oldPriceA = reserveB.div(reserveA);
+      newPriceA = newReserveB.div(newReserveA);
+    }
+  
+    if (newPriceA && oldPriceA) {
+      const priceImpact = oldPriceA.minus(newPriceA).div(oldPriceA).times(100);
+      return priceImpact.toFixed(2);
+    }
+
+    return '0';
   };
 
   const priceImpact = useMemo(
     computePriceImpact,
-    [pair?.reserveA, pair?.reserveB, firstValue, amountsOut.data]
+    [pair?.reserveA, pair?.reserveB, firstValue, secondValue, amountsOut.data, amountsIn.data]
   );
+
+  useEffect(() => {
+    if (currencyA && currencyB && pools) {
+      const pool = pools.find(p => 
+        (p.token0?.address === currencyA.address && p.token1?.address === currencyB.address) ||
+        (p.token0?.address === currencyB.address && p.token1?.address === currencyA.address)
+      );
+
+      if (pool) {
+        setFeePercentage(parseFloat(pool.fee) / 100);
+      }
+    }
+  }, [currencyA, currencyB, pools]);
+
+  const feeAmount = useMemo(() => {
+    if (!firstValue || feePercentage === 0) return 0;
+
+    const feeInCurrencyA = new BigNumber(firstValue).times(feePercentage);
+
+    const feeInUSD = pricesData
+      ? feeInCurrencyA.times(computePrice(currencyA))
+      : feeInCurrencyA;
+
+    return feeInUSD.toNumber();
+  }, [firstValue, feePercentage, pricesData, currencyA]);
 
   return (
     <x.div w="100%" maxWidth="480px" borderRadius="16px" padding={4}>
@@ -370,8 +415,11 @@ export function Swap() {
         />
       )}
 
-      {currencyA && currencyB && firstValue && (
-        <TradePriceImpact priceImpact={priceImpact}></TradePriceImpact>
+      {currencyA && currencyB && firstValue && secondValue && (
+        <>
+          <TradePriceImpact priceImpact={priceImpact}></TradePriceImpact>
+          <Fee feeAmount={feeAmount} feePercentage={feePercentage} />
+        </>
       )}
 
       {currencyA && currencyB && (

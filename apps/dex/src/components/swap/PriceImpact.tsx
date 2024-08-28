@@ -40,6 +40,14 @@ const TradePriceImpact: React.FC<TradePriceImpactProps> = ({ priceImpact }) => {
   const displayImpact = impact === 0 ? 0 : Math.abs(impact);
   const impactColor = getImpactColor(displayImpact);
 
+  const tooltipContent = (
+    <Box>
+      <Typography variant="caption">
+        The impact your trade has on the market price of this pool.
+      </Typography>
+    </Box>
+  );
+
   return (
     <Box sx={{ mt: 2, mb: 2 }}>
       <Box
@@ -53,7 +61,7 @@ const TradePriceImpact: React.FC<TradePriceImpactProps> = ({ priceImpact }) => {
       >
         <Typography variant="body1">
           Price Impact
-          <Tooltip title="The impact your trade has on the market price of this pool.">
+          <Tooltip title={tooltipContent}>
             <InfoIcon
               fontSize="small"
               sx={{ ml: 1, verticalAlign: 'middle' }}

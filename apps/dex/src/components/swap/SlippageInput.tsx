@@ -38,6 +38,14 @@ const SlippageInput: React.FC<SlippageInputProps> = ({
     return isNaN(minOutput) ? '0' : minOutput.toFixed(6);
   };
 
+  const tooltipContent = (
+    <Box>
+      <Typography variant="caption">
+        Your transaction will revert if the price changes unfavorably by more than this percentage.
+      </Typography>
+    </Box>
+  );
+
   return (
     <Box sx={{ mt: 2, mb: 2 }}>
       <Box
@@ -51,7 +59,7 @@ const SlippageInput: React.FC<SlippageInputProps> = ({
       >
         <Typography variant="body1">
           Slippage Tolerance
-          <Tooltip title="Your transaction will revert if the price changes unfavorably by more than this percentage.">
+          <Tooltip title={tooltipContent}>
             <InfoIcon
               fontSize="small"
               sx={{ ml: 1, verticalAlign: 'middle' }}
