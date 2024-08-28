@@ -33,6 +33,20 @@ export const cyan = {
 export const muiDarkTheme = createTheme({
   palette: {
     mode: 'dark',
+    primary: {
+      main: '#FFFFFF',
+    },
+    secondary: {
+      main: '#09FEF5',
+    },
+    text: {
+      primary: '#FFFFFF',
+      secondary: '#9B9B9B',
+    },
+    background: {
+      default: '#1b1b1b',
+      paper: '#1b1b1b',
+    },
   },
   colors: {
     gray155: '#9B9B9B',

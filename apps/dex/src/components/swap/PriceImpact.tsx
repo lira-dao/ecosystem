@@ -16,6 +16,7 @@ const getImpactColor = (impact: number) => {
   if (impact >= 10) return '#FFA726';
   if (impact >= 5) return '#FF8C42';
   if (impact > 1) return '#FFD166';
+
   return '#9E9E9E';
 };
 
@@ -41,14 +42,13 @@ const TradePriceImpact: React.FC<TradePriceImpactProps> = ({ priceImpact }) => {
   const impactColor = getImpactColor(displayImpact);
 
   return (
-    <Box sx={{ mt: 2, mb: 2 }}>
+    <Box sx={{ p: 2 }}>
       <Box
         sx={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           gap: 2,
-          mb: 1,
         }}
       >
         <Typography variant="body1">

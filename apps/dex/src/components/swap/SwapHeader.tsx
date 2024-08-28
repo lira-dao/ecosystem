@@ -26,7 +26,7 @@ export function SwapHeader({ title, showBack = true }: SwapHeaderProps) {
           {showBack && <ArrowBackIosIcon cursor="pointer" onClick={() => navigate(-1)} />}
         </Box>
 
-        <Typography variant="h3" color="white">
+        <Typography variant="h3" mb={4} color="white">
           {title}
         </Typography>
 

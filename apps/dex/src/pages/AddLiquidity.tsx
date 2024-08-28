@@ -16,7 +16,7 @@ import { useSnackbar } from 'notistack';
 import { useDebounce } from 'use-debounce';
 import { useParams } from 'react-router-dom';
 import { useDexPairs } from '../hooks/useDexPairs';
-import { CurrencyInput } from '../components/swap/CurrencyInput';
+import { CurrencyInput } from '../components/swap/_CurrencyInput';
 import { SwapHeader } from '../components/swap/SwapHeader';
 import { PrimaryButtonWithLoader } from '../components/PrimaryButtonWithLoader';
 

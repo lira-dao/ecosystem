@@ -39,7 +39,7 @@ const SlippageInput: React.FC<SlippageInputProps> = ({
   };
 
   return (
-    <Box sx={{ mt: 2, mb: 2 }}>
+    <Box sx={{ mt: 2, mb: 2, p: 2  }}>
       <Box
         sx={{
           display: 'flex',
@@ -74,25 +74,6 @@ const SlippageInput: React.FC<SlippageInputProps> = ({
           }}
           sx={{
             width: '100px',
-            backgroundColor: theme.colors.eerieBlack,
-            '& .MuiOutlinedInput-root': {
-              '& fieldset': {
-                borderColor: theme.colors.eerieBlack,
-                borderWidth: '1px',
-              },
-              '&:hover fieldset': {
-                borderColor: theme.colors.greenYellow950,
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: theme.colors.greenYellow900,
-                borderWidth: '1px',
-              },
-            },
-            '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'transparent',
-            },
-            borderRadius: '4px',
-            fontSize: '14px',
           }}
         />
       </Box>
