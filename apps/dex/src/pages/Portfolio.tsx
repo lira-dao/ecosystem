@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAccount, useBalance as useBalanceWagmi } from 'wagmi';
 import {
   Box,
@@ -12,16 +12,18 @@ import {
   useTheme,
 } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
+import { EthereumAddress } from '@lira-dao/web3-utils';
 import { PieChart } from '@mui/x-charts';
+import BigNumber from 'bignumber.js';
+import { muiDarkTheme, theme } from '../theme/theme';
 import { useTokenBalances } from '../hooks/useTokenBalances';
 import { usePools } from '../hooks/usePools';
 import { usePricedPools } from '../hooks/usePricesPools';
 import { useFetchPrices } from '../hooks/usePrices';
-import { muiDarkTheme, theme } from '../theme/theme';
+import { useReferralRewards } from '../hooks/useReferralRewards';
 import { useGetAmountsOut } from '../hooks/useGetAmountsOut';
 import { AssetsCard } from '../components/portfolio/AssetsCard';
 import { ReferralCard } from '../components/portfolio/ReferralCard';
-import BigNumber from 'bignumber.js';
 
 // type View = 'liquidity' | 'farming' | 'holdings';
 type View = 'assets' | 'liquidity';
@@ -38,7 +40,15 @@ export function Portfolio() {
 
   const amountsOut = useGetAmountsOut([pools[0].token0?.address || '0x0', pools[0].token1?.address || '0x0'], 0n);
 
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
+
+  const {
+    pendingRewards,
+    refetchPendingRewards,
+    writeHarvest,
+    confirmed,
+    isPending,
+  } = useReferralRewards(address as EthereumAddress);
 
   const { data: pricesData, error: errorPricesData, isLoading } = useFetchPrices();
 
@@ -70,6 +80,12 @@ export function Portfolio() {
       setHoldingsTimeFrame(newTimeFrame);
     }
   };
+
+  useEffect(() => {
+    if (confirmed) {
+      refetchPendingRewards();
+    }
+  }, [confirmed, refetchPendingRewards]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -221,8 +237,13 @@ export function Portfolio() {
                   <Grid container spacing={2}>
                     <Grid item xs={12} sx={{ mt: 1 }}>
                       {selectedView === 'assets' && <AssetsCard assets={assetsChartData} />}
-                      {selectedView === 'referral' && <ReferralCard />}
-                    </Grid>
+                      {selectedView === 'referral' && <ReferralCard
+                        pendingRewards={pendingRewards}
+                        isPending={isPending}
+                        refetchPendingRewards={refetchPendingRewards}
+                        writeHarvest={writeHarvest}
+                      />}
+                      </Grid>
                   </Grid>
                 )}
 
