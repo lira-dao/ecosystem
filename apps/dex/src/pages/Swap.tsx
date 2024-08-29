@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { x } from '@xstyled/styled-components';
 import { Box, Card, Divider, IconButton, Typography } from '@mui/material';
 import { SwapVert } from '@mui/icons-material';
 import { Currency, EthereumAddress } from '@lira-dao/web3-utils';
@@ -132,7 +131,7 @@ export function Swap() {
     [allowance1.data, currencyA.decimals, currencyA.isNative, firstValue],
   );
 
-  const { data: pricesData } = useFetchPrices();
+  const { data: pricesData, refetch: refetchPrices } = useFetchPrices();
 
   useEffect(() => {
     if (amountsOut.data) {
@@ -181,6 +180,7 @@ export function Swap() {
       accountBalance.refetch();
       allowance1.refetch();
       pair.refetchReserves();
+      refetchPrices();
       setAmountOut(0n);
       setAmountIn(0n);
       setFirstValue('');
@@ -195,6 +195,7 @@ export function Swap() {
     enqueueSnackbar,
     pair,
     swap,
+    refetchPrices
   ]);
 
   const onCurrencyAChange = (value: string) => {
@@ -338,7 +339,7 @@ export function Swap() {
   }, [firstValue, feePercentage, pricesData, currencyA]);
 
   return (
-    <x.div w="100%" maxWidth="600px" borderRadius="16px" padding={4}>
+    <Box sx={{ width: '100%', maxWidth: '600px', borderRadius: '16px', p: 4 }}>
       <SwapHeader title="Swap" showBack={!!params.pool} />
 
       <Box width="100%" mx="auto">
@@ -426,7 +427,6 @@ export function Swap() {
               />
               {currencyA && currencyB && firstValue && secondValue && (
                 <>
-                  {/* <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.1)' }} /> */}
                   <TradePriceImpact priceImpact={priceImpact}></TradePriceImpact>
                   <Fee feeAmount={feeAmount} feePercentage={feePercentage} />
                 </>
@@ -464,13 +464,15 @@ export function Swap() {
       </Box>
 
       {needAllowance && !insufficientBalanceA && (
-        <x.div
-          display="flex"
-          mt={4}
-          mb={2}
-          h="80px"
-          alignItems="center"
-          justifyContent="center"
+        <Box
+          sx={{
+            display: 'flex',
+            mt: 4,
+            mb: 2,
+            height: '80px',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
         >
           <PrimaryButtonWithLoader
             isLoading={isAllowCurrencyADisabled}
@@ -478,16 +480,18 @@ export function Swap() {
             text="Approve"
             onClick={() => approve.write()}
           />
-        </x.div>
+        </Box>
       )}
 
       {!needAllowance && !insufficientBalanceA && (
-        <x.div
-          display="flex"
-          mt={4}
-          h="80px"
-          alignItems="center"
-          justifyContent="center"
+        <Box
+          sx={{
+            display: 'flex',
+            mt: 4,
+            height: '80px',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
         >
           <PrimaryButtonWithLoader
             isLoading={isSwapDisabled}
@@ -495,7 +499,7 @@ export function Swap() {
             text="Swap"
             onClick={() => swap.write()}
           />
-        </x.div>
+        </Box>
       )}
 
       <SelectCurrencyModal
@@ -504,6 +508,6 @@ export function Swap() {
         currencies={selectingCurrencies}
         onSelect={onSelectCurrency}
       />
-    </x.div>
+    </Box>
   );
 }

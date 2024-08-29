@@ -32,9 +32,14 @@ const fetchPrices = async (): Promise<Price[]> => {
 };
 
 export function useFetchPrices() {
-  return useQuery({
+  const query = useQuery({
     queryKey: ['prices'],
     queryFn: fetchPrices,
     refetchOnWindowFocus: false,
   });
+
+  return {
+    ...query,
+    refetch: query.refetch,
+  };
 }
