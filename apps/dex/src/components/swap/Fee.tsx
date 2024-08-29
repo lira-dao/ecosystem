@@ -42,8 +42,7 @@ const Fee: React.FC<FeeProps> = ({ feeAmount, feePercentage }) => {
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        mt: 2,
-        mb: 2,
+        p: 2
       }}
     >
       <Box
