@@ -54,9 +54,6 @@ export const muiDarkTheme = createTheme({
     cyan,
     green,
     red400: '#fe092e',
-    eerieBlack: '#1b1b1b',
-    greenYellow900: '#34580f',
-    greenYellow950: '#193102',
   },
   typography: {
     fontFamily: [
@@ -83,6 +80,49 @@ export const muiDarkTheme = createTheme({
     },
   },
   components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          '&.Mui-focusVisible': {
+            outline: 'none',
+          },
+          '&:focus': {
+            outline: 'none',
+            boxShadow: 'none',
+          },
+        },
+      },
+    },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiOutlinedInput-root': {
+            '& fieldset': {
+              borderColor: '#9B9B9B',
+            },
+            '&:hover fieldset': {
+              borderColor: 'white',
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: 'white',
+            },
+          },
+        },
+      },
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          '&.Mui-focusVisible': {
+            outline: 'none',
+          },
+          '&:focus': {
+            outline: 'none',
+            boxShadow: 'none',
+          },
+        },
+      },
+    },
     MuiDrawer: {
       styleOverrides: {
         paper: {

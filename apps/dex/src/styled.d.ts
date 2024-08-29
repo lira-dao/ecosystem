@@ -50,9 +50,6 @@ declare module '@mui/material/styles' {
       gray155: string;
       white: string;
       red400: string;
-      eerieBlack: string;
-      greenYellow900: string;
-      greenYellow950: string;
     };
   }
 
@@ -63,9 +60,6 @@ declare module '@mui/material/styles' {
       gray155?: string;
       white: string;
       red400: string;
-      eerieBlack: string;
-      greenYellow900: string;
-      greenYellow950: string;
     };
   }
 }

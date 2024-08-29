@@ -24,8 +24,8 @@ export function CurrencySelector({ currency, disabled, selected, onClick }: Curr
         sx={{
           height: '40px',
           justifyContent: 'space-between',
-          color: 'text.secondary',
-          borderColor: 'text.secondary',
+          // color: 'text.secondary',
+          // borderColor: 'text.secondary',
           opacity: disabled ? 0.9 : 1,
           minWidth: '174px',
           width: '100%',
