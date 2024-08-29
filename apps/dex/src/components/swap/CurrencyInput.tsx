@@ -80,7 +80,7 @@ export function CurrencyInput({
             onChange={onChangeValue}
             disabled={disabled || !currency}
             InputProps={{
-              endAdornment: <Typography color="text.secondary">{currency?.symbol}</Typography>,
+              // endAdornment: <Typography color="text.secondary">{currency?.symbol}</Typography>,
               sx: {
                 flexGrow: 1,
                 backgroundColor: 'transparent',
