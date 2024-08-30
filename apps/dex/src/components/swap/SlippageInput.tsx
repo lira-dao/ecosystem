@@ -69,8 +69,8 @@ const SlippageInput: React.FC<SlippageInputProps> = ({
         <TextField
           type="number"
           inputProps={{
-            min: 0,
-            max: 100,
+            min: 0.1,
+            max: 5,
             step: 0.1,
           }}
           value={inputValue}
