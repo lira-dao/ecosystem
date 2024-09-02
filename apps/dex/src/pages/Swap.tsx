@@ -3,28 +3,29 @@ import { useParams } from 'react-router-dom';
 import { Box, Card, Divider, IconButton, Typography } from '@mui/material';
 import { SwapVert } from '@mui/icons-material';
 import { Currency, EthereumAddress } from '@lira-dao/web3-utils';
-import BigNumber from 'bignumber.js';
 import { useSnackbar } from 'notistack';
 import { formatUnits, parseUnits } from 'viem';
 import { useAccount, useBalance as useBalanceWagmi, useChainId } from 'wagmi';
-import { getCurrencies, getCurrencyByAddress, getPairedCurrencies } from '../utils';
+import BigNumber from 'bignumber.js';
 import { useApprove } from '../hooks/useApprove';
 import { useAllowance } from '../hooks/useAllowance';
 import { useBalance } from '../hooks/useBalance';
 import { useDexAddresses } from '../hooks/useDexAddresses';
 import { useDexPairs } from '../hooks/useDexPairs';
 import { useGetAmountsIn, useGetAmountsOut } from '../hooks/useGetAmountsOut';
-import { useSwap } from '../hooks/useSwap';
 import { usePair } from '../hooks/usePair';
+import { usePools } from '../hooks/usePools';
 import { useFetchPrices } from '../hooks/usePrices';
+import { useSwap } from '../hooks/useSwap';
 import { SelectCurrencyModal } from '../components/modal/SelectCurrencyModal';
 import { CurrencyInput } from '../components/swap/CurrencyInput';
-import { usePools } from '../hooks/usePools';
 import { PrimaryButtonWithLoader } from '../components/PrimaryButtonWithLoader';
-import { SwapHeader } from '../components/swap/SwapHeader';
+import { SectionHeader } from '../components/swap/SectionHeader';
 import SlippageInput from '../components/swap/SlippageInput';
 import TradePriceImpact from '../components/swap/PriceImpact';
 import Fee from '../components/swap/Fee';
+import { getCurrencies, getCurrencyByAddress, getPairedCurrencies } from '../utils';
+
 
 export function Swap() {
   const params = useParams<{ pool: EthereumAddress }>();
@@ -340,10 +341,10 @@ export function Swap() {
 
   return (
     <Box sx={{ width: '100%', maxWidth: '600px', borderRadius: '16px', p: 4 }}>
-      <SwapHeader title="Swap" showBack={!!params.pool} />
+      <SectionHeader title="Swap" showBack={!!params.pool} />
 
       <Box width="100%" mx="auto">
-        <Card sx={{ borderRadius: '8px', p: 1, backgroundColor: 'background.paper' }}>
+        <Card sx={{ p: 1, backgroundColor: 'background.paper' }}>
 
           <CurrencyInput
             balance={

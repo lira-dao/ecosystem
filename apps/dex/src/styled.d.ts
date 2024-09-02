@@ -1,9 +1,6 @@
-import 'styled-components';
-import '@xstyled/system';
-import { DefaultTheme as XStyledDefaultTheme, ITheme } from '@xstyled/styled-components';
 import { cyan, green } from './theme/theme';
 
-interface AppTheme extends ITheme, XStyledDefaultTheme {
+interface AppTheme {
   colors: {
     primary: string,
     secondary: string,
@@ -31,15 +28,6 @@ interface AppTheme extends ITheme, XStyledDefaultTheme {
     'red-900': string;
     white: string;
   };
-}
-
-declare module '@xstyled/system' {
-  export interface Theme extends AppTheme {
-  }
-}
-declare module 'styled-components' {
-  export interface DefaultTheme extends AppTheme {
-  }
 }
 
 declare module '@mui/material/styles' {

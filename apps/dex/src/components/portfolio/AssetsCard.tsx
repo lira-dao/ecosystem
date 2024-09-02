@@ -33,7 +33,7 @@ export function AssetsCard({ assets }: AssetsCardProps) {
   return (
     <Box>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table sx={{ minWidth: 650 }} aria-label="assets table">
           <TableHead>
             <TableRow>
               <TableCell>Asset</TableCell>

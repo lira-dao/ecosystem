@@ -1,41 +1,44 @@
-import styled from '@xstyled/styled-components';
+import { Button, ButtonProps } from '@mui/material';
 
-export const BaseButton = styled.buttonBox`
-  align-items: center;
-  border-radius: 16px;
-  border: 1px solid transparent;
-  color: white;
-  cursor: pointer;
-  display: flex;
-  flex-wrap: nowrap;
-  font-weight: 535;
-  justify-content: center;
-  line-height: 24px;
-  outline: none;
-  padding: 16px 6px;
-  position: relative;
-  text-align: center;
-  text-decoration: none;
-  width: initial;
-  z-index: 1;
-
-  &:disabled {
-    opacity: 50%;
-    cursor: auto;
-    pointer-events: none;
-  }
-  
-  &:focus {
-    outline: none;
-  }
-
-  transition: background-color 250ms ease-out;
-
-  > * {
-    user-select: none;
-  }
-
-  > a {
-    text-decoration: none;
-  }
-`;
+export const BaseButton: React.FC<ButtonProps> = (props) => {
+  return (
+    <Button
+      {...props}
+      sx={{
+        alignItems: 'center',
+        borderRadius: '16px',
+        border: '1px solid transparent',
+        color: 'white',
+        cursor: 'pointer',
+        display: 'flex',
+        flexWrap: 'nowrap',
+        fontWeight: 535,
+        justifyContent: 'center',
+        lineHeight: '24px',
+        padding: '16px 6px',
+        position: 'relative',
+        textAlign: 'center',
+        textDecoration: 'none',
+        width: 'initial',
+        zIndex: 1,
+        transition: 'background-color 250ms ease-out',
+        '&:disabled': {
+          opacity: 0.5,
+          cursor: 'auto',
+          pointerEvents: 'none',
+        },
+        '&:focus': {
+          outline: 'none',
+        },
+        '> *': {
+          userSelect: 'none',
+        },
+        '> a': {
+          textDecoration: 'none',
+        },
+      }}
+    >
+      {props.children}
+    </Button>
+  );
+};

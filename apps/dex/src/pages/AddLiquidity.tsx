@@ -1,28 +1,28 @@
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
-import { useTheme, x } from '@xstyled/styled-components';
-import { formatUnits, parseUnits } from 'viem';
-import { getCurrencies, getCurrencyByAddress, getPairedCurrencies } from '../utils';
-import { usePair } from '../hooks/usePair';
-import { useBalance } from '../hooks/useBalance';
-import { useAllowance } from '../hooks/useAllowance';
-import { useApprove } from '../hooks/useApprove';
-import { useAddLiquidity } from '../hooks/useAddLiquidity';
-import BigNumber from 'bignumber.js';
-import { useDexAddresses } from '../hooks/useDexAddresses';
-import { useAccount, useBalance as useBalanceWagmi, useChainId } from 'wagmi';
+import { useParams } from 'react-router-dom';
+import { Box, Card, Typography } from '@mui/material';
 import { Currency, EthereumAddress } from '@lira-dao/web3-utils';
-import { SelectCurrencyModal } from '../components/modal/SelectCurrencyModal';
 import { useSnackbar } from 'notistack';
 import { useDebounce } from 'use-debounce';
-import { useParams } from 'react-router-dom';
+import { formatUnits, parseUnits } from 'viem';
+import { useAccount, useBalance as useBalanceWagmi, useChainId } from 'wagmi';
+import BigNumber from 'bignumber.js';
+import { getCurrencies, getCurrencyByAddress, getPairedCurrencies } from '../utils';
+import { useAddLiquidity } from '../hooks/useAddLiquidity';
+import { useAllowance } from '../hooks/useAllowance';
+import { useApprove } from '../hooks/useApprove';
+import { useBalance } from '../hooks/useBalance';
+import { useDexAddresses } from '../hooks/useDexAddresses';
 import { useDexPairs } from '../hooks/useDexPairs';
-import { CurrencyInput } from '../components/swap/_CurrencyInput';
-import { SwapHeader } from '../components/swap/SwapHeader';
+import { usePair } from '../hooks/usePair';
+import { useFetchPrices } from '../hooks/usePrices';
+import { SelectCurrencyModal } from '../components/modal/SelectCurrencyModal';
+import { CurrencyInput } from '../components/swap/CurrencyInput';
 import { PrimaryButtonWithLoader } from '../components/PrimaryButtonWithLoader';
+import { SectionHeader } from '../components/swap/SectionHeader';
 
 
 export function AddLiquidity() {
-  const th = useTheme();
   const params = useParams<{ pool: EthereumAddress }>();
   const pairs = useDexPairs();
   const pool = params.pool ? pairs[params.pool] : undefined;
@@ -58,6 +58,8 @@ export function AddLiquidity() {
 
   const account = useAccount();
   const accountBalance = useBalanceWagmi({ address: account.address });
+
+  const { data: pricesData } = useFetchPrices();
 
   const insufficientBalanceA = useMemo(() => {
     if (currencyA.isNative) {
@@ -100,7 +102,7 @@ export function AddLiquidity() {
   const isAllowCurrencyADisabled = useMemo(() => approveA.isPending || allowanceA.isPending, [approveA, allowanceA]);
   const isAllowCurrencyBDisabled = useMemo(() => approveB.isPending || allowanceB.isPending, [approveB, allowanceB]);
 
-  const onChangeValues = (e: ChangeEvent<HTMLInputElement>) => {
+  const onCurrencyChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.value === '') {
       setFirstValue('');
       setSecondValue('');
@@ -115,9 +117,9 @@ export function AddLiquidity() {
           pair.priceCurrencyA.times(new BigNumber(e.target.value)).toFixed(),
         );
       }
-
     } else if (e.target.id === 'currencyB') {
       setSecondValue(e.target.value);
+
       if (pair.priceCurrencyB.gt(0)) {
         setFirstValue(
           pair.priceCurrencyB.times(new BigNumber(e.target.value)).toFixed(),
@@ -194,6 +196,10 @@ export function AddLiquidity() {
     }
   }, [approveB.confirmed]);
 
+  const computePrice = (currency: Currency) => pricesData?.find(
+    (price) => price.symbol === currency.symbol,
+  )?.price ?? '0';
+
   useEffect(() => {
     if (addLiquidity.confirmed) {
       enqueueSnackbar('Add Liquidity confirmed!', {
@@ -236,86 +242,152 @@ export function AddLiquidity() {
   };
 
   return (
-    <x.div w="100%" maxWidth="480px" padding={4}>
-      <SwapHeader title="Add Liquidity" />
+    <Box sx={{ width: '100%', maxWidth: '600px', borderRadius: '16px', p: 4 }}>
+      <SectionHeader title="Add Liquidity" />
 
-      <CurrencyInput
-        balance={currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n}
-        currency={currencyA}
-        disabled={isAllowCurrencyADisabled || isAllowCurrencyBDisabled || addLiquidity.isPending}
-        formattedBalance={new BigNumber(formatUnits(currencyA.isNative ? accountBalance.data?.value || 0n : balanceA.data ?? 0n, currencyA.decimals)).toFixed(6, 1)}
-        id="currencyA"
-        insufficientBalance={insufficientBalanceA}
-        onChangeValue={onChangeValues}
-        onCurrencySelectClick={onCurrencySelectAClick}
-        onSetPercentage={onSetPercentageA}
-        selected={false}
-        showPercentages
-        title="Deposit"
-        value={firstValue}
-      />
+      <Box width="100%" mx="auto">
+        <Card sx={{ p: 1, backgroundColor: 'background.paper' }}>
 
-      <CurrencyInput
-        balance={currencyB?.isNative ? accountBalance.data?.value || 0n : balanceB.data ?? 0n}
-        currency={currencyB}
-        disabled={isAllowCurrencyADisabled || isAllowCurrencyBDisabled || addLiquidity.isPending}
-        formattedBalance={new BigNumber(formatUnits(currencyB?.isNative ? accountBalance.data?.value || 0n : balanceB.data ?? 0n, currencyB?.decimals || 18)).toFixed(6, 1)}
-        id="currencyB"
-        insufficientBalance={insufficientBalanceB}
-        onChangeValue={onChangeValues}
-        onCurrencySelectClick={onCurrencySelectBClick}
-        onSetPercentage={onSetPercentageB}
-        selected={false}
-        showPercentages
-        title="Deposit"
-        value={secondValue}
-      />
+          <CurrencyInput
+            balance={
+              currencyA.isNative
+                ? accountBalance.data?.value || 0n
+                : balanceA.data ?? 0n
+            }
+            currency={currencyA}
+            disabled={isAllowCurrencyADisabled || isAllowCurrencyBDisabled || addLiquidity.isPending}
+            formattedBalance={new BigNumber(
+              formatUnits(
+                currencyA.isNative
+                  ? accountBalance.data?.value || 0n
+                  : balanceA.data ?? 0n,
+                currencyA.decimals,
+              ),
+            ).toFixed(6, 1)}
+            id="currencyA"
+            insufficientBalance={insufficientBalanceA}
+            onChangeValue={(e) => onCurrencyChange(e)}
+            onCurrencySelectClick={onCurrencySelectAClick}
+            onSetPercentage={onSetPercentageA}
+            selected={false}
+            showPercentages
+            title="Deposit"
+            value={firstValue}
+            price={computePrice(currencyA)}
+          />
 
-      {(currencyA && currencyB) && (
-        <x.div mb={8}>
-          <x.p>Prices</x.p>
+          <CurrencyInput
+            balance={
+              currencyB?.isNative
+                ? accountBalance.data?.value || 0n
+                : balanceB.data ?? 0n
+            }
+            currency={currencyB}
+            disabled={isAllowCurrencyADisabled || isAllowCurrencyBDisabled || addLiquidity.isPending}
+            formattedBalance={new BigNumber(
+              formatUnits(
+                currencyB?.isNative
+                  ? accountBalance.data?.value || 0n
+                  : balanceB.data ?? 0n,
+                currencyB?.decimals || 18,
+              ),
+            ).toFixed(6, 1)}
+            id="currencyB"
+            insufficientBalance={insufficientBalanceB}
+            onChangeValue={(e) => onCurrencyChange(e)}
+            onCurrencySelectClick={onCurrencySelectBClick}
+            onSetPercentage={onSetPercentageB}
+            selected={false}
+            showPercentages
+            title="Deposit"
+            value={secondValue}
+            price={currencyB && computePrice(currencyB)}
+          />
 
-          <x.div>
-            <x.div>
-              <x.p>1 {currencyA.symbol} = {pair.priceCurrencyA.toFixed(pair.priceCurrencyA.lt(1) ? 8 : 2, 1)} {currencyB.symbol}</x.p>
-              <x.p>1 {currencyB.symbol} = {pair.priceCurrencyB.toFixed(pair.priceCurrencyB.lt(1) ? 8 : 2, 1)} {currencyA.symbol}</x.p>
-            </x.div>
-            <x.div></x.div>
-          </x.div>
-        </x.div>
-      )}
+          {currencyA && currencyB && (
+            <Box mt={2} p={2}>
+              <Typography variant="body1" gutterBottom>
+                Prices
+              </Typography>
+
+              <Box>
+                <Typography variant="body2" color="text.secondary">
+                  1 {currencyA.symbol} ={' '}
+                  {pair.priceCurrencyA.toFixed(
+                    pair.priceCurrencyA.lt(1) ? 8 : 2,
+                    1,
+                  )}{' '}
+                  {currencyB.symbol}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  1 {currencyB.symbol} ={' '}
+                  {pair.priceCurrencyB.toFixed(
+                    pair.priceCurrencyB.lt(1) ? 8 : 2,
+                    1,
+                  )}{' '}
+                  {currencyA.symbol}
+                </Typography>
+              </Box>
+            </Box>
+          )}
+        </Card>
+      </Box>
 
       {(needAllowanceA && !insufficientBalanceA) && (
-        <x.div display="flex" mt={4} h="80px" alignItems="center" justifyContent="center">
+        <Box 
+          sx={{
+            display: 'flex',
+            height: '80px',
+            alignItems: 'center',
+            justifyContent: 'center',
+            mt: 4
+          }}
+        >
           <PrimaryButtonWithLoader
             isLoading={isAllowCurrencyADisabled}
             isDisabled={isAllowCurrencyADisabled}
             text={`Approve ${currencyA.symbol}`}
             onClick={() => approveA.write()}
           />
-        </x.div>
+        </Box>
       )}
 
       {(needAllowanceB && !insufficientBalanceB && !needAllowanceA) && (
-        <x.div display="flex" h="80px" alignItems="center" justifyContent="center">
+        <Box 
+          sx={{
+            display: 'flex',
+            height: '80px',
+            alignItems: 'center',
+            justifyContent: 'center',
+            mt: 4
+          }}
+        >
           <PrimaryButtonWithLoader
             isLoading={isAllowCurrencyBDisabled}
             isDisabled={isAllowCurrencyBDisabled}
             text={`Approve ${currencyB?.symbol}`}
             onClick={() => approveB.write()}
           />
-        </x.div>
+        </Box>
       )}
 
       {(!needAllowanceA && !insufficientBalanceA && !needAllowanceB && !insufficientBalanceB) && (
-        <x.div display="flex" mt={4} h="80px" alignItems="center" justifyContent="center">
+        <Box 
+          sx={{
+            display: 'flex',
+            height: '80px',
+            alignItems: 'center',
+            justifyContent: 'center',
+            mt: 4
+          }}
+        >
           <PrimaryButtonWithLoader
             isLoading={addLiquidity.isPending}
             isDisabled={!firstValue && !secondValue}
             text="Supply"
             onClick={() => addLiquidity.write()}
           />
-        </x.div>
+        </Box>
       )}
 
       <SelectCurrencyModal
@@ -324,6 +396,6 @@ export function AddLiquidity() {
         currencies={selectingCurrencies}
         onSelect={onSelectCurrency}
       />
-    </x.div>
+    </Box>
   );
 }

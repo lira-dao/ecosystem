@@ -1,5 +1,6 @@
+import { ReactNode } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createWeb3Modal } from '@web3modal/wagmi/react';
-
 import { createConfig, http, WagmiProvider } from 'wagmi';
 import {
   arbitrum,
@@ -20,8 +21,6 @@ import {
 } from 'wagmi/chains';
 import { coinbaseWallet, injected, walletConnect } from 'wagmi/connectors';
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactNode } from 'react';
 
 const queryClient = new QueryClient();
 

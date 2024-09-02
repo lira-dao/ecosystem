@@ -1,27 +1,21 @@
-import { useTheme, x } from '@xstyled/styled-components';
-import { useEffect, useMemo, useState } from 'react';
-import { StyledTabItem } from '../components/StyledTabItem';
-import { InputPanel } from '../components/swap/InputPanel';
-import { Container } from '../components/swap/Container';
-import { CurrencySelector } from '../components/CurrencySelector';
-import { NumericalInput } from '../components/StyledInput';
-import { formatUnits, parseUnits } from 'viem';
-import { SwapSection } from '../components/swap/SwapSection';
-import { Currency } from '@lira-dao/web3-utils';
-import { getCurrencies, getTreasuryCurrencies } from '../utils';
-import { useChainId } from 'wagmi';
-import { SelectCurrencyModal } from '../components/modal/SelectCurrencyModal';
-import { useBalance } from '../hooks/useBalance';
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useTreasuryToken } from '../hooks/useTreasuryToken';
-import { useApprove } from '../hooks/useApprove';
-import { useAllowance } from '../hooks/useAllowance';
-import { useSnackbar } from 'notistack';
+import { Box, Card, CardContent, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import BigNumber from 'bignumber.js';
-import { SwapHeader } from '../components/swap/SwapHeader';
+import { useSnackbar } from 'notistack';
+import { formatUnits, parseUnits } from 'viem';
+import { useChainId } from 'wagmi';
+import { Currency } from '@lira-dao/web3-utils';
+import { useAllowance } from '../hooks/useAllowance';
+import { useApprove } from '../hooks/useApprove';
+import { useBalance } from '../hooks/useBalance';
+import { usePair } from '../hooks/usePair';
+import { useTreasuryToken } from '../hooks/useTreasuryToken';
+import { getCurrencies, getTreasuryCurrencies } from '../utils';
+import { SelectCurrencyModal } from '../components/modal/SelectCurrencyModal';
+import { CurrencyInput } from '../components/swap/CurrencyInput';
 import { PrimaryButtonWithLoader } from '../components/PrimaryButtonWithLoader';
-import { Box, Card, CardContent, Typography } from '@mui/material';
-
+import { SectionHeader } from '../components/swap/SectionHeader';
 
 enum TreasuryHeaderTab {
   Mint,
@@ -29,9 +23,10 @@ enum TreasuryHeaderTab {
 }
 
 export function TreasuryMint() {
-  const th = useTheme();
-  const params = useParams();
   const { enqueueSnackbar } = useSnackbar();
+
+  const params = useParams();
+
   const [active, setActive] = useState<TreasuryHeaderTab>(params.action === 'mint' ? TreasuryHeaderTab.Mint : TreasuryHeaderTab.Burn);
   const [open, setOpen] = useState(false);
   const [isActionDisabled, setIsActionDisabled] = useState<boolean>(true);
@@ -43,6 +38,8 @@ export function TreasuryMint() {
 
   const [currencyA, setCurrencyA] = useState<Currency>(getTreasuryCurrencies(chainId).find(t => t.address === params.address) || getTreasuryCurrencies(chainId)[0]);
   const [currencyB, setCurrencyB] = useState<Currency>(getCurrencies(chainId)[0]);
+
+  const pair = usePair(currencyA, currencyB);
 
   const balanceA = useBalance(currencyA.address);
   const balanceB = useBalance(currencyB?.address);
@@ -107,10 +104,10 @@ export function TreasuryMint() {
     }
   }, [treasuryToken.mint.confirmed, treasuryToken.burn.confirmed]);
 
-  const onCurrencyChange = (value: string) => {
-    setFirstValue(value);
+  const onCurrencyChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFirstValue(e.target.value);
 
-    if (value === '') {
+    if (!e.target.value) {
       setSecondValue('');
     }
   };
@@ -133,18 +130,27 @@ export function TreasuryMint() {
     setOpen(false);
   };
 
-  const onSetPercentage = (percentage: bigint) => {
-    switch (percentage) {
-      case 25n:
-      case 50n:
-      case 75n:
-        setFirstValue(((new BigNumber(balanceA.data?.toString() || '0').times(percentage.toString()).div(100)).div(new BigNumber(10).pow(18))).toString());
+  const onSetPercentage = (value: string) => {
+    if (active === TreasuryHeaderTab.Burn) {
+      const percentage = new BigNumber(value);
+      const balanceInUnits = new BigNumber(balanceA.data?.toString() || '0');
 
-        setFirstValue(formatUnits(((balanceA.data || 0n) * percentage) / 100n, 18));
-        break;
-      case 100n:
-        setFirstValue(new BigNumber(balanceA.data?.toString() || '0').div(new BigNumber(10).pow(18)).toString());
-        break;
+      const normalizedBalance = balanceInUnits.div(new BigNumber(10).pow(currencyA.decimals));
+
+      const calculatedFirstValue = normalizedBalance
+        .times(percentage)
+        .toFixed(currencyA.decimals, BigNumber.ROUND_DOWN);
+
+      const normalizedPriceCurrencyB = new BigNumber(pair.priceCurrencyB)
+        .times(new BigNumber(10).pow(currencyA.decimals));
+
+      const calculatedSecondValue = new BigNumber(calculatedFirstValue)
+        .times(normalizedPriceCurrencyB)
+        .div(new BigNumber(10).pow(currencyA.decimals))
+        .toFixed(currencyB.decimals, BigNumber.ROUND_DOWN);
+
+      setFirstValue(new BigNumber(calculatedFirstValue).toFixed().replace(/\.?0+$/, ''));
+      setSecondValue(new BigNumber(calculatedSecondValue).toFixed().replace(/\.?0+$/, ''));
     }
   };
 
@@ -161,118 +167,62 @@ export function TreasuryMint() {
   };
 
   return (
-    <x.div w="100%" maxWidth="480px" borderRadius="16px" padding={4}>
-      <SwapHeader title="Treasury" />
+    <Box sx={{ width: '100%', maxWidth: '600px', borderRadius: '16px', p: 4 }}>
+      <SectionHeader title="Treasury" />
 
-      <x.div display="flex" pt={8}>
-        <StyledTabItem
-          $active={active === TreasuryHeaderTab.Mint}
-          onClick={onMintClick}
-        >MINT</StyledTabItem>
-        <StyledTabItem
-          $active={active === TreasuryHeaderTab.Burn}
-          onClick={onBurnClick}
-        >BURN</StyledTabItem>
-      </x.div>
+      <Box width="100%" mx="auto">
+        <Card sx={{ p: 1, backgroundColor: 'background.paper' }}>
+          <Box sx={{ display: 'flex', paddingTop: 1 }}>
+            <ToggleButtonGroup
+              color="primary"
+              value={active}
+              onChange={(e, value) => {
+                if (value !== null) {
+                  setActive(value);
+                }
+              }}
+              sx={{ mb: 2 }}
+              size="small"
+              exclusive
+              fullWidth
+            >
+              <ToggleButton value={TreasuryHeaderTab.Mint} onClick={onMintClick}>Mint</ToggleButton>
+              <ToggleButton value={TreasuryHeaderTab.Burn} onClick={onBurnClick}>Burn</ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
 
-
-      <SwapSection mt={6} mb={4}>
-        <InputPanel>
-          <Container>
-            <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
-              <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
-                <x.p color="gray155" userSelect="none">{active === TreasuryHeaderTab.Mint ? 'Mint' : 'Burn'}</x.p>
-                <CurrencySelector
-                  disabled={false}
-                  selected={false}
-                  currency={currencyA}
-                  onClick={onCurrencySelectClick}
-                />
-              </x.div>
-
-              <NumericalInput
-                id="currencyA"
-                disabled={false}
-                value={firstValue}
-                onChange={(e) => onCurrencyChange(e.target.value)}
-              />
-
-              {active === TreasuryHeaderTab.Mint ? (
-                <x.div w="100%" display="flex" mt={2} justifyContent="flex-end">
-                  <x.p color="gray155">{new BigNumber(formatUnits(balanceA.data ?? 0n, currencyA.decimals)).toFixed(6, 1)}</x.p>
-                </x.div>
-              ) : (
-                <x.div w="100%" display="flex" mt={2} justifyContent="space-between">
-                  <x.div display="flex">
-                    <x.p
-                      mr={2}
-                      cursor="pointer"
-                      color={{ _: 'gray155', hover: 'white' }}
-                      onClick={() => onSetPercentage(25n)}
-                    >25%
-                    </x.p>
-                    <x.p
-                      mr={2}
-                      cursor="pointer"
-                      color={{ _: 'gray155', hover: 'white' }}
-                      onClick={() => onSetPercentage(50n)}
-                    >50%
-                    </x.p>
-                    <x.p
-                      mr={2}
-                      cursor="pointer"
-                      color={{ _: 'gray155', hover: 'white' }}
-                      onClick={() => onSetPercentage(75n)}
-                    >75%
-                    </x.p>
-                    <x.p
-                      mr={2}
-                      cursor="pointer"
-                      color={{ _: 'gray155', hover: 'white' }}
-                      onClick={() => onSetPercentage(100n)}
-                    >100%
-                    </x.p>
-                  </x.div>
-                  <x.div>
-                    <x.p color="gray155">{new BigNumber(formatUnits(balanceA.data ?? 0n, 18)).toFixed(6, 1)}</x.p>
-                  </x.div>
-                </x.div>
-              )}
-            </x.div>
-          </Container>
-        </InputPanel>
-      </SwapSection>
-
-      <SwapSection mt={4}>
-        <InputPanel>
-          <Container>
-            <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
-              <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
-                <x.p color="gray155" userSelect="none">For</x.p>
-                <CurrencySelector
-                  disabled={true}
-                  selected={false}
-                  currency={currencyB}
-                  onClick={() => {
-                  }}
-                />
-              </x.div>
-
-              <NumericalInput
-                id="currencyB"
-                disabled={true}
-                value={secondValue}
-                onChange={() => {
-                }}
-              />
-
-              <x.div w="100%" display="flex" justifyContent="flex-end" mt={2}>
-                <x.p color="gray155">{new BigNumber(formatUnits(balanceB.data ?? 0n, currencyB.decimals)).toFixed(6, 1)}</x.p>
-              </x.div>
-            </x.div>
-          </Container>
-        </InputPanel>
-      </SwapSection>
+          <CurrencyInput
+            balance={balanceA.data || 0n}
+            currency={currencyA}
+            disabled={false}
+            formattedBalance={new BigNumber(formatUnits(balanceA.data || 0n, currencyA.decimals)).toFixed(6, 1)}
+            id="currencyA"
+            insufficientBalance={false}
+            isDisabledCurrencySelector={false}
+            onChangeValue={onCurrencyChange}
+            onCurrencySelectClick={onCurrencySelectClick}
+            onSetPercentage={(e) => onSetPercentage(e)}
+            selected={false}
+            showPercentages={active === TreasuryHeaderTab.Mint ? false : true}
+            title={active === TreasuryHeaderTab.Mint ? 'Mint' : 'Burn'}
+            value={firstValue}
+          />
+          <CurrencyInput
+            balance={balanceB.data || 0n}
+            currency={currencyB}
+            disabled={true}
+            formattedBalance={new BigNumber(formatUnits(balanceB.data || 0n, currencyB.decimals)).toFixed(6, 1)}
+            id="currencyB"
+            isDisabledCurrencySelector={true}
+            insufficientBalance={false}
+            onChangeValue={() => {}}
+            onSetPercentage={() => {}}
+            selected={false}
+            title="For"
+            value={secondValue}
+          />
+        </Card>
+      </Box>
 
       <Card sx={{ mt: 2 }}>
         <CardContent sx={{ '&:last-child': { p: 2 } }}>
@@ -289,25 +239,25 @@ export function TreasuryMint() {
       </Card>
 
       {(active === TreasuryHeaderTab.Mint && needAllowance) && (
-        <x.div display="flex" mt={4} mb={2} h="80px" alignItems="center" justifyContent="center">
+        <Box sx={{ display: 'flex', mt: 4, mb: 2, height: '80px', alignItems: 'center', justifyContent: 'center' }}>
           <PrimaryButtonWithLoader
             isLoading={isAllowCurrencyDisabled}
             isDisabled={isAllowCurrencyDisabled}
             text={`Approve ${currencyB.symbol}`}
             onClick={() => approve.write()}
           />
-        </x.div>
+        </Box>
       )}
 
       {(active === TreasuryHeaderTab.Burn || !needAllowance) && (
-        <x.div display="flex" mt={4} h="80px" alignItems="center" justifyContent="center">
+        <Box sx={{ display: 'flex', mt: 4, height: '80px', alignItems: 'center', justifyContent: 'center' }}>
           <PrimaryButtonWithLoader
             isLoading={isActionDisabled}
             isDisabled={firstValue === '' || !firstValue}
             text={active === TreasuryHeaderTab.Mint ? 'MINT' : 'BURN'}
             onClick={() => active === TreasuryHeaderTab.Mint ? treasuryToken.mint.write() : treasuryToken.burn.write()}
           />
-        </x.div>
+        </Box>
       )}
 
       <SelectCurrencyModal
@@ -316,6 +266,6 @@ export function TreasuryMint() {
         currencies={selectingCurrencies}
         onSelect={onSelectCurrency}
       />
-    </x.div>
+    </Box>
   );
 }

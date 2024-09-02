@@ -1,7 +1,6 @@
-import React from 'react';
 import { Button, Box, Typography } from '@mui/material';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import { Currency } from '@lira-dao/web3-utils';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 interface CurrencySelectorProps {
   disabled: boolean;

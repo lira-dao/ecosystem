@@ -1,48 +1,17 @@
 import { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import { th } from '@xstyled/styled-components';
-import { useAccount } from 'wagmi';
+import { useNavigate } from 'react-router-dom';
+import { Box, Typography, Button } from '@mui/material';
+import { AddToMetamaskButton } from '@lira-dao/ui';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
+import { useAccount } from 'wagmi';
+import { useFaucets } from '../hooks/useFaucets';
 import { PrimaryButton } from '../components/PrimaryButton';
 import { AddressInput } from '../components/AddressInput';
 import { NumericalInput } from '../components/StyledInput';
-import { useFaucets } from '../hooks/useFaucets';
 import { addLiraDaoToken, addLiraToken, addWethToken } from '../utils';
+import { muiDarkTheme as theme } from '../theme/theme';
 import metamaskFox from '../img/metamask-fox.svg';
-import { AddToMetamaskButton } from '@lira-dao/ui';
-import { StyledTabItem } from '../components/StyledTabItem';
-import { useNavigate } from 'react-router-dom';
 
-
-const StyledContainer = styled.div`
-  max-width: 480px;
-  padding: 34px 8px 0;
-`;
-
-const StyledHeaderContainer = styled.div`
-  display: flex;
-`;
-
-const StyledTitle = styled.h4`
-  margin: 32px 0 16px;
-`;
-
-const StyledFormContainer = styled.div`
-  padding: 24px 0 32px;
-`;
-
-const StyledInputContainer = styled.div`
-  padding: 8px 0;
-`;
-
-const StyledErrorContainer = styled.div`
-  height: 60px;
-  padding: 16px 0 32px;
-`;
-
-const StyledError = styled.p`
-  color: ${th.color('red-400')};
-`;
 
 enum ActiveHeaderItem {
   LDT = 'LDT',
@@ -131,88 +100,108 @@ export function Faucets() {
   }
 
   return (
-    <StyledContainer>
-      <StyledHeaderContainer>
-        <StyledTabItem
-          $active={active === ActiveHeaderItem.LDT}
+    <Box sx={{ maxWidth: 600, padding: '16px 8px 0' }}>
+      <Box sx={{ display: 'flex' }}>
+        <Button
           onClick={() => changeTab(ActiveHeaderItem.LDT)}
-        >LDT</StyledTabItem>
-        <StyledTabItem
-          $active={active === ActiveHeaderItem.LIRA}
+          sx={{
+            flexGrow: 1,
+            color: active === ActiveHeaderItem.LDT ? theme.palette.primary.main : theme.palette.text.secondary,
+            fontWeight: active === ActiveHeaderItem.LDT ? 'bold' : 'normal',
+            textTransform: 'none',
+          }}
+        >
+          LDT
+        </Button>
+        <Button
           onClick={() => changeTab(ActiveHeaderItem.LIRA)}
-        >LIRA</StyledTabItem>
-        <StyledTabItem
-          $active={active === ActiveHeaderItem.WETH}
+          sx={{
+            flexGrow: 1,
+            color: active === ActiveHeaderItem.LIRA ? theme.palette.primary.main : theme.palette.text.secondary,
+            fontWeight: active === ActiveHeaderItem.LIRA ? 'bold' : 'normal',
+            textTransform: 'none',
+          }}
+        >
+          LIRA
+        </Button>
+        <Button
           onClick={() => changeTab(ActiveHeaderItem.WETH)}
-        >WETH</StyledTabItem>
-      </StyledHeaderContainer>
-
-      {!writeIsPending && !writeIsSuccess && <StyledTitle>Claim your testnet tokens every 24h</StyledTitle>}
-
-      {!writeIsPending && !writeIsSuccess &&
-        <StyledTitle>If you need funds on arbitrum sepolia:</StyledTitle>}
+          sx={{
+            flexGrow: 1,
+            color: active === ActiveHeaderItem.WETH ? theme.palette.primary.main : theme.palette.text.secondary,
+            fontWeight: active === ActiveHeaderItem.WETH ? 'bold' : 'normal',
+            textTransform: 'none',
+          }}
+        >
+          WETH
+        </Button>
+      </Box>
 
       {!writeIsPending && !writeIsSuccess && (
-        <ul>
-          <li>
-            - Mine Sepolia ETH with the <a
-            href="https://sepolia-faucet.pk910.de"
-            target="_blank"
-            rel="noopener noreferrer"
-          >Pow Faucet</a>
-          </li>
-          <li>
-            - Bridge funds to arbitrum sepolia with the <a
-            href="https://bridge.arbitrum.io/?destinationChain=arbitrum-sepolia&sourceChain=sepolia"
-            target="_blank"
-            rel="noopener noreferrer"
-          >Arbitrum Bridge</a>
-          </li>
-        </ul>
+        <>
+          <Typography variant="h6" sx={{ margin: '32px 0 16px' }}>
+            Claim your testnet tokens every 24h
+          </Typography>
+          <Typography variant="h6">
+            If you need funds on arbitrum sepolia:
+          </Typography>
+          <ul>
+            <li>
+              Mine Sepolia ETH with the <a
+                href="https://sepolia-faucet.pk910.de"
+                target="_blank"
+                rel="noopener noreferrer"
+              >Pow Faucet</a>
+            </li>
+            <li>
+              Bridge funds to arbitrum sepolia with the <a
+              href="https://bridge.arbitrum.io/?destinationChain=arbitrum-sepolia&sourceChain=sepolia"
+              target="_blank"
+              rel="noopener noreferrer"
+            >Arbitrum Bridge</a>
+            </li>
+          </ul>
+          <Typography variant="h6">
+            For more information follow the guides on the <a href="https://docs.liradao.org/category/basic-guides" target="_blank" rel="noopener noreferrer">Docs Site</a>
+          </Typography>
+        </>
       )}
 
-      {!writeIsPending && !writeIsSuccess &&
-        <StyledTitle>For more information follow the guides on
-          the <a href="https://docs.liradao.org/category/basic-guides" target="_blank" rel="noopener noreferrer">Docs
-            Site</a>
-        </StyledTitle>
-      }
+      {writeIsPending && <Typography variant="h6" sx={{ margin: '32px 0 16px' }}>Please confirm the transaction on your wallet to proceed</Typography>}
 
-      {writeIsPending && <StyledTitle>Please confirm the transaction on your wallet to proceed</StyledTitle>}
-
-      {writeIsSuccess &&
-        <StyledTitle>Transaction sent correctly, test tokens will be available in a few seconds</StyledTitle>
-      }
+      {writeIsSuccess && (
+        <Typography variant="h6" sx={{ margin: '32px 0 16px' }}>Transaction sent correctly, test tokens will be available in a few seconds</Typography>
+      )}
 
       {account.isConnected && !writeIsPending && !writeIsSuccess && (
-        <StyledFormContainer>
-          <StyledInputContainer>
-            <h3>Wallet</h3>
+        <Box sx={{ padding: '24px 0 32px' }}>
+          <Box sx={{ padding: '8px 0' }}>
+            <Typography variant="h6">Wallet</Typography>
             <AddressInput
               value={`0x${account.address?.slice(2, 8)}...${account.address?.slice(36)}`}
               disabled
               readOnly
             />
-          </StyledInputContainer>
+          </Box>
 
-          <StyledInputContainer>
-            <h3>Amount</h3>
+          <Box sx={{ padding: '8px 0' }}>
+            <Typography variant="h6">Amount</Typography>
             <NumericalInput
               id="amount"
               value={amount}
               disabled
               readOnly
             />
-          </StyledInputContainer>
+          </Box>
           <AddToMetamaskButton onClick={onAddToMetamask}>
             <img src={metamaskFox} alt="metamask icon" width={24} style={{ marginRight: 12 }} />Add To Metamask
           </AddToMetamaskButton>
-        </StyledFormContainer>
+        </Box>
       )}
 
-      <StyledErrorContainer>
-        {errorText && (<StyledError>{errorText}</StyledError>)}
-      </StyledErrorContainer>
+      <Box sx={{ height: 60, padding: '16px 0 32px' }}>
+        {errorText && <Typography sx={{ color: theme.colors.red400 }}>{errorText}</Typography>}
+      </Box>
 
       {!writeIsPending && !writeIsSuccess && (
         <PrimaryButton onClick={onButtonClick}>{buttonText}</PrimaryButton>
@@ -221,6 +210,6 @@ export function Faucets() {
       {writeIsSuccess && (
         <PrimaryButton onClick={() => reset()}>OK</PrimaryButton>
       )}
-    </StyledContainer>
+    </Box>
   );
 }

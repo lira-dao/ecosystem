@@ -1,19 +1,15 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { formatUnits, parseUnits } from 'viem';
-import BigNumber from 'bignumber.js';
-import { x } from '@xstyled/styled-components';
-import { EthereumAddress } from '@lira-dao/web3-utils';
-import { InputPanel } from '../components/swap/InputPanel';
-import { Container } from '../components/swap/Container';
-import { NumericalInput } from '../components/StyledInput';
-import { SwapSection } from '../components/swap/SwapSection';
-import { useSnackbar } from 'notistack';
-import { SwapHeader } from '../components/swap/SwapHeader';
 import { Box, Card, CardContent, Typography } from '@mui/material';
+import { formatUnits, parseUnits } from 'viem';
+import { useSnackbar } from 'notistack';
+import BigNumber from 'bignumber.js';
+import { EthereumAddress } from '@lira-dao/web3-utils';
+import { SectionHeader } from '../components/swap/SectionHeader';
 import { useTokenStaker } from '../hooks/useTokenStaker';
-import { PrimaryButtonWithLoader } from '../components/PrimaryButtonWithLoader';
+import { CurrencyInput } from '../components/swap/CurrencyInput';
 import { ErrorMessage } from '../components/swap/ErrorMessage';
+import { PrimaryButtonWithLoader } from '../components/PrimaryButtonWithLoader';
 
 
 export function Unstake() {
@@ -81,78 +77,35 @@ export function Unstake() {
     }
   }, [params.stakers]);
 
-  const onSetPercentage = (percentage: bigint) => {
-    switch (percentage) {
-      case 25n:
-      case 50n:
-      case 75n:
-        setValue(formatUnits(((staked.data?.[0] || 0n) * percentage) / 100n, 18));
-        break;
-      case 100n:
-        setValue(formatUnits(staked.data?.[0] || 0n, 18));
-        break;
+  const onSetPercentage = (percentage: string) => {
+    if (staked.data) {
+      setValue(percentage);
     }
   };
 
   return (
-    <Box width="100%" maxWidth="480px" padding={2}>
-      <SwapHeader title={title} />
+    <Box sx={{ width: '100%', maxWidth: '600px', borderRadius: '16px', p: 4 }}>
+      <SectionHeader title={title} />
 
-      <SwapSection mt={6} mb={4}>
-        <InputPanel>
-          <Container>
-            <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
-              <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
-                <x.p color="gray155" userSelect="none">Withdraw</x.p>
-                {insufficientBalance && <x.p color="red-400" userSelect="none">Insufficient balance</x.p>}
-              </x.div>
-
-              <NumericalInput
-                id="currencyA"
-                disabled={false}
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-              />
-
-              <x.div w="100%" display="flex" mt={2} justifyContent="space-between">
-                <x.div display="flex">
-                  <x.p
-                    mr={2}
-                    cursor="pointer"
-                    color={{ _: 'gray155', hover: 'white' }}
-                    onClick={() => onSetPercentage(25n)}
-                  >25%
-                  </x.p>
-                  <x.p
-                    mr={2}
-                    cursor="pointer"
-                    color={{ _: 'gray155', hover: 'white' }}
-                    onClick={() => onSetPercentage(50n)}
-                  >50%
-                  </x.p>
-                  <x.p
-                    mr={2}
-                    cursor="pointer"
-                    color={{ _: 'gray155', hover: 'white' }}
-                    onClick={() => onSetPercentage(75n)}
-                  >75%
-                  </x.p>
-                  <x.p
-                    mr={2}
-                    cursor="pointer"
-                    color={{ _: 'gray155', hover: 'white' }}
-                    onClick={() => onSetPercentage(100n)}
-                  >100%
-                  </x.p>
-                </x.div>
-                <x.div>
-                  <x.p color="gray155">{new BigNumber(formatUnits(staked.data?.[0] ?? 0n, 18)).toFixed(6, 1)}</x.p>
-                </x.div>
-              </x.div>
-            </x.div>
-          </Container>
-        </InputPanel>
-      </SwapSection>
+      <Box width="100%" mx="auto" sx={{ mb: 2 }}>
+        <Card sx={{ p: 1, backgroundColor: 'background.paper' }}>
+          <CurrencyInput
+            balance={staked.data?.[0] || 0n}
+            currency={params.stakers === 'farming' ? { symbol: "LP Token", decimals: 18 } as any : token}
+            disabled={false}
+            formattedBalance={new BigNumber(formatUnits(staked.data?.[0] ?? 0n, 18)).toFixed(6, 1)}
+            id="lp-token"
+            insufficientBalance={insufficientBalance}
+            isDisabledCurrencySelector={true}
+            onChangeValue={(e) => setValue(e.target.value)}
+            onSetPercentage={(percentage: string) => onSetPercentage(percentage.toString())}
+            selected={false}
+            showPercentages
+            title="Withdraw"
+            value={value}
+          />
+        </Card>
+      </Box>
 
       <Card>
         <CardContent sx={{ '&:last-child': { p: 2 } }}>
@@ -165,14 +118,22 @@ export function Unstake() {
 
       {errorText && <ErrorMessage text={errorText} />}
 
-      <x.div display="flex" mt={4} h="80px" alignItems="center" justifyContent="center">
+      <Box
+        sx={{
+          display: 'flex',
+          mt: 2,
+          height: '80px',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
         <PrimaryButtonWithLoader
           isLoading={isRemoveDisabled}
           isDisabled={!value || !new BigNumber(parseUnits(value, 18).toString()).gt(0) || insufficientBalance}
           text="Unstake"
           onClick={() => write()}
         />
-      </x.div>
+      </Box>
     </Box>
   );
 }

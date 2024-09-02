@@ -2,10 +2,9 @@ import { ChangeEvent } from 'react';
 import { Box, Typography, Button, TextField, ThemeProvider } from '@mui/material';
 import { Currency } from '@lira-dao/web3-utils';
 import BigNumber from 'bignumber.js';
+import { muiDarkTheme } from '../../theme/theme';
 import AddToMetaMaskButton from '../AddTokenToMetamaskButton';
 import { CurrencySelector } from '../CurrencySelector';
-import { muiDarkTheme } from '../../theme/theme';
-
 
 interface CurrencyInputProps {
   balance: bigint;
@@ -16,7 +15,7 @@ interface CurrencyInputProps {
   insufficientBalance: boolean;
   isDisabledCurrencySelector?: boolean;
   onChangeValue: (e: ChangeEvent<HTMLInputElement>) => void;
-  onCurrencySelectClick: () => void;
+  onCurrencySelectClick?: () => void;
   onSetPercentage: (value: string) => void;
   selected: boolean;
   showPercentages?: boolean;
@@ -73,6 +72,7 @@ export function CurrencyInput({
             onClick={onCurrencySelectClick}
           />
           <TextField
+            id={id}
             fullWidth
             variant="outlined"
             size="small"

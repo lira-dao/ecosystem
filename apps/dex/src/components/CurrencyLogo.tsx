@@ -1,4 +1,5 @@
-import { x } from '@xstyled/styled-components';
+import React from 'react';
+import { Box } from '@mui/material';
 import blankToken from '../img/blank-token.svg';
 
 interface CurrencyLogoProps {
@@ -8,8 +9,26 @@ interface CurrencyLogoProps {
 
 export function CurrencyLogo({ size, logo }: CurrencyLogoProps) {
   return (
-    <x.div display="flex">
-      <x.img w={`${size}px`} h={`${size}px`} borderRadius="50%" src={logo ? logo : blankToken} />
-    </x.div>
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: '50%',
+        overflow: 'hidden',
+        width: size,
+        height: size,
+      }}
+    >
+      <img
+        src={logo ? logo : blankToken}
+        alt="Currency Logo"
+        style={{
+          width: `${size}px`,
+          height: `${size}px`,
+          borderRadius: '50%',
+        }}
+      />
+    </Box>
   );
 }

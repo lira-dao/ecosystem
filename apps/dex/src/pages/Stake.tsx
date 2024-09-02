@@ -1,21 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { formatUnits, parseUnits } from 'viem';
 import { PacmanLoader } from 'react-spinners';
-import BigNumber from 'bignumber.js';
-import { x } from '@xstyled/styled-components';
-import { EthereumAddress } from '@lira-dao/web3-utils';
-import { InputPanel } from '../components/swap/InputPanel';
-import { Container } from '../components/swap/Container';
-import { NumericalInput } from '../components/StyledInput';
-import { SwapSection } from '../components/swap/SwapSection';
-import { PrimaryButton } from '../components/PrimaryButton';
-import { useSnackbar } from 'notistack';
-import { useTokenStaker } from '../hooks/useTokenStaker';
-import { SwapHeader } from '../components/swap/SwapHeader';
 import { Box, Card, CardContent, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { EthereumAddress } from '@lira-dao/web3-utils';
+import { useSnackbar } from 'notistack';
+import { formatUnits, parseUnits } from 'viem';
+import BigNumber from 'bignumber.js';
+import { useTokenStaker } from '../hooks/useTokenStaker';
+import { PrimaryButton } from '../components/PrimaryButton';
+import { SectionHeader } from '../components/swap/SectionHeader';
 import { ErrorMessage } from '../components/swap/ErrorMessage';
+import { CurrencyInput } from '../components/swap/CurrencyInput';
 
 
 export function Stake() {
@@ -47,6 +43,8 @@ export function Stake() {
   const isAllowDisabled = useMemo(() => approve.isPending || allowance.isPending, [approve, allowance]);
 
   const isRemoveDisabled = useMemo(() => isPending, [isPending]);
+
+  const insufficientBalance = useMemo(() => new BigNumber(parseUnits(value, 18).toString()).gt(new BigNumber(balance.data?.toString() || '0')), [stakedAmount, value]);
 
   const needAllowance = useMemo(
     () => new BigNumber(value).gt(0) && allowance !== undefined &&
@@ -85,23 +83,9 @@ export function Stake() {
     }
   }, [isError]);
 
-  const onSetPercentage = (percentage: bigint) => {
-    switch (percentage) {
-      case 25n:
-      case 50n:
-      case 75n:
-        if (params.stakers === 'boosting') {
-          setValue(formatUnits(((remainingBoostValue) * percentage) / 100n, 18));
-        } else {
-          setValue(formatUnits(((balance.data || 0n) * percentage) / 100n, 18));
-        }
-        break;
-      case 100n:
-        if (params.stakers === 'boosting') {
-          setValue(formatUnits(remainingBoostValue, 18));
-        } else {
-          setValue(formatUnits(balance.data || 0n, 18));
-        }
+  const onSetPercentage = (percentage: string) => {
+    if (staked.data) {
+      setValue(percentage);
     }
   };
 
@@ -126,63 +110,28 @@ export function Stake() {
   }, [stakeError]);
 
   return (
-    <Box width="100%" maxWidth="480px" padding={2}>
-      <SwapHeader title={title} />
+    <Box sx={{ width: '100%', maxWidth: '600px', borderRadius: '16px', p: 4 }}>
+      <SectionHeader title={title} />
 
-      <SwapSection mt={6} mb={4}>
-        <InputPanel>
-          <Container>
-            <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
-              <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
-                <x.p color="gray155" userSelect="none">Deposit</x.p>
-              </x.div>
-
-              <NumericalInput
-                id="currencyA"
-                disabled={isAllowDisabled || isRemoveDisabled}
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-              />
-
-              <x.div w="100%" display="flex" mt={2} justifyContent="space-between">
-                <x.div display="flex">
-                  <x.p
-                    mr={2}
-                    cursor="pointer"
-                    color={{ _: 'gray155', hover: 'white' }}
-                    onClick={() => onSetPercentage(25n)}
-                  >25%
-                  </x.p>
-                  <x.p
-                    mr={2}
-                    cursor="pointer"
-                    color={{ _: 'gray155', hover: 'white' }}
-                    onClick={() => onSetPercentage(50n)}
-                  >50%
-                  </x.p>
-                  <x.p
-                    mr={2}
-                    cursor="pointer"
-                    color={{ _: 'gray155', hover: 'white' }}
-                    onClick={() => onSetPercentage(75n)}
-                  >75%
-                  </x.p>
-                  <x.p
-                    mr={2}
-                    cursor="pointer"
-                    color={{ _: 'gray155', hover: 'white' }}
-                    onClick={() => onSetPercentage(100n)}
-                  >100%
-                  </x.p>
-                </x.div>
-                <x.div>
-                  <x.p color="gray155">{new BigNumber(formatUnits(balance.data ?? 0n, 18)).toFixed(6, 1)}</x.p>
-                </x.div>
-              </x.div>
-            </x.div>
-          </Container>
-        </InputPanel>
-      </SwapSection>
+      <Box width="100%" mx="auto" sx={{ mb: 2 }}>
+        <Card sx={{ p: 1, backgroundColor: 'background.paper' }}>
+          <CurrencyInput
+            balance={balance.data || 0n }
+            currency={params.stakers === 'farming' ? { symbol: "LP Token", decimals: 18 } as any : token}
+            disabled={false}
+            formattedBalance={new BigNumber(formatUnits(balance.data ?? 0n, 18)).toFixed(6, 1)}
+            id="lp-token"
+            insufficientBalance={insufficientBalance}
+            isDisabledCurrencySelector={true}
+            onChangeValue={(e) => setValue(e.target.value)}
+            onSetPercentage={(percentage: string) => onSetPercentage(percentage)}
+            selected={false}
+            showPercentages
+            title="Withdraw"
+            value={value}
+          />
+        </Card>
+      </Box>
 
       {params.stakers === 'boosting' && (
         <Card>
@@ -225,22 +174,41 @@ export function Stake() {
       {stakeError && <ErrorMessage text={errorText} />}
 
       {needAllowance && (
-        <x.div display="flex" mt={4} mb={2} h="80px" alignItems="center" justifyContent="center">
+        <Box
+          sx={{
+            display: 'flex',
+            mt: 4,
+            mb: 2,
+            height: '80px',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
           {isAllowDisabled ? (
-            <PacmanLoader color={th.colors.green[100]} />
+            <PacmanLoader color={th.palette.success.light} />
           ) : (
             <PrimaryButton
               variant="contained"
               size="large"
               disabled={isAllowDisabled && (!new BigNumber(value).isPositive() || !new BigNumber(value).gt(0))}
               onClick={() => approve.write()}
-            >Approve</PrimaryButton>
+            >
+              Approve
+            </PrimaryButton>
           )}
-        </x.div>
+        </Box>
       )}
 
       {!needAllowance && (
-        <x.div display="flex" mt={needAllowance ? 2 : 4} h="80px" alignItems="center" justifyContent="center">
+        <Box
+          sx={{
+            display: 'flex',
+            mt: 4,
+            height: '80px',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
           {isRemoveDisabled ? (
             <PacmanLoader color={th.colors.green[100]} />
           ) : (
@@ -249,9 +217,11 @@ export function Stake() {
               size="large"
               disabled={!new BigNumber(value).isPositive() || !new BigNumber(value).gt(0)}
               onClick={() => write()}
-            >Stake</PrimaryButton>
+            >
+              Stake
+            </PrimaryButton>
           )}
-        </x.div>
+        </Box>
       )}
     </Box>
   );

@@ -1,8 +1,7 @@
 import React from 'react';
-import { Button, ButtonProps, Tooltip } from '@mui/material';
-import metamask from '../img/metamask.png';
+import { Button, ButtonProps, Tooltip, useTheme } from '@mui/material';
 import { Currency } from '@lira-dao/web3-utils';
-import { style } from '@xstyled/styled-components';
+import metamask from '../img/metamask.png';
 
 interface AddToMetaMaskButtonProps {
   token: Currency | undefined;
@@ -10,7 +9,15 @@ interface AddToMetaMaskButtonProps {
   height?: string | number;
 }
 
-const AddToMetaMaskButton: React.FC<AddToMetaMaskButtonProps & ButtonProps> = ({ token, width = '25px', height = '25px', sx, ...props }) => {
+const AddToMetaMaskButton: React.FC<AddToMetaMaskButtonProps & ButtonProps> = ({
+  token,
+  width = '25px',
+  height = '25px',
+  sx,
+  ...props
+}) => {
+  const theme = useTheme();
+
   const addTokenToMetaMask = async () => {
     if (!window.ethereum || !token) {
       alert('MetaMask is not installed!');
@@ -43,11 +50,9 @@ const AddToMetaMaskButton: React.FC<AddToMetaMaskButtonProps & ButtonProps> = ({
     <Tooltip title={`Add ${token.symbol} to MetaMask`}>
       <Button
         onClick={addTokenToMetaMask}
-        variant="outlined"
-        style={{
-          color: 'white',
-          border: 0,
-          ...style,
+        sx={{
+          color: theme.palette.common.white,
+          ...sx,
         }}
         {...props}
       >

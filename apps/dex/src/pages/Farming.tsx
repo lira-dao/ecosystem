@@ -11,26 +11,25 @@ export function Farming() {
   const { isConnected } = useAccount();
 
   return (
-    <ThemeProvider theme={muiDarkTheme}>
-      <Box
-        sx={{
-          width: { xs: '100%', xl: 'auto' },
-          display: 'flex',
-          flexDirection: 'column',
-          marginY: 4,
-          paddingX: 2,
-        }}
-      >
-        <Box>
-          <Typography variant="h3" mb={4} color="white">
-            Farming Pools
-          </Typography>
-        </Box>
-
-        <Box>
-          <FarmingTable farms={farms} isConnected={isConnected} />
-        </Box>
+    <Box
+      sx={{
+        width: '100%',
+        maxWidth: '1200px',
+        display: 'flex',
+        flexDirection: 'column',
+        marginY: 4,
+        paddingX: 2,
+      }}
+    >
+      <Box>
+        <Typography variant="h3" mb={4} color="white">
+          Farming Pools
+        </Typography>
       </Box>
-    </ThemeProvider>
+
+      <Box>
+        <FarmingTable farms={farms} isConnected={isConnected} />
+      </Box>
+    </Box>
   );
 }
