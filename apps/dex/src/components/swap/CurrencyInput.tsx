@@ -1,14 +1,10 @@
 import { ChangeEvent } from 'react';
-import { x } from '@xstyled/styled-components';
+import { Box, Typography, Button, TextField, ThemeProvider } from '@mui/material';
 import { Currency } from '@lira-dao/web3-utils';
-import { SwapSection } from './SwapSection';
-import { InputPanel } from './InputPanel';
-import { CurrencySelector } from '../CurrencySelector';
-import { NumericalInput } from '../StyledInput';
-import { Container } from './Container';
 import BigNumber from 'bignumber.js';
+import { muiDarkTheme } from '../../theme/theme';
 import AddToMetaMaskButton from '../AddTokenToMetamaskButton';
-
+import { CurrencySelector } from '../CurrencySelector';
 
 interface CurrencyInputProps {
   balance: bigint;
@@ -19,7 +15,7 @@ interface CurrencyInputProps {
   insufficientBalance: boolean;
   isDisabledCurrencySelector?: boolean;
   onChangeValue: (e: ChangeEvent<HTMLInputElement>) => void;
-  onCurrencySelectClick: () => void;
+  onCurrencySelectClick?: () => void;
   onSetPercentage: (value: string) => void;
   selected: boolean;
   showPercentages?: boolean;
@@ -45,15 +41,15 @@ export function CurrencyInput({
   value,
   price,
 }: CurrencyInputProps) {
-  const onSetPercentageInternal = (percentage: number) => {
-    if (percentage === 100) {
-      onSetPercentage(new BigNumber(balance.toString()).div(new BigNumber(10).pow(currency?.decimals || 18)).toString());
-      return;
-    }
 
-    onSetPercentage(
-      new BigNumber((new BigNumber(balance.toString()).times(percentage)).div(100)).div(new BigNumber(10).pow(currency?.decimals || 18)).toString(),
-    );
+  const handlePercentageClick = (percentage: number) => {
+    const calculatedValue = new BigNumber(balance.toString())
+      .times(percentage)
+      .div(100)
+      .div(new BigNumber(10).pow(currency?.decimals || 18))
+      .toFixed();
+
+    onSetPercentage(calculatedValue);
   };
 
   const isValidNumber = (val: string) => {
@@ -62,85 +58,70 @@ export function CurrencyInput({
   };
 
   return (
-    <SwapSection mt={6} mb={4}>
-      <InputPanel>
-        <Container>
-          <x.div h="100%" display="flex" flexDirection="column" alignItems="center" justifyContent="space-between">
-            <x.div w="100%" display="flex" alignItems="center" justifyContent="space-between">
-              <x.p color="gray155" userSelect="none">{title}</x.p>
-              <x.div display="flex" alignItems="center" justifyContent="space-between">
-                <AddToMetaMaskButton token={currency} />
-                <CurrencySelector
-                  disabled={isDisabledCurrencySelector}
-                  selected={selected}
-                  currency={currency}
-                  onClick={onCurrencySelectClick}
-                />
-              </x.div>
-            </x.div>
+    <ThemeProvider theme={muiDarkTheme}>
+      <Box sx={{ p: 2 }}>
+        <Typography variant="h6" sx={{ mb: 2 }} gutterBottom>
+          {title}
+        </Typography>
 
-            <x.div w="100%" h="54px" display="flex" flexDirection="column">
-              <NumericalInput id={id} disabled={!currency || disabled} value={value} onChange={onChangeValue} />
-              {insufficientBalance && (
-                <x.div w="100%" display="flex" justifyContent={insufficientBalance ? 'space-between' : 'flex-end'}>
-                  <x.p color="red-400">Insufficient Balance</x.p>
-                  <x.p color="red-400">{(price && !isNaN(parseFloat(price)) && value !== '' && isValidNumber(value)) ? `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}` : ''}</x.p>
-                </x.div>
-              )}
-              {!insufficientBalance && (
-                <x.div w="100%" display="flex" justifyContent="flex-end">
-                  <x.p color="gray155">{(price && !isNaN(parseFloat(price)) && value !== '' && isValidNumber(value)) ? `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}` : ''}</x.p>
-                </x.div>
-              )}
-            </x.div>
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <CurrencySelector
+            currency={currency}
+            disabled={isDisabledCurrencySelector}
+            selected={selected}
+            onClick={onCurrencySelectClick}
+          />
+          <TextField
+            id={id}
+            fullWidth
+            variant="outlined"
+            size="small"
+            value={value}
+            onChange={onChangeValue}
+            disabled={disabled || !currency}
+            InputProps={{
+              // endAdornment: <Typography color="text.secondary">{currency?.symbol}</Typography>,
+              sx: {
+                flexGrow: 1,
+                backgroundColor: 'transparent',
+                '&:focus': {
+                  backgroundColor: 'transparent',
+                },
+              },
+            }}
+          />
+        </Box>
 
-            <x.div w="100%" display="flex" justifyContent={showPercentages ? 'space-between' : 'flex-end'}>
-              {showPercentages && (
-                <x.div display="flex">
-                  <x.p
-                    mr={2}
-                    cursor="pointer"
-                    color={{ _: 'gray155', hover: 'white' }}
-                    onClick={() => onSetPercentageInternal(10)}
-                  >10%
-                  </x.p>
-                  <x.p
-                    mr={2}
-                    cursor="pointer"
-                    color={{ _: 'gray155', hover: 'white' }}
-                    onClick={() => onSetPercentageInternal(25)}
-                  >25%
-                  </x.p>
-                  <x.p
-                    mr={2}
-                    cursor="pointer"
-                    color={{ _: 'gray155', hover: 'white' }}
-                    onClick={() => onSetPercentageInternal(50)}
-                  >50%
-                  </x.p>
-                  <x.p
-                    mr={2}
-                    cursor="pointer"
-                    color={{ _: 'gray155', hover: 'white' }}
-                    onClick={() => onSetPercentageInternal(75)}
-                  >75%
-                  </x.p>
-                  <x.p
-                    mr={2}
-                    cursor="pointer"
-                    color={{ _: 'gray155', hover: 'white' }}
-                    onClick={() => onSetPercentageInternal(100)}
-                  >100%
-                  </x.p>
-                </x.div>
-              )}
-              <x.div>
-                <x.p color="gray155">{formattedBalance}</x.p>
-              </x.div>
-            </x.div>
-          </x.div>
-        </Container>
-      </InputPanel>
-    </SwapSection>
+        <Box sx={{ mt: 2 }}>
+          <Box sx={{ display: 'flex', justifyContent: insufficientBalance ? 'space-between' : 'flex-end', alignItems: 'center', my: 1 }}>
+            {insufficientBalance && (
+              <Typography variant="body2" color="error">Insufficient balance</Typography>
+            )}
+            {price && (
+              <Typography variant="body2" color={insufficientBalance ? 'error' : 'text.secondary'}>
+                {(price && !isNaN(parseFloat(price)) && value.toString() !== '' && isValidNumber(value)) ? `~$${(parseFloat(value) * parseFloat(price)).toFixed(2)}` : `~$0.00`}
+              </Typography>
+            )}
+          </Box>
+        </Box>
+
+        <Box sx={{ mt: 2 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Typography variant="body2" color="text.secondary" sx={{ my: 1 }}>Balance: {formattedBalance}</Typography>
+            <AddToMetaMaskButton token={currency} />
+          </Box>
+        </Box>
+
+        {showPercentages && (
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2, mb: 2 }}>
+            {[10, 25, 50, 75, 100].map((percentage) => (
+              <Button key={percentage} onClick={() => handlePercentageClick(percentage)} size='small' variant='outlined' color='secondary' sx={{ flex: '1 1 auto', margin: '0 6px', height: '100%', paddingTop: '6px' }}>
+                {percentage}%
+              </Button>
+            ))}
+          </Box>
+        )}
+      </Box>
+    </ThemeProvider>
   );
 }

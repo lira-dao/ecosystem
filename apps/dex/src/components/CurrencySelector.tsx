@@ -1,9 +1,6 @@
-import { x } from '@xstyled/styled-components';
-import { CurrencyLogo } from './CurrencyLogo';
-import { BaseButton } from './BaseButton';
-import dropdown from '../img/dropdown.svg';
+import { Button, Box, Typography } from '@mui/material';
 import { Currency } from '@lira-dao/web3-utils';
-
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 
 interface CurrencySelectorProps {
   disabled: boolean;
@@ -12,27 +9,33 @@ interface CurrencySelectorProps {
   onClick?: () => void;
 }
 
+function CurrencyLogo({ logo, size }: { logo: string; size: number }) {
+  return <img src={logo} alt="Currency Logo" style={{ width: size, height: size }} />;
+}
+
 export function CurrencySelector({ currency, disabled, selected, onClick }: CurrencySelectorProps) {
   return (
-    <x.div display="flex" alignItems="center" justifyContent="space-between">
-      <BaseButton
-        h="36px"
-        justifyContent="space-between"
-        backgroundColor={{ _: 'surface1', hover: disabled ? 'surface1' : 'surface2', active: 'surface2' }}
-        borderColor={disabled ? 'gray94' : 'green-yellow-800'}
-        fontSize="24px"
-        gap="8px"
-        opacity={disabled ? 0.9 : 1}
-        outline={{ _: 'none', focus: 'none' }}
-        userSelect="none"
+    <Box display="flex" alignItems="center" justifyContent="space-between">
+      <Button
+        variant="outlined"
+        disabled={disabled}
         onClick={onClick}
+        sx={{
+          height: '40px',
+          justifyContent: 'space-between',
+          // color: 'text.secondary',
+          // borderColor: 'text.secondary',
+          opacity: disabled ? 0.9 : 1,
+          minWidth: '174px',
+          width: '100%',
+        }}
+        startIcon={currency?.icon ? <CurrencyLogo logo={currency.icon} size={24} /> : null}
+        endIcon={!disabled && <ArrowDropDownIcon />}
       >
-        {currency?.icon && <CurrencyLogo size={24} logo={currency.icon} />}
-        <x.p ml={currency ? 0 : 1} mr={disabled ? 1 : 0} fontSize="xl">
+        <Typography variant="body1" sx={{ marginLeft: currency ? 0 : 1, marginRight: disabled ? 1 : 0 }}>
           {currency ? currency.symbol : 'Select Coin'}
-        </x.p>
-        {!disabled && <x.img src={dropdown} margin="0 0.25rem 0 0.35rem" />}
-      </BaseButton>
-    </x.div>
+        </Typography>
+      </Button>
+    </Box>
   );
 }

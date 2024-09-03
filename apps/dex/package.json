@@ -20,7 +20,6 @@
     "@types/react": "^18.2.79",
     "@types/react-dom": "^18.2.25",
     "@web3modal/wagmi": "^4.1.11",
-    "@xstyled/styled-components": "^3.8.0",
     "big.js": "^6.2.1",
     "bignumber.js": "^9.1.2",
     "localforage": "^1.10.0",

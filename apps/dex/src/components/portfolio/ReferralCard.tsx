@@ -1,11 +1,10 @@
-import React from 'react';
 import { Avatar, Box, Button, Grid, Typography } from '@mui/material';
 import { QueryObserverResult } from '@tanstack/react-query';
 import { useAccount } from 'wagmi';
+import BigNumber from 'bignumber.js';
 import { useReferralUrl } from '../../hooks/referrals/useReferralUrl';
 import { useReferralsUrl } from '../../hooks/referrals/useReferralsUrl';
 import { TokenReward } from '../../hooks/useReferralRewards';
-import BigNumber from 'bignumber.js';
 
 
 interface ReferralCardProps {

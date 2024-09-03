@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useAccount, useBalance as useBalanceWagmi } from 'wagmi';
 import {
   Box,
   Card,
@@ -11,19 +10,20 @@ import {
   useMediaQuery,
   useTheme,
 } from '@mui/material';
-import { ThemeProvider } from '@mui/material/styles';
 import { EthereumAddress } from '@lira-dao/web3-utils';
+import { useAccount, useBalance as useBalanceWagmi } from 'wagmi';
 import { PieChart } from '@mui/x-charts';
 import BigNumber from 'bignumber.js';
-import { muiDarkTheme, theme } from '../theme/theme';
-import { useTokenBalances } from '../hooks/useTokenBalances';
+import { useFetchPrices } from '../hooks/usePrices';
+import { useGetAmountsOut } from '../hooks/useGetAmountsOut';
 import { usePools } from '../hooks/usePools';
 import { usePricedPools } from '../hooks/usePricesPools';
-import { useFetchPrices } from '../hooks/usePrices';
 import { useReferralRewards } from '../hooks/useReferralRewards';
-import { useGetAmountsOut } from '../hooks/useGetAmountsOut';
+import { useTokenBalances } from '../hooks/useTokenBalances';
 import { AssetsCard } from '../components/portfolio/AssetsCard';
 import { ReferralCard } from '../components/portfolio/ReferralCard';
+import { muiDarkTheme as theme } from '../theme/theme';
+
 
 // type View = 'liquidity' | 'farming' | 'holdings';
 type View = 'assets' | 'liquidity';
@@ -98,251 +98,257 @@ export function Portfolio() {
   const totalValue = assetsChartData.reduce((prev, curr) => prev.plus(curr.value), new BigNumber(0)).toFormat(2, 1);
 
   return (
-    <ThemeProvider theme={muiDarkTheme}>
-      <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', marginY: 4, paddingX: 2 }}>
-        <Box>
-          <Typography sx={{ typography: 'h3' }} fontWeight="bold" color="white" gutterBottom>
-            MY Portfolio
-          </Typography>
-        </Box>
+    <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', marginY: 4, paddingX: 2 }}>
+      <Box>
+        <Typography sx={{ typography: 'h3' }} fontWeight="bold" color="white" gutterBottom>
+          MY Portfolio
+        </Typography>
+      </Box>
 
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={4}>
-            <Card sx={{ color: 'white', flexGrow: 1, marginBottom: '8px' }}>
-              <CardContent>
-                <Typography variant="h6" mb={1}>Portfolio Value</Typography>
-                <Typography variant="h3">≃$ {totalValue}</Typography>
-                {/*<Typography variant="h5" color={theme?.colors.gray155}>~$0.00</Typography>*/}
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={4}>
+          <Card sx={{ color: 'white', flexGrow: 1, marginBottom: '8px' }}>
+            <CardContent>
+              <Typography variant="h6" mb={1}>Portfolio Value</Typography>
+              <Typography variant="h3">≃$ {totalValue}</Typography>
+              {/*<Typography variant="h5" color={theme?.colors.gray155}>~$0.00</Typography>*/}
 
-                {!isConnected && (
-                  <Typography variant="body2" color={theme?.colors.red400} textAlign="center" mt={2}>No wallet
-                    connected. Please connect your MetaMask.</Typography>)}
-              </CardContent>
-            </Card>
+              {!isConnected && (
+                <Typography variant="body2" color={theme?.colors.red400} textAlign="center" mt={2}>
+                  No wallet connected. Please connect your MetaMask.
+                </Typography>)}
+            </CardContent>
+          </Card>
 
-            <Card sx={{ color: 'white' }}>
-              <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
-                <Typography variant="h6">Wallet Overview</Typography>
-                <Box>
-                  {isConnected && (
-                    <PieChart
-                      height={400}
-                      colors={[
-                        '#3559fa',
-                        th.colors.cyan[600],
-                        th.colors.green[600],
-                        '#ef9036',
-                        '#dedede',
-                        '#ffd926',
-                        '#607AE3',
-                        '#f76f1a'
-                      ]}
-                      slotProps={{
-                        legend: { hidden: true },
-                      }}
-                      margin={{
-                        left: 0,
-                        right: 0,
-                        top: 0,
-                        bottom: 0,
-                      }}
-                      series={[
-                        {
-                          data: assetsChartData.map((d) => ({ value: d.value, label: d.symbol })),
-                          innerRadius: 50,
-                          outerRadius: 200,
-                          type: 'pie',
-                        },
-                      ]}
-                    />
-                  )}
-                  {/*{isConnected && (*/}
-                  {/*  <PieChart*/}
-                  {/*    margin={between900And1150 ? { top: 65, bottom: 220, left: 125, right: 150 } : {*/}
-                  {/*      top: 100,*/}
-                  {/*      bottom: 100,*/}
-                  {/*      left: 10,*/}
-                  {/*      right: 150,*/}
-                  {/*    }}*/}
-                  {/*    series={[*/}
-                  {/*      {*/}
-                  {/*        data: assetsChartData,*/}
-                  {/*        innerRadius: 30,*/}
-                  {/*        outerRadius: 90,*/}
-                  {/*      },*/}
-                  {/*    ]}*/}
-                  {/*    slotProps={{*/}
-                  {/*      legend: {*/}
-                  {/*        direction: between900And1150 ? 'row' : 'column',*/}
-                  {/*        position: {*/}
-                  {/*          vertical: between900And1150 ? 'bottom' : 'middle',*/}
-                  {/*          horizontal: between900And1150 ? 'middle' : 'right',*/}
-                  {/*        },*/}
-                  {/*        padding: 0,*/}
-                  {/*      },*/}
-                  {/*    }}*/}
-                  {/*    style={{*/}
-                  {/*      top: 0,*/}
-                  {/*      left: 0,*/}
-                  {/*      width: '100%',*/}
-                  {/*      height: '100%',*/}
-                  {/*      m: 0,*/}
-                  {/*      p: 0,*/}
-                  {/*    }}*/}
-                  {/*  />*/}
-                  {/*)}*/}
-
-                  {!isConnected && (
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        height: 350,
-                        width: '100%',
-                      }}
-                    >
-                      <Typography variant="body2" color="white">No tokens in your wallet</Typography>
-                    </Box>
-                  )}
-                </Box>
-              </CardContent>
-            </Card>
-          </Grid>
-
-          <Grid item xs={12} md={8}>
-            <Card sx={{ color: 'white', height: '100%' }}>
-              <CardContent>
-                <ToggleButtonGroup
-                  color="primary"
-                  value={selectedView}
-                  onChange={handleViewChange}
-                  sx={{ mt: 1, marginBottom: 2 }}
-                  size="large"
-                  exclusive
-                  fullWidth
-                >
-                  <ToggleButton value="assets">Assets</ToggleButton>
-                  <ToggleButton value="referral">Referral</ToggleButton>
-                </ToggleButtonGroup>
-
+          <Card sx={{ color: 'white' }}>
+            <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
+              <Typography variant="h6">Wallet Overview</Typography>
+              <Box>
                 {isConnected && (
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} sx={{ mt: 1 }}>
-                      {selectedView === 'assets' && <AssetsCard assets={assetsChartData} />}
-                      {selectedView === 'referral' && <ReferralCard
-                        pendingRewards={pendingRewards}
-                        isPending={isPending}
-                        refetchPendingRewards={refetchPendingRewards}
-                        writeHarvest={writeHarvest}
-                      />}
-                      </Grid>
-                  </Grid>
+                  <PieChart
+                    height={400}
+                    colors={[
+                      '#3559fa',
+                      th.colors.cyan[600],
+                      th.colors.green[600],
+                      '#ef9036',
+                      '#dedede',
+                      '#ffd926',
+                      '#607AE3',
+                      '#f76f1a'
+                    ]}
+                    slotProps={{
+                      legend: { hidden: true },
+                    }}
+                    margin={{
+                      left: 0,
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                    }}
+                    series={[
+                      {
+                        data: assetsChartData.map((d) => ({
+                          value: d.value,
+                          label: d.symbol,
+                        })),
+                        valueFormatter: (v, { dataIndex }) => {
+                          const { value } = assetsChartData[dataIndex];
+                          return `~$ ${value.toFixed(2)}`;
+                        },
+                        innerRadius: 50,
+                        outerRadius: 200,
+                        type: 'pie',
+                      },
+                    ]}
+                  />
                 )}
+                {/*{isConnected && (*/}
+                {/*  <PieChart*/}
+                {/*    margin={between900And1150 ? { top: 65, bottom: 220, left: 125, right: 150 } : {*/}
+                {/*      top: 100,*/}
+                {/*      bottom: 100,*/}
+                {/*      left: 10,*/}
+                {/*      right: 150,*/}
+                {/*    }}*/}
+                {/*    series={[*/}
+                {/*      {*/}
+                {/*        data: assetsChartData,*/}
+                {/*        innerRadius: 30,*/}
+                {/*        outerRadius: 90,*/}
+                {/*      },*/}
+                {/*    ]}*/}
+                {/*    slotProps={{*/}
+                {/*      legend: {*/}
+                {/*        direction: between900And1150 ? 'row' : 'column',*/}
+                {/*        position: {*/}
+                {/*          vertical: between900And1150 ? 'bottom' : 'middle',*/}
+                {/*          horizontal: between900And1150 ? 'middle' : 'right',*/}
+                {/*        },*/}
+                {/*        padding: 0,*/}
+                {/*      },*/}
+                {/*    }}*/}
+                {/*    style={{*/}
+                {/*      top: 0,*/}
+                {/*      left: 0,*/}
+                {/*      width: '100%',*/}
+                {/*      height: '100%',*/}
+                {/*      m: 0,*/}
+                {/*      p: 0,*/}
+                {/*    }}*/}
+                {/*  />*/}
+                {/*)}*/}
 
                 {!isConnected && (
                   <Box
                     sx={{
                       display: 'flex',
-                      alignItems: 'center',
                       justifyContent: 'center',
-                      height: 450,
+                      alignItems: 'center',
+                      height: 350,
                       width: '100%',
                     }}
                   >
-                    <Typography variant="body2" color="white">No data to show</Typography>
+                    <Typography variant="body2" color="white">No tokens in your wallet</Typography>
                   </Box>
                 )}
-              </CardContent>
-            </Card>
-          </Grid>
+              </Box>
+            </CardContent>
+          </Card>
         </Grid>
 
-        {/* <Grid container spacing={2} marginTop={4}>
-          <Grid item xs={12} sm={4} md={3}>
-            <Card>
-              <CardContent>
-                <Typography variant="h5" gutterBottom>CoinMarketCap Prices</Typography>
-                {pricesData && pricesData.map((crypto, index) => (
-                  <Typography key={index} variant="body2">{`1 ${crypto.symbol} = ${parseFloat(crypto.price).toFixed(2)} USD`}</Typography>
-                ))}
-              </CardContent>
-            </Card>
-          </Grid>
+        <Grid item xs={12} md={8}>
+          <Card sx={{ color: 'white', height: '100%' }}>
+            <CardContent>
+              <ToggleButtonGroup
+                color="primary"
+                value={selectedView}
+                onChange={handleViewChange}
+                sx={{ mt: 1, marginBottom: 2 }}
+                size="large"
+                exclusive
+                fullWidth
+              >
+                <ToggleButton value="assets">Assets</ToggleButton>
+                <ToggleButton value="referral">Referral</ToggleButton>
+              </ToggleButtonGroup>
 
-          <Grid item xs={12} sm={8} md={9}>
-            <Card>
-              <CardContent>
-                <Typography variant="h4">Your Farms</Typography>
-                <MyFarmingTable farms={farms} isConnected={isConnected} />
-              </CardContent>
-            </Card>
-          </Grid>
+              {isConnected && (
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sx={{ mt: 1 }}>
+                    {selectedView === 'assets' && <AssetsCard assets={assetsChartData} />}
+                    {selectedView === 'referral' && <ReferralCard
+                      pendingRewards={pendingRewards}
+                      isPending={isPending}
+                      refetchPendingRewards={refetchPendingRewards}
+                      writeHarvest={writeHarvest}
+                    />}
+                    </Grid>
+                </Grid>
+              )}
 
-          <Grid item xs={12}>
-            <Card>
-              <CardContent>
-                <Typography variant="h4">Your Pools</Typography>
-                <MyPoolsTable pools={pools} isConnected={isConnected} />
-              </CardContent>
-            </Card>
-          </Grid>
+              {!isConnected && (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: 450,
+                    width: '100%',
+                  }}
+                >
+                  <Typography variant="body2" color="white">No data to show</Typography>
+                </Box>
+              )}
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
 
-          <Grid item xs={12}>
-            <Box>
-              <Typography variant="h4" color="white" gutterBottom>
-                Your Liquidity
-              </Typography>
-            </Box>
-            
-            <Grid container spacing={4}>
-              <Grid item xs={12} sm={4} md={3}>
-                <Card style={{ marginBottom: '8px' }}>
-                  <CardContent>
-                    <Typography variant="body1" gutterBottom>
-                      TOTAL LIQUIDITY (info: not in farms, not in staking)
-                    </Typography>
-                    <Typography variant="body1" fontWeight="bold" gutterBottom>
-                      ~$0.00 - No data available
-                    </Typography>
-                  </CardContent>
-                </Card>
-                <Card style={{ marginBottom: '8px' }}>
-                  <CardContent>
-                    <Typography variant="body1" gutterBottom>
-                      TOTAL LIQUIDITY NOT IN FARMS: (info: liquidity + LP)
-                    </Typography>
-                    <Typography variant="body1" fontWeight="bold" gutterBottom>
-                      -
-                    </Typography>
-                  </CardContent>
-                </Card>
-                <Card style={{ marginBottom: '8px' }}>
-                  <CardContent>
-                    <Typography variant="body1" gutterBottom>
-                      TOTAL LP NOT IN FARMS: (info: LP)
-                    </Typography>
-                    <Typography variant="body1" fontWeight="bold" gutterBottom>
-                      -
-                    </Typography>
-                  </CardContent>
-                </Card>
-                <Card style={{ marginBottom: '8px' }}>
-                  <CardContent>
-                    <Typography variant="body1" gutterBottom>
-                      ACTIVE LIQUIDITY POSITIONS:
-                    </Typography>
-                    <Typography variant="body1" fontWeight="bold" gutterBottom>
-                      -
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Grid>
+      {/* <Grid container spacing={2} marginTop={4}>
+        <Grid item xs={12} sm={4} md={3}>
+          <Card>
+            <CardContent>
+              <Typography variant="h5" gutterBottom>CoinMarketCap Prices</Typography>
+              {pricesData && pricesData.map((crypto, index) => (
+                <Typography key={index} variant="body2">{`1 ${crypto.symbol} = ${parseFloat(crypto.price).toFixed(2)} USD`}</Typography>
+              ))}
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} sm={8} md={9}>
+          <Card>
+            <CardContent>
+              <Typography variant="h4">Your Farms</Typography>
+              <MyFarmingTable farms={farms} isConnected={isConnected} />
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Card>
+            <CardContent>
+              <Typography variant="h4">Your Pools</Typography>
+              <MyPoolsTable pools={pools} isConnected={isConnected} />
+            </CardContent>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Box>
+            <Typography variant="h4" color="white" gutterBottom>
+              Your Liquidity
+            </Typography>
+          </Box>
+          
+          <Grid container spacing={4}>
+            <Grid item xs={12} sm={4} md={3}>
+              <Card style={{ marginBottom: '8px' }}>
+                <CardContent>
+                  <Typography variant="body1" gutterBottom>
+                    TOTAL LIQUIDITY (info: not in farms, not in staking)
+                  </Typography>
+                  <Typography variant="body1" fontWeight="bold" gutterBottom>
+                    ~$0.00 - No data available
+                  </Typography>
+                </CardContent>
+              </Card>
+              <Card style={{ marginBottom: '8px' }}>
+                <CardContent>
+                  <Typography variant="body1" gutterBottom>
+                    TOTAL LIQUIDITY NOT IN FARMS: (info: liquidity + LP)
+                  </Typography>
+                  <Typography variant="body1" fontWeight="bold" gutterBottom>
+                    -
+                  </Typography>
+                </CardContent>
+              </Card>
+              <Card style={{ marginBottom: '8px' }}>
+                <CardContent>
+                  <Typography variant="body1" gutterBottom>
+                    TOTAL LP NOT IN FARMS: (info: LP)
+                  </Typography>
+                  <Typography variant="body1" fontWeight="bold" gutterBottom>
+                    -
+                  </Typography>
+                </CardContent>
+              </Card>
+              <Card style={{ marginBottom: '8px' }}>
+                <CardContent>
+                  <Typography variant="body1" gutterBottom>
+                    ACTIVE LIQUIDITY POSITIONS:
+                  </Typography>
+                  <Typography variant="body1" fontWeight="bold" gutterBottom>
+                    -
+                  </Typography>
+                </CardContent>
+              </Card>
             </Grid>
           </Grid>
-        </Grid> */}
+        </Grid>
+      </Grid> */}
 
-      </Box>
-    </ThemeProvider>
+    </Box>
   );
 }

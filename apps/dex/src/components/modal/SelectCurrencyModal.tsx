@@ -1,66 +1,83 @@
 import React from 'react';
-import Modal from 'react-responsive-modal';
-import { x } from '@xstyled/styled-components';
+import { Dialog, DialogTitle, DialogContent, IconButton, List, ListItem, Avatar, Box, Typography } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { Currency } from '@lira-dao/web3-utils';
-
+import AddToMetaMaskButton from '../AddTokenToMetamaskButton';
 
 export interface SelectCurrencyModalProps {
   open: boolean;
   onClose: () => void;
-  styles?: {
-    root?: React.CSSProperties;
-    overlay?: React.CSSProperties;
-    modalContainer?: React.CSSProperties;
-    modal?: React.CSSProperties;
-    closeButton?: React.CSSProperties;
-    closeIcon?: React.CSSProperties;
-  };
   currencies: Currency[];
   onSelect: (currency: Currency) => void;
 }
 
-const modalCustomStyles = {
-  modal: {
-    top: '20%',
-    backgroundColor: '#1B1B1B',
-    borderRadius: 16,
-    maxWidth: 420,
-    minWidth: 420,
-  },
-  closeIcon: {
-    fill: 'white',
-  },
-};
-
 export function SelectCurrencyModal({
   open,
   onClose,
-  styles = modalCustomStyles,
   currencies,
   onSelect,
 }: SelectCurrencyModalProps) {
   return (
-    <Modal open={open} onClose={onClose} styles={styles}>
-      <x.h1 fontSize="xl">Select Token</x.h1>
-      <x.div mt={8}>
-        {currencies.map((currency, i) => (
-          <x.div
-            key={i}
-            display="flex"
-            alignItems="center"
-            my={4}
-            cursor="pointer"
-            onClick={() => onSelect(currency)}
-          >
-            <x.div>
-              <x.img src={currency.icon} width={48} height={48} />
-            </x.div>
-            <x.div ml={4}>
-              <x.h1>{currency.symbol}</x.h1>
-            </x.div>
-          </x.div>
-        ))}
-      </x.div>
-    </Modal>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      PaperProps={{
+        style: {
+          backgroundColor: 'background.paper',
+          borderRadius: '8px',
+          maxWidth: 420,
+          minWidth: 420,
+        },
+      }}
+    >
+      <DialogTitle sx={{ m: 0, p: 2 }}>
+        Select Token
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: 'white',
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent dividers>
+        <List>
+          {currencies.map((currency, i) => (
+            <ListItem
+              key={i}
+              onClick={() => onSelect(currency)}
+              sx={{
+                // '&:hover': {
+                //   backgroundColor: 'rgba(144, 202, 249, 0.1)',
+                // },
+                cursor: 'pointer'
+              }}
+            >
+              <Avatar
+                src={currency.icon}
+                alt={currency.symbol}
+                sx={{ width: 24, height: 24, marginRight: 2 }}
+              />
+              <Box sx={{ display: 'flex', width: '100%' }}>
+                <Box sx={{ display: 'flex', alignItems: 'baseline', flexGrow: 1 }}>
+                  <Typography variant="body1" color="white" mr={1}>
+                    {currency.symbol}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {currency.name}
+                  </Typography>
+                </Box>
+                <AddToMetaMaskButton token={currency} width="16px" height="16px" sx={{ ml: 'auto' }} />
+              </Box>
+            </ListItem>
+          ))}
+        </List>
+      </DialogContent>
+    </Dialog>
   );
 }

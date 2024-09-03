@@ -2,9 +2,9 @@ import { useMemo } from 'react';
 import { useChainId } from 'wagmi';
 import { dexPairV2Abi, erc20Abi } from '@lira-dao/web3-utils';
 import BigNumber from 'bignumber.js';
+import { Balance, useBalances } from './useBalances';
 import { useFetchPrices } from './usePrices';
 import { getCurrencyBySymbol } from '../utils';
-import { Balance, useBalances } from './useBalances';
 
 
 const poolBalanceOf = {

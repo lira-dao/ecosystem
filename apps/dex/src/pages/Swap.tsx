@@ -1,31 +1,31 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { x } from '@xstyled/styled-components';
-import { getCurrencies, getCurrencyByAddress, getPairedCurrencies } from '../utils';
-import { useGetAmountsIn, useGetAmountsOut } from '../hooks/useGetAmountsOut';
-import { formatUnits, parseUnits } from 'viem';
-import { useApprove } from '../hooks/useApprove';
-import { useSwap } from '../hooks/useSwap';
-import repeatIcon from '../img/fa-repeat.svg';
-import { BaseButton } from '../components/BaseButton';
-import { useAllowance } from '../hooks/useAllowance';
+import { useParams } from 'react-router-dom';
+import { Box, Card, Divider, IconButton, Typography } from '@mui/material';
+import { SwapVert } from '@mui/icons-material';
+import { Currency, EthereumAddress } from '@lira-dao/web3-utils';
 import { useSnackbar } from 'notistack';
+import { formatUnits, parseUnits } from 'viem';
+import { useAccount, useBalance as useBalanceWagmi, useChainId } from 'wagmi';
+import BigNumber from 'bignumber.js';
+import { useApprove } from '../hooks/useApprove';
+import { useAllowance } from '../hooks/useAllowance';
 import { useBalance } from '../hooks/useBalance';
 import { useDexAddresses } from '../hooks/useDexAddresses';
-import { useAccount, useBalance as useBalanceWagmi, useChainId } from 'wagmi';
-import { Currency, EthereumAddress } from '@lira-dao/web3-utils';
-import { SelectCurrencyModal } from '../components/modal/SelectCurrencyModal';
-import { usePair } from '../hooks/usePair';
-import BigNumber from 'bignumber.js';
-import { useParams } from 'react-router-dom';
 import { useDexPairs } from '../hooks/useDexPairs';
-import { CurrencyInput } from '../components/swap/CurrencyInput';
-import { useFetchPrices } from '../hooks/usePrices';
+import { useGetAmountsIn, useGetAmountsOut } from '../hooks/useGetAmountsOut';
+import { usePair } from '../hooks/usePair';
 import { usePools } from '../hooks/usePools';
-import { SwapHeader } from '../components/swap/SwapHeader';
+import { useFetchPrices } from '../hooks/usePrices';
+import { useSwap } from '../hooks/useSwap';
+import { SelectCurrencyModal } from '../components/modal/SelectCurrencyModal';
+import { CurrencyInput } from '../components/swap/CurrencyInput';
 import { PrimaryButtonWithLoader } from '../components/PrimaryButtonWithLoader';
+import { SectionHeader } from '../components/swap/SectionHeader';
 import SlippageInput from '../components/swap/SlippageInput';
 import TradePriceImpact from '../components/swap/PriceImpact';
 import Fee from '../components/swap/Fee';
+import { getCurrencies, getCurrencyByAddress, getPairedCurrencies } from '../utils';
+
 
 export function Swap() {
   const params = useParams<{ pool: EthereumAddress }>();
@@ -68,6 +68,8 @@ export function Swap() {
   const [amountIn, setAmountIn] = useState<bigint>(0n);
 
   const [slippage, setSlippage] = useState<number>(0.5);
+
+  const [approveConfirmed, setApproveConfirmed] = useState(false);
 
   const amountsOut = useGetAmountsOut(
     [currencyA.address, currencyB?.address || '0x0'],
@@ -130,7 +132,7 @@ export function Swap() {
     [allowance1.data, currencyA.decimals, currencyA.isNative, firstValue],
   );
 
-  const { data: pricesData } = useFetchPrices();
+  const { data: pricesData, refetch: refetchPrices } = useFetchPrices();
 
   useEffect(() => {
     if (amountsOut.data) {
@@ -155,14 +157,17 @@ export function Swap() {
   }, [swap.isPending]);
 
   useEffect(() => {
-    if (approve.confirmed) {
+    if (approve.confirmed && !approveConfirmed) {
       enqueueSnackbar('Approve confirmed!', {
         autoHideDuration: 3000,
         variant: 'success',
       });
       allowance1.refetch();
+      setApproveConfirmed(true);
+    } else if (!approve.confirmed && approveConfirmed) {
+      setApproveConfirmed(false);
     }
-  }, [approve.confirmed, allowance1, enqueueSnackbar]);
+  }, [approve.confirmed, approveConfirmed, allowance1, enqueueSnackbar]);
 
   useEffect(() => {
     if (swap.confirmed) {
@@ -176,6 +181,7 @@ export function Swap() {
       accountBalance.refetch();
       allowance1.refetch();
       pair.refetchReserves();
+      refetchPrices();
       setAmountOut(0n);
       setAmountIn(0n);
       setFirstValue('');
@@ -190,6 +196,7 @@ export function Swap() {
     enqueueSnackbar,
     pair,
     swap,
+    refetchPrices
   ]);
 
   const onCurrencyAChange = (value: string) => {
@@ -333,131 +340,140 @@ export function Swap() {
   }, [firstValue, feePercentage, pricesData, currencyA]);
 
   return (
-    <x.div w="100%" maxWidth="480px" borderRadius="16px" padding={4}>
-      <SwapHeader title="Swap" showBack={!!params.pool} />
+    <Box sx={{ width: '100%', maxWidth: '600px', borderRadius: '16px', p: 4 }}>
+      <SectionHeader title="Swap" showBack={!!params.pool} />
 
-      <CurrencyInput
-        balance={
-          currencyA.isNative
-            ? accountBalance.data?.value || 0n
-            : balanceA.data ?? 0n
-        }
-        currency={currencyA}
-        disabled={false}
-        formattedBalance={new BigNumber(
-          formatUnits(
-            currencyA.isNative
-              ? accountBalance.data?.value || 0n
-              : balanceA.data ?? 0n,
-            currencyA.decimals,
-          ),
-        ).toFixed(6, 1)}
-        id="currencyA"
-        insufficientBalance={insufficientBalanceA}
-        onChangeValue={(e) => onCurrencyAChange(e.target.value)}
-        onCurrencySelectClick={onCurrencySelectAClick}
-        onSetPercentage={onCurrencyAChange}
-        selected={false}
-        showPercentages
-        title="You Pay"
-        value={firstValue}
-        price={computePrice(currencyA)}
-      />
+      <Box width="100%" mx="auto">
+        <Card sx={{ p: 1, backgroundColor: 'background.paper' }}>
 
-      <x.div mb="-46px">
-        <BaseButton
-          backgroundColor={{ _: 'green-yellow-950', hover: 'green-yellow-900' }}
-          border="6px solid black"
-          p={2}
-          position="relative"
-          w="fit-content"
-          margin="-36px auto"
-          zIndex={1}
-          onClick={switchCurrencies}
-        >
-          <img src={repeatIcon} alt="switch currencies icon" width={20} />
-        </BaseButton>
-      </x.div>
+          <CurrencyInput
+            balance={
+              currencyA.isNative
+                ? accountBalance.data?.value || 0n
+                : balanceA.data ?? 0n
+            }
+            currency={currencyA}
+            disabled={false}
+            formattedBalance={new BigNumber(
+              formatUnits(
+                currencyA.isNative
+                  ? accountBalance.data?.value || 0n
+                  : balanceA.data ?? 0n,
+                currencyA.decimals,
+              ),
+            ).toFixed(6, 1)}
+            id="currencyA"
+            insufficientBalance={insufficientBalanceA}
+            onChangeValue={(e) => onCurrencyAChange(e.target.value)}
+            onCurrencySelectClick={onCurrencySelectAClick}
+            onSetPercentage={onCurrencyAChange}
+            selected={false}
+            showPercentages
+            title="You Pay"
+            value={firstValue}
+            price={computePrice(currencyA)}
+          />
 
-      <CurrencyInput
-        balance={
-          currencyB?.isNative
-            ? accountBalance.data?.value || 0n
-            : balanceB.data ?? 0n
-        }
-        currency={currencyB}
-        disabled={false}
-        formattedBalance={new BigNumber(
-          formatUnits(
-            currencyB?.isNative
-              ? accountBalance.data?.value || 0n
-              : balanceB.data ?? 0n,
-            currencyB?.decimals || 18,
-          ),
-        ).toFixed(6, 1)}
-        id="currencyB"
-        insufficientBalance={false}
-        onChangeValue={(e) => onCurrencyBChange(e.target.value)}
-        onCurrencySelectClick={onCurrencySelectBClick}
-        onSetPercentage={onCurrencyBChange}
-        selected={false}
-        title="You Receive"
-        value={secondValue}
-        price={currencyB && computePrice(currencyB)}
-      />
+          <Box display="flex" justifyContent="center" mt={-2} mb={-2}>
+            <IconButton
+              onClick={switchCurrencies}
+              sx={{
+                color: 'white',
+                border: 0,
+                '&:hover': {
+                  backgroundColor: 'rgba(144, 202, 249, 0.1)'
+                },
+              }}
+            >
+              <SwapVert />
+            </IconButton>
+          </Box>
 
-      {currencyB && (
-        <SlippageInput
-          slippage={slippage}
-          setSlippage={setSlippage}
-          expectedOutput={secondValue}
-          outputToken={currencyB.symbol}
-        />
-      )}
+          <CurrencyInput
+            balance={
+              currencyB?.isNative
+                ? accountBalance.data?.value || 0n
+                : balanceB.data ?? 0n
+            }
+            currency={currencyB}
+            disabled={false}
+            formattedBalance={new BigNumber(
+              formatUnits(
+                currencyB?.isNative
+                  ? accountBalance.data?.value || 0n
+                  : balanceB.data ?? 0n,
+                currencyB?.decimals || 18,
+              ),
+            ).toFixed(6, 1)}
+            id="currencyB"
+            insufficientBalance={false}
+            onChangeValue={(e) => onCurrencyBChange(e.target.value)}
+            onCurrencySelectClick={onCurrencySelectBClick}
+            onSetPercentage={onCurrencyBChange}
+            selected={false}
+            title="You Receive"
+            value={secondValue}
+            price={currencyB && computePrice(currencyB)}
+          />
 
-      {currencyA && currencyB && firstValue && secondValue && (
-        <>
-          <TradePriceImpact priceImpact={priceImpact}></TradePriceImpact>
-          <Fee feeAmount={feeAmount} feePercentage={feePercentage} />
-        </>
-      )}
+          {currencyB && (
+            <>
+              <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.1)' }} />
 
-      {currencyA && currencyB && (
-        <x.div mt={4}>
-          <x.p>Prices</x.p>
+              <SlippageInput
+                slippage={slippage}
+                setSlippage={setSlippage}
+                expectedOutput={secondValue}
+                outputToken={currencyB.symbol}
+              />
+              {currencyA && currencyB && firstValue && secondValue && (
+                <>
+                  <TradePriceImpact priceImpact={priceImpact}></TradePriceImpact>
+                  <Fee feeAmount={feeAmount} feePercentage={feePercentage} />
+                </>
+              )}
+            </>
+          )}
 
-          <x.div>
-            <x.div>
-              <x.p>
-                1 {currencyA.symbol} ={' '}
-                {pair.priceCurrencyA.toFixed(
-                  pair.priceCurrencyA.lt(1) ? 8 : 2,
-                  1,
-                )}{' '}
-                {currencyB.symbol}
-              </x.p>
-              <x.p>
-                1 {currencyB.symbol} ={' '}
-                {pair.priceCurrencyB.toFixed(
-                  pair.priceCurrencyB.lt(1) ? 8 : 2,
-                  1,
-                )}{' '}
-                {currencyA.symbol}
-              </x.p>
-            </x.div>
-            <x.br></x.br>
-          </x.div>
-        </x.div>
-      )}
+          {currencyA && currencyB && (
+            <Box mt={2} p={2}>
+              <Typography variant="body1" gutterBottom>
+                Prices
+              </Typography>
+
+              <Box>
+                <Typography variant="body2" color="text.secondary">
+                  1 {currencyA.symbol} ={' '}
+                  {pair.priceCurrencyA.toFixed(
+                    pair.priceCurrencyA.lt(1) ? 8 : 2,
+                    1,
+                  )}{' '}
+                  {currencyB.symbol}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  1 {currencyB.symbol} ={' '}
+                  {pair.priceCurrencyB.toFixed(
+                    pair.priceCurrencyB.lt(1) ? 8 : 2,
+                    1,
+                  )}{' '}
+                  {currencyA.symbol}
+                </Typography>
+              </Box>
+            </Box>
+          )}
+        </Card>
+      </Box>
 
       {needAllowance && !insufficientBalanceA && (
-        <x.div
-          display="flex"
-          mt={4}
-          mb={2}
-          h="80px"
-          alignItems="center"
-          justifyContent="center"
+        <Box
+          sx={{
+            display: 'flex',
+            mt: 4,
+            mb: 2,
+            height: '80px',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
         >
           <PrimaryButtonWithLoader
             isLoading={isAllowCurrencyADisabled}
@@ -465,16 +481,18 @@ export function Swap() {
             text="Approve"
             onClick={() => approve.write()}
           />
-        </x.div>
+        </Box>
       )}
 
       {!needAllowance && !insufficientBalanceA && (
-        <x.div
-          display="flex"
-          mt={4}
-          h="80px"
-          alignItems="center"
-          justifyContent="center"
+        <Box
+          sx={{
+            display: 'flex',
+            mt: 4,
+            height: '80px',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
         >
           <PrimaryButtonWithLoader
             isLoading={isSwapDisabled}
@@ -482,7 +500,7 @@ export function Swap() {
             text="Swap"
             onClick={() => swap.write()}
           />
-        </x.div>
+        </Box>
       )}
 
       <SelectCurrencyModal
@@ -491,6 +509,6 @@ export function Swap() {
         currencies={selectingCurrencies}
         onSelect={onSelectCurrency}
       />
-    </x.div>
+    </Box>
   );
 }

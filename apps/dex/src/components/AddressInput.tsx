@@ -1,4 +1,4 @@
-import { x } from '@xstyled/styled-components';
+import { Box, InputBase } from '@mui/material';
 import { EthereumAddress } from '@lira-dao/web3-utils';
 
 interface AddressInputProps {
@@ -9,26 +9,31 @@ interface AddressInputProps {
 
 export function AddressInput({ disabled, value, readOnly = false }: AddressInputProps) {
   return (
-    <x.div display="flex" flexGrow={1}>
-      <x.input
+    <Box sx={{ display: 'flex', flexGrow: 1 }}>
+      <InputBase
         value={value}
-        placeholder={0}
-        flex="1 1 auto"
-        w="0px"
-        position="relative"
-        outline="none"
-        border="none"
-        color={{ _: 'white', placeholder: 'gray94' }}
-        pointerEvents={disabled ? 'none' : 'auto'}
-        backgroundColor="transparent"
-        fontSize={28}
-        textAlign="left"
-        whiteSpace="nowrap"
-        overflow="hidden"
-        textOverflow="ellipsis"
-        padding={0}
+        placeholder="0"
+        sx={{
+          flex: '1 1 auto',
+          width: 0,
+          position: 'relative',
+          outline: 'none',
+          border: 'none',
+          color: (theme) => theme.palette.text.primary,
+          pointerEvents: disabled ? 'none' : 'auto',
+          backgroundColor: 'transparent',
+          fontSize: 26,
+          textAlign: 'left',
+          whiteSpace: 'nowrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          padding: 0,
+          '&::placeholder': {
+            color: (theme) => theme.palette.text.secondary,
+          },
+        }}
         readOnly={readOnly}
       />
-    </x.div>
+    </Box>
   );
 }

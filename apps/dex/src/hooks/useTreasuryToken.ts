@@ -1,5 +1,6 @@
 import { useAccount, useReadContract, useWriteContract } from 'wagmi';
 import { EthereumAddress, treasuryTokenAbi } from '@lira-dao/web3-utils';
+import BigNumber from 'bignumber.js';
 import { useWatchTransaction } from './useWatchTransaction';
 
 
