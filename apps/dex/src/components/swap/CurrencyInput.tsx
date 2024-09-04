@@ -8,6 +8,7 @@ import { CurrencySelector } from '../CurrencySelector';
 
 interface CurrencyInputProps {
   balance: bigint;
+  label?: string;
   currency?: Currency;
   disabled: boolean;
   formattedBalance: string;
@@ -26,6 +27,7 @@ interface CurrencyInputProps {
 
 export function CurrencyInput({
   balance,
+  label = 'Balance',
   currency,
   disabled = false,
   formattedBalance,
@@ -107,7 +109,7 @@ export function CurrencyInput({
 
         <Box sx={{ mt: 2 }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Typography variant="body2" color="text.secondary" sx={{ my: 1 }}>Balance: {formattedBalance}</Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ my: 1 }}>{label}: {formattedBalance}</Typography>
             <AddToMetaMaskButton token={currency} />
           </Box>
         </Box>
