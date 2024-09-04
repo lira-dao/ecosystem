@@ -163,6 +163,9 @@ export const muiDarkTheme = createTheme({
             '&:hover fieldset': {
               borderColor: 'white',
             },
+            '&.Mui-disabled fieldset': {
+              borderColor: 'rgba(255, 255, 255, 0.12)',
+            },
             '&.Mui-focused fieldset': {
               borderColor: 'white',
             },
