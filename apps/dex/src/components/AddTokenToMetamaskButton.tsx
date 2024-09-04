@@ -1,7 +1,14 @@
 import React from 'react';
 import { Button, ButtonProps, Tooltip, useTheme } from '@mui/material';
-import { Currency } from '@lira-dao/web3-utils';
+import { Currency, EthereumAddress } from '@lira-dao/web3-utils';
 import metamask from '../img/metamask.png';
+
+export interface CustomCurrency {
+  address: EthereumAddress;
+  symbol: string;
+  decimals: number;
+  icon?: string;
+}
 
 interface AddToMetaMaskButtonProps {
   token: Currency | undefined;
