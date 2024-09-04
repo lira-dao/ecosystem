@@ -172,7 +172,7 @@ export function TreasuryMint() {
 
       <Box width="100%" mx="auto">
         <Card sx={{ p: 1, backgroundColor: 'background.paper' }}>
-          <Box sx={{ display: 'flex', paddingTop: 1 }}>
+          <Box sx={{ display: 'flex', pt: 2, px: 2 }}>
             <ToggleButtonGroup
               color="primary"
               value={active}

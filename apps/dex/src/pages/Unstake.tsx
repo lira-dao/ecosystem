@@ -5,12 +5,12 @@ import { formatUnits, parseUnits } from 'viem';
 import { useSnackbar } from 'notistack';
 import BigNumber from 'bignumber.js';
 import { EthereumAddress } from '@lira-dao/web3-utils';
-import { SectionHeader } from '../components/swap/SectionHeader';
 import { useFarmingStakers } from '../hooks/useFarmingStakers';
 import { useTokenStaker } from '../hooks/useTokenStaker';
 import { CurrencyInput } from '../components/swap/CurrencyInput';
 import { ErrorMessage } from '../components/swap/ErrorMessage';
 import { PrimaryButtonWithLoader } from '../components/PrimaryButtonWithLoader';
+import { SectionHeader } from '../components/swap/SectionHeader';
 
 
 export function Unstake() {
@@ -21,7 +21,6 @@ export function Unstake() {
   const farms = useFarmingStakers();
 
   const {
-    balance,
     confirmed,
     error,
     isError,
@@ -31,7 +30,6 @@ export function Unstake() {
     staked,
     stakedAmount,
     token,
-    tokens,
     unstakeAmount,
     write,
   } = useTokenStaker(params.stakers || '', params.staker as EthereumAddress, 'unstake', value);
@@ -132,10 +130,6 @@ export function Unstake() {
           <Box display="flex" justifyContent="space-between">
             <Typography>My Stake</Typography>
             <Typography>{stakedAmount} {token?.symbol}</Typography>
-          </Box>
-          <Box display="flex" justifyContent="space-between">
-            <Typography>Available LP</Typography>
-            <Typography>{new BigNumber(formatUnits(balance.data ?? 0n, 18)).toFixed(2, 1)}</Typography>
           </Box>
         </CardContent>
       </Card>
