@@ -19,6 +19,7 @@ interface CurrencyInputProps {
   onSetPercentage: (value: string) => void;
   selected: boolean;
   showPercentages?: boolean;
+  percentageBaseValue?: BigNumber;
   title: string;
   value: string;
   price?: string;
@@ -38,16 +39,18 @@ export function CurrencyInput({
   onSetPercentage,
   selected = false,
   showPercentages = false,
+  percentageBaseValue,
   title,
   value,
   price,
 }: CurrencyInputProps) {
 
   const handlePercentageClick = (percentage: number) => {
-    const calculatedValue = new BigNumber(balance.toString())
+
+    const calculatedValue = new BigNumber(percentageBaseValue || balance.toString())
       .times(percentage)
       .div(100)
-      .div(new BigNumber(10).pow(currency?.decimals || 18))
+      .div(percentageBaseValue ? 1 : new BigNumber(10).pow(currency?.decimals || 18))
       .toFixed();
 
     onSetPercentage(calculatedValue);

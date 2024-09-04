@@ -145,6 +145,7 @@ export function Stake() {
             onSetPercentage={(percentage: string) => onSetPercentage(percentage)}
             selected={false}
             showPercentages
+            percentageBaseValue={params.stakers === 'boosting' ? new BigNumber(remainingBoost.replace(/[^0-9.]/g, '')) : undefined}
             title="Deposit"
             value={value}
           />
