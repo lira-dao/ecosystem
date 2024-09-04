@@ -112,7 +112,7 @@ export function Unstake() {
           <CurrencyInput
             balance={staked.data?.[0] || 0n}
             currency={currentToken}
-            disabled={false}
+            disabled={staked.data?.[0] === 0n}
             formattedBalance={new BigNumber(formatUnits(staked.data?.[0] ?? 0n, 18)).toFixed(6, 1)}
             id="lp-token"
             insufficientBalance={insufficientBalance}
@@ -132,6 +132,10 @@ export function Unstake() {
           <Box display="flex" justifyContent="space-between">
             <Typography>My Stake</Typography>
             <Typography>{stakedAmount} {token?.symbol}</Typography>
+          </Box>
+          <Box display="flex" justifyContent="space-between">
+            <Typography>Available LP</Typography>
+            <Typography>{new BigNumber(formatUnits(balance.data ?? 0n, 18)).toFixed(2, 1)}</Typography>
           </Box>
         </CardContent>
       </Card>
