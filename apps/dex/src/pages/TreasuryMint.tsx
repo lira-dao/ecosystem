@@ -132,25 +132,7 @@ export function TreasuryMint() {
 
   const onSetPercentage = (value: string) => {
     if (active === TreasuryHeaderTab.Burn) {
-      const percentage = new BigNumber(value);
-      const balanceInUnits = new BigNumber(balanceA.data?.toString() || '0');
-
-      const normalizedBalance = balanceInUnits.div(new BigNumber(10).pow(currencyA.decimals));
-
-      const calculatedFirstValue = normalizedBalance
-        .times(percentage)
-        .toFixed(currencyA.decimals, BigNumber.ROUND_DOWN);
-
-      const normalizedPriceCurrencyB = new BigNumber(pair.priceCurrencyB)
-        .times(new BigNumber(10).pow(currencyA.decimals));
-
-      const calculatedSecondValue = new BigNumber(calculatedFirstValue)
-        .times(normalizedPriceCurrencyB)
-        .div(new BigNumber(10).pow(currencyA.decimals))
-        .toFixed(currencyB.decimals, BigNumber.ROUND_DOWN);
-
-      setFirstValue(new BigNumber(calculatedFirstValue).toFixed().replace(/\.?0+$/, ''));
-      setSecondValue(new BigNumber(calculatedSecondValue).toFixed().replace(/\.?0+$/, ''));
+      setFirstValue(value);
     }
   };
 
@@ -197,11 +179,12 @@ export function TreasuryMint() {
             disabled={false}
             formattedBalance={new BigNumber(formatUnits(balanceA.data || 0n, currencyA.decimals)).toFixed(6, 1)}
             id="currencyA"
-            insufficientBalance={false}
+            insufficientBalance={parseFloat(firstValue) < 1 ? true : false}
+            errorMessage={`Cannot ${active === TreasuryHeaderTab.Mint ? 'Mint' : 'Burn'} less than 1 ${currencyA.symbol}.`}
             isDisabledCurrencySelector={false}
             onChangeValue={onCurrencyChange}
             onCurrencySelectClick={onCurrencySelectClick}
-            onSetPercentage={(e) => onSetPercentage(e)}
+            onSetPercentage={onSetPercentage}
             selected={false}
             showPercentages={active === TreasuryHeaderTab.Mint ? false : true}
             title={active === TreasuryHeaderTab.Mint ? 'Mint' : 'Burn'}
@@ -226,6 +209,10 @@ export function TreasuryMint() {
 
       <Card sx={{ mt: 2 }}>
         <CardContent sx={{ '&:last-child': { p: 2 } }}>
+          <Box display="flex" justifyContent="space-between">
+            <Typography>Minimum Required</Typography>
+            <Typography>1 {currencyA.symbol}</Typography>
+          </Box>
           <Box display="flex" justifyContent="space-between">
             <Typography>{active === TreasuryHeaderTab.Mint ? 'Lock' : 'Unlock'}</Typography>
             <Typography>{formatUnits(active === TreasuryHeaderTab.Mint ? treasuryToken.quoteMint.data?.[1] || 0n : treasuryToken.quoteBurn.data?.[0] || 0n, currencyB.decimals)} {currencyB.symbol}</Typography>

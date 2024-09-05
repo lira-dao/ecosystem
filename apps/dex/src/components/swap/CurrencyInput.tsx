@@ -13,6 +13,7 @@ interface CurrencyInputProps {
   formattedBalance: string;
   id: string;
   insufficientBalance: boolean;
+  errorMessage?: string;
   isDisabledCurrencySelector?: boolean;
   onChangeValue: (e: ChangeEvent<HTMLInputElement>) => void;
   onCurrencySelectClick?: () => void;
@@ -33,6 +34,7 @@ export function CurrencyInput({
   formattedBalance,
   id,
   insufficientBalance,
+  errorMessage = 'Insufficient balance',
   isDisabledCurrencySelector = false,
   onChangeValue,
   onCurrencySelectClick,
@@ -98,7 +100,7 @@ export function CurrencyInput({
       <Box sx={{ mt: 2 }}>
         <Box sx={{ display: 'flex', justifyContent: insufficientBalance ? 'space-between' : 'flex-end', alignItems: 'center', my: 1 }}>
           {insufficientBalance && (
-            <Typography variant="body2" color="error">Insufficient balance</Typography>
+            <Typography variant="body2" color="error">{errorMessage}</Typography>
           )}
           {price && (
             <Typography variant="body2" color={insufficientBalance ? 'error' : 'text.secondary'}>
