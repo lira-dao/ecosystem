@@ -118,7 +118,15 @@ export function CurrencyInput({
       {showPercentages && (
         <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2, mb: 2 }}>
           {[10, 25, 50, 75, 100].map((percentage) => (
-            <Button key={percentage} onClick={() => handlePercentageClick(percentage)} size='small' variant='outlined' color='secondary' sx={{ flex: '1 1 auto', margin: '0 6px', height: '100%', paddingTop: '6px' }}>
+            <Button
+              key={percentage}
+              color='secondary'
+              disabled={!balance || new BigNumber(balance.toString()).isZero()}
+              size='small'
+              variant='outlined'
+              sx={{ flex: '1 1 auto', margin: '0 6px', height: '100%', paddingTop: '6px' }}
+              onClick={() => handlePercentageClick(percentage)}
+            >
               {percentage}%
             </Button>
           ))}
