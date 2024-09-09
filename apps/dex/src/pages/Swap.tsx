@@ -429,7 +429,7 @@ export function Swap() {
               {currencyA && currencyB && firstValue && secondValue && (
                 <>
                   <TradePriceImpact priceImpact={priceImpact}></TradePriceImpact>
-                  <Fee feeAmount={feeAmount} feePercentage={feePercentage} />
+                  {/* <Fee feeAmount={feeAmount} feePercentage={feePercentage} /> */}
                 </>
               )}
             </>
