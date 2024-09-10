@@ -3,23 +3,29 @@ import {
   Box,
   Card,
   CardContent,
+  Checkbox,
+  FormControlLabel,
   Grid,
   ToggleButton,
   ToggleButtonGroup,
+  Tooltip,
   Typography,
   useMediaQuery,
   useTheme,
 } from '@mui/material';
 import { EthereumAddress } from '@lira-dao/web3-utils';
-import { useAccount, useBalance as useBalanceWagmi } from 'wagmi';
+import InfoIcon from '@mui/icons-material/Info';
 import { PieChart } from '@mui/x-charts';
+import { useAccount, useBalance as useBalanceWagmi } from 'wagmi';
 import BigNumber from 'bignumber.js';
+import { useFarmingStakers } from '../hooks/useFarmingStakers';
 import { useFetchPrices } from '../hooks/usePrices';
 import { useGetAmountsOut } from '../hooks/useGetAmountsOut';
 import { usePools } from '../hooks/usePools';
 import { usePricedPools } from '../hooks/usePricesPools';
 import { useReferralRewards } from '../hooks/useReferralRewards';
 import { useTokenBalances } from '../hooks/useTokenBalances';
+import { useTokenStakers } from '../hooks/useTokenStakers';
 import { AssetsCard } from '../components/portfolio/AssetsCard';
 import { ReferralCard } from '../components/portfolio/ReferralCard';
 import { muiDarkTheme as theme } from '../theme/theme';
@@ -36,7 +42,11 @@ export function Portfolio() {
 
   const { balances: tokensBalance } = useTokenBalances();
 
+  const farms = useFarmingStakers();
+
   const pools = usePools();
+
+  const stakers = useTokenStakers();
 
   const amountsOut = useGetAmountsOut([pools[0].token0?.address || '0x0', pools[0].token1?.address || '0x0'], 0n);
 
@@ -58,6 +68,9 @@ export function Portfolio() {
   });
 
   const { pricedPools: assetsChartData, refetch: refetchAssetsData } = usePricedPools();
+
+  const [showLpPositions, setShowLpPositions] = useState(false);
+  // const [chartData, setChartData] = useState([]);
 
   const [selectedView, setSelectedView] = useState('assets');
   const [liquidityTimeFrame, setLiquidityTimeFrame] = useState<TimeFrame>('7days');
@@ -98,6 +111,59 @@ export function Portfolio() {
 
   const totalValue = assetsChartData.reduce((prev, curr) => prev.plus(curr.value), new BigNumber(0)).toFormat(2, 1);
 
+  const getPriceForSymbol = (symbol: string): number => {
+    const priceData = pricesData?.find((price) => price.symbol === symbol);
+    return priceData ? parseFloat(priceData.price) : 0;
+  };
+
+  const totalStaking = stakers.reduce(
+    (totals, staker) => {
+      if (!staker.tokens || !Array.isArray(staker.tokens)) {
+        console.error(`No tokens found or tokens is not an array for staker ${staker.address}`);
+        return totals;
+      }
+  
+      const stakingValue = staker.tokens.reduce((totalTokenValue, token) => {
+        if (!token || !token.symbol) {
+          console.error("Invalid token structure:", token);
+          return totalTokenValue;
+        }
+  
+        const tokenPrice = getPriceForSymbol(token.symbol);
+  
+        const stakedAmount = token.symbol === 'LDT' ? new BigNumber(staker.boostAmount.replace(/,/g, '')) : new BigNumber(staker.amount.replace(/,/g, ''));
+  
+        const tokenValue = stakedAmount.times(tokenPrice);
+
+        return totalTokenValue.plus(tokenValue);
+      }, new BigNumber(0));
+  
+      const boostAmount = new BigNumber(staker.boostAmount.replace(/,/g, ''));
+      const remainingBoost = new BigNumber(staker.remainingBoost.replace(/,/g, ''));
+      const boostAmountUSD = boostAmount.times(getPriceForSymbol('LDT'));
+      const remainingBoostUSD = remainingBoost.times(getPriceForSymbol('LDT'));
+  
+      return {
+        staking: totals.staking.plus(stakingValue),
+        boosting: totals.boosting.plus(boostAmountUSD),
+        remainingBoost: totals.remainingBoost.plus(remainingBoostUSD),
+      };
+    },
+    {
+      staking: new BigNumber(0),
+      boosting: new BigNumber(0),
+      remainingBoost: new BigNumber(0),
+    }
+  );
+
+  const tooltipPortfolioValueContent = (
+    <Box>
+      <Typography variant="caption">
+        The Portfolio Value is calculated as the sum of Token Balances, Liquidity Pool (LP) Tokens, Farming and Staking balances.
+      </Typography>
+    </Box>
+  );
+
   return (
     <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', marginY: 4, paddingX: 2 }}>
       <Box>
@@ -110,8 +176,18 @@ export function Portfolio() {
         <Grid item xs={12} md={4}>
           <Card sx={{ color: 'white', flexGrow: 1, marginBottom: '8px' }}>
             <CardContent>
-              <Typography variant="h6" mb={1}>Portfolio Value</Typography>
-              <Typography variant="h3">≃$ {totalValue}</Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>              
+              <Typography variant="h6" mb={1}>
+                Portfolio Value
+                <Tooltip title={tooltipPortfolioValueContent}>
+                  <InfoIcon
+                    fontSize="small"
+                    sx={{ ml: 1, verticalAlign: 'middle' }}
+                  />
+                </Tooltip>
+              </Typography>
+            </Box>
+            <Typography variant="h3">≃$ {totalValue}</Typography>
               {/*<Typography variant="h5" color={theme?.colors.gray155}>~$0.00</Typography>*/}
 
               {!isConnected && (
@@ -124,6 +200,19 @@ export function Portfolio() {
           <Card sx={{ color: 'white' }}>
             <CardContent sx={{ display: 'flex', flexDirection: 'column' }}>
               <Typography variant="h6">Wallet Overview</Typography>
+
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={showLpPositions}
+                    onChange={(e) => setShowLpPositions(e.target.checked)}
+                    color="primary"
+                  />
+                }
+                label="Show LP Positions"
+                sx={{ mb: 1 }}
+              />
+
               <Box>
                 {isConnected && (
                   <PieChart
@@ -219,7 +308,7 @@ export function Portfolio() {
         </Grid>
 
         <Grid item xs={12} md={8}>
-          <Card sx={{ color: 'white', height: '100%' }}>
+          <Card sx={{ height: '100%' }}>
             <CardContent>
               <ToggleButtonGroup
                 color="primary"
@@ -237,7 +326,7 @@ export function Portfolio() {
               {isConnected && (
                 <Grid container spacing={2}>
                   <Grid item xs={12} sx={{ mt: 1 }}>
-                    {selectedView === 'assets' && <AssetsCard assets={assetsChartData} />}
+                    {selectedView === 'assets' && <AssetsCard assets={assetsChartData} prices={pricesData} />}
                     {selectedView === 'referral' && <ReferralCard
                       pendingRewards={pendingRewards}
                       isPending={isPending}
@@ -266,36 +355,41 @@ export function Portfolio() {
         </Grid>
       </Grid>
 
-      {/* <Grid container spacing={2} marginTop={4}>
-        <Grid item xs={12} sm={4} md={3}>
-          <Card>
-            <CardContent>
-              <Typography variant="h5" gutterBottom>CoinMarketCap Prices</Typography>
-              {pricesData && pricesData.map((crypto, index) => (
-                <Typography key={index} variant="body2">{`1 ${crypto.symbol} = ${parseFloat(crypto.price).toFixed(2)} USD`}</Typography>
-              ))}
-            </CardContent>
-          </Card>
-        </Grid>
+      {/* <Grid item xs={12} md={8} sx={{ marginTop: '16px' }}>
+        <Card sx={{ color: 'white', height: '100%' }}>
+          <CardContent>
+            <Typography variant="h6" mb={1}>Liquidity Pool Tokens</Typography>
+            {pools && pools.length > 0 ? (
+              <List>
+                {pools.map((pool, index) => (
+                  <React.Fragment key={index}>
+                    <ListItem>
+                      <ListItemText
+                        primary={`${pool.token0?.symbol} - ${pool.token1?.symbol}`}
+                        secondary={
+                          <>
+                            <Typography variant="body2">
+                              LP Token Symbol: <strong>{pool.symbol}</strong> <caption>{pool.address}</caption>
+                            </Typography>
+                            <Typography variant="body2">
+                              Balance: <strong>{pool.formattedBalance}</strong>
+                            </Typography>
+                          </>
+                        }
+                      />
+                    </ListItem>
+                    {index < pools.length - 1 && <Divider />}
+                  </React.Fragment>
+                ))}
+              </List>
+            ) : (
+              <Typography>No LP tokens found in your wallet</Typography>
+            )}
+          </CardContent>
+        </Card>
+      </Grid> */}
 
-        <Grid item xs={12} sm={8} md={9}>
-          <Card>
-            <CardContent>
-              <Typography variant="h4">Your Farms</Typography>
-              <MyFarmingTable farms={farms} isConnected={isConnected} />
-            </CardContent>
-          </Card>
-        </Grid>
-
-        <Grid item xs={12}>
-          <Card>
-            <CardContent>
-              <Typography variant="h4">Your Pools</Typography>
-              <MyPoolsTable pools={pools} isConnected={isConnected} />
-            </CardContent>
-          </Card>
-        </Grid>
-
+      <Grid container spacing={2} marginTop={4}>
         <Grid item xs={12}>
           <Box>
             <Typography variant="h4" color="white" gutterBottom>
@@ -303,9 +397,10 @@ export function Portfolio() {
             </Typography>
           </Box>
           
-          <Grid container spacing={4}>
+          {/* style={{ display: 'flex', flexDirection: 'row' }} */}
+          <Grid container spacing={2} >
             <Grid item xs={12} sm={4} md={3}>
-              <Card style={{ marginBottom: '8px' }}>
+              <Card sx={{ marginBottom: '8px' }}>
                 <CardContent>
                   <Typography variant="body1" gutterBottom>
                     TOTAL LIQUIDITY (info: not in farms, not in staking)
@@ -346,10 +441,87 @@ export function Portfolio() {
                 </CardContent>
               </Card>
             </Grid>
+            <Grid item xs={12} sm={8} md={9} sx={{ paddingBottom: '8px' }}>
+              <Card style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                <CardContent>
+                  <Typography variant="body2" color="white">
+                    No data to show
+                    {/* No Data Available */}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
           </Grid>
         </Grid>
-      </Grid> */}
+      </Grid>
 
+      <Grid container spacing={2} marginTop={4}>
+        <Grid item xs={12}>
+          <Box>
+            <Typography variant="h4" color="white" gutterBottom>
+              Your Staking
+            </Typography>
+          </Box>
+
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={4} md={3}>
+              <Card style={{ marginBottom: '8px' }}>
+                <CardContent>
+                  <Typography variant="body1" gutterBottom>
+                    TOTAL STAKING
+                  </Typography>
+                  <Typography variant="body1" fontWeight="bold" gutterBottom>
+                    ~$ {totalStaking.staking.toFixed(2)}
+                  </Typography>
+                </CardContent>
+              </Card>
+
+              <Card style={{ marginBottom: '8px' }}>
+                <CardContent>
+                  <Typography variant="body1" gutterBottom>
+                    TOTAL BOOSTING
+                  </Typography>
+                  <Typography variant="body1" fontWeight="bold" gutterBottom>
+                    ~$ {totalStaking.boosting.toFixed(2)}
+                  </Typography>
+                </CardContent>
+              </Card>
+
+              <Card style={{ marginBottom: '8px' }}>
+                <CardContent>
+                  <Typography variant="body1" gutterBottom>
+                    TOTAL NOT IN STAKING
+                  </Typography>
+                  <Typography variant="body1" fontWeight="bold" gutterBottom>
+                    -
+                  </Typography>
+                </CardContent>
+              </Card>
+
+              <Card style={{ marginBottom: '8px' }}>
+                <CardContent>
+                  <Typography variant="body1" gutterBottom>
+                    TOTAL REMAINING BOOST
+                  </Typography>
+                  <Typography variant="body1" fontWeight="bold" gutterBottom>
+                    ~$ {totalStaking.remainingBoost.toFixed(2)}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={8} md={9} sx={{ paddingBottom: '8px' }}>
+              <Card style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                <CardContent>
+                  <Typography variant="body2" color="white">
+                    No data to show
+                    {/* No Data Available */}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
     </Box>
   );
 }
