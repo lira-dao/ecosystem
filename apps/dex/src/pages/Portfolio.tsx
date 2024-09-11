@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Box,
   Card,
@@ -20,13 +20,15 @@ import { useAccount, useBalance as useBalanceWagmi } from 'wagmi';
 import BigNumber from 'bignumber.js';
 import { useFarmingStakers } from '../hooks/useFarmingStakers';
 import { useFetchPrices } from '../hooks/usePrices';
+import { useFetchLpPrices } from '../hooks/useLpPrices';
 import { useGetAmountsOut } from '../hooks/useGetAmountsOut';
 import { usePools } from '../hooks/usePools';
+import { usePortfolioBalance } from '../hooks/usePortfolioBalance';
 import { usePricedPools } from '../hooks/usePricesPools';
 import { useReferralRewards } from '../hooks/useReferralRewards';
 import { useTokenBalances } from '../hooks/useTokenBalances';
 import { useTokenStakers } from '../hooks/useTokenStakers';
-import { AssetsCard } from '../components/portfolio/AssetsCard';
+import { AssetsCard, getTokenColor } from '../components/portfolio/AssetsCard';
 import { ReferralCard } from '../components/portfolio/ReferralCard';
 import { muiDarkTheme as theme } from '../theme/theme';
 
@@ -62,14 +64,17 @@ export function Portfolio() {
 
   const { data: pricesData, error: errorPricesData, isLoading } = useFetchPrices();
 
+  const { data: lpPrices, error: errorLpPrices, isLoading: isLpLoading } = useFetchLpPrices();
+
   const account = useAccount();
   const { data: accountBalance } = useBalanceWagmi({
     address: account.address,
   });
 
-  const { pricedPools: assetsChartData, refetch: refetchAssetsData } = usePricedPools();
+  const { pricedPools: _assetsChartData, refetch: refetchAssetsData } = usePricedPools();
 
   const [showLpPositions, setShowLpPositions] = useState(false);
+  const assetsChartData = usePortfolioBalance(showLpPositions);
   // const [chartData, setChartData] = useState([]);
 
   const [selectedView, setSelectedView] = useState('assets');
@@ -80,6 +85,10 @@ export function Portfolio() {
     if (newView !== null) {
       setSelectedView(newView);
     }
+  };
+
+  const handleLpPositionsToggle = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setShowLpPositions(e.target.checked);
   };
 
   const handleLiquidityTimeFrameChange = (_event: React.MouseEvent<HTMLElement>, newTimeFrame: TimeFrame) => {
@@ -109,7 +118,52 @@ export function Portfolio() {
     return <div>Error Loading Prices</div>;
   }
 
-  const totalValue = assetsChartData.reduce((prev, curr) => prev.plus(curr.value), new BigNumber(0)).toFormat(2, 1);
+  const getLpPrice = (poolAddress: string): number => {
+    const lpPriceObj = lpPrices?.find((lp) => lp.pairAddress === poolAddress);
+    return lpPriceObj ? parseFloat(lpPriceObj.price) : 0;
+  };
+
+  // const tokenAssets = useMemo(() => tokensBalance.map((token) => ({
+  //   symbol: token.symbol,
+  //   formattedBalance: token.formattedBalance,
+  //   value: parseFloat(token.formattedBalance) * (parseFloat(pricesData?.find(price => price.symbol === token.symbol)?.price || '0')),
+  // })), [tokensBalance, pricesData]);
+
+  // const lpAssets = useMemo(() => pools.map((pool) => {
+  //   const lpPrice = getLpPrice(pool.address);
+  //   const lpValue = new BigNumber(pool.formattedBalance).times(lpPrice).toNumber();
+  //   return {
+  //     symbol: `${pool.token0?.symbol}-${pool.token1?.symbol}`,
+  //     formattedBalance: pool.formattedBalance,
+  //     value: lpValue,
+  //   };
+  // }), [pools, lpPrices]);
+
+  // const combinedAssets = useMemo(() => {
+  //   if (showLpPositions) {
+  //     return [...tokenAssets, ...lpAssets];
+  //   }
+  //   return tokenAssets;
+  // }, [showLpPositions, tokenAssets, lpAssets]);
+
+  // const combinedAssets = useEffect(() => {
+  //   // if (showLpPositions) {
+  //   //   return [...tokenAssets, ...lpAssets];
+  //   // }
+  //   // return tokenAssets;
+  //   debugger
+  // }, [showLpPositions]);
+
+  const totalValue = _assetsChartData.reduce((prev, curr) => prev.plus(curr.value), new BigNumber(0)).toFormat(2, 1);
+
+  const totalLpValue = pools.reduce(
+    (prev, pool) => {
+      const lpPrice = getLpPrice(pool.address);
+      const lpValue = new BigNumber(pool.formattedBalance).times(lpPrice);
+      return prev.plus(lpValue);
+    },
+    new BigNumber(0)
+  ).toFormat(2, 1);
 
   const getPriceForSymbol = (symbol: string): number => {
     const priceData = pricesData?.find((price) => price.symbol === symbol);
@@ -205,7 +259,7 @@ export function Portfolio() {
                 control={
                   <Checkbox
                     checked={showLpPositions}
-                    onChange={(e) => setShowLpPositions(e.target.checked)}
+                    onChange={(e) => handleLpPositionsToggle(e)}
                     color="primary"
                   />
                 }
@@ -217,16 +271,7 @@ export function Portfolio() {
                 {isConnected && (
                   <PieChart
                     height={400}
-                    colors={[
-                      '#3559fa',
-                      th.colors.cyan[600],
-                      th.colors.green[600],
-                      '#ef9036',
-                      '#dedede',
-                      '#ffd926',
-                      '#607AE3',
-                      '#f76f1a'
-                    ]}
+                    colors={assetsChartData.map((asset) => getTokenColor(asset.symbol))}
                     slotProps={{
                       legend: { hidden: true },
                     }}
@@ -326,7 +371,7 @@ export function Portfolio() {
               {isConnected && (
                 <Grid container spacing={2}>
                   <Grid item xs={12} sx={{ mt: 1 }}>
-                    {selectedView === 'assets' && <AssetsCard assets={assetsChartData} prices={pricesData} />}
+                    {selectedView === 'assets' && <AssetsCard assets={assetsChartData} />}
                     {selectedView === 'referral' && <ReferralCard
                       pendingRewards={pendingRewards}
                       isPending={isPending}
@@ -397,7 +442,6 @@ export function Portfolio() {
             </Typography>
           </Box>
           
-          {/* style={{ display: 'flex', flexDirection: 'row' }} */}
           <Grid container spacing={2} >
             <Grid item xs={12} sm={4} md={3}>
               <Card sx={{ marginBottom: '8px' }}>
@@ -434,6 +478,94 @@ export function Portfolio() {
                 <CardContent>
                   <Typography variant="body1" gutterBottom>
                     ACTIVE LIQUIDITY POSITIONS:
+                  </Typography>
+                  <Typography variant="body1" fontWeight="bold" gutterBottom>
+                    -
+                  </Typography>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item xs={12} sm={8} md={9} sx={{ paddingBottom: '8px' }}>
+              <Card style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                <CardContent>
+                  <Typography variant="body2" color="white">
+                    No data to show
+                  </Typography>
+
+                  {/* {JSON.stringify(totalValue)}
+                  {JSON.stringify(totalLpValue)} */}
+
+                  {/* {pools.map((pool, index) => {
+                    const lpPriceObj = lpPrices?.find((lp) => lp.pairAddress === pool.address);
+                    const lpPrice = lpPriceObj ? lpPriceObj.price : '0';
+                    const balance = pool.formattedBalance;
+
+                    return (
+                      <Typography variant="body1" gutterBottom>
+                        {`${pool.token0?.symbol} - ${pool.token1?.symbol}`}
+                        LP Token Address: {pool.address}
+                        Balance: {balance}
+                        LP Price: ${lpPrice}
+                      </Typography>
+                    );
+                  })} */}
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+
+      {JSON.stringify(pricesData)}
+      ----
+      {JSON.stringify(assetsChartData)}
+      <Grid container spacing={2} marginTop={4}>
+        <Grid item xs={12}>
+          <Box>
+            <Typography variant="h4" color="white" gutterBottom>
+              Your Farming
+            </Typography>
+          </Box>
+
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={4} md={3}>
+              <Card style={{ marginBottom: '8px' }}>
+                <CardContent>
+                  <Typography variant="body1" gutterBottom>
+                    TOTAL STAKED IN FARMS
+                  </Typography>
+                  <Typography variant="body1" fontWeight="bold" gutterBottom>
+                    ~$ 0.00
+                  </Typography>
+                </CardContent>
+              </Card>
+
+              <Card style={{ marginBottom: '8px' }}>
+                <CardContent>
+                  <Typography variant="body1" gutterBottom>
+                    Pending Farming Rewards
+                  </Typography>
+                  <Typography variant="body1" fontWeight="bold" gutterBottom>
+                    -
+                  </Typography>
+                </CardContent>
+              </Card>
+
+              <Card style={{ marginBottom: '8px' }}>
+                <CardContent>
+                  <Typography variant="body1" gutterBottom>
+                    APR or Estimated Rewards
+                  </Typography>
+                  <Typography variant="body1" fontWeight="bold" gutterBottom>
+                    -
+                  </Typography>
+                </CardContent>
+              </Card>
+
+              <Card style={{ marginBottom: '8px' }}>
+                <CardContent>
+                  <Typography variant="body1" gutterBottom>
+                    ACTIVE FARMING POSITIONS
                   </Typography>
                   <Typography variant="body1" fontWeight="bold" gutterBottom>
                     -

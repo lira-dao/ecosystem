@@ -1,9 +1,7 @@
 import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
-import { Asset } from '../../hooks/usePricesPools';
-import { Price } from '../../hooks/usePrices';
 
 
-function getTokenColor(symbol: string | undefined) {
+export function getTokenColor(symbol: string | undefined) {
   switch (symbol) {
     case 'ETH':
       return '#3559fa';
@@ -21,14 +19,25 @@ function getTokenColor(symbol: string | undefined) {
       return '#607AE3';
     case 'WBTC':
       return '#f76f1a';
+    case 'LDT-ETH':
+      return '#3A6FB0';
+    case 'LDT-LIRA':
+      return '#8CC63F';
+    case 'LDT-WBTC':
+      return '#F68B1F';
+    case 'LDT-TBb':
+      return '#FFA07A';
+    case 'LDT-TBs':
+      return '#B0C4DE';
+    case 'LDT-TBg':
+      return '#FFD700';
     default:
       return 'white';
   }
 }
 
 interface AssetsCardProps {
-  assets: Asset[];
-  prices?: Price[];
+  assets: { symbol: string; price: number; balance: number; value: number }[];
 }
 
 function formatNumber(value: string | number): string {
@@ -37,17 +46,15 @@ function formatNumber(value: string | number): string {
     return '0.00';
   }
 
-  const decimals = numberValue < 0.01 ? 6 : 2;
+  const decimals = numberValue < 0.01 ? 6 : numberValue < 0.1 ? 4 : 2;
   return `${numberValue.toFixed(decimals)}`;
 }
 
-export function AssetsCard({ assets, prices }: AssetsCardProps) {
+function truncateToTwoDecimals(num: number): number {
+  return Math.floor(num * 100) / 100;
+}
 
-  const getPriceForSymbol = (symbol: string | undefined): string => {
-    const priceData = prices?.find((price) => price.symbol === symbol);
-    return priceData ? formatNumber(priceData.price) : '0.00';
-  };
-
+export function AssetsCard({ assets }: AssetsCardProps) {
   return (
     <Box>
       <TableContainer component={Paper}>
@@ -78,9 +85,9 @@ export function AssetsCard({ assets, prices }: AssetsCardProps) {
                     aria-label={row.symbol ? `Color of ${row.symbol}` : 'Unknown token color'}
                   />{row.symbol || 'Unknown'}
                 </TableCell>
-                <TableCell align="right">≃$ {getPriceForSymbol(row.symbol)}</TableCell>
-                <TableCell align="right">{row.formattedBalance || '0.00'}</TableCell>
-                <TableCell align="right">≃$ {row.formattedValue || '0.00'}</TableCell>
+                <TableCell align="right">≃$ {formatNumber(row.price)}</TableCell>
+                <TableCell align="right">{row.balance || '0.00'}</TableCell>
+                <TableCell align="right">≃$ {truncateToTwoDecimals(row.value) || 0}</TableCell>  {/* {row.value || '0.00'} */}
               </TableRow>
             ))}
           </TableBody>
