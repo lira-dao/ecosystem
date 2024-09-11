@@ -401,40 +401,6 @@ export function Portfolio() {
         </Grid>
       </Grid>
 
-      {/* <Grid item xs={12} md={8} sx={{ marginTop: '16px' }}>
-        <Card sx={{ color: 'white', height: '100%' }}>
-          <CardContent>
-            <Typography variant="h6" mb={1}>Liquidity Pool Tokens</Typography>
-            {pools && pools.length > 0 ? (
-              <List>
-                {pools.map((pool, index) => (
-                  <React.Fragment key={index}>
-                    <ListItem>
-                      <ListItemText
-                        primary={`${pool.token0?.symbol} - ${pool.token1?.symbol}`}
-                        secondary={
-                          <>
-                            <Typography variant="body2">
-                              LP Token Symbol: <strong>{pool.symbol}</strong> <caption>{pool.address}</caption>
-                            </Typography>
-                            <Typography variant="body2">
-                              Balance: <strong>{pool.formattedBalance}</strong>
-                            </Typography>
-                          </>
-                        }
-                      />
-                    </ListItem>
-                    {index < pools.length - 1 && <Divider />}
-                  </React.Fragment>
-                ))}
-              </List>
-            ) : (
-              <Typography>No LP tokens found in your wallet</Typography>
-            )}
-          </CardContent>
-        </Card>
-      </Grid> */}
-
       <Grid container spacing={2} marginTop={4}>
         <Grid item xs={12}>
           <Box>
@@ -488,7 +454,7 @@ export function Portfolio() {
               </Card>
             </Grid>
             <Grid item xs={12} sm={8} md={9} sx={{ paddingBottom: '8px' }}>
-              <Card style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+              <Card style={{ height: '100%', ...((pools && pools.length === 0) ? {display: 'flex', alignItems: 'center', justifyContent: 'center'} : {})}}>
                 <CardContent>
 
                   {/* {pools.map((pool, index) => {
@@ -506,15 +472,12 @@ export function Portfolio() {
                     );
                   })} */}
 
-                  {/* {isConnected && (
-                    <LiquidityTable pools={pools} isConnected={isConnected} getLpPrice={getLpPrice}/>
-                  )} */}
-                  {/* {pools && pools.length === 0 && ( */}
+                  {(pools && pools.length === 0) ? (
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                       <Typography variant="body2" color="white">No Data Available</Typography>
                     </Box>
-{/*                   // )}
- */}                </CardContent>
+                  ) : (<LiquidityTable pools={pools} isConnected={isConnected} getLpPrice={getLpPrice}/>)}
+                </CardContent>
               </Card>
             </Grid>
           </Grid>

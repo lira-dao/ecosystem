@@ -16,8 +16,8 @@ export function LiquidityTable({ pools, isConnected, getLpPrice }: Props) {
   const navigate = useNavigate();
 
   return (
-    <TableContainer component={Paper}>
-      <Table aria-label="your liquidity table">
+    <TableContainer component={Paper} sx={{ maxHeight: 400, overflowY: 'auto' }}>
+      <Table stickyHeader aria-label="your liquidity table">
         <TableHead>
           <TableRow>
             <TableCell>Liquidity Pool</TableCell>
