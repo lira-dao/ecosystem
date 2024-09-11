@@ -30,6 +30,7 @@ import { useTokenBalances } from '../hooks/useTokenBalances';
 import { useTokenStakers } from '../hooks/useTokenStakers';
 import { AssetsCard, getTokenColor } from '../components/portfolio/AssetsCard';
 import { ReferralCard } from '../components/portfolio/ReferralCard';
+import { LiquidityTable } from '../components/portfolio/LiquidityTable';
 import { muiDarkTheme as theme } from '../theme/theme';
 
 
@@ -447,7 +448,8 @@ export function Portfolio() {
               <Card sx={{ marginBottom: '8px' }}>
                 <CardContent>
                   <Typography variant="body1" gutterBottom>
-                    TOTAL LIQUIDITY (info: not in farms, not in staking)
+                    {/* (info: not in farms, not in staking) */}
+                    TOTAL LIQUIDITY
                   </Typography>
                   <Typography variant="body1" fontWeight="bold" gutterBottom>
                     ~$0.00 - No data available
@@ -488,12 +490,6 @@ export function Portfolio() {
             <Grid item xs={12} sm={8} md={9} sx={{ paddingBottom: '8px' }}>
               <Card style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
                 <CardContent>
-                  <Typography variant="body2" color="white">
-                    No data to show
-                  </Typography>
-
-                  {/* {JSON.stringify(totalValue)}
-                  {JSON.stringify(totalLpValue)} */}
 
                   {/* {pools.map((pool, index) => {
                     const lpPriceObj = lpPrices?.find((lp) => lp.pairAddress === pool.address);
@@ -509,16 +505,22 @@ export function Portfolio() {
                       </Typography>
                     );
                   })} */}
-                </CardContent>
+
+                  {/* {isConnected && (
+                    <LiquidityTable pools={pools} isConnected={isConnected} getLpPrice={getLpPrice}/>
+                  )} */}
+                  {/* {pools && pools.length === 0 && ( */}
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                      <Typography variant="body2" color="white">No Data Available</Typography>
+                    </Box>
+{/*                   // )}
+ */}                </CardContent>
               </Card>
             </Grid>
           </Grid>
         </Grid>
       </Grid>
 
-      {JSON.stringify(pricesData)}
-      ----
-      {JSON.stringify(assetsChartData)}
       <Grid container spacing={2} marginTop={4}>
         <Grid item xs={12}>
           <Box>
