@@ -44,9 +44,9 @@ export function LiquidityTable({ pools, isConnected, getLpPrice }: Props) {
                     {pool.symbol}
                   </Box>
                 </TableCell>
-                <TableCell align="right">~$ {lpPrice.toFixed(2)}</TableCell>
+                <TableCell align="right">≈$ {lpPrice.toFixed(2)}</TableCell>
                 <TableCell align="right">{isConnected ? pool.formattedBalance : '-'}</TableCell>
-                <TableCell align="right">~$ {lpValue.isGreaterThan(0) ? lpValue.toFixed(2) : '0'}</TableCell>
+                <TableCell align="right">≈$ {lpValue.isGreaterThan(0) ? lpValue.toFixed(2) : '0'}</TableCell>
                 <TableCell align="right">
                   <Box display="flex" justifyContent="end" alignItems="center">
                     <img
@@ -74,17 +74,21 @@ export function LiquidityTable({ pools, isConnected, getLpPrice }: Props) {
                       onClick={() => navigate(`/swap/${pool.address}`)}
                       sx={{ marginRight: '10px' }}
                     >Swap</Button>
-                    <Button
-                      color="success"
-                      variant="outlined"
-                      onClick={() => navigate(`/add-liquidity/${pool.address}`)}
-                      sx={{ marginRight: '10px' }}
-                    >Add Liquidity</Button>
-                    <Button
-                      color="error"
-                      variant="outlined"
-                      onClick={() => navigate(`/remove-liquidity/${pool.address}`)}
-                    >Remove Liquidity</Button>
+                    {isConnected && 
+                      <>
+                        <Button
+                          color="success"
+                          variant="outlined"
+                          onClick={() => navigate(`/add-liquidity/${pool.address}`)}
+                          sx={{ marginRight: '10px' }}
+                        >Add Liquidity</Button>
+                        <Button
+                          color="error"
+                          variant="outlined"
+                          onClick={() => navigate(`/remove-liquidity/${pool.address}`)}
+                        >Remove Liquidity</Button>
+                      </>
+                    }
                   </Box>
                 </TableCell>
               </TableRow>

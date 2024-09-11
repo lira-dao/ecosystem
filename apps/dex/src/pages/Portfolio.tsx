@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Card,
@@ -31,6 +31,7 @@ import { useTokenStakers } from '../hooks/useTokenStakers';
 import { AssetsCard, getTokenColor } from '../components/portfolio/AssetsCard';
 import { ReferralCard } from '../components/portfolio/ReferralCard';
 import { LiquidityTable } from '../components/portfolio/LiquidityTable';
+import { FarmingTable } from '../components/portfolio/FarmingTable';
 import { muiDarkTheme as theme } from '../theme/theme';
 
 
@@ -215,6 +216,22 @@ export function Portfolio() {
     <Box>
       <Typography variant="caption">
         The Portfolio Value is calculated as the sum of Token Balances, Liquidity Pool (LP) Tokens, Farming and Staking balances.
+      </Typography>
+    </Box>
+  );
+
+  const tooltipTotalLiquidityNotInFarmsContent = (
+    <Box>
+      <Typography variant="caption">
+        The total liquidity not in farms is the sum of your liquid assets and LP tokens that are not staked in farming pools. <br/>
+      </Typography>
+    </Box>
+  );
+
+  const tooltipTotalLpNotInFarmsContent = (
+    <Box>
+      <Typography variant="caption">
+        LPs in your wallet that you can deposit to a farming pool to increase your farming rewards.
       </Typography>
     </Box>
   );
@@ -409,12 +426,11 @@ export function Portfolio() {
             </Typography>
           </Box>
           
-          <Grid container spacing={2} >
+          <Grid container spacing={2}>
             <Grid item xs={12} sm={4} md={3}>
               <Card sx={{ marginBottom: '8px' }}>
                 <CardContent>
                   <Typography variant="body1" gutterBottom>
-                    {/* (info: not in farms, not in staking) */}
                     TOTAL LIQUIDITY
                   </Typography>
                   <Typography variant="body1" fontWeight="bold" gutterBottom>
@@ -423,22 +439,37 @@ export function Portfolio() {
                 </CardContent>
               </Card>
               <Card style={{ marginBottom: '8px' }}>
-                <CardContent>
+                <CardContent sx={{ py: 2 }}>
                   <Typography variant="body1" gutterBottom>
-                    TOTAL LIQUIDITY NOT IN FARMS: (info: liquidity + LP)
+                    TOTAL LIQUIDITY NOT IN FARMS:
+                    <Tooltip title={tooltipTotalLiquidityNotInFarmsContent}>
+                      <InfoIcon
+                        fontSize="small"
+                        sx={{ ml: 1, verticalAlign: 'middle' }}
+                      />
+                    </Tooltip>
                   </Typography>
                   <Typography variant="body1" fontWeight="bold" gutterBottom>
-                    -
+                    ~$ {new BigNumber(totalValue.replace(/[^0-9.-]+/g,"")).plus(new BigNumber(totalLpValue.replace(/[^0-9.-]+/g,""))).toFormat(2, 1)}
+                  </Typography>
+                  <Typography variant="body1" gutterBottom>
+                    ~$ {totalValue} in TOKENS
                   </Typography>
                 </CardContent>
               </Card>
               <Card style={{ marginBottom: '8px' }}>
-                <CardContent>
+                <CardContent sx={{ py: 2 }}>
                   <Typography variant="body1" gutterBottom>
-                    TOTAL LP NOT IN FARMS: (info: LP)
+                    TOTAL LP NOT IN FARMS:
+                    <Tooltip title={tooltipTotalLpNotInFarmsContent}>
+                      <InfoIcon
+                        fontSize="small"
+                        sx={{ ml: 1, verticalAlign: 'middle' }}
+                      />
+                    </Tooltip>
                   </Typography>
                   <Typography variant="body1" fontWeight="bold" gutterBottom>
-                    -
+                    ~$ {totalLpValue}
                   </Typography>
                 </CardContent>
               </Card>
@@ -476,7 +507,7 @@ export function Portfolio() {
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                       <Typography variant="body2" color="white">No Data Available</Typography>
                     </Box>
-                  ) : (<LiquidityTable pools={pools} isConnected={isConnected} getLpPrice={getLpPrice}/>)}
+                  ) : (<LiquidityTable pools={pools} isConnected={isConnected} getLpPrice={getLpPrice} />)}
                 </CardContent>
               </Card>
             </Grid>
@@ -539,12 +570,13 @@ export function Portfolio() {
               </Card>
             </Grid>
             <Grid item xs={12} sm={8} md={9} sx={{ paddingBottom: '8px' }}>
-              <Card style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+            <Card style={{ height: '100%', ...((farms && farms.length === 0) ? { display: 'flex', alignItems: 'center', justifyContent: 'center' } : {})}}>
                 <CardContent>
-                  <Typography variant="body2" color="white">
-                    No data to show
-                    {/* No Data Available */}
-                  </Typography>
+                  {(farms && farms.length === 0) ? (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                      <Typography variant="body2" color="white">No Data Available</Typography>
+                    </Box>
+                  ) : (<FarmingTable farms={farms} isConnected={isConnected} getTokenPrice={getPriceForSymbol} getLpPrice={getLpPrice} />)}
                 </CardContent>
               </Card>
             </Grid>
