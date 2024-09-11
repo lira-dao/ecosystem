@@ -47,7 +47,7 @@ const SlippageInput: React.FC<SlippageInputProps> = ({
   );
 
   return (
-    <Box sx={{ mt: 2, mb: 2, p: 2  }}>
+    <Box sx={{ mt: 2, p: 2  }}>
       <Box
         sx={{
           display: 'flex',

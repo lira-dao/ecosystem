@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useChainId } from 'wagmi';
 import { dexPairV2Abi, erc20Abi } from '@lira-dao/web3-utils';
 import BigNumber from 'bignumber.js';
@@ -41,12 +42,12 @@ export type Asset = Balance & {
   decimals: number;
   value: number;
   formattedValue: string;
-}
+};
 
-export function usePricedPools(): Asset[] {
-  const { data: externalPrices, error: errorExternalPrices, isLoading: isLoadingExternalPrices } = useFetchPrices();
+export function usePricedPools() {
 
   const balances = useBalances();
+  const { data: externalPrices, error: errorExternalPrices, isLoading: isLoadingExternalPrices } = useFetchPrices();
 
   const ethPriceUSD = useMemo(() => {
     const ethData = externalPrices?.find(price => price.symbol === 'ETH');
@@ -221,22 +222,37 @@ export function usePricedPools(): Asset[] {
   //   };
   // });
 
-  return balances.map((balance, i) => {
-    const currency = getCurrencyBySymbol(balance.symbol);
+  const { data: pricedPools = [], refetch } = useQuery({
+    queryKey: ['pricedPools', balances, externalPrices],
+    queryFn: () => {
+      if (!balances || !externalPrices) return [];
 
-    let value = 0;
+      return balances.map((balance) => {
+        const currency = getCurrencyBySymbol(balance.symbol);
+        let value = 0;
 
-    if (currency?.isNative) {
-      value = new BigNumber(balance.balance).div(10 ** currency.decimals).times(ethPriceUSD || 0).toNumber();
-    } else {
-      value = new BigNumber(balance.balance).div(10 ** (currency?.decimals || 18)).times(externalPrices?.find(p => p.symbol === currency?.symbol)?.price ?? 0).toNumber();
-    }
+        if (currency?.isNative) {
+          value = new BigNumber(balance.balance)
+            .div(10 ** currency.decimals)
+            .times(ethPriceUSD || 0)
+            .toNumber();
+        } else {
+          value = new BigNumber(balance.balance)
+            .div(10 ** (currency?.decimals || 18))
+            .times(externalPrices?.find((p) => p.symbol === currency?.symbol)?.price ?? 0)
+            .toNumber();
+        }
 
-    return {
-      ...balance,
-      decimals: currency?.decimals ?? 18,
-      value,
-      formattedValue: new BigNumber(value).toFormat(2, 1),
-    };
+        return {
+          ...balance,
+          decimals: currency?.decimals ?? 18,
+          value,
+          formattedValue: new BigNumber(value).toFormat(2, 1),
+        };
+      });
+    },
+    enabled: !!balances && !!externalPrices,
   });
+
+  return { pricedPools, refetch };
 }

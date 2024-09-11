@@ -57,7 +57,7 @@ export function Portfolio() {
     address: account.address,
   });
 
-  const assetsChartData = usePricedPools();
+  const { pricedPools: assetsChartData, refetch: refetchAssetsData } = usePricedPools();
 
   const [selectedView, setSelectedView] = useState('assets');
   const [liquidityTimeFrame, setLiquidityTimeFrame] = useState<TimeFrame>('7days');
@@ -84,8 +84,9 @@ export function Portfolio() {
   useEffect(() => {
     if (confirmed) {
       refetchPendingRewards();
+      refetchAssetsData();
     }
-  }, [confirmed, refetchPendingRewards]);
+  }, [confirmed, refetchPendingRewards, refetchAssetsData]);
 
   if (isLoading) {
     return <div>Loading...</div>;

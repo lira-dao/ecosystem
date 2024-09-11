@@ -1,6 +1,7 @@
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Card, Typography } from '@mui/material';
+import { Box, Card, Divider, IconButton, Typography } from '@mui/material';
+import { AddCircleOutlined } from '@mui/icons-material';
 import { Currency, EthereumAddress } from '@lira-dao/web3-utils';
 import { useSnackbar } from 'notistack';
 import { useDebounce } from 'use-debounce';
@@ -59,7 +60,7 @@ export function AddLiquidity() {
   const account = useAccount();
   const accountBalance = useBalanceWagmi({ address: account.address });
 
-  const { data: pricesData } = useFetchPrices();
+  const { data: pricesData, refetch: refetchPrices } = useFetchPrices();
 
   const insufficientBalanceA = useMemo(() => {
     if (currencyA.isNative) {
@@ -210,6 +211,14 @@ export function AddLiquidity() {
       allowanceA.refetch();
       allowanceB.refetch();
 
+      accountBalance.refetch();
+
+      balanceA.refetch();
+      if (currencyB) balanceB.refetch();
+
+      pair.refetchReserves();
+      if (pricesData) refetchPrices();
+
       setFirstValue('');
       setSecondValue('');
     }
@@ -276,6 +285,12 @@ export function AddLiquidity() {
             price={computePrice(currencyA)}
           />
 
+          <Box display="flex" justifyContent="center" mt={-1} mb={-2}>
+            <IconButton disabled sx={{ border: 0 }}>
+              <AddCircleOutlined />
+            </IconButton>
+          </Box>
+
           <CurrencyInput
             balance={
               currencyB?.isNative
@@ -305,30 +320,34 @@ export function AddLiquidity() {
           />
 
           {currencyA && currencyB && (
-            <Box mt={2} p={2}>
-              <Typography variant="body1" gutterBottom>
-                Prices
-              </Typography>
+            <>
+              <Divider sx={{ borderColor: 'rgba(255, 255, 255, 0.1)' }} />
 
-              <Box>
-                <Typography variant="body2" color="text.secondary">
-                  1 {currencyA.symbol} ={' '}
-                  {pair.priceCurrencyA.toFixed(
-                    pair.priceCurrencyA.lt(1) ? 8 : 2,
-                    1,
-                  )}{' '}
-                  {currencyB.symbol}
+              <Box mt={2} p={2}>
+                <Typography variant="body1" gutterBottom>
+                  Prices
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  1 {currencyB.symbol} ={' '}
-                  {pair.priceCurrencyB.toFixed(
-                    pair.priceCurrencyB.lt(1) ? 8 : 2,
-                    1,
-                  )}{' '}
-                  {currencyA.symbol}
-                </Typography>
+
+                <Box>
+                  <Typography variant="body2" color="text.secondary">
+                    1 {currencyA.symbol} ={' '}
+                    {pair.priceCurrencyA.toFixed(
+                      pair.priceCurrencyA.lt(1) ? 8 : 2,
+                      1,
+                    )}{' '}
+                    {currencyB.symbol}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    1 {currencyB.symbol} ={' '}
+                    {pair.priceCurrencyB.toFixed(
+                      pair.priceCurrencyB.lt(1) ? 8 : 2,
+                      1,
+                    )}{' '}
+                    {currencyA.symbol}
+                  </Typography>
+                </Box>
               </Box>
-            </Box>
+            </>
           )}
         </Card>
       </Box>

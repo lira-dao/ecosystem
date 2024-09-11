@@ -1,9 +1,8 @@
-import { Staker } from '../../hooks/useTokenStakers';
+import { useNavigate } from 'react-router-dom';
 import { Box, Button, Card, CardContent, CardHeader, Divider, Grid, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { useNavigate } from 'react-router-dom';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
-
+import { Staker } from '../../hooks/useTokenStakers';
 
 const getApr = (symbol?: string) => {
   switch (symbol) {

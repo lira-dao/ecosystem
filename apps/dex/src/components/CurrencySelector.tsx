@@ -1,11 +1,12 @@
 import { Button, Box, Typography } from '@mui/material';
-import { Currency } from '@lira-dao/web3-utils';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import { Currency } from '@lira-dao/web3-utils';
+import { CustomCurrency } from './AddTokenToMetamaskButton';
 
 interface CurrencySelectorProps {
   disabled: boolean;
   selected: boolean;
-  currency?: Currency;
+  currency?: Currency | CustomCurrency;
   onClick?: () => void;
 }
 
@@ -30,7 +31,7 @@ export function CurrencySelector({ currency, disabled, selected, onClick }: Curr
           width: '100%',
         }}
         startIcon={currency?.icon ? <CurrencyLogo logo={currency.icon} size={24} /> : null}
-        endIcon={!disabled && <ArrowDropDownIcon />}
+        endIcon={<ArrowDropDownIcon />}
       >
         <Typography variant="body1" sx={{ marginLeft: currency ? 0 : 1, marginRight: disabled ? 1 : 0 }}>
           {currency ? currency.symbol : 'Select Coin'}

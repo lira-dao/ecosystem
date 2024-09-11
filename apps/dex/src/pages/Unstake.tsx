@@ -5,17 +5,20 @@ import { formatUnits, parseUnits } from 'viem';
 import { useSnackbar } from 'notistack';
 import BigNumber from 'bignumber.js';
 import { EthereumAddress } from '@lira-dao/web3-utils';
-import { SectionHeader } from '../components/swap/SectionHeader';
+import { useFarmingStakers } from '../hooks/useFarmingStakers';
 import { useTokenStaker } from '../hooks/useTokenStaker';
 import { CurrencyInput } from '../components/swap/CurrencyInput';
 import { ErrorMessage } from '../components/swap/ErrorMessage';
 import { PrimaryButtonWithLoader } from '../components/PrimaryButtonWithLoader';
+import { SectionHeader } from '../components/swap/SectionHeader';
 
 
 export function Unstake() {
   const { enqueueSnackbar } = useSnackbar();
   const params = useParams();
   const [value, setValue] = useState<string>('');
+
+  const farms = useFarmingStakers();
 
   const {
     confirmed,
@@ -77,6 +80,21 @@ export function Unstake() {
     }
   }, [params.stakers]);
 
+  const currentToken = useMemo(() => {
+    if (params.stakers === 'farming' && farms && farms.length > 0) {
+      const farm = farms.find(farm => farm.address === params.staker);
+      if (farm) {
+        return {
+          address: farm.pair.address,
+          symbol: 'LD-v2',
+          decimals: 18,
+          icon: '',
+        };
+      }
+    }
+    return token;
+  }, [params.stakers, params.staker, farms, token]);
+
   const onSetPercentage = (percentage: string) => {
     if (staked.data) {
       setValue(percentage);
@@ -91,8 +109,8 @@ export function Unstake() {
         <Card sx={{ p: 1, backgroundColor: 'background.paper' }}>
           <CurrencyInput
             balance={staked.data?.[0] || 0n}
-            currency={params.stakers === 'farming' ? { symbol: "LP Token", decimals: 18 } as any : token}
-            disabled={false}
+            currency={currentToken}
+            disabled={staked.data?.[0] === 0n}
             formattedBalance={new BigNumber(formatUnits(staked.data?.[0] ?? 0n, 18)).toFixed(6, 1)}
             id="lp-token"
             insufficientBalance={insufficientBalance}
