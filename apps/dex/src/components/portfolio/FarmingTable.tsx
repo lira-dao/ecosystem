@@ -37,6 +37,7 @@ export function FarmingTable({ farms, isConnected, getTokenPrice, getLpPrice }: 
             {isConnected && <TableCell align="right">My Deposit</TableCell>}
             {isConnected && <TableCell align="right">My Deposit Value</TableCell>}
             {isConnected && <TableCell align="right">My Pool Share (%)</TableCell>}
+            {!isConnected && <TableCell align="right">Estimate Daily APR</TableCell>}
             <TableCell align="right"><Typography><span style={{ color: th.colors.green[400] }}>Promo</span> APR</Typography></TableCell>
             {isConnected && <TableCell align="right">Rewards</TableCell>}
             {isConnected && <TableCell align="right">Rewards Value</TableCell>}
@@ -81,6 +82,7 @@ export function FarmingTable({ farms, isConnected, getTokenPrice, getLpPrice }: 
                 {isConnected && (
                   <TableCell align="right" sx={{ textWrap: 'nowrap' }}>{poolShare} %</TableCell>
                 )}
+                {!isConnected && <TableCell align="right">{(new BigNumber(farm.apr).div(365)).toFixed(2)} %</TableCell>}
                 <TableCell
                   align="right"
                   sx={{ textWrap: 'nowrap' }}

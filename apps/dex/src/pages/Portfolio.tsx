@@ -39,6 +39,13 @@ import { muiDarkTheme as theme } from '../theme/theme';
 type View = 'assets' | 'liquidity';
 type TimeFrame = '7days' | '1month' | '3months' | '6months' | '1year' | 'all';
 
+const parseToBigNumber = (value: string) => {
+  if (!value || typeof value !== 'string') {
+    return new BigNumber(0);
+  }
+  return new BigNumber(value.replace(/[^0-9.-]+/g, ""));
+};
+
 export function Portfolio() {
   const th = useTheme();
 
@@ -73,7 +80,7 @@ export function Portfolio() {
     address: account.address,
   });
 
-  const { pricedPools: _assetsChartData, refetch: refetchAssetsData } = usePricedPools();
+  const { pricedPools: portfolioAssetsData, refetch: refetchAssetsData } = usePricedPools();
 
   const [showLpPositions, setShowLpPositions] = useState(false);
   const assetsChartData = usePortfolioBalance(showLpPositions);
@@ -125,38 +132,7 @@ export function Portfolio() {
     return lpPriceObj ? parseFloat(lpPriceObj.price) : 0;
   };
 
-  // const tokenAssets = useMemo(() => tokensBalance.map((token) => ({
-  //   symbol: token.symbol,
-  //   formattedBalance: token.formattedBalance,
-  //   value: parseFloat(token.formattedBalance) * (parseFloat(pricesData?.find(price => price.symbol === token.symbol)?.price || '0')),
-  // })), [tokensBalance, pricesData]);
-
-  // const lpAssets = useMemo(() => pools.map((pool) => {
-  //   const lpPrice = getLpPrice(pool.address);
-  //   const lpValue = new BigNumber(pool.formattedBalance).times(lpPrice).toNumber();
-  //   return {
-  //     symbol: `${pool.token0?.symbol}-${pool.token1?.symbol}`,
-  //     formattedBalance: pool.formattedBalance,
-  //     value: lpValue,
-  //   };
-  // }), [pools, lpPrices]);
-
-  // const combinedAssets = useMemo(() => {
-  //   if (showLpPositions) {
-  //     return [...tokenAssets, ...lpAssets];
-  //   }
-  //   return tokenAssets;
-  // }, [showLpPositions, tokenAssets, lpAssets]);
-
-  // const combinedAssets = useEffect(() => {
-  //   // if (showLpPositions) {
-  //   //   return [...tokenAssets, ...lpAssets];
-  //   // }
-  //   // return tokenAssets;
-  //   debugger
-  // }, [showLpPositions]);
-
-  const totalValue = _assetsChartData.reduce((prev, curr) => prev.plus(curr.value), new BigNumber(0)).toFormat(2, 1);
+  const totalValue = portfolioAssetsData.reduce((prev, curr) => prev.plus(curr.value), new BigNumber(0)).toFormat(2, 1);
 
   const totalLpValue = pools.reduce(
     (prev, pool) => {
@@ -167,10 +143,72 @@ export function Portfolio() {
     new BigNumber(0)
   ).toFormat(2, 1);
 
+  const activeLiquidityPositions = isConnected
+    ? [...new Set([
+        ...pools.filter(pool => new BigNumber(pool.formattedBalance || 0).isGreaterThan(0)).map(pool => pool.address),
+        ...farms.filter(farm => new BigNumber(farm.amount || 0).isGreaterThan(0)).map(farm => farm.pair?.address),
+      ])].length
+    : 0;
+
+  const totalFarmsStakedValue = isConnected
+    ? farms.reduce((total, farm) => {
+        const lpPrice = getLpPrice(farm.pair?.address || '');
+        const farmBalance = new BigNumber(farm.amount || 0);
+        const stakedValue = farmBalance.multipliedBy(lpPrice || 0);
+        
+        return total.plus(stakedValue);
+      }, new BigNumber(0)).toFixed(2)
+    : '0.00';
+
   const getPriceForSymbol = (symbol: string): number => {
     const priceData = pricesData?.find((price) => price.symbol === symbol);
     return priceData ? parseFloat(priceData.price) : 0;
   };
+
+  const totalFarmingPendingRewards = isConnected
+    ? farms.reduce((total, farm) => {
+        const reward0Symbol = farm.tokens[1]?.symbol || '';
+        const reward1Symbol = farm.tokens[0]?.symbol || '';
+
+        const reward0Price = getPriceForSymbol(reward0Symbol) || 0;
+        const reward1Price = getPriceForSymbol(reward1Symbol) || 0;
+
+        const reward0Value = new BigNumber(farm.rewards?.[0] || 0).multipliedBy(reward0Price);
+        const reward1Value = new BigNumber(farm.rewards?.[1] || 0).multipliedBy(reward1Price);
+
+        return total.plus(reward0Value).plus(reward1Value);
+      }, new BigNumber(0)).toFormat(2, 1)
+    : '0.00';
+
+  const calculateDailyRewards = (apr: number, amount: BigNumber) => {
+    if (isNaN(apr) || apr === 0 || amount.isNaN() || amount.isZero()) {
+      return new BigNumber(0);
+    }
+
+    const dailyRate = apr / 100 / 365;
+    const dailyRewards = amount.multipliedBy(dailyRate);
+  
+    return dailyRewards;
+  };
+
+  const totalEstimatedDailyRewards = farms.reduce((total, farm) => {
+    const apr = isNaN(parseFloat(farm.apr)) ? 0 : parseFloat(farm.apr);
+  
+    const lpPrice = getLpPrice(farm.pair?.address || '') || 0;
+  
+    const farmAmount = new BigNumber(farm.amount || 0);
+  
+    const farmValue = farmAmount.multipliedBy(lpPrice);
+  
+    const dailyReward = calculateDailyRewards(apr, farmValue);
+    console.log("APR:", apr, "Farm Amount:", farm.amount, "LP Price:", lpPrice, "Farm Investment:", farmValue.toString());
+
+    return total.plus(dailyReward);
+  }, new BigNumber(0)).toFormat(2, 1);
+
+  const activeFarmingPositions = isConnected
+    ? farms.filter(farm => new BigNumber(farm.amount || 0).isGreaterThan(0)).length
+    : 0;
 
   const totalStaking = stakers.reduce(
     (totals, staker) => {
@@ -187,15 +225,15 @@ export function Portfolio() {
   
         const tokenPrice = getPriceForSymbol(token.symbol);
   
-        const stakedAmount = token.symbol === 'LDT' ? new BigNumber(staker.boostAmount.replace(/,/g, '')) : new BigNumber(staker.amount.replace(/,/g, ''));
-  
+        const stakedAmount = token.symbol === 'LDT' ? parseToBigNumber(staker.boostAmount) : parseToBigNumber(staker.amount);
+
         const tokenValue = stakedAmount.times(tokenPrice);
 
         return totalTokenValue.plus(tokenValue);
       }, new BigNumber(0));
   
-      const boostAmount = new BigNumber(staker.boostAmount.replace(/,/g, ''));
-      const remainingBoost = new BigNumber(staker.remainingBoost.replace(/,/g, ''));
+      const boostAmount = parseToBigNumber(staker.boostAmount);
+      const remainingBoost = parseToBigNumber(staker.remainingBoost);
       const boostAmountUSD = boostAmount.times(getPriceForSymbol('LDT'));
       const remainingBoostUSD = remainingBoost.times(getPriceForSymbol('LDT'));
   
@@ -236,6 +274,22 @@ export function Portfolio() {
     </Box>
   );
 
+  const tooltipActiveLiquidityPositionsContent = (
+    <Box>
+      <Typography variant="caption">
+        Active Liquidity Positions represent the total number of unique LP tokens either held in your wallet or staked in farming pools. Each Liquidity Pool (LP) token is counted only once, even if it's both in your wallet and staked.
+      </Typography>
+    </Box>
+  );
+
+  const tooltipTotalFarmsDailyRewardContent = (
+    <Box>
+      <Typography variant="caption">
+        Daily estimated farming rewards are calculated by multiplying your investment in farming by the APR percentage, divided by 365 (days in a year).
+      </Typography>
+    </Box>
+  );
+
   return (
     <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', marginY: 4, paddingX: 2 }}>
       <Box>
@@ -259,13 +313,18 @@ export function Portfolio() {
                 </Tooltip>
               </Typography>
             </Box>
-            <Typography variant="h3">≃$ {totalValue}</Typography>
-              {/*<Typography variant="h5" color={theme?.colors.gray155}>~$0.00</Typography>*/}
+            <Typography variant="h3">
+              ≃$ {parseToBigNumber(totalValue)
+                  .plus(parseToBigNumber(totalLpValue))
+                  .plus(parseToBigNumber(totalFarmsStakedValue))
+                  .plus(parseToBigNumber(totalStaking.staking.toFixed(2)))
+                  .toFormat(2, 1)}
+            </Typography>
 
-              {!isConnected && (
-                <Typography variant="body2" color={theme?.colors.red400} textAlign="center" mt={2}>
-                  No wallet connected. Please connect your MetaMask.
-                </Typography>)}
+            {!isConnected && (
+              <Typography variant="body2" color={theme?.colors.red400} textAlign="center" mt={2}>
+                No wallet connected. Please connect your MetaMask.
+              </Typography>)}
             </CardContent>
           </Card>
 
@@ -434,7 +493,11 @@ export function Portfolio() {
                     TOTAL LIQUIDITY
                   </Typography>
                   <Typography variant="body1" fontWeight="bold" gutterBottom>
-                    ~$0.00 - No data available
+                    ~$ {parseToBigNumber(totalValue)
+                        .plus(parseToBigNumber(totalLpValue))
+                        .plus(parseToBigNumber(totalFarmsStakedValue))
+                        .toFormat(2, 1)}
+                    {!isConnected && '- No data available'}
                   </Typography>
                 </CardContent>
               </Card>
@@ -450,10 +513,12 @@ export function Portfolio() {
                     </Tooltip>
                   </Typography>
                   <Typography variant="body1" fontWeight="bold" gutterBottom>
-                    ~$ {new BigNumber(totalValue.replace(/[^0-9.-]+/g,"")).plus(new BigNumber(totalLpValue.replace(/[^0-9.-]+/g,""))).toFormat(2, 1)}
+                    ~$ {parseToBigNumber(totalValue)
+                        .plus(parseToBigNumber(totalLpValue))
+                        .toFormat(2, 1)}
                   </Typography>
                   <Typography variant="body1" gutterBottom>
-                    ~$ {totalValue} in TOKENS
+                    ~$ {totalValue} in Tokens
                   </Typography>
                 </CardContent>
               </Card>
@@ -477,9 +542,15 @@ export function Portfolio() {
                 <CardContent>
                   <Typography variant="body1" gutterBottom>
                     ACTIVE LIQUIDITY POSITIONS:
+                    <Tooltip title={tooltipActiveLiquidityPositionsContent}>
+                      <InfoIcon
+                        fontSize="small"
+                        sx={{ ml: 1, verticalAlign: 'middle' }}
+                      />
+                    </Tooltip>
                   </Typography>
                   <Typography variant="body1" fontWeight="bold" gutterBottom>
-                    -
+                    {activeLiquidityPositions}
                   </Typography>
                 </CardContent>
               </Card>
@@ -487,22 +558,6 @@ export function Portfolio() {
             <Grid item xs={12} sm={8} md={9} sx={{ paddingBottom: '8px' }}>
               <Card style={{ height: '100%', ...((pools && pools.length === 0) ? {display: 'flex', alignItems: 'center', justifyContent: 'center'} : {})}}>
                 <CardContent>
-
-                  {/* {pools.map((pool, index) => {
-                    const lpPriceObj = lpPrices?.find((lp) => lp.pairAddress === pool.address);
-                    const lpPrice = lpPriceObj ? lpPriceObj.price : '0';
-                    const balance = pool.formattedBalance;
-
-                    return (
-                      <Typography variant="body1" gutterBottom>
-                        {`${pool.token0?.symbol} - ${pool.token1?.symbol}`}
-                        LP Token Address: {pool.address}
-                        Balance: {balance}
-                        LP Price: ${lpPrice}
-                      </Typography>
-                    );
-                  })} */}
-
                   {(pools && pools.length === 0) ? (
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                       <Typography variant="body2" color="white">No Data Available</Typography>
@@ -531,7 +586,7 @@ export function Portfolio() {
                     TOTAL STAKED IN FARMS
                   </Typography>
                   <Typography variant="body1" fontWeight="bold" gutterBottom>
-                    ~$ 0.00
+                    ~$ {totalFarmsStakedValue}
                   </Typography>
                 </CardContent>
               </Card>
@@ -542,7 +597,7 @@ export function Portfolio() {
                     Pending Farming Rewards
                   </Typography>
                   <Typography variant="body1" fontWeight="bold" gutterBottom>
-                    -
+                    ~$ {totalFarmingPendingRewards}
                   </Typography>
                 </CardContent>
               </Card>
@@ -550,10 +605,16 @@ export function Portfolio() {
               <Card style={{ marginBottom: '8px' }}>
                 <CardContent>
                   <Typography variant="body1" gutterBottom>
-                    APR or Estimated Rewards
+                    DAILY ESTIMATED REWARDS:
+                    <Tooltip title={tooltipTotalFarmsDailyRewardContent}>
+                    <InfoIcon
+                      fontSize="small"
+                      sx={{ ml: 1, verticalAlign: 'middle' }}
+                    />
+                  </Tooltip>
                   </Typography>
                   <Typography variant="body1" fontWeight="bold" gutterBottom>
-                    -
+                    ~$ {totalEstimatedDailyRewards}
                   </Typography>
                 </CardContent>
               </Card>
@@ -564,7 +625,7 @@ export function Portfolio() {
                     ACTIVE FARMING POSITIONS
                   </Typography>
                   <Typography variant="body1" fontWeight="bold" gutterBottom>
-                    -
+                    {activeFarmingPositions}
                   </Typography>
                 </CardContent>
               </Card>
