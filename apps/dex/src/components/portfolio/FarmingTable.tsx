@@ -28,7 +28,7 @@ export function FarmingTable({ farms, isConnected, getTokenPrice, getLpPrice }: 
   const th = useTheme();
 
   return (
-    <TableContainer component={Paper} sx={{ maxHeight: 350, overflowY: 'auto' }}>
+    <TableContainer component={Paper} sx={{ overflowY: 'auto' }}>
       <Table stickyHeader aria-label="your farming table">
         <TableHead>
           <TableRow>
@@ -36,7 +36,7 @@ export function FarmingTable({ farms, isConnected, getTokenPrice, getLpPrice }: 
             <TableCell align="right">Total Staked</TableCell>
             {isConnected && <TableCell align="right">My Deposit</TableCell>}
             {isConnected && <TableCell align="right">My Deposit Value</TableCell>}
-            {isConnected && <TableCell align="right">My Pool Share (%)</TableCell>}
+            {isConnected && <TableCell align="right">Pool Share (%)</TableCell>}
             {!isConnected && <TableCell align="right">Estimate Daily APR</TableCell>}
             <TableCell align="right"><Typography><span style={{ color: th.colors.green[400] }}>Promo</span> APR</Typography></TableCell>
             {isConnected && <TableCell align="right">Rewards</TableCell>}

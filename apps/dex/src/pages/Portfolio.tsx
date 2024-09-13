@@ -33,6 +33,7 @@ import { ReferralCard } from '../components/portfolio/ReferralCard';
 import { LiquidityTable } from '../components/portfolio/LiquidityTable';
 import { FarmingTable } from '../components/portfolio/FarmingTable';
 import { muiDarkTheme as theme } from '../theme/theme';
+import { StakingTable } from '../components/portfolio/StakingTable';
 
 
 // type View = 'liquidity' | 'farming' | 'holdings';
@@ -556,7 +557,13 @@ export function Portfolio() {
               </Card>
             </Grid>
             <Grid item xs={12} sm={8} md={9} sx={{ paddingBottom: '8px' }}>
-              <Card style={{ height: '100%', ...((pools && pools.length === 0) ? {display: 'flex', alignItems: 'center', justifyContent: 'center'} : {})}}>
+              <Card style={{ 
+                display: 'flex',
+                height: '100%',
+                ...((pools && pools.length === 0)
+                  ? { alignItems: 'center', justifyContent: 'center' }
+                  : { flexDirection: 'column', flexGrow: 1 })
+              }}>
                 <CardContent>
                   {(pools && pools.length === 0) ? (
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -631,7 +638,13 @@ export function Portfolio() {
               </Card>
             </Grid>
             <Grid item xs={12} sm={8} md={9} sx={{ paddingBottom: '8px' }}>
-            <Card style={{ height: '100%', ...((farms && farms.length === 0) ? { display: 'flex', alignItems: 'center', justifyContent: 'center' } : {})}}>
+              <Card style={{ 
+                display: 'flex',
+                height: '100%',
+                ...((farms && farms.length === 0)
+                  ? { alignItems: 'center', justifyContent: 'center' }
+                  : { flexDirection: 'column', flexGrow: 1 })
+              }}>
                 <CardContent>
                   {(farms && farms.length === 0) ? (
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -700,12 +713,21 @@ export function Portfolio() {
               </Card>
             </Grid>
             <Grid item xs={12} sm={8} md={9} sx={{ paddingBottom: '8px' }}>
-              <Card style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+              <Card style={{ 
+                display: 'flex',
+                height: '100%',
+                ...((stakers && stakers.length === 0)
+                  ? { alignItems: 'center', justifyContent: 'center' }
+                  : { flexDirection: 'column', flexGrow: 1 })
+              }}>
                 <CardContent>
-                  <Typography variant="body2" color="white">
-                    No data to show
-                    {/* No Data Available */}
-                  </Typography>
+                  {(stakers && stakers.length === 0) ? (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                      <Typography variant="body2" color="white">No Data Available</Typography>
+                    </Box>
+                  ) : (
+                    <StakingTable stakers={stakers} isConnected={isConnected} getTokenPrice={getPriceForSymbol} />
+                  )}
                 </CardContent>
               </Card>
             </Grid>
