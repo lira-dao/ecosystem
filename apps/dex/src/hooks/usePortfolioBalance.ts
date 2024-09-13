@@ -9,10 +9,8 @@ import { usePricedPools } from './usePricesPools';
 export function usePortfolioBalance(showLpPositions: boolean) {
 
   const { pricedPools, refetch: refetchAssetsData } = usePricedPools();
-  console.log("🚀 ~ usePortfolioBalance ~ pricedPools:", pricedPools);
 
   const { data: lpPrices } = useFetchLpPrices();
-  console.log("🚀 ~ usePortfolioBalance ~ lpPrices:", lpPrices)
 
   const pools = usePools();
 

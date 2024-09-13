@@ -27,7 +27,7 @@ import { usePortfolioBalance } from '../hooks/usePortfolioBalance';
 import { usePricedPools } from '../hooks/usePricesPools';
 import { useReferralRewards } from '../hooks/useReferralRewards';
 import { useTokenBalances } from '../hooks/useTokenBalances';
-import { useTokenStakers } from '../hooks/useTokenStakers';
+import { Staker, useTokenStakers } from '../hooks/useTokenStakers';
 import { AssetsCard, getTokenColor } from '../components/portfolio/AssetsCard';
 import { ReferralCard } from '../components/portfolio/ReferralCard';
 import { LiquidityTable } from '../components/portfolio/LiquidityTable';
@@ -211,45 +211,81 @@ export function Portfolio() {
     ? farms.filter(farm => new BigNumber(farm.amount || 0).isGreaterThan(0)).length
     : 0;
 
-  const totalStaking = stakers.reduce(
-    (totals, staker) => {
-      if (!staker.tokens || !Array.isArray(staker.tokens)) {
-        console.error(`No tokens found or tokens is not an array for staker ${staker.address}`);
-        return totals;
-      }
+  const calculateStakingRewards = (staker: Staker, tokenSymbol: string, baseApy: BigNumber, boostFactor: BigNumber) => {
+    const tokenPrice = new BigNumber(getPriceForSymbol(tokenSymbol) || 0);
   
-      const stakingValue = staker.tokens.reduce((totalTokenValue, token) => {
-        if (!token || !token.symbol) {
-          console.error("Invalid token structure:", token);
-          return totalTokenValue;
-        }
+    const stakedAmount = tokenSymbol === 'LDT' 
+      ? parseToBigNumber(staker.boostAmount || '0') 
+      : parseToBigNumber(staker.amount || '0');
   
-        const tokenPrice = getPriceForSymbol(token.symbol);
+    if (tokenPrice.isZero() || stakedAmount.isZero()) {
+      console.error(`Invalid tokenPrice or stakedAmount for ${tokenSymbol}`);
+      return { stakingValue: new BigNumber(0), dailyReward: new BigNumber(0), dailyBoostingReward: new BigNumber(0), monthlyReward: new BigNumber(0) };
+    }
   
-        const stakedAmount = token.symbol === 'LDT' ? parseToBigNumber(staker.boostAmount) : parseToBigNumber(staker.amount);
-
-        const tokenValue = stakedAmount.times(tokenPrice);
-
-        return totalTokenValue.plus(tokenValue);
-      }, new BigNumber(0));
+    const stakingValue = stakedAmount.times(tokenPrice);
   
-      const boostAmount = parseToBigNumber(staker.boostAmount);
-      const remainingBoost = parseToBigNumber(staker.remainingBoost);
-      const boostAmountUSD = boostAmount.times(getPriceForSymbol('LDT'));
-      const remainingBoostUSD = remainingBoost.times(getPriceForSymbol('LDT'));
+    const apyWithoutBoost = baseApy;
+    const apyWithBoost = baseApy.times(boostFactor);
+  
+    const dailyStakingReward = stakingValue.times(apyWithoutBoost).div(365);
+    const dailyBoostingReward = stakingValue.times(apyWithBoost).div(365);
+  
+    const monthlyStakingReward = stakingValue.times(apyWithoutBoost).div(12);
+    const monthlyBoostingReward = stakingValue.times(apyWithBoost).div(12);
+  
+    return { stakingValue, dailyStakingReward, dailyBoostingReward, monthlyStakingReward, monthlyBoostingReward };
+  };
+  
+  const totalStaking = stakers.reduce((totals, staker) => {
+    if (!staker.tokens || !Array.isArray(staker.tokens)) {
+      console.error(`No tokens found or tokens is not an array for staker ${staker.address}`);
+      return totals;
+    }
+  
+    const apr = parseFloat(staker.apr) || 0;
+    const baseApy = new BigNumber(apr).div(100);
+  
+    const boostAmount = parseToBigNumber(staker.boostAmount || '0');
+    const maxBoostAmount = parseToBigNumber(staker.maxBoost || '1');
+    const boostFactor = BigNumber.min(boostAmount.div(maxBoostAmount), 1);
+  
+    const rewards = staker.tokens.reduce((rewardsTotals, token) => {
+      const tokenRewards = calculateStakingRewards(staker, token?.symbol || '', baseApy, boostFactor);
   
       return {
-        staking: totals.staking.plus(stakingValue),
-        boosting: totals.boosting.plus(boostAmountUSD),
-        remainingBoost: totals.remainingBoost.plus(remainingBoostUSD),
+        stakingValue: rewardsTotals.stakingValue.plus(tokenRewards.stakingValue || new BigNumber(0)),
+        dailyStakingReward: rewardsTotals.dailyStakingReward.plus(tokenRewards.dailyStakingReward || new BigNumber(0)),
+        dailyBoostingReward: rewardsTotals.dailyBoostingReward.plus(tokenRewards.dailyBoostingReward || new BigNumber(0)),
+        monthlyStakingReward: rewardsTotals.monthlyStakingReward.plus(tokenRewards.monthlyStakingReward || new BigNumber(0)),
+        monthlyBoostingReward: rewardsTotals.monthlyBoostingReward.plus(tokenRewards.monthlyBoostingReward || new BigNumber(0)),
       };
-    },
-    {
-      staking: new BigNumber(0),
-      boosting: new BigNumber(0),
-      remainingBoost: new BigNumber(0),
-    }
-  );
+    }, {
+      stakingValue: new BigNumber(0),
+      dailyStakingReward: new BigNumber(0),
+      dailyBoostingReward: new BigNumber(0),
+      monthlyStakingReward: new BigNumber(0),
+      monthlyBoostingReward: new BigNumber(0),
+    });
+  
+    return {
+      staking: totals.staking.plus(rewards.stakingValue),
+      boosting: totals.boosting.plus(boostAmount.times(getPriceForSymbol('LDT'))),
+      remainingBoost: totals.remainingBoost.plus(parseToBigNumber(staker.remainingBoost || '0').times(getPriceForSymbol('LDT'))),
+      dailyStakingRewards: totals.dailyStakingRewards.plus(rewards.dailyStakingReward),
+      dailyBoostingRewards: totals.dailyBoostingRewards.plus(rewards.dailyBoostingReward),
+      monthlyStakingRewards: totals.monthlyStakingRewards.plus(rewards.monthlyStakingReward),
+      monthlyBoostingRewards: totals.monthlyBoostingRewards.plus(rewards.monthlyBoostingReward),
+    };
+  }, {
+    staking: new BigNumber(0),
+    boosting: new BigNumber(0),
+    remainingBoost: new BigNumber(0),
+    dailyStakingRewards: new BigNumber(0),
+    dailyBoostingRewards: new BigNumber(0),
+    monthlyStakingRewards: new BigNumber(0),
+    monthlyBoostingRewards: new BigNumber(0),
+  });
 
   const tooltipPortfolioValueContent = (
     <Box>
@@ -291,6 +327,32 @@ export function Portfolio() {
     </Box>
   );
 
+  const tooltipStakingRewardsContent = (
+    <Box>
+      <Typography variant="caption">
+        Stake your Treasury Bond (TB) tokens to earn rewards and boost your Annual Percentage Yield (APY) by staking LDT tokens. The Rewards Boosting System allows you to increase your APY up to 100% of the base rate by staking LDT tokens, with a cap of 50% of the value of your staked TB tokens.
+      </Typography>
+      <Box
+        component="a"
+        href="https://whitepaper.liradao.org/LIRA-DEX.md/008.1-Staking-rewards-boosting"
+        target="_blank"
+        rel="noopener noreferrer"
+        sx={{
+          mt: 1,
+          display: 'block',
+          color: theme.colors.green[400],
+          textDecoration: 'none',
+          fontWeight: 'bold',
+          '&:hover': {
+            color: 'white',
+          },
+        }}
+      >
+        Learn more
+      </Box>
+    </Box>
+  );
+  
   return (
     <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', marginY: 4, paddingX: 2 }}>
       <Box>
@@ -693,11 +755,32 @@ export function Portfolio() {
               <Card style={{ marginBottom: '8px' }}>
                 <CardContent>
                   <Typography variant="body1" gutterBottom>
-                    TOTAL NOT IN STAKING
+                    ESTIMATED REWARDS
+                    <Tooltip title={tooltipStakingRewardsContent}>
+                      <InfoIcon
+                        fontSize="small"
+                        sx={{ ml: 1, verticalAlign: 'middle' }}
+                      />
+                    </Tooltip>
                   </Typography>
-                  <Typography variant="body1" fontWeight="bold" gutterBottom>
-                    -
-                  </Typography>
+
+                  <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'nowrap', width: '100%', overflow: 'hidden' }}>
+                    <Typography variant="body1" fontWeight="bold">
+                      Daily: ~$ {totalStaking.dailyStakingRewards.plus(totalStaking.dailyBoostingRewards).toFixed(2)}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ ml: 1, whiteSpace: 'nowrap' }}>
+                      (~$ {totalStaking.dailyStakingRewards.toFixed(2)} + {totalStaking.dailyBoostingRewards.toFixed(2)})
+                    </Typography>
+                  </Box>
+
+                  <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'nowrap', width: '100%', mt: 1, overflow: 'hidden' }}>
+                    <Typography variant="body1" fontWeight="bold">
+                      Monthly: ~$ {totalStaking.monthlyStakingRewards.plus(totalStaking.monthlyBoostingRewards).toFixed(2)}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ ml: 1, whiteSpace: 'nowrap' }}>
+                      (~$ {totalStaking.monthlyStakingRewards.toFixed(2)} + {totalStaking.monthlyBoostingRewards.toFixed(2)})
+                    </Typography>
+                  </Box>
                 </CardContent>
               </Card>
 
