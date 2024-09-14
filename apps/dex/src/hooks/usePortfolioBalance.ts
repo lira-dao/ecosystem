@@ -24,11 +24,11 @@ export function usePortfolioBalance(showLpPositions: boolean) {
 
     return pricedPools.map((token) => {
 
-      const formattedBalance = token.formattedBalance.replace(/,/g, '');
+      const formattedBalance = token.formattedBalance.replace(/,/g, '') || '0';
 
       return {
         symbol: token.symbol,
-        price: token.value / parseFloat(formattedBalance),
+        price: (typeof token.price === 'string') ? parseFloat(token.price) : token.price,
         balance: parseFloat(formattedBalance),
         value: token.value,
       }

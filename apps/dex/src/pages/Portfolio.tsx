@@ -202,7 +202,6 @@ export function Portfolio() {
     const farmValue = farmAmount.multipliedBy(lpPrice);
   
     const dailyReward = calculateDailyRewards(apr, farmValue);
-    console.log("APR:", apr, "Farm Amount:", farm.amount, "LP Price:", lpPrice, "Farm Investment:", farmValue.toString());
 
     return total.plus(dailyReward);
   }, new BigNumber(0)).toFormat(2, 1);
@@ -219,7 +218,6 @@ export function Portfolio() {
       : parseToBigNumber(staker.amount || '0');
   
     if (tokenPrice.isZero() || stakedAmount.isZero()) {
-      console.error(`Invalid tokenPrice or stakedAmount for ${tokenSymbol}`);
       return { stakingValue: new BigNumber(0), dailyReward: new BigNumber(0), dailyBoostingReward: new BigNumber(0), monthlyReward: new BigNumber(0) };
     }
   
