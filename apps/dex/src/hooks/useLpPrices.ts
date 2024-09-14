@@ -3,9 +3,9 @@ import { useQuery } from '@tanstack/react-query';
 export interface LpPrice {
   pairAddress: string;
   symbol: string;
+	supply: string;
   price: string;
 	//   totalValue: string;
-	//   supply: string;
 	//   reserve0: string;
 	//   reserve1: string;
 	//   token0perLP: string;
