@@ -38,6 +38,8 @@ export function StakingTable({ stakers, isConnected, getTokenPrice }: Props) {
             const token0Price = getTokenPrice(staker.tokens[1]?.symbol || '');
             const token1Price = getTokenPrice(staker.tokens[0]?.symbol || '');
 
+            const totalStaked = new BigNumber(staker.totalStaked.replace(/,/g, ''));
+
             const stakedAmount = new BigNumber(staker.amount.replace(/,/g, ''));
             const tokenPrice = staker.token ? getTokenPrice(staker.token.symbol) : 0;
             const totalStakedValue = stakedAmount.times(tokenPrice);
@@ -79,10 +81,12 @@ export function StakingTable({ stakers, isConnected, getTokenPrice }: Props) {
                     </Typography>
                   </Box>
                 </TableCell>
-                <TableCell align="right" sx={{ textWrap: 'nowrap' }}>
-                  {!isConnected ? '-' : stakedAmount.isGreaterThan(0) ? stakedAmount.toFixed(2) : '0'} {staker.tokens[0]?.symbol}
-                </TableCell>
-                <TableCell align="right" sx={{ textWrap: 'nowrap' }}>≈$ {totalStakedValue.isGreaterThan(0) ? totalStakedValue.toFixed(2) : '0'}</TableCell>
+                {!isConnected && <TableCell align="right">{totalStaked.toFixed(2)} {staker.tokens[0]?.symbol}</TableCell>}
+                {!isConnected && <TableCell align="right">≈$ {totalStaked.times(tokenPrice).toFixed(2)}</TableCell>}
+                {isConnected && <TableCell align="right" sx={{ textWrap: 'nowrap' }}>
+                  {stakedAmount.isGreaterThan(0) ? stakedAmount.toFixed(2) : '0'} {staker.tokens[0]?.symbol}
+                </TableCell>}
+                {isConnected && <TableCell align="right" sx={{ textWrap: 'nowrap' }}>≈$ {totalStakedValue.isGreaterThan(0) ? totalStakedValue.toFixed(2) : '0'}</TableCell>}
                 {isConnected && <TableCell align="right">{boostAmount.toFixed(2)} LDT</TableCell>}
                 {isConnected && <TableCell align="right" sx={{ textWrap: 'nowrap' }}>≈$ {totalBoostValue.isGreaterThan(0) ? totalBoostValue.toFixed(2) : '0'}</TableCell>}
                 {isConnected && <TableCell align="right">{remainingBoost.toFixed(2)} LDT</TableCell>}
