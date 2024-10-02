@@ -1,0 +1,11 @@
+services:
+  service:
+    container_name: reward-trigger
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - RPC_URL=${RPC_URL}
+      - WALLET_ADDRESS=${WALLET_ADDRESS}
+      - WALLET_PRIVATE_KEY=${WALLET_PRIVATE_KEY}
+    restart: unless-stopped

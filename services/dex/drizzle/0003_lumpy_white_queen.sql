@@ -1,0 +1,1 @@
+ALTER TABLE "staking_rewards" ADD COLUMN "staked_token_address" varchar NOT NULL;

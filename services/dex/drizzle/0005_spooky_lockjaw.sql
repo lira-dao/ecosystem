@@ -1,0 +1,1 @@
+ALTER TABLE "referral_rewards" ADD COLUMN "distribution_tx_id" varchar;

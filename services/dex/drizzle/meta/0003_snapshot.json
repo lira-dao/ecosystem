@@ -1,0 +1,241 @@
+{
+  "id": "24a15ba9-dbf0-445c-896f-e4f739f7f99e",
+  "prevId": "40d351de-39b2-4e55-937e-01d046faefa1",
+  "version": "6",
+  "dialect": "postgresql",
+  "tables": {
+    "public.price": {
+      "name": "price",
+      "schema": "",
+      "columns": {
+        "chain_id": {
+          "name": "chain_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "token0": {
+          "name": "token0",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "token1": {
+          "name": "token1",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "price": {
+          "name": "price",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.prices": {
+      "name": "prices",
+      "schema": "",
+      "columns": {
+        "symbol": {
+          "name": "symbol",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "price": {
+          "name": "price",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "volume": {
+          "name": "volume",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "marketCap": {
+          "name": "marketCap",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.referral": {
+      "name": "referral",
+      "schema": "",
+      "columns": {
+        "referrer": {
+          "name": "referrer",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "referral": {
+          "name": "referral",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "referral_referrer_referral_unique": {
+          "name": "referral_referrer_referral_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "referrer",
+            "referral"
+          ]
+        }
+      }
+    },
+    "public.referral_url": {
+      "name": "referral_url",
+      "schema": "",
+      "columns": {
+        "referrer": {
+          "name": "referrer",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "url": {
+          "name": "url",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.staking_rewards": {
+      "name": "staking_rewards",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "staker_address": {
+          "name": "staker_address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "referrer_address": {
+          "name": "referrer_address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "staked_token_address": {
+          "name": "staked_token_address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "staked_amount": {
+          "name": "staked_amount",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reward_amount": {
+          "name": "reward_amount",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "staking_tx_id": {
+          "name": "staking_tx_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reward_tx_id": {
+          "name": "reward_tx_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.tokens": {
+      "name": "tokens",
+      "schema": "",
+      "columns": {
+        "chain_id": {
+          "name": "chain_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "address": {
+          "name": "address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "symbol": {
+          "name": "symbol",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "decimals": {
+          "name": "decimals",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
