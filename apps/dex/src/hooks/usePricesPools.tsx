@@ -229,7 +229,9 @@ export function usePricedPools() {
 
       return balances.map((balance) => {
         const currency = getCurrencyBySymbol(balance.symbol);
+
         let value = 0;
+        let price = externalPrices?.find((p) => p.symbol === currency?.symbol)?.price || 0;
 
         if (currency?.isNative) {
           value = new BigNumber(balance.balance)
@@ -239,13 +241,18 @@ export function usePricedPools() {
         } else {
           value = new BigNumber(balance.balance)
             .div(10 ** (currency?.decimals || 18))
-            .times(externalPrices?.find((p) => p.symbol === currency?.symbol)?.price ?? 0)
+            .times(price)
             .toNumber();
         }
-
+      
+        if (!price || price === 0) {
+          console.warn(`Price not available for ${currency?.symbol}. Setting price to 0.`);
+        }
+      
         return {
           ...balance,
           decimals: currency?.decimals ?? 18,
+          price,
           value,
           formattedValue: new BigNumber(value).toFormat(2, 1),
         };
