@@ -19,6 +19,7 @@ contract Referrals is Ownable2Step {
 
     function register(address referrer) external {
         require(referrer != msg.sender, 'INVALID_REFERRER');
+        require(referrers[referrer] != msg.sender, 'INVALID_REFERRER');
         require(referrers[msg.sender] == address(0), 'ALREADY_REFERRED');
 
         referrers[msg.sender] = referrer;

@@ -26,4 +26,12 @@ describe('Referrals', () => {
 
     expect(await referrals.referred(user1)).eq(true);
   });
+
+  it('cannot refer referrer', async () => {
+    const { referrals, user1, user2 } = await referralsFixture();
+
+    await expect(referrals.connect(user1).register(user2)).not.reverted;
+
+    await expect(referrals.connect(user2).register(user1)).revertedWith('INVALID_REFERRER');
+  })
 });
