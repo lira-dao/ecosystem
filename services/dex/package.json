@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@knaadh/nestjs-drizzle-pg": "^1.0.0",
-    "@lira-dao/web3-utils": "workspace:^",
+    "@lira-dao/web3-utils": "1.18.0",
     "@nestjs/axios": "^3.0.2",
     "@nestjs/common": "^10.0.0",
     "@nestjs/config": "^3.2.2",
