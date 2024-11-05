@@ -1,3 +1,5 @@
+name: lira-dex
+
 services:
   postgres:
     image: postgres:latest

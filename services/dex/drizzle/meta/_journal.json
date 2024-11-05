@@ -5,57 +5,15 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1722002582491,
-      "tag": "0000_nasty_magdalene",
+      "when": 1730849089284,
+      "tag": "0000_charming_winter_soldier",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "6",
-      "when": 1722617269694,
-      "tag": "0001_groovy_shriek",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1724160050233,
-      "tag": "0002_hot_ronan",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1724220437863,
-      "tag": "0003_lumpy_white_queen",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "6",
-      "when": 1724343973246,
-      "tag": "0004_smooth_young_avengers",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "6",
-      "when": 1724429873544,
-      "tag": "0005_spooky_lockjaw",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "6",
-      "when": 1725969964397,
-      "tag": "0006_mighty_sue_storm",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "6",
-      "when": 1726294175802,
-      "tag": "0007_neat_eternity",
+      "when": 1730849091341,
+      "tag": "0001_secret_lightspeed",
       "breakpoints": true
     }
   ]

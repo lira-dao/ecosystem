@@ -136,55 +136,30 @@ export class ReferralService implements OnModuleInit {
     });
   }
 
-  async getShortUrl(address: EthereumAddress): Promise<string> {
+  async getShortCode(address: EthereumAddress): Promise<string> {
     this.logger.log('request url for ' + address);
+
+    const url = `${process.env.DEX_URL}/referral/${address}`;
 
     const result = await this.drizzleDev
       .select()
-      .from(schema.referralUrl)
-      .where(eq(schema.referralUrl.referrer, address));
-
-    console.log('result', result);
+      .from(schema.shortLinks)
+      .where(eq(schema.shortLinks.url, url));
 
     if (result.length === 0) {
-      this.logger.log('create new url');
+      this.logger.log('create new code');
 
-      const { data: newUrl } = await firstValueFrom(
-        this.httpService.post<{ code: string; shrtlnk: string }>(
-          'https://shrtlnk.dev/api/v2/link',
-          {
-            url: `${process.env.DEX_URL}/referral/${address}`,
-          },
-          {
-            headers: {
-              'api-key': process.env.SHRTLNK_API_KEY,
-            },
-          },
-        ),
-      );
+      const sortLink = await this.drizzleDev
+        .insert(schema.shortLinks)
+        .values({ url })
+        .returning();
 
-      // const newUrl = await axios.post(
-      //   'https://shrtlnk.dev/api/v2/link',
-      //   {
-      //     url: 'referral/' + address,
-      //   },
-      //   {
-      //     headers: {
-      //       'api-key': 'C4pxzZp4eYuC86upH3ef91U6sNBbXUkgWnIUstGWBOt5I',
-      //     },
-      //   },
-      // );
+      this.logger.log('new code ' + sortLink[0].code);
 
-      this.logger.log('new url ' + newUrl.shrtlnk);
-
-      await this.drizzleDev
-        .insert(schema.referralUrl)
-        .values({ referrer: address, url: newUrl.shrtlnk });
-
-      return newUrl.shrtlnk;
+      return sortLink[0].code;
     }
 
-    this.logger.log('cached url ' + result[0].url);
+    this.logger.log('cached code ' + result[0].url);
 
     return result[0].url;
   }

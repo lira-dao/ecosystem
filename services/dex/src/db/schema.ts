@@ -7,7 +7,8 @@ import {
   unique,
   varchar,
   timestamp,
-  pgEnum
+  pgEnum,
+  text,
 } from 'drizzle-orm/pg-core';
 
 export const referral = pgTable(
@@ -20,11 +21,6 @@ export const referral = pgTable(
     un_referrer_referral: unique().on(t.referrer, t.referral),
   }),
 );
-
-export const referralUrl = pgTable('referral_url', {
-  referrer: varchar('referrer').primaryKey().notNull(),
-  url: varchar('url'),
-});
 
 export const tokens = pgTable('tokens', {
   chainId: integer('chain_id'),
@@ -56,7 +52,6 @@ export const lpPrices = pgTable(
   }),
 );
 
-
 export const price = pgTable('price', {
   chainId: integer('chain_id'),
   token0: varchar('token0'),
@@ -76,16 +71,26 @@ export const stakingRewards = pgTable('staking_rewards', {
   createdAt: timestamp('created_at').default(sql`now()`),
 });
 
-export const rewardStatusEnum = pgEnum('reward_status', ['pending', 'distributed']);
+export const rewardStatusEnum = pgEnum('reward_status', [
+  'pending',
+  'distributed',
+]);
 
 export const referralRewards = pgTable('referral_rewards', {
   id: serial('id').primaryKey(),
   referrerAddress: varchar('referrer_address').notNull(),
   tokenAddresses: varchar('token_addresses').array().notNull(),
-  amounts: numeric('amounts').array().notNull(), 
+  amounts: numeric('amounts').array().notNull(),
   harvestTxId: varchar('harvest_tx_id'),
   distributionTxId: varchar('distribution_tx_id'),
   status: rewardStatusEnum('status').default('pending').notNull(),
   createdAt: timestamp('created_at').default(sql`now()`),
   distributedAt: timestamp('distributed_at'),
+});
+
+export const shortLinks = pgTable('short_links', {
+  id: serial('id').primaryKey(),
+  code: text('code').unique(),
+  url: text('url').notNull(),
+  createdAt: timestamp('created_at').defaultNow(),
 });

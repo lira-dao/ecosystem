@@ -1,9 +1,99 @@
 {
-  "id": "aafc42ee-6f93-4ee0-87e1-d5e5c9e6f06d",
+  "id": "6ddc1378-4d38-4847-a20b-c0ae6bbba1ca",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "6",
   "dialect": "postgresql",
   "tables": {
+    "public.lp_prices": {
+      "name": "lp_prices",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "pair_address": {
+          "name": "pair_address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "symbol": {
+          "name": "symbol",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "price": {
+          "name": "price",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "supply": {
+          "name": "supply",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "lp_prices_pair_address_symbol_unique": {
+          "name": "lp_prices_pair_address_symbol_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "pair_address",
+            "symbol"
+          ]
+        }
+      }
+    },
+    "public.price": {
+      "name": "price",
+      "schema": "",
+      "columns": {
+        "chain_id": {
+          "name": "chain_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "token0": {
+          "name": "token0",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "token1": {
+          "name": "token1",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "price": {
+          "name": "price",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "public.prices": {
       "name": "prices",
       "schema": "",
@@ -46,11 +136,87 @@
           "name": "referrer",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "referral": {
           "name": "referral",
           "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "referral_referrer_referral_unique": {
+          "name": "referral_referrer_referral_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "referrer",
+            "referral"
+          ]
+        }
+      }
+    },
+    "public.referral_rewards": {
+      "name": "referral_rewards",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "referrer_address": {
+          "name": "referrer_address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "token_addresses": {
+          "name": "token_addresses",
+          "type": "varchar[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "amounts": {
+          "name": "amounts",
+          "type": "numeric[]",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "harvest_tx_id": {
+          "name": "harvest_tx_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "distribution_tx_id": {
+          "name": "distribution_tx_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "reward_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pending'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "distributed_at": {
+          "name": "distributed_at",
+          "type": "timestamp",
           "primaryKey": false,
           "notNull": false
         }
@@ -60,18 +226,144 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "public.referral_url": {
-      "name": "referral_url",
+    "public.short_links": {
+      "name": "short_links",
       "schema": "",
       "columns": {
-        "referrer": {
-          "name": "referrer",
-          "type": "varchar",
+        "id": {
+          "name": "id",
+          "type": "serial",
           "primaryKey": true,
           "notNull": true
         },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "url": {
           "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "short_links_code_unique": {
+          "name": "short_links_code_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "code"
+          ]
+        }
+      }
+    },
+    "public.staking_rewards": {
+      "name": "staking_rewards",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "staker_address": {
+          "name": "staker_address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "referrer_address": {
+          "name": "referrer_address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "staked_token_address": {
+          "name": "staked_token_address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "staked_amount": {
+          "name": "staked_amount",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reward_amount": {
+          "name": "reward_amount",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "staking_tx_id": {
+          "name": "staking_tx_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "reward_tx_id": {
+          "name": "reward_tx_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.tokens": {
+      "name": "tokens",
+      "schema": "",
+      "columns": {
+        "chain_id": {
+          "name": "chain_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "address": {
+          "name": "address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "symbol": {
+          "name": "symbol",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "decimals": {
+          "name": "decimals",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
@@ -83,7 +375,16 @@
       "uniqueConstraints": {}
     }
   },
-  "enums": {},
+  "enums": {
+    "public.reward_status": {
+      "name": "reward_status",
+      "schema": "public",
+      "values": [
+        "pending",
+        "distributed"
+      ]
+    }
+  },
   "schemas": {},
   "_meta": {
     "columns": {},

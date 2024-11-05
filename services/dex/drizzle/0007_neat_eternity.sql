@@ -1,1 +1,0 @@
-ALTER TABLE "lp_prices" ADD COLUMN "supply" varchar;

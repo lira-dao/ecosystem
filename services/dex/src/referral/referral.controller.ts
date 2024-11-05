@@ -11,7 +11,7 @@ export class ReferralController {
     @Param() params: { address: EthereumAddress },
   ): Promise<{ url: string }> {
     return {
-      url: await this.referralService.getShortUrl(params.address),
+      url: await this.referralService.getShortCode(params.address),
     };
   }
 }
