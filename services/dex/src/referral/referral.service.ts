@@ -159,8 +159,8 @@ export class ReferralService implements OnModuleInit {
       return sortLink[0].code;
     }
 
-    this.logger.log('cached code ' + result[0].url);
+    this.logger.log('cached code ' + result[0].code);
 
-    return result[0].url;
+    return result[0].code;
   }
 }
