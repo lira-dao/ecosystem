@@ -91,6 +91,6 @@ export const referralRewards = pgTable('referral_rewards', {
 export const shortLinks = pgTable('short_links', {
   id: serial('id').primaryKey(),
   code: text('code').unique(),
-  url: text('url').notNull(),
+  address: varchar('address').unique().notNull(),
   createdAt: timestamp('created_at').defaultNow(),
 });

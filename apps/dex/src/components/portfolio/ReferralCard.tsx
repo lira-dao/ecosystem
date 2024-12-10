@@ -2,7 +2,7 @@ import { Avatar, Box, Button, Grid, Typography } from '@mui/material';
 import { QueryObserverResult } from '@tanstack/react-query';
 import { useAccount } from 'wagmi';
 import BigNumber from 'bignumber.js';
-import { useReferralUrl } from '../../hooks/referrals/useReferralUrl';
+import { useReferralCode } from '../../hooks/referrals/useReferralCode';
 import { useReferralsUrl } from '../../hooks/referrals/useReferralsUrl';
 import { TokenReward } from '../../hooks/useReferralRewards';
 
@@ -22,7 +22,7 @@ export function ReferralCard({
 }: ReferralCardProps) {
   const account = useAccount();
 
-  const { data } = useReferralUrl(account.address);
+  const { data } = useReferralCode(account.address);
   const { data: referralCounts, isLoading } = useReferralsUrl(account.address);
 
   return (
@@ -30,8 +30,8 @@ export function ReferralCard({
       <Typography variant="h5">Welcome to your referral area!</Typography>
 
       <Box display="flex" alignItems="center" justifyContent="center">
-        <Typography variant="h6" sx={{ mr: 4, my: 4 }}>{data}</Typography>
-        <Button variant="outlined" onClick={() => navigator.clipboard.writeText(data || '')}>COPY</Button>
+        <Typography variant="h6" sx={{ mr: 4, my: 4 }}>{`${process.env.REACT_APP_URL}/referral/${data}`}</Typography>
+        <Button variant="outlined" onClick={() => navigator.clipboard.writeText(`${process.env.REACT_APP_URL}/referral/${data}`)}>COPY</Button>
       </Box>
 
       <Typography sx={{ mb: 4 }}>

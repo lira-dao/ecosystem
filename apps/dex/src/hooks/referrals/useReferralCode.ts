@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { EthereumAddress } from '@lira-dao/web3-utils';
 
 
-const fetchReferralUrl = async (address?: EthereumAddress): Promise<string> => {
+const fetchReferralCode = async (address?: EthereumAddress): Promise<string> => {
   if (!address) {
     return '';
   }
@@ -14,18 +14,18 @@ const fetchReferralUrl = async (address?: EthereumAddress): Promise<string> => {
       return '';
     }
 
-    const result: { url: string, status: string } = await response.json();
+    const result: { code: string, status: string } = await response.json();
 
-    return result.url;
+    return result.code;
   } catch (err) {
     return '';
   }
 };
 
-export function useReferralUrl(address?: EthereumAddress) {
+export function useReferralCode(address?: EthereumAddress) {
   return useQuery({
-    queryKey: ['referral-url', address],
-    queryFn: () => fetchReferralUrl(address),
+    queryKey: ['referral-code', address],
+    queryFn: () => fetchReferralCode(address),
     refetchOnWindowFocus: false,
     enabled: !!address,
     refetchOnMount: false,

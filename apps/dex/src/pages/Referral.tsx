@@ -9,6 +9,7 @@ import { useReferrer } from '../hooks/referrals/useReferrer';
 import { ErrorMessage } from '../components/swap/ErrorMessage';
 import { isAddress } from 'viem';
 import { useTheme } from '@mui/material/styles';
+import { useReferralAddress } from '../hooks/referrals/useReferralAddress';
 
 
 export function Referral() {
@@ -20,6 +21,7 @@ export function Referral() {
   const [referrer, setReferrer] = useState('');
   const [errorText, setErrorText] = useState('');
 
+  const { data: addressFromCode } = useReferralAddress(params.code);
   const { write, error, isPending, confirmed } = useRegisterReferral(referrer);
   const { referred, currentReferrer, refetch } = useReferrer();
 
@@ -31,10 +33,10 @@ export function Referral() {
   }, [error]);
 
   useEffect(() => {
-    if (params.address) {
-      setReferrer(params.address);
+    if (addressFromCode?.length === 42 && isAddress(addressFromCode)) {
+      setReferrer(addressFromCode);
     }
-  }, []);
+  }, [addressFromCode]);
 
   useEffect(() => {
     if (referrer.length === 42 && isAddress(referrer)) {

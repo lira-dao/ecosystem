@@ -3,10 +3,10 @@ import { NodePgDatabase } from 'drizzle-orm/node-postgres';
 import * as schema from '../db/schema';
 import { count, eq } from 'drizzle-orm';
 import { EthereumAddress, referrals } from '@lira-dao/web3-utils';
-import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import { Web3Provider } from '../services/web3.service';
 import * as Referrals from '@lira-dao/web3-utils/dist/abi/json/Referrals.json';
+import { shortLinks } from '../db/schema';
 
 @Injectable()
 export class ReferralService implements OnModuleInit {
@@ -56,6 +56,9 @@ export class ReferralService implements OnModuleInit {
           fromBlock: currentStartBlock,
           toBlock: currentEndBlock,
         });
+
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+
         allEvents = allEvents.concat(events);
       } catch (error) {
         this.logger.error(
@@ -136,22 +139,20 @@ export class ReferralService implements OnModuleInit {
     });
   }
 
-  async getShortCode(address: EthereumAddress): Promise<string> {
+  async getReferralCode(address: EthereumAddress): Promise<string> {
     this.logger.log('request url for ' + address);
-
-    const url = `${process.env.DEX_URL}/referral/${address}`;
 
     const result = await this.drizzleDev
       .select()
       .from(schema.shortLinks)
-      .where(eq(schema.shortLinks.url, url));
+      .where(eq(schema.shortLinks.address, address));
 
     if (result.length === 0) {
       this.logger.log('create new code');
 
       const sortLink = await this.drizzleDev
         .insert(schema.shortLinks)
-        .values({ url })
+        .values({ address })
         .returning();
 
       this.logger.log('new code ' + sortLink[0].code);
@@ -162,5 +163,12 @@ export class ReferralService implements OnModuleInit {
     this.logger.log('cached code ' + result[0].code);
 
     return result[0].code;
+  }
+
+  getReferralAddress(code: string) {
+    return this.drizzleDev
+      .selectDistinct({ address: shortLinks.address })
+      .from(shortLinks)
+      .where(eq(shortLinks.code, code));
   }
 }

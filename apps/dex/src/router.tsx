@@ -46,7 +46,7 @@ const routes = [
   { path: 'treasury/:address/:action', element: <ThemeProvider theme={muiDarkTheme}><TreasuryMint /></ThemeProvider> },
 
   // referral
-  { path: 'referral/:address', element: <ThemeProvider theme={muiDarkTheme}><Referral /></ThemeProvider> },
+  { path: 'referral/:code', element: <ThemeProvider theme={muiDarkTheme}><Referral /></ThemeProvider> },
 
   // portfolio
   { path: 'portfolio', element: <ThemeProvider theme={muiDarkTheme}><Portfolio /></ThemeProvider> },
