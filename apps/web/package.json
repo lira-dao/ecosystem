@@ -6,7 +6,6 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@lira-dao/presale": "workspace:^",
-    "@lira-dao/ui": "workspace:^",
     "@lira-dao/web3-utils": "workspace:^",
     "@metamask/sdk": "^0.3.0",
     "@mui/icons-material": "^5.15.18",

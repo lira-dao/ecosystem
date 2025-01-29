@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Typography, Button } from '@mui/material';
-import { AddToMetamaskButton } from '@lira-dao/ui';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { useAccount } from 'wagmi';
 import { useFaucets } from '../hooks/useFaucets';
@@ -193,9 +192,9 @@ export function Faucets() {
               readOnly
             />
           </Box>
-          <AddToMetamaskButton onClick={onAddToMetamask}>
+          <Button onClick={onAddToMetamask}>
             <img src={metamaskFox} alt="metamask icon" width={24} style={{ marginRight: 12 }} />Add To Metamask
-          </AddToMetamaskButton>
+          </Button>
         </Box>
       )}
 
